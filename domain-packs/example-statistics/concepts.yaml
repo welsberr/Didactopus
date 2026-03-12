@@ -1,0 +1,14 @@
+concepts:
+  - id: descriptive-statistics
+    title: Descriptive Statistics
+    prerequisites: []
+    mastery_signals:
+      - explain mean, median, variance, and standard deviation
+      - choose an appropriate descriptive summary for a dataset
+  - id: probability
+    title: Probability
+    prerequisites:
+      - descriptive-statistics
+    mastery_signals:
+      - explain conditional probability
+      - compute simple event probabilities

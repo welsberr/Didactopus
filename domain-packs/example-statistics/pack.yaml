@@ -1,0 +1,7 @@
+name: example-statistics
+display_name: Example Statistics Pack
+version: 0.1.0
+schema_version: "1"
+description: Example domain pack for a statistics mastery pathway.
+author: Wesley R. Elsberry
+license: MIT

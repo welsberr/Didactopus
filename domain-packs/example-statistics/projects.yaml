@@ -1,0 +1,11 @@
+projects:
+  - id: local-dataset-analysis
+    title: Analyze a Real Dataset
+    difficulty: introductory
+    prerequisites:
+      - descriptive-statistics
+      - probability
+    deliverables:
+      - written analysis
+      - plots
+      - interpretation of uncertainty

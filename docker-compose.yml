@@ -1,0 +1,21 @@
+services:
+  didactopus:
+    build: .
+    image: didactopus:dev
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: python -m didactopus.main --domain "statistics" --goal "practical mastery"
+    environment:
+      DIDACTOPUS_CONFIG: /app/configs/config.yaml
+
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["local-llm"]
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+
+volumes:
+  ollama-data:

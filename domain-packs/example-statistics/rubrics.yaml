@@ -1,0 +1,8 @@
+rubrics:
+  - id: explanation-rubric
+    title: Explanation Quality
+    criteria:
+      - correctness
+      - clarity
+      - justification
+      - transfer

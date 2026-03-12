@@ -1,0 +1,22 @@
+model_provider:
+  mode: local_first
+  local:
+    backend: ollama
+    endpoint: http://localhost:11434
+    model_name: llama3.1:8b
+  remote:
+    enabled: false
+    provider_name: none
+    endpoint: ""
+    model_name: ""
+
+platform:
+  verification_required: true
+  require_learner_explanations: true
+  permit_direct_answers: false
+  mastery_threshold: 0.8
+
+artifacts:
+  local_pack_dirs:
+    - domain-packs
+  allow_third_party_packs: true

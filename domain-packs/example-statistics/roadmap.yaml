@@ -1,0 +1,13 @@
+stages:
+  - id: stage-1
+    title: Foundations
+    concepts:
+      - descriptive-statistics
+    checkpoint:
+      - summarize a dataset correctly
+  - id: stage-2
+    title: Probabilistic Reasoning
+    concepts:
+      - probability
+    checkpoint:
+      - solve introductory probability tasks with explanation
