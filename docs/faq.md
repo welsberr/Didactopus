@@ -1,65 +1,37 @@
 # FAQ
 
-## What is Didactopus?
-
-Didactopus is a mastery-oriented learning infrastructure that uses concept graphs, evidence-based assessment, and adaptive planning to support serious learning.
-
-## Is this just a tutoring chatbot?
-
-No. The intended architecture is broader than tutoring. Didactopus maintains explicit representations of:
-- concepts
-- prerequisites
-- mastery criteria
-- evidence
-- learner state
-- planning priorities
-
 ## How is an AI student's learned mastery represented?
 
-An AI student's learned mastery is represented as structured state, not just conversation history.
-
-Important elements include:
-- mastered concept set
+As structured operational state, including:
+- mastered concepts
+- evaluator summaries
+- weak dimensions
 - evidence records
-- dimension-level competence summaries
-- weak-dimension lists
-- project eligibility
-- target-progress state
-- produced artifacts and critiques
+- artifacts
+- capability export
 
-## Does Didactopus fine-tune the AI model?
+## Does Didactopus change the AI model weights?
 
-Not in the current design. Didactopus supervises and evaluates a learner agent, but it does not itself retrain foundation model weights.
+No. In the current architecture, Didactopus supervises and evaluates a learner
+agent, but it does not retrain the foundation model.
 
-## Then how is the AI student “ready to work”?
+## How is an AI student ready to be put to work?
 
-Readiness is operationalized by the mastery state. An AI student is ready for a class of tasks when:
-- relevant concepts are mastered
-- confidence is high enough
-- weak dimensions are acceptable for the target task
-- prerequisite and project evidence support deployment
+Readiness is represented operationally. A downstream system can inspect:
+- which concepts are mastered
+- which weak dimensions remain
+- what artifacts were produced
+- what evaluator evidence supports deployment
 
-## Could mastered state be exported?
+## Is the capability export a certification?
 
-Yes. A future implementation should support export of:
-- concept mastery ledgers
-- evidence portfolios
-- competence profiles
-- project artifacts
-- domain-specific capability summaries
+Not by itself. It is a structured mastery report. In future, it could be combined
+with formal evaluators, signed evidence records, and policy rules.
 
-## Is human learning treated the same way?
+## Why is this useful?
 
-The same conceptual framework applies to both human and AI learners, though interfaces and evidence sources differ.
-
-## What is the difference between mastery and model knowledge?
-
-A model may contain latent knowledge or pattern familiarity. Didactopus mastery is narrower and stricter: it is evidence-backed demonstrated competence with respect to explicit concepts and criteria.
-
-## Why not use only embeddings and LLM judgments?
-
-Because correctness, especially in formal domains, often needs stronger guarantees than plausibility. That is why Didactopus may eventually need hybrid symbolic or executable validation components.
-
-## Can Didactopus work offline?
-
-Yes, that is a primary design goal. The architecture is local-first and can be paired with local model serving and locally stored domain packs.
+Because it allows Didactopus outputs to feed into:
+- task routing
+- portfolio review
+- benchmark comparison
+- agent deployment policies

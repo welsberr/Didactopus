@@ -8,10 +8,67 @@
 
 ## Recent revisions
 
+### Mastery Ledger
+
+This revision adds a **Mastery Ledger + Capability Export** layer.
+
+The main purpose is to let Didactopus turn accumulated learner state into
+portable, inspectable artifacts that can support downstream deployment,
+review, orchestration, or certification-like workflows.
+
+#### What is new
+
+- mastery ledger data model
+- capability profile export
+- JSON export of mastered concepts and evaluator summaries
+- Markdown export of a readable capability report
+- artifact manifest for produced deliverables
+- demo CLI for generating exports for an AI student or human learner
+- FAQ covering how learned mastery is represented and put to work
+
+#### Why this matters
+
+Didactopus can now do more than guide learning. It can also emit a structured
+statement of what a learner appears able to do, based on explicit concepts,
+evidence, and artifacts.
+
+That makes it easier to use Didactopus as:
+- a mastery tracker
+- a portfolio generator
+- a deployment-readiness aid
+- an orchestration input for agent routing
+
+#### Mastery representation
+
+A learner's mastery is represented as structured operational state, including:
+
+- mastered concepts
+- evaluator results
+- evidence summaries
+- weak dimensions
+- attempt history
+- produced artifacts
+- capability export
+
+This is stricter than a normal chat transcript or self-description.
+
+#### Future direction
+
+A later revision should connect the capability export with:
+- formal evaluator outputs
+- signed evidence ledgers
+- domain-specific capability schemas
+- deployment policies for agent routing
+
+
+### Evaluator Pipeline
+
 This revision introduces a **pluggable evaluator pipeline** that converts
 learner attempts into structured mastery evidence.
 
-The prior revision adds an **agentic learner loop** that turns Didactopus into a closed-loop mastery system prototype.
+### Agentic Learner Loop
+
+This revision adds an **agentic learner loop** that turns Didactopus into a closed-loop mastery system prototype.
 
 The loop can now:
 

@@ -1,70 +1,49 @@
 import argparse
-import os
 from pathlib import Path
 
-from .agentic_loop import run_agentic_learning_loop
-from .artifact_registry import check_pack_dependencies, detect_dependency_cycles, discover_domain_packs
-from .config import load_config
-from .graph_builder import build_concept_graph
-from .learning_graph import build_merged_learning_graph
-from .planner import PlannerWeights
+from .agentic_loop import run_demo_agentic_loop
+from .mastery_ledger import (
+    build_capability_profile,
+    export_capability_profile_json,
+    export_capability_report_markdown,
+    export_artifact_manifest,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Didactopus agentic learner loop")
-    parser.add_argument("--target", default="bayes-extension::posterior")
-    parser.add_argument("--steps", type=int, default=5)
-    parser.add_argument("--config", default=os.environ.get("DIDACTOPUS_CONFIG", "configs/config.example.yaml"))
+    parser = argparse.ArgumentParser(description="Didactopus mastery ledger demo")
+    parser.add_argument("--domain", default="Bayesian inference")
+    parser.add_argument("--outdir", default="exports")
     return parser
 
 
 def main() -> None:
     args = build_parser().parse_args()
-    config = load_config(Path(args.config))
-    results = discover_domain_packs(["domain-packs"])
-    dep_errors = check_pack_dependencies(results)
-    cycles = detect_dependency_cycles(results)
+    outdir = Path(args.outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
 
-    if dep_errors:
-        print("Dependency errors:")
-        for err in dep_errors:
-            print(f"- {err}")
-    if cycles:
-        print("Dependency cycles:")
-        for cycle in cycles:
-            print(f"- {' -> '.join(cycle)}")
-        return
+    concepts = [
+        "foundations-statistics::descriptive-statistics",
+        "foundations-statistics::probability-basics",
+        "bayes-extension::prior",
+        "bayes-extension::posterior",
+        "applied-inference::model-checking",
+    ]
+    state = run_demo_agentic_loop(concepts)
+    profile = build_capability_profile(state, args.domain)
 
-    merged = build_merged_learning_graph(results, config.platform.default_dimension_thresholds)
-    graph = build_concept_graph(results, config.platform.default_dimension_thresholds)
+    json_path = outdir / "capability_profile.json"
+    md_path = outdir / "capability_report.md"
+    manifest_path = outdir / "artifact_manifest.json"
 
-    state = run_agentic_learning_loop(
-        graph=graph,
-        project_catalog=merged.project_catalog,
-        target_concepts=[args.target],
-        weights=PlannerWeights(
-            readiness_bonus=config.planner.readiness_bonus,
-            target_distance_weight=config.planner.target_distance_weight,
-            weak_dimension_bonus=config.planner.weak_dimension_bonus,
-            fragile_review_bonus=config.planner.fragile_review_bonus,
-            project_unlock_bonus=config.planner.project_unlock_bonus,
-            semantic_similarity_weight=config.planner.semantic_similarity_weight,
-        ),
-        max_steps=args.steps,
-    )
+    export_capability_profile_json(profile, str(json_path))
+    export_capability_report_markdown(profile, str(md_path))
+    export_artifact_manifest(profile, str(manifest_path))
 
-    print("== Didactopus Agentic Learner Loop ==")
-    print(f"Target: {args.target}")
-    print(f"Steps executed: {len(state.attempt_history)}")
-    print()
-    print("Mastered concepts:")
-    if state.mastered_concepts:
-        for item in sorted(state.mastered_concepts):
-            print(f"- {item}")
-    else:
-        print("- none")
-    print()
-    print("Attempt history:")
-    for item in state.attempt_history:
-        weak = ", ".join(item["weak_dimensions"]) if item["weak_dimensions"] else "none"
-        print(f"- {item['concept']}: mastered={item['mastered']}, weak={weak}")
+    print("== Didactopus Mastery Ledger Demo ==")
+    print(f"Domain: {args.domain}")
+    print(f"Mastered concepts: {len(profile.mastered_concepts)}")
+    print(f"Artifacts: {len(profile.artifacts)}")
+    print(f"Capability profile JSON: {json_path}")
+    print(f"Capability report Markdown: {md_path}")
+    print(f"Artifact manifest JSON: {manifest_path}")
