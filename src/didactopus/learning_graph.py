@@ -26,8 +26,7 @@ def build_merged_learning_graph(results: list[PackValidationResult]) -> MergedLe
 
     for pack_name in merged.load_order:
         result = valid[pack_name]
-        concepts_file = result.loaded_files["concepts"]
-        for concept in concepts_file.concepts:
+        for concept in result.loaded_files["concepts"].concepts:
             key = namespaced_concept(pack_name, concept.id)
             merged.concept_data[key] = {
                 "id": concept.id,
@@ -40,16 +39,13 @@ def build_merged_learning_graph(results: list[PackValidationResult]) -> MergedLe
 
     for pack_name in merged.load_order:
         result = valid[pack_name]
-        concepts_file = result.loaded_files["concepts"]
-        for concept in concepts_file.concepts:
+        for concept in result.loaded_files["concepts"].concepts:
             concept_key = namespaced_concept(pack_name, concept.id)
             for prereq in concept.prerequisites:
                 prereq_key = namespaced_concept(pack_name, prereq)
                 if prereq_key in merged.graph:
                     merged.graph.add_edge(prereq_key, concept_key)
-
-        projects_file = result.loaded_files["projects"]
-        for project in projects_file.projects:
+        for project in result.loaded_files["projects"].projects:
             merged.project_catalog.append({
                 "id": f"{pack_name}::{project.id}",
                 "pack": pack_name,
@@ -58,5 +54,4 @@ def build_merged_learning_graph(results: list[PackValidationResult]) -> MergedLe
                 "prerequisites": [namespaced_concept(pack_name, p) for p in project.prerequisites],
                 "deliverables": list(project.deliverables),
             })
-
     return merged

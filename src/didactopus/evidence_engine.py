@@ -6,6 +6,7 @@ from typing import Literal
 from .adaptive_engine import LearnerProfile
 
 EvidenceType = Literal["explanation", "problem", "project", "transfer"]
+MASTERY_DIMENSIONS = ["correctness", "explanation", "transfer", "project_execution", "critique"]
 
 
 @dataclass
@@ -26,6 +27,8 @@ class ConceptEvidenceSummary:
     total_weight: float = 0.0
     confidence: float = 0.0
     dimension_means: dict[str, float] = field(default_factory=dict)
+    weak_dimensions: list[str] = field(default_factory=list)
+    mastered: bool = False
 
 
 @dataclass
@@ -53,11 +56,13 @@ def recompute_concept_summary(
     items: list[EvidenceItem],
     type_weights: dict[str, float],
     recent_multiplier: float,
+    dimension_thresholds: dict[str, float],
+    confidence_threshold: float,
 ) -> ConceptEvidenceSummary:
     weighted_score_sum = 0.0
     total_weight = 0.0
-    dimension_totals: dict[str, float] = {}
-    dimension_weights: dict[str, float] = {}
+    dim_totals: dict[str, float] = {}
+    dim_weights: dict[str, float] = {}
 
     for item in items:
         item.score = clamp_score(item.score)
@@ -65,24 +70,42 @@ def recompute_concept_summary(
         weighted_score_sum += item.score * w
         total_weight += w
 
-        for dim, val in item.rubric_dimensions.items():
-            v = clamp_score(val)
-            dimension_totals[dim] = dimension_totals.get(dim, 0.0) + v * w
-            dimension_weights[dim] = dimension_weights.get(dim, 0.0) + w
+        for dim, value in item.rubric_dimensions.items():
+            v = clamp_score(value)
+            dim_totals[dim] = dim_totals.get(dim, 0.0) + v * w
+            dim_weights[dim] = dim_weights.get(dim, 0.0) + w
 
     dimension_means = {
-        dim: (dimension_totals[dim] / dimension_weights[dim])
-        for dim in dimension_totals
-        if dimension_weights[dim] > 0
+        dim: dim_totals[dim] / dim_weights[dim]
+        for dim in dim_totals
+        if dim_weights[dim] > 0
     }
+    confidence = confidence_from_weight(total_weight)
+
+    weak_dimensions = []
+    for dim, threshold in dimension_thresholds.items():
+        if dim in dimension_means and dimension_means[dim] < threshold:
+            weak_dimensions.append(dim)
+
+    mastered = (
+        confidence >= confidence_threshold
+        and all(
+            (dim in dimension_means and dimension_means[dim] >= threshold)
+            for dim, threshold in dimension_thresholds.items()
+            if dim in dimension_means
+        )
+        and len(dimension_means) > 0
+    )
 
     return ConceptEvidenceSummary(
         concept_key=concept_key,
         count=len(items),
         weighted_mean_score=(weighted_score_sum / total_weight) if total_weight > 0 else 0.0,
         total_weight=total_weight,
-        confidence=confidence_from_weight(total_weight),
+        confidence=confidence,
         dimension_means=dimension_means,
+        weak_dimensions=sorted(weak_dimensions),
+        mastered=mastered,
     )
 
 
@@ -91,6 +114,8 @@ def add_evidence_item(
     item: EvidenceItem,
     type_weights: dict[str, float],
     recent_multiplier: float,
+    dimension_thresholds: dict[str, float],
+    confidence_threshold: float,
 ) -> None:
     item.score = clamp_score(item.score)
     state.evidence_by_concept.setdefault(item.concept_key, []).append(item)
@@ -99,30 +124,21 @@ def add_evidence_item(
         state.evidence_by_concept[item.concept_key],
         type_weights,
         recent_multiplier,
+        dimension_thresholds,
+        confidence_threshold,
     )
 
 
 def update_profile_mastery_from_evidence(
     profile: LearnerProfile,
     state: EvidenceState,
-    mastery_threshold: float,
     resurfacing_threshold: float,
-    confidence_threshold: float,
 ) -> None:
     for concept_key, summary in state.summary_by_concept.items():
-        if summary.count == 0:
-            continue
-
-        if (
-            summary.weighted_mean_score >= mastery_threshold
-            and summary.confidence >= confidence_threshold
-        ):
+        if summary.mastered:
             profile.mastered_concepts.add(concept_key)
             state.resurfaced_concepts.discard(concept_key)
-        elif (
-            concept_key in profile.mastered_concepts
-            and summary.weighted_mean_score < resurfacing_threshold
-        ):
+        elif concept_key in profile.mastered_concepts and summary.weighted_mean_score < resurfacing_threshold:
             profile.mastered_concepts.remove(concept_key)
             state.resurfaced_concepts.add(concept_key)
 
@@ -130,20 +146,25 @@ def update_profile_mastery_from_evidence(
 def ingest_evidence_bundle(
     profile: LearnerProfile,
     items: list[EvidenceItem],
-    mastery_threshold: float,
     resurfacing_threshold: float,
     confidence_threshold: float,
     type_weights: dict[str, float],
     recent_multiplier: float,
+    dimension_thresholds: dict[str, float],
 ) -> EvidenceState:
     state = EvidenceState()
     for item in items:
-        add_evidence_item(state, item, type_weights, recent_multiplier)
+        add_evidence_item(
+            state,
+            item,
+            type_weights,
+            recent_multiplier,
+            dimension_thresholds,
+            confidence_threshold,
+        )
     update_profile_mastery_from_evidence(
         profile=profile,
         state=state,
-        mastery_threshold=mastery_threshold,
         resurfacing_threshold=resurfacing_threshold,
-        confidence_threshold=confidence_threshold,
-        )
+    )
     return state

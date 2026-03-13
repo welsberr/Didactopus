@@ -56,15 +56,5 @@ class ProjectsFile(BaseModel):
     projects: list[ProjectEntry]
 
 
-class RubricEntry(BaseModel):
-    id: str
-    title: str
-    criteria: list[str] = Field(default_factory=list)
-
-
 class RubricsFile(BaseModel):
-    rubrics: list[RubricEntry]
-
-
-def validate_top_level_key(data: dict[str, Any], required_key: str) -> list[str]:
-    return [] if required_key in data else [f"missing required top-level key: {required_key}"]
+    rubrics: list[dict[str, Any]]

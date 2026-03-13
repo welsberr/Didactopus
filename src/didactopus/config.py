@@ -26,7 +26,6 @@ class PlatformConfig(BaseModel):
     verification_required: bool = True
     require_learner_explanations: bool = True
     permit_direct_answers: bool = False
-    mastery_threshold: float = 0.8
     resurfacing_threshold: float = 0.55
     confidence_threshold: float = 0.8
     evidence_weights: dict[str, float] = Field(
@@ -38,6 +37,15 @@ class PlatformConfig(BaseModel):
         }
     )
     recent_evidence_multiplier: float = 1.35
+    dimension_thresholds: dict[str, float] = Field(
+        default_factory=lambda: {
+            "correctness": 0.8,
+            "explanation": 0.75,
+            "transfer": 0.7,
+            "project_execution": 0.75,
+            "critique": 0.7,
+        }
+    )
 
 
 class ArtifactConfig(BaseModel):

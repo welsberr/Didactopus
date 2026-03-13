@@ -11,7 +11,6 @@ from .artifact_registry import (
 )
 from .config import load_config
 from .evidence_engine import EvidenceItem, ingest_evidence_bundle
-from .evaluation import score_simple_rubric
 from .learning_graph import build_merged_learning_graph
 from .mentor import generate_socratic_prompt
 from .model_provider import ModelProvider
@@ -20,7 +19,7 @@ from .project_advisor import suggest_capstone
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Didactopus weighted evidence scaffold")
+    parser = argparse.ArgumentParser(description="Didactopus multi-dimensional mastery scaffold")
     parser.add_argument("--domain", required=True)
     parser.add_argument("--goal", required=True)
     parser.add_argument(
@@ -68,88 +67,67 @@ def main() -> None:
         hide_mastered=True,
     )
 
-    rubric = score_simple_rubric(0.92, 0.86, 0.82, 0.78)
     evidence_items = [
         EvidenceItem(
             concept_key="foundations-statistics::descriptive-statistics",
-            evidence_type="explanation",
-            score=rubric.mean(),
-            is_recent=False,
-            rubric_dimensions={
-                "correctness": rubric.correctness,
-                "clarity": rubric.clarity,
-                "justification": rubric.justification,
-                "transfer": rubric.transfer,
-            },
-            notes="Good explanation.",
-        ),
-        EvidenceItem(
-            concept_key="foundations-statistics::descriptive-statistics",
             evidence_type="project",
-            score=0.9,
+            score=0.88,
             is_recent=True,
             rubric_dimensions={
                 "correctness": 0.9,
-                "clarity": 0.84,
-                "justification": 0.88,
-                "transfer": 0.82,
+                "explanation": 0.83,
+                "transfer": 0.79,
+                "project_execution": 0.88,
+                "critique": 0.74,
             },
-            notes="Strong project evidence.",
+            notes="Strong integrated performance.",
         ),
         EvidenceItem(
             concept_key="bayes-extension::prior",
             evidence_type="problem",
-            score=0.58,
+            score=0.68,
             is_recent=True,
             rubric_dimensions={
-                "correctness": 0.6,
-                "clarity": 0.55,
+                "correctness": 0.75,
+                "explanation": 0.62,
+                "transfer": 0.55,
+                "critique": 0.58,
             },
-            notes="Recent weak but informative performance.",
+            notes="Knows some basics, weak transfer and critique.",
         ),
     ]
 
     evidence_state = ingest_evidence_bundle(
         profile=profile,
         items=evidence_items,
-        mastery_threshold=config.platform.mastery_threshold,
         resurfacing_threshold=config.platform.resurfacing_threshold,
         confidence_threshold=config.platform.confidence_threshold,
         type_weights=config.platform.evidence_weights,
         recent_multiplier=config.platform.recent_evidence_multiplier,
+        dimension_thresholds=config.platform.dimension_thresholds,
     )
+
     plan = build_adaptive_plan(merged, profile)
 
-    print("== Weighted Evidence Summary ==")
+    print("== Multi-Dimensional Evidence Summary ==")
     for concept_key, summary in evidence_state.summary_by_concept.items():
         print(
-            f"- {concept_key}: count={summary.count}, "
-            f"weighted_mean={summary.weighted_mean_score:.2f}, "
-            f"confidence={summary.confidence:.2f}, "
-            f"total_weight={summary.total_weight:.2f}"
+            f"- {concept_key}: weighted_mean={summary.weighted_mean_score:.2f}, "
+            f"confidence={summary.confidence:.2f}, mastered={summary.mastered}"
         )
         if summary.dimension_means:
             dims = ", ".join(f"{k}={v:.2f}" for k, v in sorted(summary.dimension_means.items()))
             print(f"  * dimensions: {dims}")
+        if summary.weak_dimensions:
+            print(f"  * weak dimensions: {', '.join(summary.weak_dimensions)}")
     print()
 
-    print("== Mastered Concepts After Weighted Evidence ==")
-    for concept_key in sorted(profile.mastered_concepts):
-        print(f"- {concept_key}")
-    print()
-
-    print("== Resurfaced Concepts ==")
-    if evidence_state.resurfaced_concepts:
-        for concept_key in sorted(evidence_state.resurfaced_concepts):
+    print("== Mastered Concepts ==")
+    if profile.mastered_concepts:
+        for concept_key in sorted(profile.mastered_concepts):
             print(f"- {concept_key}")
     else:
-        print("- none")
-    print()
-
-    print("== Adaptive Plan Summary ==")
-    print(f"- roadmap items visible: {len(plan.learner_roadmap)}")
-    print(f"- next-best concepts: {len(plan.next_best_concepts)}")
-    print(f"- eligible projects: {len(plan.eligible_projects)}")
+        print("- none yet")
     print()
 
     print("== Next Best Concepts ==")
@@ -157,7 +135,8 @@ def main() -> None:
         print(f"- {concept}")
     print()
 
-    focus_concept = plan.next_best_concepts[0] if plan.next_best_concepts else args.domain
-    print(generate_socratic_prompt(provider, focus_concept))
-    print(generate_practice_task(provider, focus_concept))
+    focus_concept = "bayes-extension::prior"
+    weak_dims = evidence_state.summary_by_concept.get(focus_concept).weak_dimensions if focus_concept in evidence_state.summary_by_concept else []
+    print(generate_socratic_prompt(provider, focus_concept, weak_dims))
+    print(generate_practice_task(provider, focus_concept, weak_dims))
     print(suggest_capstone(provider, args.domain))

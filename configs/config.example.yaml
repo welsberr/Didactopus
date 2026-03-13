@@ -14,7 +14,6 @@ platform:
   verification_required: true
   require_learner_explanations: true
   permit_direct_answers: false
-  mastery_threshold: 0.8
   resurfacing_threshold: 0.55
   confidence_threshold: 0.8
   evidence_weights:
@@ -23,6 +22,12 @@ platform:
     project: 2.5
     transfer: 2.0
   recent_evidence_multiplier: 1.35
+  dimension_thresholds:
+    correctness: 0.8
+    explanation: 0.75
+    transfer: 0.7
+    project_execution: 0.75
+    critique: 0.7
 
 artifacts:
   local_pack_dirs:

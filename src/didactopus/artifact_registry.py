@@ -7,14 +7,7 @@ import yaml
 import networkx as nx
 
 from . import __version__ as DIDACTOPUS_VERSION
-from .artifact_schemas import (
-    ConceptsFile,
-    PackManifest,
-    ProjectsFile,
-    RoadmapFile,
-    RubricsFile,
-    validate_top_level_key,
-)
+from .artifact_schemas import ConceptsFile, PackManifest, ProjectsFile, RoadmapFile, RubricsFile
 
 REQUIRED_FILES = ["pack.yaml", "concepts.yaml", "roadmap.yaml", "projects.yaml", "rubrics.yaml"]
 
@@ -48,13 +41,11 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 def validate_pack(pack_dir: str | Path) -> PackValidationResult:
     pack_path = Path(pack_dir)
     result = PackValidationResult(pack_dir=pack_path)
-
     for filename in REQUIRED_FILES:
         if not (pack_path / filename).exists():
             result.errors.append(f"missing required file: {filename}")
     if result.errors:
         return result
-
     try:
         result.manifest = PackManifest.model_validate(_load_yaml(pack_path / "pack.yaml"))
         if not _version_in_range(DIDACTOPUS_VERSION, result.manifest.didactopus_min_version, result.manifest.didactopus_max_version):
@@ -62,19 +53,12 @@ def validate_pack(pack_dir: str | Path) -> PackValidationResult:
                 f"incompatible with Didactopus core version {DIDACTOPUS_VERSION}; supported range is "
                 f"{result.manifest.didactopus_min_version}..{result.manifest.didactopus_max_version}"
             )
-
-        concepts = ConceptsFile.model_validate(_load_yaml(pack_path / "concepts.yaml"))
-        roadmap = RoadmapFile.model_validate(_load_yaml(pack_path / "roadmap.yaml"))
-        projects = ProjectsFile.model_validate(_load_yaml(pack_path / "projects.yaml"))
-        rubrics = RubricsFile.model_validate(_load_yaml(pack_path / "rubrics.yaml"))
-
-        result.loaded_files["concepts"] = concepts
-        result.loaded_files["roadmap"] = roadmap
-        result.loaded_files["projects"] = projects
-        result.loaded_files["rubrics"] = rubrics
+        result.loaded_files["concepts"] = ConceptsFile.model_validate(_load_yaml(pack_path / "concepts.yaml"))
+        result.loaded_files["roadmap"] = RoadmapFile.model_validate(_load_yaml(pack_path / "roadmap.yaml"))
+        result.loaded_files["projects"] = ProjectsFile.model_validate(_load_yaml(pack_path / "projects.yaml"))
+        result.loaded_files["rubrics"] = RubricsFile.model_validate(_load_yaml(pack_path / "rubrics.yaml"))
     except Exception as exc:
         result.errors.append(str(exc))
-
     result.is_valid = not result.errors
     return result
 
