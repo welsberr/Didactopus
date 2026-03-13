@@ -1,0 +1,14 @@
+name: applied-inference
+display_name: Applied Inference Pack
+version: 0.2.0
+schema_version: "1"
+didactopus_min_version: 0.1.0
+didactopus_max_version: 0.9.99
+description: Simple applied inference pack.
+author: Wesley R. Elsberry
+license: MIT
+dependencies:
+  - name: bayes-extension
+    min_version: 0.1.0
+    max_version: 1.0.0
+overrides: []

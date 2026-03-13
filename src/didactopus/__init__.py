@@ -2,13 +2,12 @@ __version__ = "0.1.0"
 
 __all__ = [
     "__version__",
+    "adaptive_engine",
     "artifact_registry",
     "artifact_schemas",
     "config",
-    "curriculum",
-    "domain_map",
+    "evidence_engine",
     "evaluation",
-    "graph_merge",
     "learning_graph",
     "main",
     "mentor",

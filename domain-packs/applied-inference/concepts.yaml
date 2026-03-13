@@ -1,0 +1,6 @@
+concepts:
+  - id: model-checking
+    title: Model Checking
+    prerequisites: []
+    mastery_signals:
+      - compare model assumptions

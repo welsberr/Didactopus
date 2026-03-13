@@ -1,0 +1,6 @@
+rubrics:
+  - id: inference-rubric
+    title: Inference Rubric
+    criteria:
+      - correctness
+      - critique

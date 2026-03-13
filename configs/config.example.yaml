@@ -15,6 +15,7 @@ platform:
   require_learner_explanations: true
   permit_direct_answers: false
   mastery_threshold: 0.8
+  resurfacing_threshold: 0.55
 
 artifacts:
   local_pack_dirs:

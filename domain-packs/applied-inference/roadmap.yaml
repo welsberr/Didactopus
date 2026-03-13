@@ -1,0 +1,7 @@
+stages:
+  - id: stage-1
+    title: Applied Inference
+    concepts:
+      - model-checking
+    checkpoint:
+      - critique a simple model

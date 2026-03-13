@@ -27,6 +27,7 @@ class PlatformConfig(BaseModel):
     require_learner_explanations: bool = True
     permit_direct_answers: bool = False
     mastery_threshold: float = 0.8
+    resurfacing_threshold: float = 0.55
 
 
 class ArtifactConfig(BaseModel):

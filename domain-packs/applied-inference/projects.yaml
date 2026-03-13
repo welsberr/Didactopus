@@ -1,0 +1,9 @@
+projects:
+  - id: inference-project
+    title: Applied Inference Project
+    difficulty: advanced
+    prerequisites:
+      - model-checking
+    deliverables:
+      - memo
+      - critique
