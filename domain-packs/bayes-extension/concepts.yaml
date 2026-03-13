@@ -1,0 +1,6 @@
+concepts:
+  - id: prior
+    title: Prior
+    prerequisites: []
+    mastery_signals:
+      - explain a prior distribution

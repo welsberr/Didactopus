@@ -9,29 +9,14 @@ description = "Didactopus: local-first AI-assisted autodidactic mastery platform
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
-authors = [
-  {name = "Wesley R. Elsberry"}
-]
-dependencies = [
-  "pydantic>=2.7",
-  "pyyaml>=6.0",
-  "networkx>=3.2"
-]
+authors = [{name = "Wesley R. Elsberry"}]
+dependencies = ["pydantic>=2.7", "pyyaml>=6.0", "networkx>=3.2"]
 
 [project.optional-dependencies]
-dev = [
-  "pytest>=8.0",
-  "ruff>=0.6"
-]
+dev = ["pytest>=8.0", "ruff>=0.6"]
 
 [project.scripts]
 didactopus = "didactopus.main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-
-[tool.ruff]
-line-length = 100

@@ -7,7 +7,6 @@ class ConceptNode:
     name: str
     description: str = ""
     prerequisites: list[str] = field(default_factory=list)
-    representative_tasks: list[str] = field(default_factory=list)
 
 
 class DomainMap:
@@ -19,9 +18,6 @@ class DomainMap:
         self.graph.add_node(node.name, data=node)
         for prereq in node.prerequisites:
             self.graph.add_edge(prereq, node.name)
-
-    def concepts(self) -> list[str]:
-        return list(self.graph.nodes)
 
     def prerequisites_for(self, concept: str) -> list[str]:
         return list(nx.ancestors(self.graph, concept))

@@ -1,0 +1,5 @@
+stages:
+  - id: stage-1
+    title: Y
+    concepts: [y]
+    checkpoint: []

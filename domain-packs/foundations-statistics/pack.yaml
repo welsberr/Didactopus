@@ -1,0 +1,10 @@
+name: foundations-statistics
+display_name: Foundations Statistics Pack
+version: 1.2.0
+schema_version: "1"
+didactopus_min_version: 0.1.0
+didactopus_max_version: 0.9.99
+description: Shared foundations for statistics learning.
+author: Wesley R. Elsberry
+license: MIT
+dependencies: []

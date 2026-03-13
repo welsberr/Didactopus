@@ -10,12 +10,11 @@ class RoadmapStage:
 
 
 def generate_initial_roadmap(domain_map: DomainMap, goal: str) -> list[RoadmapStage]:
-    sequence = domain_map.topological_sequence()
     return [
         RoadmapStage(
-            title=f"Stage {idx + 1}: {concept.title()}",
+            title=f"Stage {i+1}: {concept.title()}",
             concepts=[concept],
             mastery_goal=f"Demonstrate applied understanding of {concept} toward goal: {goal}",
         )
-        for idx, concept in enumerate(sequence)
+        for i, concept in enumerate(domain_map.topological_sequence())
     ]

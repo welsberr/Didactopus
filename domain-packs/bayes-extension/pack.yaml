@@ -1,0 +1,13 @@
+name: bayes-extension
+display_name: Bayesian Extension Pack
+version: 0.3.0
+schema_version: "1"
+didactopus_min_version: 0.1.0
+didactopus_max_version: 0.9.99
+description: Bayesian extension that depends on statistics foundations.
+author: Wesley R. Elsberry
+license: MIT
+dependencies:
+  - name: foundations-statistics
+    min_version: 1.0.0
+    max_version: 1.9.99

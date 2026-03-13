@@ -1,0 +1,6 @@
+projects:
+  - id: p
+    title: P
+    difficulty: introductory
+    prerequisites: [x]
+    deliverables: []

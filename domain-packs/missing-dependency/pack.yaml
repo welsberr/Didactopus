@@ -1,0 +1,13 @@
+name: missing-dependency
+display_name: Missing Dependency Pack
+version: 0.1.0
+schema_version: "1"
+didactopus_min_version: 0.1.0
+didactopus_max_version: 0.9.99
+description: Depends on something not installed.
+author: Wesley R. Elsberry
+license: MIT
+dependencies:
+  - name: nonexistent-pack
+    min_version: 1.0.0
+    max_version: 2.0.0

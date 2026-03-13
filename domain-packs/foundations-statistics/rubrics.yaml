@@ -1,0 +1,6 @@
+rubrics:
+  - id: basic-explanation
+    title: Basic Explanation
+    criteria:
+      - correctness
+      - clarity

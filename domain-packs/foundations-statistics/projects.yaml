@@ -1,0 +1,8 @@
+projects:
+  - id: summarize-data
+    title: Summarize Local Data
+    difficulty: introductory
+    prerequisites:
+      - descriptive-statistics
+    deliverables:
+      - summary report

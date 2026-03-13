@@ -1,0 +1,5 @@
+concepts:
+  - id: x
+    title: X
+    prerequisites: []
+    mastery_signals: []

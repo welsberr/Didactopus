@@ -1,0 +1,7 @@
+stages:
+  - id: stage-1
+    title: Bayesian Basics
+    concepts:
+      - prior
+    checkpoint:
+      - compare priors

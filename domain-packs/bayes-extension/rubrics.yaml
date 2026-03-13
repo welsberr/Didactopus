@@ -1,0 +1,6 @@
+rubrics:
+  - id: bayes-rubric
+    title: Bayesian Rubric
+    criteria:
+      - correctness
+      - interpretation
