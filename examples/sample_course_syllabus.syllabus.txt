@@ -1,0 +1,16 @@
+# Introductory Bayesian Inference
+
+## Module 1: Foundations
+### Descriptive Statistics
+- Objective: Explain mean, median, and variance.
+- Exercise: Summarize a small dataset.
+
+### Probability Basics
+- Objective: Explain conditional probability.
+- Exercise: Compute a simple conditional probability.
+
+## Module 2: Bayesian Updating
+### Prior and Posterior
+- Objective: Explain a prior distribution.
+- Objective: Explain how evidence changes belief.
+- Exercise: Compare prior and posterior beliefs.

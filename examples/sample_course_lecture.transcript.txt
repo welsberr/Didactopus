@@ -1,0 +1,5 @@
+# Introductory Bayesian Inference
+
+## Module 2: Bayesian Updating
+### Prior and Posterior
+In this lecture we revisit Prior and Posterior and discuss model assumptions, bias, and uncertainty.

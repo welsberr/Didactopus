@@ -4,7 +4,8 @@ version: 0.1.0-draft
 schema_version: '1'
 didactopus_min_version: 0.1.0
 didactopus_max_version: 0.9.99
-description: Draft pack generated from sample course.
+description: Draft pack generated from multi-source course inputs for 'Introductory
+  Bayesian Inference'.
 author: Wesley R. Elsberry
 license: REVIEW-REQUIRED
 dependencies: []

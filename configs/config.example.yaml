@@ -9,3 +9,8 @@ rule_policy:
   enable_duplicate_term_merge_rule: true
   enable_project_detection_rule: true
   enable_review_flags: true
+
+multisource:
+  detect_duplicate_lessons: true
+  detect_term_conflicts: true
+  merge_same_named_lessons: true

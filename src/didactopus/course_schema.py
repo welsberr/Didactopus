@@ -9,11 +9,20 @@ class Lesson(BaseModel):
     objectives: list[str] = Field(default_factory=list)
     exercises: list[str] = Field(default_factory=list)
     key_terms: list[str] = Field(default_factory=list)
+    source_refs: list[str] = Field(default_factory=list)
 
 
 class Module(BaseModel):
     title: str
     lessons: list[Lesson] = Field(default_factory=list)
+
+
+class NormalizedSourceRecord(BaseModel):
+    source_name: str
+    source_type: str
+    source_path: str
+    title: str = ""
+    modules: list[Module] = Field(default_factory=list)
 
 
 class NormalizedCourse(BaseModel):
@@ -22,6 +31,7 @@ class NormalizedCourse(BaseModel):
     source_url: str = ""
     rights_note: str = ""
     modules: list[Module] = Field(default_factory=list)
+    source_records: list[NormalizedSourceRecord] = Field(default_factory=list)
 
 
 class ConceptCandidate(BaseModel):
@@ -42,3 +52,4 @@ class DraftPack(BaseModel):
     rubrics: dict
     review_report: list[str] = Field(default_factory=list)
     attribution: dict = Field(default_factory=dict)
+    conflicts: list[str] = Field(default_factory=list)

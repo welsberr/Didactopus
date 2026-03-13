@@ -6,7 +6,7 @@ import yaml
 from .course_schema import NormalizedCourse, ConceptCandidate, DraftPack
 
 
-def build_draft_pack(course: NormalizedCourse, concepts: list[ConceptCandidate], author: str, license_name: str, review_flags: list[str]) -> DraftPack:
+def build_draft_pack(course: NormalizedCourse, concepts: list[ConceptCandidate], author: str, license_name: str, review_flags: list[str], conflicts: list[str]) -> DraftPack:
     pack_name = course.title.lower().replace(" ", "-")
     pack = {
         "name": pack_name,
@@ -15,7 +15,7 @@ def build_draft_pack(course: NormalizedCourse, concepts: list[ConceptCandidate],
         "schema_version": "1",
         "didactopus_min_version": "0.1.0",
         "didactopus_max_version": "0.9.99",
-        "description": f"Draft pack generated from course source '{course.source_name or course.title}'.",
+        "description": f"Draft pack generated from multi-source course inputs for '{course.title}'.",
         "author": author,
         "license": license_name,
         "dependencies": [],
@@ -61,8 +61,23 @@ def build_draft_pack(course: NormalizedCourse, concepts: list[ConceptCandidate],
                 })
     projects = {"projects": project_items}
     rubrics = {"rubrics": [{"id": "draft-rubric", "title": "Draft Rubric", "criteria": ["correctness", "explanation"]}]}
-    attribution = {"source_name": course.source_name, "source_url": course.source_url, "rights_note": course.rights_note}
-    return DraftPack(pack=pack, concepts=concepts_yaml, roadmap=roadmap, projects=projects, rubrics=rubrics, review_report=review_flags, attribution=attribution)
+    attribution = {
+        "rights_note": course.rights_note,
+        "sources": [
+            {"source_name": src.source_name, "source_type": src.source_type, "source_path": src.source_path}
+            for src in course.source_records
+        ],
+    }
+    return DraftPack(
+        pack=pack,
+        concepts=concepts_yaml,
+        roadmap=roadmap,
+        projects=projects,
+        rubrics=rubrics,
+        review_report=review_flags,
+        attribution=attribution,
+        conflicts=conflicts,
+    )
 
 
 def write_draft_pack(pack: DraftPack, outdir: str | Path) -> None:
@@ -73,6 +88,11 @@ def write_draft_pack(pack: DraftPack, outdir: str | Path) -> None:
     (out / "roadmap.yaml").write_text(yaml.safe_dump(pack.roadmap, sort_keys=False), encoding="utf-8")
     (out / "projects.yaml").write_text(yaml.safe_dump(pack.projects, sort_keys=False), encoding="utf-8")
     (out / "rubrics.yaml").write_text(yaml.safe_dump(pack.rubrics, sort_keys=False), encoding="utf-8")
+
     review_lines = ["# Review Report", ""] + [f"- {flag}" for flag in pack.review_report] if pack.review_report else ["# Review Report", "", "- none"]
     (out / "review_report.md").write_text("\n".join(review_lines), encoding="utf-8")
+
+    conflict_lines = ["# Conflict Report", ""] + [f"- {flag}" for flag in pack.conflicts] if pack.conflicts else ["# Conflict Report", "", "- none"]
+    (out / "conflict_report.md").write_text("\n".join(conflict_lines), encoding="utf-8")
+
     (out / "license_attribution.json").write_text(json.dumps(pack.attribution, indent=2), encoding="utf-8")

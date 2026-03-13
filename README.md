@@ -8,6 +8,39 @@
 
 ## Recent revisions
 
+### Multi-Source Course Ingestion
+
+This revision adds a **Multi-Source Course Ingestion Layer**.
+
+The pipeline can now accept multiple source files representing the same course or
+topic domain, normalize them into a shared intermediate representation, merge them,
+and emit a single draft Didactopus pack plus a conflict report.
+
+#### Supported scaffold source types
+
+Current scaffold adapters:
+- Markdown (`.md`)
+- Plain text (`.txt`)
+- HTML-ish text (`.html`, `.htm`)
+- Transcript text (`.transcript.txt`)
+- Syllabus text (`.syllabus.txt`)
+
+This revision is intentionally adapter-oriented, so future PDF, slide, and DOCX
+adapters can be added behind the same interface.
+
+#### What is included
+
+- multi-source adapter dispatch
+- normalized source records
+- source merge logic
+- cross-source terminology conflict report
+- duplicate lesson/title detection
+- merged draft pack emission
+- merged attribution manifest
+- sample multi-source inputs
+- sample merged output pack
+
+
 ### Course Ingestion Pipeline
 
 This revision adds a **Course-to-Pack Ingestion Pipeline** plus a **stable rule-policy adapter layer**.
@@ -180,5 +213,6 @@ didactopus/
 ├── src/didactopus/
 └── tests/
 ```
+
 
 

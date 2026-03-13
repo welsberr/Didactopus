@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "didactopus"
 version = "0.1.0"
-description = "Didactopus: course-to-pack ingestion scaffold"
+description = "Didactopus: multi-source course-to-pack ingestion scaffold"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}

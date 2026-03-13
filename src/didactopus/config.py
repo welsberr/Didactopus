@@ -17,9 +17,16 @@ class RulePolicyConfig(BaseModel):
     enable_review_flags: bool = True
 
 
+class MultisourceConfig(BaseModel):
+    detect_duplicate_lessons: bool = True
+    detect_term_conflicts: bool = True
+    merge_same_named_lessons: bool = True
+
+
 class AppConfig(BaseModel):
     course_ingest: CourseIngestConfig = Field(default_factory=CourseIngestConfig)
     rule_policy: RulePolicyConfig = Field(default_factory=RulePolicyConfig)
+    multisource: MultisourceConfig = Field(default_factory=MultisourceConfig)
 
 
 def load_config(path: str | Path) -> AppConfig:

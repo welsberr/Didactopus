@@ -1,32 +1,27 @@
 # FAQ
 
-## Why add course ingestion?
+## Why multi-source ingestion?
 
-Because many open or user-supplied courses already encode:
-- topic sequencing
-- learning objectives
-- exercises
-- project prompts
-- terminology
+Because course structure is usually distributed across several files rather than
+perfectly contained in one source.
 
-That makes them strong starting material for draft domain packs.
+## What kinds of conflicts can arise?
 
-## Why not just embed all course text?
+Common examples:
+- the same lesson with slightly different titles
+- inconsistent terminology across notes and transcripts
+- exercises present in one source but absent in another
+- project prompts implied in one file and explicit in another
 
-Because Didactopus needs structured artifacts:
+## Does the system resolve all conflicts automatically?
+
+No. It produces a merged draft pack and a conflict report for human review.
+
+## Why not rely only on embeddings for this?
+
+Because Didactopus needs explicit structures such as:
 - concepts
 - prerequisites
 - projects
 - rubrics
-- mastery cues
-
-A flat embedding store is not enough for mastery planning.
-
-## Why avoid PyKE or another heavy rule engine here?
-
-Dependency stability matters. The current rule-policy adapter keeps rules simple,
-transparent, and dependency-light.
-
-## Can the rule layer be replaced later?
-
-Yes. The adapter is designed so a future engine can be plugged in behind the same interface.
+- checkpoints

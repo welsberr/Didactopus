@@ -1,5 +1,20 @@
 {
-  "source_name": "Sample Course",
-  "source_url": "",
-  "rights_note": "REVIEW REQUIRED"
+  "rights_note": "REVIEW REQUIRED",
+  "sources": [
+    {
+      "source_name": "sample_course_syllabus.syllabus.txt",
+      "source_type": "syllabus",
+      "source_path": "examples/sample_course_syllabus.syllabus.txt"
+    },
+    {
+      "source_name": "sample_course_notes.md",
+      "source_type": "markdown",
+      "source_path": "examples/sample_course_notes.md"
+    },
+    {
+      "source_name": "sample_course_lecture.transcript.txt",
+      "source_type": "transcript",
+      "source_path": "examples/sample_course_lecture.transcript.txt"
+    }
+  ]
 }
