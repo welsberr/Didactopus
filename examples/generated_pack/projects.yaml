@@ -1,0 +1,7 @@
+projects:
+- id: capstone-mini-project
+  title: Capstone Mini Project
+  difficulty: review-required
+  prerequisites: []
+  deliverables:
+  - project artifact

@@ -1,0 +1,13 @@
+name: introductory-bayesian-inference
+display_name: Introductory Bayesian Inference
+version: 0.1.0-draft
+schema_version: '1'
+didactopus_min_version: 0.1.0
+didactopus_max_version: 0.9.99
+description: Draft pack generated from sample course.
+author: Wesley R. Elsberry
+license: REVIEW-REQUIRED
+dependencies: []
+overrides: []
+profile_templates: {}
+cross_pack_links: []

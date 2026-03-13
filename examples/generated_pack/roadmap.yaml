@@ -1,0 +1,17 @@
+stages:
+- id: stage-1
+  title: 'Module 1: Foundations'
+  concepts:
+  - descriptive-statistics
+  - probability-basics
+  checkpoint:
+  - Summarize a small dataset.
+  - Compute a simple conditional probability.
+- id: stage-2
+  title: 'Module 2: Bayesian Updating'
+  concepts:
+  - prior-and-posterior
+  - capstone-mini-project
+  checkpoint:
+  - Compare prior and posterior beliefs.
+  - Write a short project report comparing priors and posteriors.

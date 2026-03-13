@@ -1,0 +1,35 @@
+concepts:
+- id: descriptive-statistics
+  title: Descriptive Statistics
+  description: Descriptive Statistics introduces measures of center and spread.
+  prerequisites: []
+  mastery_signals:
+  - Explain mean, median, and variance.
+  mastery_profile: {}
+- id: probability-basics
+  title: Probability Basics
+  description: Probability Basics introduces events, likelihood, and Bayes-style reasoning.
+  prerequisites:
+  - descriptive-statistics
+  mastery_signals:
+  - Explain conditional probability.
+  mastery_profile: {}
+- id: prior-and-posterior
+  title: Prior and Posterior
+  description: A Prior expresses assumptions before evidence. Posterior reasoning
+    updates belief after evidence.
+  prerequisites:
+  - probability-basics
+  mastery_signals:
+  - Explain a prior distribution.
+  - Explain how evidence changes belief.
+  mastery_profile: {}
+- id: capstone-mini-project
+  title: Capstone Mini Project
+  description: This project asks learners to critique assumptions and produce a small
+    capstone artifact.
+  prerequisites:
+  - prior-and-posterior
+  mastery_signals:
+  - Write a short project report comparing priors and posteriors.
+  mastery_profile: {}

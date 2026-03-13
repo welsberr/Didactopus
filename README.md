@@ -8,6 +8,40 @@
 
 ## Recent revisions
 
+### Course Ingestion Pipeline
+
+This revision adds a **Course-to-Pack Ingestion Pipeline** plus a **stable rule-policy adapter layer**.
+
+The design goal is to turn open or user-supplied course materials into draft
+Didactopus domain packs without introducing a brittle external rule-engine dependency.
+
+#### Why no third-party rule engine here?
+
+To minimize dependency risk, this scaffold uses a small declarative rule-policy
+adapter implemented in pure Python and standard-library data structures.
+
+That gives Didactopus:
+- portable rules
+- inspectable rule definitions
+- deterministic behavior
+- zero extra runtime dependency for policy evaluation
+
+If a stronger rule engine is needed later, this adapter can remain the stable API surface.
+
+#### What is included
+
+- normalized course schema
+- Markdown/HTML-ish text ingestion adapter
+- module / lesson / objective extraction
+- concept candidate extraction
+- prerequisite guess generation
+- rule-policy adapter
+- draft pack emitter
+- review report generation
+- sample course input
+- sample generated pack outputs
+
+
 ### Mastery Ledger
 
 This revision adds a **Mastery Ledger + Capability Export** layer.
@@ -146,4 +180,5 @@ didactopus/
 ├── src/didactopus/
 └── tests/
 ```
+
 

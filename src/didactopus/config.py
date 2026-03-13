@@ -3,45 +3,23 @@ from pydantic import BaseModel, Field
 import yaml
 
 
-class PlatformConfig(BaseModel):
-    default_dimension_thresholds: dict[str, float] = Field(
-        default_factory=lambda: {
-            "correctness": 0.8,
-            "explanation": 0.75,
-            "transfer": 0.7,
-            "project_execution": 0.75,
-            "critique": 0.7,
-        }
-    )
+class CourseIngestConfig(BaseModel):
+    default_pack_author: str = "Unknown"
+    default_license: str = "REVIEW-REQUIRED"
+    min_term_length: int = 4
+    max_terms_per_lesson: int = 8
 
 
-class PlannerConfig(BaseModel):
-    readiness_bonus: float = 2.0
-    target_distance_weight: float = 1.0
-    weak_dimension_bonus: float = 1.2
-    fragile_review_bonus: float = 1.5
-    project_unlock_bonus: float = 0.8
-    semantic_similarity_weight: float = 1.0
-
-
-class EvidenceConfig(BaseModel):
-    resurfacing_threshold: float = 0.55
-    confidence_threshold: float = 0.8
-    evidence_weights: dict[str, float] = Field(
-        default_factory=lambda: {
-            "explanation": 1.0,
-            "problem": 1.5,
-            "project": 2.5,
-            "transfer": 2.0,
-        }
-    )
-    recent_evidence_multiplier: float = 1.35
+class RulePolicyConfig(BaseModel):
+    enable_prerequisite_order_rule: bool = True
+    enable_duplicate_term_merge_rule: bool = True
+    enable_project_detection_rule: bool = True
+    enable_review_flags: bool = True
 
 
 class AppConfig(BaseModel):
-    platform: PlatformConfig = Field(default_factory=PlatformConfig)
-    planner: PlannerConfig = Field(default_factory=PlannerConfig)
-    evidence: EvidenceConfig = Field(default_factory=EvidenceConfig)
+    course_ingest: CourseIngestConfig = Field(default_factory=CourseIngestConfig)
+    rule_policy: RulePolicyConfig = Field(default_factory=RulePolicyConfig)
 
 
 def load_config(path: str | Path) -> AppConfig:

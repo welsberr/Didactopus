@@ -1,18 +1,11 @@
-model_provider:
-  mode: local_first
-  local:
-    backend: ollama
-    endpoint: http://localhost:11434
-    model_name: llama3.1:8b
+course_ingest:
+  default_pack_author: "Wesley R. Elsberry"
+  default_license: "REVIEW-REQUIRED"
+  min_term_length: 4
+  max_terms_per_lesson: 8
 
-platform:
-  default_dimension_thresholds:
-    correctness: 0.8
-    explanation: 0.75
-    transfer: 0.7
-    project_execution: 0.75
-    critique: 0.7
-
-artifacts:
-  local_pack_dirs:
-    - domain-packs
+rule_policy:
+  enable_prerequisite_order_rule: true
+  enable_duplicate_term_merge_rule: true
+  enable_project_detection_rule: true
+  enable_review_flags: true

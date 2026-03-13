@@ -1,37 +1,32 @@
 # FAQ
 
-## How is an AI student's learned mastery represented?
+## Why add course ingestion?
 
-As structured operational state, including:
-- mastered concepts
-- evaluator summaries
-- weak dimensions
-- evidence records
-- artifacts
-- capability export
+Because many open or user-supplied courses already encode:
+- topic sequencing
+- learning objectives
+- exercises
+- project prompts
+- terminology
 
-## Does Didactopus change the AI model weights?
+That makes them strong starting material for draft domain packs.
 
-No. In the current architecture, Didactopus supervises and evaluates a learner
-agent, but it does not retrain the foundation model.
+## Why not just embed all course text?
 
-## How is an AI student ready to be put to work?
+Because Didactopus needs structured artifacts:
+- concepts
+- prerequisites
+- projects
+- rubrics
+- mastery cues
 
-Readiness is represented operationally. A downstream system can inspect:
-- which concepts are mastered
-- which weak dimensions remain
-- what artifacts were produced
-- what evaluator evidence supports deployment
+A flat embedding store is not enough for mastery planning.
 
-## Is the capability export a certification?
+## Why avoid PyKE or another heavy rule engine here?
 
-Not by itself. It is a structured mastery report. In future, it could be combined
-with formal evaluators, signed evidence records, and policy rules.
+Dependency stability matters. The current rule-policy adapter keeps rules simple,
+transparent, and dependency-light.
 
-## Why is this useful?
+## Can the rule layer be replaced later?
 
-Because it allows Didactopus outputs to feed into:
-- task routing
-- portfolio review
-- benchmark comparison
-- agent deployment policies
+Yes. The adapter is designed so a future engine can be plugged in behind the same interface.
