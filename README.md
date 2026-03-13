@@ -90,10 +90,3 @@ didactopus/
 └── tests/
 ```
 
-# Didactopus
-
-Didactopus is an AI-assisted autodidactic mastery platform based on
-concept graphs, mastery evidence, and evaluator-driven correctness.
-
-This revision introduces a **pluggable evaluator pipeline** that converts
-learner attempts into structured mastery evidence.
