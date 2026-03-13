@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from .domain_map import DomainMap
+import networkx as nx
 
 
 @dataclass
@@ -9,12 +9,13 @@ class RoadmapStage:
     mastery_goal: str
 
 
-def generate_initial_roadmap(domain_map: DomainMap, goal: str) -> list[RoadmapStage]:
+def generate_stages_from_learning_graph(graph: nx.DiGraph) -> list[RoadmapStage]:
+    sequence = list(nx.topological_sort(graph))
     return [
         RoadmapStage(
-            title=f"Stage {i+1}: {concept.title()}",
+            title=f"Stage {i+1}: {concept.split('::')[-1].replace('-', ' ').title()}",
             concepts=[concept],
-            mastery_goal=f"Demonstrate applied understanding of {concept} toward goal: {goal}",
+            mastery_goal=f"Demonstrate applied understanding of {concept}.",
         )
-        for i, concept in enumerate(domain_map.topological_sequence())
+        for i, concept in enumerate(sequence)
     ]

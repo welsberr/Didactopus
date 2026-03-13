@@ -11,3 +11,4 @@ dependencies:
   - name: foundations-statistics
     min_version: 1.0.0
     max_version: 1.9.99
+overrides: []

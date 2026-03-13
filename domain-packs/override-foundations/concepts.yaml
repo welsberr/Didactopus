@@ -1,0 +1,6 @@
+concepts:
+  - id: descriptive-statistics
+    title: Descriptive Statistics (Overridden)
+    prerequisites: []
+    mastery_signals:
+      - explain central tendency in an updated way

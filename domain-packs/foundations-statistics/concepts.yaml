@@ -4,3 +4,9 @@ concepts:
     prerequisites: []
     mastery_signals:
       - explain central tendency
+  - id: probability-basics
+    title: Probability Basics
+    prerequisites:
+      - descriptive-statistics
+    mastery_signals:
+      - explain event probability

@@ -1,8 +1,7 @@
 stages:
   - id: stage-1
-    title: Foundations
+    title: Override Stage
     concepts:
       - descriptive-statistics
-      - probability-basics
     checkpoint:
-      - summarize a dataset
+      - compare revised explanations

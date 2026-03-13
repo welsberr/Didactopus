@@ -3,5 +3,6 @@ stages:
     title: Bayesian Basics
     concepts:
       - prior
+      - posterior
     checkpoint:
-      - compare priors
+      - compare priors and posteriors

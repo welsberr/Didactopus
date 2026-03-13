@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 import yaml
+import networkx as nx
 
 from . import __version__ as DIDACTOPUS_VERSION
 from .artifact_schemas import (
@@ -168,11 +169,7 @@ def discover_domain_packs(base_dirs: list[str | Path]) -> list[PackValidationRes
 
 def check_pack_dependencies(results: list[PackValidationResult]) -> list[str]:
     errors: list[str] = []
-    manifest_by_name = {
-        r.manifest.name: r.manifest
-        for r in results
-        if r.manifest is not None
-    }
+    manifest_by_name = {r.manifest.name: r.manifest for r in results if r.manifest is not None}
 
     for result in results:
         if result.manifest is None:
@@ -180,9 +177,7 @@ def check_pack_dependencies(results: list[PackValidationResult]) -> list[str]:
         for dep in result.manifest.dependencies:
             dep_manifest = manifest_by_name.get(dep.name)
             if dep_manifest is None:
-                errors.append(
-                    f"pack '{result.manifest.name}' depends on missing pack '{dep.name}'"
-                )
+                errors.append(f"pack '{result.manifest.name}' depends on missing pack '{dep.name}'")
                 continue
             if not _version_in_range(dep_manifest.version, dep.min_version, dep.max_version):
                 errors.append(
@@ -190,3 +185,25 @@ def check_pack_dependencies(results: list[PackValidationResult]) -> list[str]:
                     f"{dep.min_version}..{dep.max_version}, but found {dep_manifest.version}"
                 )
     return errors
+
+
+def build_dependency_graph(results: list[PackValidationResult]) -> nx.DiGraph:
+    graph = nx.DiGraph()
+    valid_results = [r for r in results if r.manifest is not None and r.is_valid]
+    for result in valid_results:
+        graph.add_node(result.manifest.name)
+    for result in valid_results:
+        for dep in result.manifest.dependencies:
+            if dep.name in graph:
+                graph.add_edge(dep.name, result.manifest.name)
+    return graph
+
+
+def detect_dependency_cycles(results: list[PackValidationResult]) -> list[list[str]]:
+    graph = build_dependency_graph(results)
+    return [cycle for cycle in nx.simple_cycles(graph)]
+
+
+def topological_pack_order(results: list[PackValidationResult]) -> list[str]:
+    graph = build_dependency_graph(results)
+    return list(nx.topological_sort(graph))

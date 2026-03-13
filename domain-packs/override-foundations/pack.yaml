@@ -1,0 +1,15 @@
+name: override-foundations
+display_name: Override Foundations Pack
+version: 0.1.0
+schema_version: "1"
+didactopus_min_version: 0.1.0
+didactopus_max_version: 0.9.99
+description: Demonstrates explicit concept override.
+author: Wesley R. Elsberry
+license: MIT
+dependencies:
+  - name: foundations-statistics
+    min_version: 1.0.0
+    max_version: 2.0.0
+overrides:
+  - foundations-statistics::descriptive-statistics

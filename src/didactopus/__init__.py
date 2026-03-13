@@ -8,6 +8,8 @@ __all__ = [
     "curriculum",
     "domain_map",
     "evaluation",
+    "graph_merge",
+    "learning_graph",
     "main",
     "mentor",
     "model_provider",

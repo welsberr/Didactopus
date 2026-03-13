@@ -19,6 +19,7 @@ class PackManifest(BaseModel):
     author: str = ""
     license: str = "unspecified"
     dependencies: list[DependencySpec] = Field(default_factory=list)
+    overrides: list[str] = Field(default_factory=list)
 
 
 class ConceptEntry(BaseModel):

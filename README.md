@@ -1,49 +1,27 @@
-![Didactopus mascot](artwork/didactopus-mascot.png)
-
 # Didactopus
 
-**Didactopus** is a local-first AI-assisted autodidactic mastery platform designed to help motivated learners achieve genuine mastery through Socratic mentoring, structured practice, project work, verification, and competency-based evaluation.
+**Didactopus** is a local-first AI-assisted autodidactic mastery platform.
 
-**Tagline:** *Many arms, one goal — mastery.*
+This revision moves the system from simple concept merging toward a true **merged learning graph**.
 
-## This revision adds
+## Added in this revision
 
-- dependency and compatibility checks for domain packs
-- version-range validation against the Didactopus core version
-- local dependency resolution across installed packs
-- richer pack manifests
-- repository artwork under `artwork/`
-- tests for dependency and compatibility behavior
+- merged learning graph builder
+- combined prerequisite DAG across packs
+- merged roadmap stage catalog
+- merged project catalog
+- namespaced concept keys (`pack::concept`)
+- optional concept override support in `pack.yaml`
+- learner-facing roadmap generation from merged packs
+- CLI reporting for merged graph statistics
+- tests for merged learning graph behavior
 
-## Domain packs
+## Why this matters
 
-Didactopus supports portable, versioned **domain packs** that can contain:
+Didactopus can now use multiple compatible packs to build one composite domain model rather than treating packs as isolated fragments.
 
-- concept maps
-- roadmap templates
-- project blueprints
-- rubrics
-- benchmark tasks
-- resource guides
-
-Packs can depend on other packs, enabling layered curricula and reusable foundations.
-
-## Artwork
-
-The repository includes whimsical project art at:
-
-- `artwork/didactopus-mascot.png`
-
-Suggested future additions:
-- `artwork/didactopus-banner.png`
-- `artwork/didactopus-logo.png`
-
-## Quick start
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e .[dev]
-python -m didactopus.main --domain "statistics" --goal "practical mastery"
-pytest
-```
+That enables:
+- foundations + extension pack composition
+- unified learner roadmaps
+- shared project catalogs
+- safe coexistence of overlapping concept IDs via namespacing

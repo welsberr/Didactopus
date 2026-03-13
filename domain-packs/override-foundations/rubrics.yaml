@@ -1,0 +1,6 @@
+rubrics:
+  - id: override-rubric
+    title: Override Rubric
+    criteria:
+      - correctness
+      - comparison

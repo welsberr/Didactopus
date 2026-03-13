@@ -4,3 +4,9 @@ concepts:
     prerequisites: []
     mastery_signals:
       - explain a prior distribution
+  - id: posterior
+    title: Posterior
+    prerequisites:
+      - prior
+    mastery_signals:
+      - explain updating beliefs
