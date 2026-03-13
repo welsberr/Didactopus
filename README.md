@@ -2,6 +2,8 @@
 
 **Didactopus** is a local‑first AI‑assisted autodidactic mastery platform designed to help motivated learners achieve **true expertise** in a chosen domain.
 
+![Didactopus mascot](artwork/didactopus-mascot.png)
+
 The system combines:
 
 • domain knowledge graphs  
