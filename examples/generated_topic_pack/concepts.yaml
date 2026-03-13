@@ -1,0 +1,42 @@
+concepts:
+- id: descriptive-statistics
+  title: Descriptive Statistics
+  description: 'Objective: Explain mean, median, and variance.
+
+    Exercise: Summarize a small dataset.
+
+    Descriptive Statistics introduces center and spread.'
+  prerequisites: []
+  mastery_signals:
+  - Summarize a small dataset.
+  mastery_profile: {}
+- id: probability-basics
+  title: Probability Basics
+  description: 'Objective: Explain conditional probability.
+
+    Exercise: Compute a simple conditional probability.
+
+    Probability Basics introduces events and likelihood.'
+  prerequisites:
+  - descriptive-statistics
+  mastery_signals:
+  - Compute a simple conditional probability.
+  mastery_profile: {}
+- id: prior-and-posterior
+  title: Prior And Posterior
+  description: 'Prior and Posterior are central concepts. Prior reflects assumptions
+    before evidence. Exercise: Compare prior and posterior beliefs.'
+  prerequisites:
+  - probability-basics
+  mastery_signals:
+  - Compare prior and posterior beliefs.
+  mastery_profile: {}
+- id: model-checking
+  title: Model Checking
+  description: 'A weakness is hidden assumptions. A limitation is poor fit. Uncertainty
+    remains. Exercise: Critique a simple inference model.'
+  prerequisites:
+  - prior-and-posterior
+  mastery_signals:
+  - Critique a simple inference model.
+  mastery_profile: {}

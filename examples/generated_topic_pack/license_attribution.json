@@ -1,0 +1,30 @@
+{
+  "rights_note": "REVIEW REQUIRED",
+  "sources": [
+    {
+      "source_path": "examples/intro_bayes_outline.md",
+      "source_type": "markdown",
+      "title": "Intro Bayes Outline"
+    },
+    {
+      "source_path": "examples/intro_bayes_lecture.html",
+      "source_type": "html",
+      "title": "Intro Bayes Lecture"
+    },
+    {
+      "source_path": "examples/intro_bayes_slides.pptx",
+      "source_type": "pptx",
+      "title": "Intro Bayes Slides"
+    },
+    {
+      "source_path": "examples/intro_bayes_notes.docx",
+      "source_type": "docx",
+      "title": "Intro Bayes Notes"
+    },
+    {
+      "source_path": "examples/intro_bayes_syllabus.pdf",
+      "source_type": "pdf",
+      "title": "Intro Bayes Syllabus"
+    }
+  ]
+}

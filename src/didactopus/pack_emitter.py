@@ -15,7 +15,7 @@ def build_draft_pack(course: NormalizedCourse, concepts: list[ConceptCandidate],
         "schema_version": "1",
         "didactopus_min_version": "0.1.0",
         "didactopus_max_version": "0.9.99",
-        "description": f"Draft pack generated from multi-source course inputs for '{course.title}'.",
+        "description": f"Draft topic pack generated from multi-course inputs for '{course.title}'.",
         "author": author,
         "license": license_name,
         "dependencies": [],
@@ -64,7 +64,7 @@ def build_draft_pack(course: NormalizedCourse, concepts: list[ConceptCandidate],
     attribution = {
         "rights_note": course.rights_note,
         "sources": [
-            {"source_name": src.source_name, "source_type": src.source_type, "source_path": src.source_path}
+            {"source_path": src.source_path, "source_type": src.source_type, "title": src.title}
             for src in course.source_records
         ],
     }
@@ -88,11 +88,8 @@ def write_draft_pack(pack: DraftPack, outdir: str | Path) -> None:
     (out / "roadmap.yaml").write_text(yaml.safe_dump(pack.roadmap, sort_keys=False), encoding="utf-8")
     (out / "projects.yaml").write_text(yaml.safe_dump(pack.projects, sort_keys=False), encoding="utf-8")
     (out / "rubrics.yaml").write_text(yaml.safe_dump(pack.rubrics, sort_keys=False), encoding="utf-8")
-
     review_lines = ["# Review Report", ""] + [f"- {flag}" for flag in pack.review_report] if pack.review_report else ["# Review Report", "", "- none"]
     (out / "review_report.md").write_text("\n".join(review_lines), encoding="utf-8")
-
     conflict_lines = ["# Conflict Report", ""] + [f"- {flag}" for flag in pack.conflicts] if pack.conflicts else ["# Conflict Report", "", "- none"]
     (out / "conflict_report.md").write_text("\n".join(conflict_lines), encoding="utf-8")
-
     (out / "license_attribution.json").write_text(json.dumps(pack.attribution, indent=2), encoding="utf-8")

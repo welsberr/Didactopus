@@ -8,6 +8,41 @@
 
 ## Recent revisions
 
+### Course-to-course merger
+
+This revision adds two major capabilities:
+
+- **real document adapter scaffolds** for PDF, DOCX, PPTX, and HTML
+- a **cross-course merger** for combining multiple course-derived packs into one stronger domain draft
+
+These additions extend the earlier multi-source ingestion layer from "multiple files for one course"
+to "multiple courses or course-like sources for one topic domain."
+
+## What is included
+
+- adapter registry for:
+  - PDF
+  - DOCX
+  - PPTX
+  - HTML
+  - Markdown
+  - text
+- normalized document extraction interface
+- course bundle ingestion across multiple source documents
+- cross-course terminology and overlap analysis
+- merged topic-pack emitter
+- cross-course conflict report
+- example source files and example merged output
+
+## Design stance
+
+This is still scaffold-level extraction. The purpose is to define stable interfaces and emitted artifacts,
+not to claim perfect semantic parsing of every teaching document.
+
+The implementation is designed so stronger parsers can later replace the stub extractors without changing
+the surrounding pipeline.
+
+
 ### Multi-Source Course Ingestion
 
 This revision adds a **Multi-Source Course Ingestion Layer**.
@@ -213,6 +248,7 @@ didactopus/
 ├── src/didactopus/
 └── tests/
 ```
+
 
 
 

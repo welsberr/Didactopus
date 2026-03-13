@@ -1,0 +1,6 @@
+rubrics:
+- id: draft-rubric
+  title: Draft Rubric
+  criteria:
+  - correctness
+  - explanation

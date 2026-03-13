@@ -4,18 +4,19 @@ import argparse
 from pathlib import Path
 
 from .config import load_config
-from .course_ingest import parse_source_file, merge_source_records, extract_concept_candidates
+from .document_adapters import adapt_document
+from .topic_ingest import document_to_course, build_topic_bundle, merge_courses_into_topic_course, extract_concept_candidates
+from .cross_course_conflicts import detect_title_overlaps, detect_term_conflicts, detect_order_conflicts, detect_thin_concepts
 from .rule_policy import RuleContext, build_default_rules, run_rules
-from .conflict_report import detect_duplicate_lessons, detect_term_conflicts, detect_thin_concepts
 from .pack_emitter import build_draft_pack, write_draft_pack
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Didactopus multi-source course-to-pack ingestion pipeline")
-    parser.add_argument("--inputs", nargs="+", required=True, help="Input source files")
-    parser.add_argument("--title", required=True, help="Course or topic title")
+    parser = argparse.ArgumentParser(description="Didactopus document-adapter and cross-course topic ingestion")
+    parser.add_argument("--inputs", nargs="+", required=True, help="Document inputs")
+    parser.add_argument("--title", required=True, help="Topic title")
     parser.add_argument("--rights-note", default="REVIEW REQUIRED")
-    parser.add_argument("--output-dir", default="generated-pack")
+    parser.add_argument("--output-dir", default="generated-topic-pack")
     parser.add_argument("--config", default="configs/config.example.yaml")
     return parser
 
@@ -24,33 +25,30 @@ def main() -> None:
     args = build_parser().parse_args()
     config = load_config(args.config)
 
-    records = [parse_source_file(path, title=args.title) for path in args.inputs]
-    course = merge_source_records(
-        records=records,
-        course_title=args.title,
-        rights_note=args.rights_note,
-        merge_same_named_lessons=config.multisource.merge_same_named_lessons,
+    docs = [adapt_document(path) for path in args.inputs]
+    courses = [document_to_course(doc, course_title=args.title) for doc in docs]
+    topic = build_topic_bundle(args.title, courses)
+    merged_course = merge_courses_into_topic_course(
+        topic_bundle=topic,
+        merge_same_named_lessons=config.cross_course.merge_same_named_lessons,
     )
-    concepts = extract_concept_candidates(course)
-    context = RuleContext(course=course, concepts=concepts)
+    concepts = extract_concept_candidates(merged_course)
 
-    rules = build_default_rules(
-        enable_prereq=config.rule_policy.enable_prerequisite_order_rule,
-        enable_merge=config.rule_policy.enable_duplicate_term_merge_rule,
-        enable_projects=config.rule_policy.enable_project_detection_rule,
-        enable_review=config.rule_policy.enable_review_flags,
-    )
+    context = RuleContext(course=merged_course, concepts=concepts)
+    rules = build_default_rules()
     run_rules(context, rules)
 
     conflicts = []
-    if config.multisource.detect_duplicate_lessons:
-        conflicts.extend(detect_duplicate_lessons(course))
-    if config.multisource.detect_term_conflicts:
-        conflicts.extend(detect_term_conflicts(course))
+    if config.cross_course.detect_title_overlaps:
+        conflicts.extend(detect_title_overlaps(merged_course))
+    if config.cross_course.detect_term_conflicts:
+        conflicts.extend(detect_term_conflicts(merged_course))
+    if config.cross_course.detect_order_conflicts:
+        conflicts.extend(detect_order_conflicts(merged_course))
     conflicts.extend(detect_thin_concepts(context.concepts))
 
     draft = build_draft_pack(
-        course=course,
+        course=merged_course,
         concepts=context.concepts,
         author=config.course_ingest.default_pack_author,
         license_name=config.course_ingest.default_license,
@@ -59,10 +57,11 @@ def main() -> None:
     )
     write_draft_pack(draft, args.output_dir)
 
-    print("== Didactopus Multi-Source Course Ingest ==")
-    print(f"Course: {course.title}")
-    print(f"Sources: {len(records)}")
-    print(f"Modules: {len(course.modules)}")
+    print("== Didactopus Cross-Course Topic Ingest ==")
+    print(f"Topic: {args.title}")
+    print(f"Documents: {len(docs)}")
+    print(f"Courses: {len(courses)}")
+    print(f"Merged modules: {len(merged_course.modules)}")
     print(f"Concept candidates: {len(context.concepts)}")
     print(f"Review flags: {len(context.review_flags)}")
     print(f"Conflicts: {len(conflicts)}")

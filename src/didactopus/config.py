@@ -3,6 +3,15 @@ from pydantic import BaseModel, Field
 import yaml
 
 
+class DocumentAdaptersConfig(BaseModel):
+    allow_pdf: bool = True
+    allow_docx: bool = True
+    allow_pptx: bool = True
+    allow_html: bool = True
+    allow_markdown: bool = True
+    allow_text: bool = True
+
+
 class CourseIngestConfig(BaseModel):
     default_pack_author: str = "Unknown"
     default_license: str = "REVIEW-REQUIRED"
@@ -10,23 +19,17 @@ class CourseIngestConfig(BaseModel):
     max_terms_per_lesson: int = 8
 
 
-class RulePolicyConfig(BaseModel):
-    enable_prerequisite_order_rule: bool = True
-    enable_duplicate_term_merge_rule: bool = True
-    enable_project_detection_rule: bool = True
-    enable_review_flags: bool = True
-
-
-class MultisourceConfig(BaseModel):
-    detect_duplicate_lessons: bool = True
+class CrossCourseConfig(BaseModel):
+    detect_title_overlaps: bool = True
     detect_term_conflicts: bool = True
+    detect_order_conflicts: bool = True
     merge_same_named_lessons: bool = True
 
 
 class AppConfig(BaseModel):
+    document_adapters: DocumentAdaptersConfig = Field(default_factory=DocumentAdaptersConfig)
     course_ingest: CourseIngestConfig = Field(default_factory=CourseIngestConfig)
-    rule_policy: RulePolicyConfig = Field(default_factory=RulePolicyConfig)
-    multisource: MultisourceConfig = Field(default_factory=MultisourceConfig)
+    cross_course: CrossCourseConfig = Field(default_factory=CrossCourseConfig)
 
 
 def load_config(path: str | Path) -> AppConfig:

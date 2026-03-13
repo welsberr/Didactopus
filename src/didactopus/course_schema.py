@@ -1,6 +1,19 @@
 from __future__ import annotations
-
 from pydantic import BaseModel, Field
+
+
+class Section(BaseModel):
+    heading: str
+    body: str = ""
+
+
+class NormalizedDocument(BaseModel):
+    source_path: str
+    source_type: str
+    title: str = ""
+    text: str = ""
+    sections: list[Section] = Field(default_factory=list)
+    metadata: dict = Field(default_factory=dict)
 
 
 class Lesson(BaseModel):
@@ -17,21 +30,18 @@ class Module(BaseModel):
     lessons: list[Lesson] = Field(default_factory=list)
 
 
-class NormalizedSourceRecord(BaseModel):
-    source_name: str
-    source_type: str
-    source_path: str
-    title: str = ""
-    modules: list[Module] = Field(default_factory=list)
-
-
 class NormalizedCourse(BaseModel):
     title: str
     source_name: str = ""
     source_url: str = ""
     rights_note: str = ""
     modules: list[Module] = Field(default_factory=list)
-    source_records: list[NormalizedSourceRecord] = Field(default_factory=list)
+    source_records: list[NormalizedDocument] = Field(default_factory=list)
+
+
+class TopicBundle(BaseModel):
+    topic_title: str
+    courses: list[NormalizedCourse] = Field(default_factory=list)
 
 
 class ConceptCandidate(BaseModel):
@@ -40,6 +50,7 @@ class ConceptCandidate(BaseModel):
     description: str = ""
     source_modules: list[str] = Field(default_factory=list)
     source_lessons: list[str] = Field(default_factory=list)
+    source_courses: list[str] = Field(default_factory=list)
     prerequisites: list[str] = Field(default_factory=list)
     mastery_signals: list[str] = Field(default_factory=list)
 

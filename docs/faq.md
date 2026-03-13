@@ -1,27 +1,25 @@
 # FAQ
 
-## Why multi-source ingestion?
+## Why add document adapters now?
 
-Because course structure is usually distributed across several files rather than
-perfectly contained in one source.
+Because real educational material is rarely provided in only one plain-text format.
 
-## What kinds of conflicts can arise?
+## Are these full-fidelity parsers?
 
-Common examples:
-- the same lesson with slightly different titles
-- inconsistent terminology across notes and transcripts
-- exercises present in one source but absent in another
-- project prompts implied in one file and explicit in another
+Not yet. The current implementation is a stable scaffold for extraction and normalization.
 
-## Does the system resolve all conflicts automatically?
+## Why add cross-course merging?
 
-No. It produces a merged draft pack and a conflict report for human review.
+Because one course often under-specifies a domain, while multiple sources together can produce a better draft pack.
 
-## Why not rely only on embeddings for this?
+## Does the merger resolve every concept conflict automatically?
 
-Because Didactopus needs explicit structures such as:
-- concepts
-- prerequisites
-- projects
-- rubrics
-- checkpoints
+No. It produces a merged draft plus a conflict report for human review.
+
+## What kinds of issues are flagged?
+
+Examples:
+- repeated concepts with different names
+- same term used with different local contexts
+- courses that introduce topics in conflicting orders
+- weak or thin concept descriptions

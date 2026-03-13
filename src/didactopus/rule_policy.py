@@ -39,6 +39,7 @@ def duplicate_term_merge_rule(context: RuleContext) -> None:
         if key in seen:
             seen[key].source_modules.extend(x for x in concept.source_modules if x not in seen[key].source_modules)
             seen[key].source_lessons.extend(x for x in concept.source_lessons if x not in seen[key].source_lessons)
+            seen[key].source_courses.extend(x for x in concept.source_courses if x not in seen[key].source_courses)
             if concept.description and len(seen[key].description) < len(concept.description):
                 seen[key].description = concept.description
         else:

@@ -1,0 +1,7 @@
+projects:
+- id: prior-and-posterior
+  title: Prior And Posterior
+  difficulty: review-required
+  prerequisites: []
+  deliverables:
+  - project artifact

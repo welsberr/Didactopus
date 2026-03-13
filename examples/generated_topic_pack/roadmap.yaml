@@ -1,0 +1,17 @@
+stages:
+- id: stage-1
+  title: Imported from MARKDOWN
+  concepts:
+  - descriptive-statistics
+  - probability-basics
+  checkpoint: []
+- id: stage-2
+  title: Imported from HTML
+  concepts:
+  - prior-and-posterior
+  checkpoint: []
+- id: stage-3
+  title: Imported from DOCX
+  concepts:
+  - model-checking
+  checkpoint: []
