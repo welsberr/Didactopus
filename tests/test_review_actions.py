@@ -12,17 +12,3 @@ def test_apply_status_action() -> None:
     apply_action(session, "R", ReviewAction(action_type="set_status", target="c1", payload={"status": "trusted"}))
     assert session.draft_pack.concepts[0].status == "trusted"
     assert len(session.ledger) == 1
-
-
-def test_merge_action() -> None:
-    session = ReviewSession(
-        reviewer="R",
-        draft_pack=DraftPackData(
-            concepts=[
-                ConceptReviewEntry(concept_id="a", title="A"),
-                ConceptReviewEntry(concept_id="b", title="B"),
-            ]
-        ),
-    )
-    apply_action(session, "R", ReviewAction(action_type="merge_concepts", target="", payload={"source": "a", "destination": "b"}))
-    assert session.draft_pack.concepts[0].status == "rejected"

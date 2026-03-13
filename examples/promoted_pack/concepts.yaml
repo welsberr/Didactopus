@@ -5,6 +5,9 @@ concepts:
     prerequisites: []
     mastery_signals:
       - Explain mean, median, and variance.
+    status: trusted
+    notes:
+      - Reviewed in initial curation pass.
     mastery_profile: {}
   - id: probability-basics
     title: Probability Basics
@@ -13,12 +16,6 @@ concepts:
       - descriptive-statistics
     mastery_signals:
       - Compute a simple conditional probability.
-    mastery_profile: {}
-  - id: prior-and-posterior
-    title: Prior and Posterior
-    description: Beliefs before and after evidence.
-    prerequisites:
-      - probability-basics
-    mastery_signals:
-      - Compare prior and posterior beliefs.
+    status: provisional
+    notes: []
     mastery_profile: {}

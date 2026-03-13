@@ -1,27 +1,55 @@
 # FAQ
 
-## Why add a review UI?
+## Why does Didactopus need ingestion and review tools?
 
-Because automatically generated packs are draft assets, not final trusted assets.
+Because useful course material often exists in forms that are difficult to activate for
+serious self-directed learning. The issue is not just availability of information; it is
+the effort required to transform that information into a usable learning domain.
 
-## What can a reviewer change?
+## What problem is this trying to solve?
 
-In this scaffold:
-- concept trust status
+A common problem is the **activation energy hump**:
+- the course exists
+- the notes exist
+- the syllabus exists
+- the learner is motivated
+- but the path from raw material to usable study structure is still too hard
+
+Didactopus is meant to reduce that hump.
+
+## Why not just read course webpages directly?
+
+Because mastery-oriented use needs structure:
+- concepts
 - prerequisites
-- titles
-- descriptions
-- merge/split intent records
-- conflict resolution notes
+- projects
+- rubrics
+- review decisions
+- trust statuses
 
-## Is the UI fully interactive?
+Raw course pages do not usually provide these in a directly reusable form.
 
-Not yet. The current version is a static HTML scaffold backed by real JSON data models.
+## Why have a review UI?
 
-## Why keep a review ledger?
+Because automated ingestion creates drafts, not final trusted packs. A reviewer still needs
+to make explicit curation decisions.
 
-To preserve provenance and make curation decisions auditable.
+## What can the SPA review UI do in this scaffold?
 
-## Does promotion mean certification?
+- inspect concepts
+- edit trust status
+- edit notes
+- edit prerequisites
+- resolve conflicts
+- export a promoted reviewed pack
 
-No. Promotion means "reviewed and improved for Didactopus use," not formal certification.
+## Is this already a full production UI?
+
+No. It is a local-first interactive scaffold with stable data contracts, suitable for
+growing into a stronger production interface.
+
+## Does Didactopus eliminate the need to think?
+
+No. The goal is to reduce startup friction and organizational overhead, not to replace
+judgment. The user or curator still decides what is trustworthy and how the domain should
+be shaped.

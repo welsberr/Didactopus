@@ -29,22 +29,5 @@ def apply_action(session: ReviewSession, reviewer: str, action: ReviewAction) ->
         note = action.payload.get("note", "")
         if note:
             target.notes.append(note)
-    elif action.action_type == "merge_concepts":
-        source = _find_concept(session, action.payload.get("source", ""))
-        dest = _find_concept(session, action.payload.get("destination", ""))
-        if source is not None and dest is not None and source is not dest:
-            for prereq in source.prerequisites:
-                if prereq not in dest.prerequisites:
-                    dest.prerequisites.append(prereq)
-            for sig in source.mastery_signals:
-                if sig not in dest.mastery_signals:
-                    dest.mastery_signals.append(sig)
-            for note in source.notes:
-                if note not in dest.notes:
-                    dest.notes.append(note)
-            source.status = "rejected"
-            source.notes.append(f"Merged into {dest.concept_id}")
-    elif action.action_type == "split_concept" and target is not None:
-        target.notes.append("Split requested; manual follow-up required.")
 
     session.ledger.append(ReviewLedgerEntry(reviewer=reviewer, action=action))

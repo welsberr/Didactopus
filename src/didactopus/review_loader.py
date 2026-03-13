@@ -22,30 +22,21 @@ def load_draft_pack(pack_dir: str | Path) -> DraftPackData:
             )
         )
 
-    conflicts_path = pack_dir / "conflict_report.md"
-    review_path = pack_dir / "review_report.md"
-    attribution_path = pack_dir / "license_attribution.json"
-    pack_path = pack_dir / "pack.yaml"
+    def bullet_lines(path: Path) -> list[str]:
+        if not path.exists():
+            return []
+        return [line[2:] for line in path.read_text(encoding="utf-8").splitlines() if line.startswith("- ")]
 
-    conflicts = []
-    if conflicts_path.exists():
-        conflicts = [
-            line[2:] for line in conflicts_path.read_text(encoding="utf-8").splitlines()
-            if line.startswith("- ")
-        ]
-
-    review_flags = []
-    if review_path.exists():
-        review_flags = [
-            line[2:] for line in review_path.read_text(encoding="utf-8").splitlines()
-            if line.startswith("- ")
-        ]
+    conflicts = bullet_lines(pack_dir / "conflict_report.md")
+    review_flags = bullet_lines(pack_dir / "review_report.md")
 
     attribution = {}
+    attribution_path = pack_dir / "license_attribution.json"
     if attribution_path.exists():
         attribution = json.loads(attribution_path.read_text(encoding="utf-8"))
 
     pack = {}
+    pack_path = pack_dir / "pack.yaml"
     if pack_path.exists():
         pack = yaml.safe_load(pack_path.read_text(encoding="utf-8")) or {}
 

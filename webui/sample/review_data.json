@@ -1,0 +1,60 @@
+{
+  "reviewer": "Wesley R. Elsberry",
+  "pack": {
+    "name": "introductory-bayesian-inference",
+    "display_name": "Introductory Bayesian Inference",
+    "version": "0.1.0-draft"
+  },
+  "concepts": [
+    {
+      "concept_id": "descriptive-statistics",
+      "title": "Descriptive Statistics",
+      "description": "Measures of center and spread.",
+      "prerequisites": [],
+      "mastery_signals": [
+        "Explain mean, median, and variance."
+      ],
+      "status": "trusted",
+      "notes": [
+        "Reviewed in initial curation pass."
+      ]
+    },
+    {
+      "concept_id": "probability-basics",
+      "title": "Probability Basics",
+      "description": "Basic event probability and conditional probability.",
+      "prerequisites": [
+        "descriptive-statistics"
+      ],
+      "mastery_signals": [
+        "Compute a simple conditional probability."
+      ],
+      "status": "provisional",
+      "notes": []
+    },
+    {
+      "concept_id": "prior-and-posterior",
+      "title": "Prior and Posterior",
+      "description": "Beliefs before and after evidence.",
+      "prerequisites": [
+        "probability-basics"
+      ],
+      "mastery_signals": [
+        "Compare prior and posterior beliefs."
+      ],
+      "status": "needs_review",
+      "notes": [
+        "May be too broad and may need splitting."
+      ]
+    }
+  ],
+  "conflicts": [
+    "Key term 'prior' appears in multiple lesson contexts.",
+    "Lesson 'prior and posterior' was merged from multiple sources; review ordering assumptions."
+  ],
+  "review_flags": [
+    "Module 'Bayesian Updating' appears to contain project-like material; review project extraction.",
+    "Concept 'Prior and Posterior' may be too broad and may need splitting."
+  ],
+  "ledger": []
+}
