@@ -5,10 +5,11 @@ from pathlib import Path
 from .artifact_registry import check_pack_dependencies, detect_dependency_cycles, discover_domain_packs
 from .config import load_config
 from .graph_builder import build_concept_graph, suggest_semantic_links
+from .planner import PlannerWeights, rank_next_concepts
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Didactopus concept graph engine")
+    parser = argparse.ArgumentParser(description="Didactopus graph-aware planner")
     parser.add_argument("--target", default="bayes-extension::posterior")
     parser.add_argument("--mastered", nargs="*", default=[])
     parser.add_argument("--export-dot", default="")
@@ -20,7 +21,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     args = build_parser().parse_args()
     config = load_config(Path(args.config))
-    results = discover_domain_packs(config.artifacts.local_pack_dirs)
+    results = discover_domain_packs(["domain-packs"])
     dep_errors = check_pack_dependencies(results)
     cycles = detect_dependency_cycles(results)
 
@@ -37,14 +38,39 @@ def main() -> None:
     graph = build_concept_graph(results, config.platform.default_dimension_thresholds)
     mastered = set(args.mastered)
 
-    print("== Didactopus Concept Graph Engine ==")
-    print(f"concepts: {len(graph.graph.nodes)}")
-    print(f"edges: {len(graph.graph.edges)}")
-    print()
+    weak_dimensions_by_concept = {
+        "bayes-extension::prior": ["explanation", "transfer"],
+    }
+    fragile_concepts = {"bayes-extension::prior"}
+
+    ranked = rank_next_concepts(
+        graph=graph,
+        mastered=mastered,
+        targets=[args.target],
+        weak_dimensions_by_concept=weak_dimensions_by_concept,
+        fragile_concepts=fragile_concepts,
+        project_catalog=[
+            {
+                "id": "bayes-extension::bayes-mini-project",
+                "prerequisites": ["bayes-extension::prior"],
+            },
+            {
+                "id": "applied-inference::inference-project",
+                "prerequisites": ["applied-inference::model-checking"],
+            },
+        ],
+        weights=PlannerWeights(
+            readiness_bonus=config.planner.readiness_bonus,
+            target_distance_weight=config.planner.target_distance_weight,
+            weak_dimension_bonus=config.planner.weak_dimension_bonus,
+            fragile_review_bonus=config.planner.fragile_review_bonus,
+            project_unlock_bonus=config.planner.project_unlock_bonus,
+            semantic_similarity_weight=config.planner.semantic_similarity_weight,
+        ),
+    )
+
+    print("== Didactopus Graph-Aware Planner ==")
     print(f"Target concept: {args.target}")
-    print("Prerequisite chain:")
-    for item in sorted(graph.prerequisite_chain(args.target)):
-        print(f"- {item}")
     print()
     print("Curriculum path from current mastery:")
     for item in graph.curriculum_path_to_target(mastered, args.target):
@@ -54,9 +80,11 @@ def main() -> None:
     for item in graph.ready_concepts(mastered):
         print(f"- {item}")
     print()
-    print("Declared related concepts for target:")
-    for item in graph.related_concepts(args.target):
-        print(f"- {item}")
+    print("Ranked next concepts:")
+    for item in ranked:
+        print(f"- {item['concept']}: {item['score']:.2f}")
+        for name, value in item["components"].items():
+            print(f"  * {name}: {value:.2f}")
     print()
     print("Suggested semantic links:")
     for a, b, score in suggest_semantic_links(graph, minimum_similarity=0.10)[:8]:

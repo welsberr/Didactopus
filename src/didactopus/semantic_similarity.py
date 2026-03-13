@@ -24,14 +24,6 @@ def token_cosine_similarity(text_a: str, text_b: str) -> float:
 
 
 def concept_similarity(concept_a: dict, concept_b: dict) -> float:
-    text_a = " ".join([
-        concept_a.get("title", ""),
-        concept_a.get("description", ""),
-        " ".join(concept_a.get("mastery_signals", [])),
-    ])
-    text_b = " ".join([
-        concept_b.get("title", ""),
-        concept_b.get("description", ""),
-        " ".join(concept_b.get("mastery_signals", [])),
-    ])
+    text_a = " ".join([concept_a.get("title", ""), concept_a.get("description", ""), " ".join(concept_a.get("mastery_signals", []))])
+    text_b = " ".join([concept_b.get("title", ""), concept_b.get("description", ""), " ".join(concept_b.get("mastery_signals", []))])
     return token_cosine_similarity(text_a, text_b)

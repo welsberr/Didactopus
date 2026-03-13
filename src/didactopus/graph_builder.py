@@ -6,13 +6,10 @@ from .learning_graph import build_merged_learning_graph, namespaced_concept
 from .semantic_similarity import concept_similarity
 
 
-def build_concept_graph(
-    results: list[PackValidationResult],
-    default_dimension_thresholds: dict[str, float],
-) -> ConceptGraph:
+def build_concept_graph(results: list[PackValidationResult], default_dimension_thresholds: dict[str, float]) -> ConceptGraph:
     merged = build_merged_learning_graph(results, default_dimension_thresholds)
-
     graph = ConceptGraph()
+
     for concept_key, data in merged.concept_data.items():
         graph.add_concept(concept_key, data)
 

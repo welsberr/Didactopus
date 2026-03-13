@@ -22,13 +22,10 @@ def resolve_mastery_profile(
             }
         else:
             effective = dict(default_profile)
-
         if concept_profile.get("required_dimensions"):
             effective["required_dimensions"] = list(concept_profile["required_dimensions"])
         if concept_profile.get("dimension_threshold_overrides"):
-            effective["dimension_threshold_overrides"].update(
-                concept_profile["dimension_threshold_overrides"]
-            )
+            effective["dimension_threshold_overrides"].update(concept_profile["dimension_threshold_overrides"])
 
     thresholds = dict(default_thresholds)
     thresholds.update(effective["dimension_threshold_overrides"])

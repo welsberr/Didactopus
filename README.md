@@ -1,22 +1,77 @@
 # Didactopus
 
+![Didactopus mascot](artwork/didactopus-mascot.png)
+
 **Didactopus** is a local-first AI-assisted autodidactic mastery platform for building genuine expertise through concept graphs, adaptive curriculum planning, evidence-driven mastery, Socratic mentoring, and project-based learning.
 
 **Tagline:** *Many arms, one goal — mastery.*
 
-## Complete overview to this point
+## This revision
 
-Didactopus is designed to support both **human learners** and, potentially, **agentic AI students** that use the same mastery infrastructure to become competent in a target domain.
+This revision adds a **graph-aware planning layer** that connects the concept graph engine to the adaptive and evidence engines.
 
-The current architecture includes:
+The new planner selects the next concepts to study using a utility function that considers:
 
-- **Domain packs** for contributed concepts, projects, rubrics, and mastery profiles
+- prerequisite readiness
+- distance to learner target concepts
+- weakness in competence dimensions
+- project availability
+- review priority for fragile concepts
+- semantic neighborhood around learner goals
+
+## Why this matters
+
+Up to this point, Didactopus could:
+- build concept graphs
+- identify ready concepts
+- infer mastery from evidence
+
+But it still needed a better mechanism for choosing **what to do next**.
+
+The graph-aware planner begins to solve that by ranking candidate concepts according to learner-specific utility instead of using unlocked prerequisites alone.
+
+## Current architecture overview
+
+Didactopus now includes:
+
+- **Domain packs** for concepts, projects, rubrics, mastery profiles, templates, and cross-pack links
 - **Dependency resolution** across packs
 - **Merged learning graph** generation
-- **Adaptive learner engine** that identifies ready, blocked, and mastered concepts
+- **Concept graph engine** with cross-pack links, similarity hooks, pathfinding, and visualization export
+- **Adaptive learner engine** for ready/blocked/mastered concept states
 - **Evidence engine** with weighted, recency-aware, multi-dimensional mastery inference
 - **Concept-specific mastery profiles** with template inheritance
-- **Concept graph engine** for cross-pack prerequisite reasoning, concept linking, pathfinding, and graph export
+- **Graph-aware planner** for utility-ranked next-step recommendations
+
+## Planning utility
+
+The current planner computes a score per candidate concept using:
+
+- readiness bonus
+- target-distance bonus
+- weak-dimension bonus
+- fragile-concept review bonus
+- project-unlock bonus
+- semantic-similarity bonus
+
+These terms are transparent and configurable.
+
+## Agentic AI students
+
+This planner also strengthens the case for **AI student agents** that use Didactopus as a structured mastery environment.
+
+An AI student could:
+
+1. inspect the graph
+2. choose the next concept via the planner
+3. attempt tasks
+4. generate evidence
+5. update mastery state
+6. repeat until a target expertise profile is reached
+
+This makes Didactopus useful as both:
+- a learning platform
+- a benchmark harness for agentic expertise growth
 
 ## Core philosophy
 

@@ -3,17 +3,6 @@ from pydantic import BaseModel, Field
 import yaml
 
 
-class ProviderEndpoint(BaseModel):
-    backend: str = "ollama"
-    endpoint: str = "http://localhost:11434"
-    model_name: str = "llama3.1:8b"
-
-
-class ModelProviderConfig(BaseModel):
-    mode: str = Field(default="local_first")
-    local: ProviderEndpoint = Field(default_factory=ProviderEndpoint)
-
-
 class PlatformConfig(BaseModel):
     default_dimension_thresholds: dict[str, float] = Field(
         default_factory=lambda: {
@@ -26,14 +15,18 @@ class PlatformConfig(BaseModel):
     )
 
 
-class ArtifactConfig(BaseModel):
-    local_pack_dirs: list[str] = Field(default_factory=lambda: ["domain-packs"])
+class PlannerConfig(BaseModel):
+    readiness_bonus: float = 2.0
+    target_distance_weight: float = 1.0
+    weak_dimension_bonus: float = 1.2
+    fragile_review_bonus: float = 1.5
+    project_unlock_bonus: float = 0.8
+    semantic_similarity_weight: float = 1.0
 
 
 class AppConfig(BaseModel):
-    model_provider: ModelProviderConfig = Field(default_factory=ModelProviderConfig)
     platform: PlatformConfig = Field(default_factory=PlatformConfig)
-    artifacts: ArtifactConfig = Field(default_factory=ArtifactConfig)
+    planner: PlannerConfig = Field(default_factory=PlannerConfig)
 
 
 def load_config(path: str | Path) -> AppConfig:
