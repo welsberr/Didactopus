@@ -1,25 +1,27 @@
 # FAQ
 
-## Why add document adapters now?
+## Why add a review UI?
 
-Because real educational material is rarely provided in only one plain-text format.
+Because automatically generated packs are draft assets, not final trusted assets.
 
-## Are these full-fidelity parsers?
+## What can a reviewer change?
 
-Not yet. The current implementation is a stable scaffold for extraction and normalization.
+In this scaffold:
+- concept trust status
+- prerequisites
+- titles
+- descriptions
+- merge/split intent records
+- conflict resolution notes
 
-## Why add cross-course merging?
+## Is the UI fully interactive?
 
-Because one course often under-specifies a domain, while multiple sources together can produce a better draft pack.
+Not yet. The current version is a static HTML scaffold backed by real JSON data models.
 
-## Does the merger resolve every concept conflict automatically?
+## Why keep a review ledger?
 
-No. It produces a merged draft plus a conflict report for human review.
+To preserve provenance and make curation decisions auditable.
 
-## What kinds of issues are flagged?
+## Does promotion mean certification?
 
-Examples:
-- repeated concepts with different names
-- same term used with different local contexts
-- courses that introduce topics in conflicting orders
-- weak or thin concept descriptions
+No. Promotion means "reviewed and improved for Didactopus use," not formal certification.

@@ -4,69 +4,74 @@ import argparse
 from pathlib import Path
 
 from .config import load_config
-from .document_adapters import adapt_document
-from .topic_ingest import document_to_course, build_topic_bundle, merge_courses_into_topic_course, extract_concept_candidates
-from .cross_course_conflicts import detect_title_overlaps, detect_term_conflicts, detect_order_conflicts, detect_thin_concepts
-from .rule_policy import RuleContext, build_default_rules, run_rules
-from .pack_emitter import build_draft_pack, write_draft_pack
+from .review_loader import load_draft_pack
+from .review_schema import ReviewSession, ReviewAction
+from .review_actions import apply_action
+from .review_export import export_review_state_json, export_promoted_pack, export_review_ui_data
+from .ui_scaffold import write_review_ui
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Didactopus document-adapter and cross-course topic ingestion")
-    parser.add_argument("--inputs", nargs="+", required=True, help="Document inputs")
-    parser.add_argument("--title", required=True, help="Topic title")
-    parser.add_argument("--rights-note", default="REVIEW REQUIRED")
-    parser.add_argument("--output-dir", default="generated-topic-pack")
+    parser = argparse.ArgumentParser(description="Didactopus review workflow scaffold")
+    parser.add_argument("--draft-pack", required=True, help="Path to draft pack directory")
+    parser.add_argument("--output-dir", default="review-output")
     parser.add_argument("--config", default="configs/config.example.yaml")
     return parser
 
 
 def main() -> None:
     args = build_parser().parse_args()
-    config = load_config(args.config)
+    config = load_config(Path(args.config))
+    draft = load_draft_pack(args.draft_pack)
+    session = ReviewSession(reviewer=config.review.default_reviewer, draft_pack=draft)
 
-    docs = [adapt_document(path) for path in args.inputs]
-    courses = [document_to_course(doc, course_title=args.title) for doc in docs]
-    topic = build_topic_bundle(args.title, courses)
-    merged_course = merge_courses_into_topic_course(
-        topic_bundle=topic,
-        merge_same_named_lessons=config.cross_course.merge_same_named_lessons,
-    )
-    concepts = extract_concept_candidates(merged_course)
+    # Demo curation actions
+    if session.draft_pack.concepts:
+        first = session.draft_pack.concepts[0].concept_id
+        apply_action(session, session.reviewer, ReviewAction(
+            action_type="set_status",
+            target=first,
+            payload={"status": "trusted"},
+            rationale="Initial concept appears well grounded.",
+        ))
+        apply_action(session, session.reviewer, ReviewAction(
+            action_type="note",
+            target=first,
+            payload={"note": "Reviewed in initial curation pass."},
+            rationale="Record reviewer note.",
+        ))
 
-    context = RuleContext(course=merged_course, concepts=concepts)
-    rules = build_default_rules()
-    run_rules(context, rules)
+    if len(session.draft_pack.concepts) > 1:
+        second = session.draft_pack.concepts[1].concept_id
+        apply_action(session, session.reviewer, ReviewAction(
+            action_type="set_status",
+            target=second,
+            payload={"status": "provisional"},
+            rationale="Keep provisional pending further review.",
+        ))
 
-    conflicts = []
-    if config.cross_course.detect_title_overlaps:
-        conflicts.extend(detect_title_overlaps(merged_course))
-    if config.cross_course.detect_term_conflicts:
-        conflicts.extend(detect_term_conflicts(merged_course))
-    if config.cross_course.detect_order_conflicts:
-        conflicts.extend(detect_order_conflicts(merged_course))
-    conflicts.extend(detect_thin_concepts(context.concepts))
+    if session.draft_pack.conflicts:
+        apply_action(session, session.reviewer, ReviewAction(
+            action_type="resolve_conflict",
+            target="",
+            payload={"conflict": session.draft_pack.conflicts[0]},
+            rationale="Resolved first conflict in demo workflow.",
+        ))
 
-    draft = build_draft_pack(
-        course=merged_course,
-        concepts=context.concepts,
-        author=config.course_ingest.default_pack_author,
-        license_name=config.course_ingest.default_license,
-        review_flags=context.review_flags,
-        conflicts=conflicts,
-    )
-    write_draft_pack(draft, args.output_dir)
+    outdir = Path(args.output_dir)
+    outdir.mkdir(parents=True, exist_ok=True)
 
-    print("== Didactopus Cross-Course Topic Ingest ==")
-    print(f"Topic: {args.title}")
-    print(f"Documents: {len(docs)}")
-    print(f"Courses: {len(courses)}")
-    print(f"Merged modules: {len(merged_course.modules)}")
-    print(f"Concept candidates: {len(context.concepts)}")
-    print(f"Review flags: {len(context.review_flags)}")
-    print(f"Conflicts: {len(conflicts)}")
-    print(f"Output dir: {args.output_dir}")
+    export_review_state_json(session, outdir / "review_session.json")
+    export_review_ui_data(session, outdir)
+    write_review_ui(outdir)
 
+    if config.review.write_promoted_pack:
+        export_promoted_pack(session, outdir / "promoted_pack")
 
-if __name__ == "__main__":
-    main()
+    print("== Didactopus Review Workflow ==")
+    print(f"Draft pack: {args.draft_pack}")
+    print(f"Reviewer: {session.reviewer}")
+    print(f"Concepts: {len(session.draft_pack.concepts)}")
+    print(f"Ledger entries: {len(session.ledger)}")
+    print(f"Remaining conflicts: {len(session.draft_pack.conflicts)}")
+    print(f"Output dir: {outdir}")

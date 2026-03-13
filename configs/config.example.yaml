@@ -1,19 +1,5 @@
-document_adapters:
-  allow_pdf: true
-  allow_docx: true
-  allow_pptx: true
-  allow_html: true
-  allow_markdown: true
-  allow_text: true
-
-course_ingest:
-  default_pack_author: "Wesley R. Elsberry"
-  default_license: "REVIEW-REQUIRED"
-  min_term_length: 4
-  max_terms_per_lesson: 8
-
-cross_course:
-  detect_title_overlaps: true
-  detect_term_conflicts: true
-  detect_order_conflicts: true
-  merge_same_named_lessons: true
+review:
+  default_reviewer: "Wesley R. Elsberry"
+  allow_provisional_concepts: true
+  write_promoted_pack: true
+  write_review_ledger: true

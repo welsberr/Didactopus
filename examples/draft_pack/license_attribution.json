@@ -1,0 +1,15 @@
+{
+  "rights_note": "REVIEW REQUIRED",
+  "sources": [
+    {
+      "source_path": "examples/intro_bayes_outline.md",
+      "source_type": "markdown",
+      "title": "Intro Bayes Outline"
+    },
+    {
+      "source_path": "examples/intro_bayes_lecture.html",
+      "source_type": "html",
+      "title": "Intro Bayes Lecture"
+    }
+  ]
+}

@@ -8,6 +8,45 @@
 
 ## Recent revisions
 
+### Review workflow
+
+This revision adds a **review UI / curation workflow scaffold** for generated draft packs.
+
+The purpose is to let a human reviewer inspect draft outputs from the course/topic
+ingestion pipeline, make explicit curation decisions, and promote a reviewed draft
+into a more trusted domain pack.
+
+#### What is included
+
+- review-state schema
+- draft-pack loader
+- curation action model
+- review decision ledger
+- promoted-pack writer
+- static HTML review UI scaffold
+- JSON data export for the UI
+- sample curated review session
+- sample promoted pack output
+
+#### Core idea
+
+Draft packs should not move directly into trusted use.
+Instead, they should pass through a curation workflow where a reviewer can:
+
+- merge concepts
+- split concepts
+- edit prerequisites
+- mark concepts as trusted / provisional / rejected
+- resolve conflict flags
+- annotate rationale
+- promote a curated pack into a reviewed pack
+
+#### Status
+
+This is a scaffold for a local-first workflow.
+The HTML UI is static but wired to a concrete JSON review-state model so it can
+later be upgraded into a richer SPA or desktop app without changing the data contracts.
+
 ### Course-to-course merger
 
 This revision adds two major capabilities:
@@ -248,7 +287,3 @@ didactopus/
 ├── src/didactopus/
 └── tests/
 ```
-
-
-
-

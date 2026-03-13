@@ -1,0 +1,26 @@
+concepts:
+  - id: descriptive-statistics
+    title: Descriptive Statistics
+    description: Measures of center and spread.
+    prerequisites: []
+    mastery_signals:
+      - Explain mean, median, and variance.
+    mastery_profile: {}
+
+  - id: probability-basics
+    title: Probability Basics
+    description: Basic event probability and conditional probability.
+    prerequisites:
+      - descriptive-statistics
+    mastery_signals:
+      - Compute a simple conditional probability.
+    mastery_profile: {}
+
+  - id: prior-and-posterior
+    title: Prior and Posterior
+    description: Beliefs before and after evidence.
+    prerequisites:
+      - probability-basics
+    mastery_signals:
+      - Compare prior and posterior beliefs.
+    mastery_profile: {}

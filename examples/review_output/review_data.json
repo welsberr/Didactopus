@@ -1,0 +1,42 @@
+{
+  "reviewer": "Wesley R. Elsberry",
+  "pack": {
+    "name": "introductory-bayesian-inference",
+    "version": "0.1.0-draft"
+  },
+  "concepts": [
+    {
+      "concept_id": "descriptive-statistics",
+      "title": "Descriptive Statistics",
+      "status": "trusted",
+      "prerequisites": [],
+      "description": "Measures of center and spread.",
+      "mastery_signals": [
+        "Explain mean, median, and variance."
+      ],
+      "notes": [
+        "Reviewed in initial curation pass."
+      ]
+    },
+    {
+      "concept_id": "probability-basics",
+      "title": "Probability Basics",
+      "status": "provisional",
+      "prerequisites": [
+        "descriptive-statistics"
+      ],
+      "description": "Basic event probability and conditional probability.",
+      "mastery_signals": [
+        "Compute a simple conditional probability."
+      ],
+      "notes": []
+    }
+  ],
+  "conflicts": [
+    "Lesson 'prior and posterior' was merged from multiple sources; review ordering assumptions."
+  ],
+  "review_flags": [
+    "Concept 'Prior and Posterior' may be too broad and may need splitting."
+  ],
+  "ledger": []
+}
