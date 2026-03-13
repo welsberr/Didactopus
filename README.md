@@ -1,3 +1,5 @@
+![Didactopus mascot](artwork/didactopus-mascot.png)
+
 # Didactopus
 
 **Didactopus** is a local-first AI-assisted autodidactic mastery platform designed to help motivated learners achieve genuine mastery through Socratic mentoring, structured practice, project work, verification, and competency-based evaluation.
