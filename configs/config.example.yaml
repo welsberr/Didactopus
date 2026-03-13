@@ -16,6 +16,13 @@ platform:
   permit_direct_answers: false
   mastery_threshold: 0.8
   resurfacing_threshold: 0.55
+  confidence_threshold: 0.8
+  evidence_weights:
+    explanation: 1.0
+    problem: 1.5
+    project: 2.5
+    transfer: 2.0
+  recent_evidence_multiplier: 1.35
 
 artifacts:
   local_pack_dirs:

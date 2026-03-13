@@ -28,6 +28,16 @@ class PlatformConfig(BaseModel):
     permit_direct_answers: bool = False
     mastery_threshold: float = 0.8
     resurfacing_threshold: float = 0.55
+    confidence_threshold: float = 0.8
+    evidence_weights: dict[str, float] = Field(
+        default_factory=lambda: {
+            "explanation": 1.0,
+            "problem": 1.5,
+            "project": 2.5,
+            "transfer": 2.0,
+        }
+    )
+    recent_evidence_multiplier: float = 1.35
 
 
 class ArtifactConfig(BaseModel):

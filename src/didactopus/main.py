@@ -3,7 +3,12 @@ import os
 from pathlib import Path
 
 from .adaptive_engine import LearnerProfile, build_adaptive_plan
-from .artifact_registry import check_pack_dependencies, detect_dependency_cycles, discover_domain_packs, topological_pack_order
+from .artifact_registry import (
+    check_pack_dependencies,
+    detect_dependency_cycles,
+    discover_domain_packs,
+    topological_pack_order,
+)
 from .config import load_config
 from .evidence_engine import EvidenceItem, ingest_evidence_bundle
 from .evaluation import score_simple_rubric
@@ -15,7 +20,7 @@ from .project_advisor import suggest_capstone
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Didactopus evidence-driven mastery scaffold")
+    parser = argparse.ArgumentParser(description="Didactopus weighted evidence scaffold")
     parser.add_argument("--domain", required=True)
     parser.add_argument("--goal", required=True)
     parser.add_argument(
@@ -63,44 +68,76 @@ def main() -> None:
         hide_mastered=True,
     )
 
-    demo_score = score_simple_rubric(0.9, 0.85, 0.8, 0.75)
+    rubric = score_simple_rubric(0.92, 0.86, 0.82, 0.78)
     evidence_items = [
         EvidenceItem(
             concept_key="foundations-statistics::descriptive-statistics",
             evidence_type="explanation",
-            score=demo_score.mean(),
-            notes="Strong introductory explanation.",
+            score=rubric.mean(),
+            is_recent=False,
+            rubric_dimensions={
+                "correctness": rubric.correctness,
+                "clarity": rubric.clarity,
+                "justification": rubric.justification,
+                "transfer": rubric.transfer,
+            },
+            notes="Good explanation.",
         ),
         EvidenceItem(
             concept_key="foundations-statistics::descriptive-statistics",
-            evidence_type="problem",
-            score=0.88,
-            notes="Solved summary statistics problem correctly.",
+            evidence_type="project",
+            score=0.9,
+            is_recent=True,
+            rubric_dimensions={
+                "correctness": 0.9,
+                "clarity": 0.84,
+                "justification": 0.88,
+                "transfer": 0.82,
+            },
+            notes="Strong project evidence.",
         ),
         EvidenceItem(
             concept_key="bayes-extension::prior",
-            evidence_type="explanation",
-            score=0.62,
-            notes="Partial understanding of priors.",
+            evidence_type="problem",
+            score=0.58,
+            is_recent=True,
+            rubric_dimensions={
+                "correctness": 0.6,
+                "clarity": 0.55,
+            },
+            notes="Recent weak but informative performance.",
         ),
     ]
+
     evidence_state = ingest_evidence_bundle(
         profile=profile,
         items=evidence_items,
         mastery_threshold=config.platform.mastery_threshold,
         resurfacing_threshold=config.platform.resurfacing_threshold,
+        confidence_threshold=config.platform.confidence_threshold,
+        type_weights=config.platform.evidence_weights,
+        recent_multiplier=config.platform.recent_evidence_multiplier,
     )
-
     plan = build_adaptive_plan(merged, profile)
 
-    print("== Evidence Summary ==")
+    print("== Weighted Evidence Summary ==")
     for concept_key, summary in evidence_state.summary_by_concept.items():
-        print(f"- {concept_key}: count={summary.count}, mean={summary.mean_score:.2f}")
+        print(
+            f"- {concept_key}: count={summary.count}, "
+            f"weighted_mean={summary.weighted_mean_score:.2f}, "
+            f"confidence={summary.confidence:.2f}, "
+            f"total_weight={summary.total_weight:.2f}"
+        )
+        if summary.dimension_means:
+            dims = ", ".join(f"{k}={v:.2f}" for k, v in sorted(summary.dimension_means.items()))
+            print(f"  * dimensions: {dims}")
     print()
-    print("== Mastered Concepts After Evidence ==")
+
+    print("== Mastered Concepts After Weighted Evidence ==")
     for concept_key in sorted(profile.mastered_concepts):
         print(f"- {concept_key}")
     print()
+
     print("== Resurfaced Concepts ==")
     if evidence_state.resurfaced_concepts:
         for concept_key in sorted(evidence_state.resurfaced_concepts):
@@ -108,21 +145,16 @@ def main() -> None:
     else:
         print("- none")
     print()
+
     print("== Adaptive Plan Summary ==")
     print(f"- roadmap items visible: {len(plan.learner_roadmap)}")
     print(f"- next-best concepts: {len(plan.next_best_concepts)}")
     print(f"- eligible projects: {len(plan.eligible_projects)}")
     print()
+
     print("== Next Best Concepts ==")
     for concept in plan.next_best_concepts:
         print(f"- {concept}")
-    print()
-    print("== Eligible Projects ==")
-    if plan.eligible_projects:
-        for project in plan.eligible_projects:
-            print(f"- {project['id']}: {project['title']}")
-    else:
-        print("- none yet")
     print()
 
     focus_concept = plan.next_best_concepts[0] if plan.next_best_concepts else args.domain

@@ -2,26 +2,21 @@
 
 **Didactopus** is a local-first AI-assisted autodidactic mastery platform.
 
-This revision adds an evidence-driven mastery engine on top of the adaptive learner model.
+This revision upgrades the evidence layer from simple averaging to a more realistic weighted and recency-aware mastery model.
 
 ## Added in this revision
 
-- evidence record models
-- rubric-style evidence scoring
-- concept mastery updates from accumulated evidence
-- weak-concept resurfacing
-- automatic learner state updates from evidence bundles
-- project evidence integration
-- CLI demonstration of evidence-driven progression
-- tests for mastery promotion and resurfacing
+- evidence-type weighting
+- recency weighting
+- confidence estimation from weighted evidence mass
+- dimension-level rubric storage
+- weighted concept summaries
+- mastery decisions using weighted score and confidence
+- resurfacing from recent weak evidence
+- tests for weighted scoring and recency behavior
 
 ## Why this matters
 
-Didactopus no longer needs mastery to be supplied only by hand. It can now begin to infer learner state from observed evidence such as:
+Not all evidence should count equally.
 
-- explanation quality
-- problem-solving performance
-- project completion
-- transfer-task performance
-
-That is a necessary step toward a genuine mastery engine.
+A capstone project or transfer task should usually matter more than a short explanation, and recent poor performance should sometimes matter more than older success. This revision begins to model that explicitly.
