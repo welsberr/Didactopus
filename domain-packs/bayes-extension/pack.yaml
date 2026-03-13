@@ -12,3 +12,18 @@ dependencies:
     min_version: 1.0.0
     max_version: 1.9.99
 overrides: []
+profile_templates:
+  bayes_concept:
+    required_dimensions:
+      - correctness
+      - explanation
+      - transfer
+    dimension_threshold_overrides:
+      transfer: 0.74
+cross_pack_links:
+  - source_concept: prior
+    target_concept: foundations-statistics::probability-basics
+    relation: depends_on
+  - source_concept: posterior
+    target_concept: applied-inference::model-checking
+    relation: related_to

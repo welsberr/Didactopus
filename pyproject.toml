@@ -10,8 +10,11 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [{name = "Wesley R. Elsberry"}]
-dependencies = ["pydantic>=2.7", "pyyaml>=6.0", "networkx>=3.2"]
-
+dependencies = [
+  "pydantic>=2.7",
+  "pyyaml>=6.0",
+  "networkx>=3.2",
+]
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "ruff>=0.6"]
 

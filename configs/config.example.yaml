@@ -4,25 +4,9 @@ model_provider:
     backend: ollama
     endpoint: http://localhost:11434
     model_name: llama3.1:8b
-  remote:
-    enabled: false
-    provider_name: none
-    endpoint: ""
-    model_name: ""
 
 platform:
-  verification_required: true
-  require_learner_explanations: true
-  permit_direct_answers: false
-  resurfacing_threshold: 0.55
-  confidence_threshold: 0.8
-  evidence_weights:
-    explanation: 1.0
-    problem: 1.5
-    project: 2.5
-    transfer: 2.0
-  recent_evidence_multiplier: 1.35
-  dimension_thresholds:
+  default_dimension_thresholds:
     correctness: 0.8
     explanation: 0.75
     transfer: 0.7
@@ -32,4 +16,3 @@ platform:
 artifacts:
   local_pack_dirs:
     - domain-packs
-  allow_third_party_packs: true

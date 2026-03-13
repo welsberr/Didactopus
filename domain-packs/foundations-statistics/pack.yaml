@@ -9,3 +9,11 @@ author: Wesley R. Elsberry
 license: MIT
 dependencies: []
 overrides: []
+profile_templates:
+  foundation_concept:
+    required_dimensions:
+      - correctness
+      - explanation
+    dimension_threshold_overrides:
+      explanation: 0.75
+cross_pack_links: []

@@ -46,25 +46,32 @@ def validate_pack(pack_dir: str | Path) -> PackValidationResult:
             result.errors.append(f"missing required file: {filename}")
     if result.errors:
         return result
+
     try:
         result.manifest = PackManifest.model_validate(_load_yaml(pack_path / "pack.yaml"))
-        if not _version_in_range(DIDACTOPUS_VERSION, result.manifest.didactopus_min_version, result.manifest.didactopus_max_version):
+        if not _version_in_range(
+            DIDACTOPUS_VERSION,
+            result.manifest.didactopus_min_version,
+            result.manifest.didactopus_max_version,
+        ):
             result.errors.append(
-                f"incompatible with Didactopus core version {DIDACTOPUS_VERSION}; supported range is "
-                f"{result.manifest.didactopus_min_version}..{result.manifest.didactopus_max_version}"
+                f"incompatible with Didactopus core version {DIDACTOPUS_VERSION}; "
+                f"supported range is {result.manifest.didactopus_min_version}..{result.manifest.didactopus_max_version}"
             )
+
         result.loaded_files["concepts"] = ConceptsFile.model_validate(_load_yaml(pack_path / "concepts.yaml"))
         result.loaded_files["roadmap"] = RoadmapFile.model_validate(_load_yaml(pack_path / "roadmap.yaml"))
         result.loaded_files["projects"] = ProjectsFile.model_validate(_load_yaml(pack_path / "projects.yaml"))
         result.loaded_files["rubrics"] = RubricsFile.model_validate(_load_yaml(pack_path / "rubrics.yaml"))
     except Exception as exc:
         result.errors.append(str(exc))
+
     result.is_valid = not result.errors
     return result
 
 
 def discover_domain_packs(base_dirs: list[str | Path]) -> list[PackValidationResult]:
-    results = []
+    results: list[PackValidationResult] = []
     for base_dir in base_dirs:
         base = Path(base_dir)
         if not base.exists():
@@ -75,7 +82,7 @@ def discover_domain_packs(base_dirs: list[str | Path]) -> list[PackValidationRes
 
 
 def check_pack_dependencies(results: list[PackValidationResult]) -> list[str]:
-    errors = []
+    errors: list[str] = []
     manifest_by_name = {r.manifest.name: r.manifest for r in results if r.manifest is not None}
     for result in results:
         if result.manifest is None:

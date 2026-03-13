@@ -8,6 +8,23 @@ class DependencySpec(BaseModel):
     max_version: str = "9999.9999.9999"
 
 
+class MasteryProfileSpec(BaseModel):
+    template: str | None = None
+    required_dimensions: list[str] = Field(default_factory=list)
+    dimension_threshold_overrides: dict[str, float] = Field(default_factory=dict)
+
+
+class CrossPackLinkSpec(BaseModel):
+    source_concept: str
+    target_concept: str
+    relation: str
+
+
+class ProfileTemplateSpec(BaseModel):
+    required_dimensions: list[str] = Field(default_factory=list)
+    dimension_threshold_overrides: dict[str, float] = Field(default_factory=dict)
+
+
 class PackManifest(BaseModel):
     name: str
     display_name: str
@@ -20,13 +37,17 @@ class PackManifest(BaseModel):
     license: str = "unspecified"
     dependencies: list[DependencySpec] = Field(default_factory=list)
     overrides: list[str] = Field(default_factory=list)
+    profile_templates: dict[str, ProfileTemplateSpec] = Field(default_factory=dict)
+    cross_pack_links: list[CrossPackLinkSpec] = Field(default_factory=list)
 
 
 class ConceptEntry(BaseModel):
     id: str
     title: str
+    description: str = ""
     prerequisites: list[str] = Field(default_factory=list)
     mastery_signals: list[str] = Field(default_factory=list)
+    mastery_profile: MasteryProfileSpec = Field(default_factory=MasteryProfileSpec)
 
 
 class ConceptsFile(BaseModel):

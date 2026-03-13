@@ -1,12 +1,27 @@
 concepts:
   - id: prior
     title: Prior
+    description: A probability distribution representing knowledge before evidence.
     prerequisites: []
     mastery_signals:
       - explain a prior distribution
+      - compare reasonable priors
+    mastery_profile:
+      template: bayes_concept
+
   - id: posterior
     title: Posterior
+    description: Updated beliefs after conditioning on observed evidence.
     prerequisites:
       - prior
     mastery_signals:
       - explain updating beliefs
+      - compare prior and posterior distributions
+    mastery_profile:
+      required_dimensions:
+        - correctness
+        - explanation
+        - transfer
+        - critique
+      dimension_threshold_overrides:
+        critique: 0.78

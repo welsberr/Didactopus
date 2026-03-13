@@ -1,319 +1,148 @@
 # Didactopus
 
-**Didactopus** is a local‑first AI‑assisted autodidactic mastery platform designed to help motivated learners achieve **true expertise** in a chosen domain.
+**Didactopus** is a local-first AI-assisted autodidactic mastery platform for building genuine expertise through concept graphs, adaptive curriculum planning, evidence-driven mastery, Socratic mentoring, and project-based learning.
 
-![Didactopus mascot](artwork/didactopus-mascot.png)
+**Tagline:** *Many arms, one goal — mastery.*
 
-The system combines:
+## Complete overview to this point
 
-• domain knowledge graphs  
-• mastery‑based learning models  
-• evidence‑driven assessment  
-• Socratic mentoring  
-• adaptive curriculum generation  
-• project‑based evaluation
+Didactopus is designed to support both **human learners** and, potentially, **agentic AI students** that use the same mastery infrastructure to become competent in a target domain.
 
-Didactopus is designed for **serious learning**, not shallow answer generation.
+The current architecture includes:
 
-Its core philosophy is:
+- **Domain packs** for contributed concepts, projects, rubrics, and mastery profiles
+- **Dependency resolution** across packs
+- **Merged learning graph** generation
+- **Adaptive learner engine** that identifies ready, blocked, and mastered concepts
+- **Evidence engine** with weighted, recency-aware, multi-dimensional mastery inference
+- **Concept-specific mastery profiles** with template inheritance
+- **Concept graph engine** for cross-pack prerequisite reasoning, concept linking, pathfinding, and graph export
 
-> AI should function as a mentor, evaluator, and guide — not a substitute for thinking.
+## Core philosophy
 
----
+Didactopus assumes that real expertise is built through:
 
-# Project Goals
+- explanation
+- problem solving
+- transfer
+- critique
+- project execution
 
-Didactopus aims to enable learners to:
+The AI layer should function as a **mentor, evaluator, and curriculum partner**, not an answer vending machine.
 
-• build deep conceptual understanding  
-• practice reasoning and explanation  
-• complete real projects demonstrating competence  
-• identify weak areas through evidence‑based feedback  
-• progress through mastery rather than time spent
+## Domain packs
 
-The platform is particularly suitable for:
+Knowledge enters the system through versioned, shareable **domain packs**. Each pack can contribute:
 
-• autodidacts  
-• researchers entering new fields  
-• students supplementing formal education  
-• interdisciplinary learners  
-• AI‑assisted self‑study programs
-
----
-
-# Key Architectural Concepts
-
-## Domain Packs
-
-Knowledge is distributed as **domain packs** contributed by the community.
-
-Each pack can include:
-
-- concept definitions
-- prerequisite graphs
-- learning roadmaps
+- concepts
+- prerequisites
+- learning stages
 - projects
 - rubrics
 - mastery profiles
+- profile templates
+- cross-pack concept links
 
-Example packs:
+## Concept graph engine
 
-```
-domain-packs/
-    statistics-foundations
-    bayes-extension
-    applied-inference
-```
+This revision implements a concept graph engine with:
 
-Domain packs are validated, dependency‑checked, and merged into a **unified learning graph**.
+- prerequisite reasoning across packs
+- cross-pack concept linking
+- semantic concept similarity hooks
+- automatic curriculum pathfinding
+- visualization export for mastery graphs
 
----
+Concepts are namespaced as `pack-name::concept-id`.
 
-# Learning Graph
+### Cross-pack links
 
-Didactopus merges all installed packs into a directed concept graph:
+Domain packs may declare conceptual links such as:
 
-```
-Concept A → Concept B → Concept C
-```
+- `equivalent_to`
+- `related_to`
+- `extends`
+- `depends_on`
 
-Edges represent prerequisites.
+These links enable Didactopus to reason across pack boundaries rather than treating each pack as an isolated island.
 
-The system then generates:
+### Semantic similarity
 
-• adaptive learning roadmaps  
-• next-best concepts to study  
-• projects unlocked by prerequisite completion
+A semantic similarity layer is included as a hook for:
 
----
+- token overlap similarity
+- future embedding-based similarity
+- future ontology and LLM-assisted concept alignment
 
-# Evidence‑Driven Mastery
+### Curriculum pathfinding
 
-Concept mastery is **inferred from evidence**, not declared.
+The concept graph engine supports:
 
-Evidence types include:
+- prerequisite chains
+- shortest dependency paths
+- next-ready concept discovery
+- reachability analysis
+- curriculum path generation from a learner’s mastery state to a target concept
 
-• explanations  
-• problem solutions  
-• transfer tasks  
-• project deliverables
+### Visualization
 
-Evidence contributes weighted scores that determine:
+Graphs can be exported to:
 
-• mastery state  
-• learner confidence  
-• weak dimensions requiring further practice
+- Graphviz DOT
+- Cytoscape-style JSON
 
----
+## Evidence-driven mastery
 
-# Multi‑Dimensional Mastery
+Mastery is inferred from evidence such as:
 
-Didactopus tracks multiple competence dimensions:
+- explanations
+- problem solutions
+- transfer tasks
+- project artifacts
 
-| Dimension | Meaning |
-|---|---|
-| correctness | accurate reasoning |
-| explanation | ability to explain clearly |
-| transfer | ability to apply knowledge |
-| project_execution | ability to build artifacts |
-| critique | ability to detect errors and assumptions |
+Evidence is:
 
-Different concepts can require different combinations of these dimensions.
+- weighted by type
+- optionally up-weighted for recency
+- summarized by competence dimension
+- compared against concept-specific mastery profiles
 
----
+## Multi-dimensional mastery
 
-# Concept Mastery Profiles
+Current dimensions include:
 
-Concepts define **mastery profiles** specifying:
+- `correctness`
+- `explanation`
+- `transfer`
+- `project_execution`
+- `critique`
 
-• required dimensions  
-• threshold overrides
+Different concepts can require different subsets of these dimensions.
 
-Example:
+## Agentic AI students
 
-```yaml
-mastery_profile:
-  required_dimensions:
-    - correctness
-    - transfer
-    - critique
-  dimension_threshold_overrides:
-    transfer: 0.8
-    critique: 0.8
-```
+Didactopus is also architecturally suitable for **AI learner agents**.
 
----
+An agentic AI student could:
 
-# Mastery Profile Inheritance
+1. ingest domain packs
+2. traverse the concept graph
+3. generate explanations and answers
+4. attempt practice tasks
+5. critique model outputs
+6. complete simulated projects
+7. accumulate evidence
+8. advance only when concept-specific mastery criteria are satisfied
 
-This revision adds **profile templates** so packs can define reusable mastery models.
+## Repository structure
 
-Example:
-
-```yaml
-profile_templates:
-  foundation_concept:
-    required_dimensions:
-      - correctness
-      - explanation
-
-  critique_concept:
-    required_dimensions:
-      - correctness
-      - transfer
-      - critique
-```
-
-Concepts can reference templates:
-
-```yaml
-mastery_profile:
-  template: critique_concept
-```
-
-This allows domain packs to remain concise while maintaining consistent evaluation standards.
-
----
-
-# Adaptive Learning Engine
-
-The adaptive engine computes:
-
-• which concepts are ready to study  
-• which are blocked by prerequisites  
-• which are already mastered  
-• which projects are available
-
-Output includes:
-
-```
-next_best_concepts
-eligible_projects
-adaptive_learning_roadmap
-```
-
----
-
-# Evidence Engine
-
-The evidence engine:
-
-• aggregates learner evidence  
-• computes weighted scores  
-• tracks confidence  
-• identifies weak competence dimensions  
-• updates mastery status
-
-Later weak performance can **resurface concepts for review**.
-
----
-
-# Socratic Mentor
-
-Didactopus includes a mentor layer that:
-
-• asks probing questions  
-• challenges reasoning  
-• generates practice tasks  
-• proposes projects
-
-Models can run locally (recommended) or via remote APIs.
-
----
-
-# Agentic AI Students
-
-Didactopus is also suitable for **AI‑driven learning agents**.
-
-A future architecture may include:
-
-```
-Didactopus Core
-       │
-       ├─ Human Learner
-       └─ AI Student Agent
-```
-
-An AI student could:
-
-1. read domain packs
-2. attempt practice tasks
-3. produce explanations
-4. critique model outputs
-5. complete simulated projects
-6. accumulate evidence
-7. progress through the mastery graph
-
-Such agents could be used for:
-
-• automated curriculum testing  
-• benchmarking AI reasoning  
-• synthetic expert generation  
-• evaluation of model capabilities
-
-Didactopus therefore supports both:
-
-• human learners  
-• agentic AI learners
-
----
-
-# Project Structure
-
-```
+```text
 didactopus/
-    adaptive_engine/
-    artifact_registry/
-    evidence_engine/
-    learning_graph/
-    mentor/
-    practice/
-    project_advisor/
+├── README.md
+├── artwork/
+├── configs/
+├── docs/
+├── domain-packs/
+├── src/didactopus/
+└── tests/
 ```
-
-Additional directories:
-
-```
-configs/
-docs/
-domain-packs/
-tests/
-artwork/
-```
-
----
-
-# Current Status
-
-Implemented:
-
-✓ domain pack validation  
-✓ dependency resolution  
-✓ learning graph merge  
-✓ adaptive roadmap generation  
-✓ evidence‑driven mastery  
-✓ multi‑dimensional competence tracking  
-✓ concept‑specific mastery profiles  
-✓ profile template inheritance
-
-Planned next phases:
-
-• curriculum optimization algorithms  
-• active‑learning task generation  
-• automated project evaluation  
-• distributed pack registry  
-• visualization tools for learning graphs
-
----
-
-# Philosophy
-
-Didactopus is built around a simple principle:
-
-> Mastery requires thinking, explaining, testing, and building — not merely receiving answers.
-
-AI can accelerate the process, but genuine learning remains an **active intellectual endeavor**.
-
----
-
-**Didactopus — many arms, one goal: mastery.**

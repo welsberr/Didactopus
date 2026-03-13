@@ -1,34 +1,39 @@
-from dataclasses import dataclass
-from typing import Dict, List
+from typing import Any
 
 
-@dataclass
-class ProfileTemplate:
-    name: str
-    required_dimensions: List[str]
-    dimension_threshold_overrides: Dict[str, float]
-
-
-def resolve_mastery_profile(concept_profile, templates, default_profile):
-    if concept_profile is None:
-        return default_profile
-
-    template_name = concept_profile.get("template")
-    if template_name:
-        base = templates.get(template_name, default_profile)
-        profile = {
-            "required_dimensions": list(base.required_dimensions),
-            "dimension_threshold_overrides": dict(base.dimension_threshold_overrides),
-        }
+def resolve_mastery_profile(
+    concept_profile: dict[str, Any] | None,
+    templates: dict[str, dict[str, Any]],
+    default_thresholds: dict[str, float],
+) -> dict[str, Any]:
+    default_profile = {
+        "required_dimensions": list(default_thresholds.keys()),
+        "dimension_threshold_overrides": {},
+    }
+    if not concept_profile:
+        effective = dict(default_profile)
     else:
-        profile = default_profile.copy()
+        template_name = concept_profile.get("template")
+        if template_name and template_name in templates:
+            tmpl = templates[template_name]
+            effective = {
+                "required_dimensions": list(tmpl.get("required_dimensions", default_profile["required_dimensions"])),
+                "dimension_threshold_overrides": dict(tmpl.get("dimension_threshold_overrides", {})),
+            }
+        else:
+            effective = dict(default_profile)
 
-    if "required_dimensions" in concept_profile:
-        profile["required_dimensions"] = concept_profile["required_dimensions"]
+        if concept_profile.get("required_dimensions"):
+            effective["required_dimensions"] = list(concept_profile["required_dimensions"])
+        if concept_profile.get("dimension_threshold_overrides"):
+            effective["dimension_threshold_overrides"].update(
+                concept_profile["dimension_threshold_overrides"]
+            )
 
-    if "dimension_threshold_overrides" in concept_profile:
-        profile["dimension_threshold_overrides"].update(
-            concept_profile["dimension_threshold_overrides"]
-        )
-
-    return profile
+    thresholds = dict(default_thresholds)
+    thresholds.update(effective["dimension_threshold_overrides"])
+    return {
+        "required_dimensions": effective["required_dimensions"],
+        "dimension_threshold_overrides": dict(effective["dimension_threshold_overrides"]),
+        "effective_thresholds": {dim: thresholds[dim] for dim in effective["required_dimensions"] if dim in thresholds},
+    }

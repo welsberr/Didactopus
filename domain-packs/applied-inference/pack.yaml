@@ -4,7 +4,7 @@ version: 0.2.0
 schema_version: "1"
 didactopus_min_version: 0.1.0
 didactopus_max_version: 0.9.99
-description: Simple applied inference pack.
+description: Applied inference pack emphasizing transfer and critique.
 author: Wesley R. Elsberry
 license: MIT
 dependencies:
@@ -12,3 +12,19 @@ dependencies:
     min_version: 0.1.0
     max_version: 1.0.0
 overrides: []
+profile_templates:
+  critique_heavy:
+    required_dimensions:
+      - correctness
+      - transfer
+      - critique
+    dimension_threshold_overrides:
+      transfer: 0.78
+      critique: 0.73
+cross_pack_links:
+  - source_concept: model-checking
+    target_concept: bayes-extension::posterior
+    relation: extends
+  - source_concept: model-checking
+    target_concept: foundations-statistics::probability-basics
+    relation: related_to

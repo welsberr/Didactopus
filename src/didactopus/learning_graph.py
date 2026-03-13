@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any
-import networkx as nx
 
 from .artifact_registry import PackValidationResult, topological_pack_order
+from .profile_templates import resolve_mastery_profile
 
 
 def namespaced_concept(pack_name: str, concept_id: str) -> str:
@@ -13,38 +13,44 @@ def namespaced_concept(pack_name: str, concept_id: str) -> str:
 
 @dataclass
 class MergedLearningGraph:
-    graph: nx.DiGraph = field(default_factory=nx.DiGraph)
     concept_data: dict[str, dict[str, Any]] = field(default_factory=dict)
     project_catalog: list[dict[str, Any]] = field(default_factory=list)
     load_order: list[str] = field(default_factory=list)
 
 
-def build_merged_learning_graph(results: list[PackValidationResult]) -> MergedLearningGraph:
+def build_merged_learning_graph(
+    results: list[PackValidationResult],
+    default_dimension_thresholds: dict[str, float],
+) -> MergedLearningGraph:
     merged = MergedLearningGraph()
     valid = {r.manifest.name: r for r in results if r.manifest is not None and r.is_valid}
     merged.load_order = topological_pack_order(results)
 
     for pack_name in merged.load_order:
         result = valid[pack_name]
+        templates = {
+            name: {
+                "required_dimensions": list(spec.required_dimensions),
+                "dimension_threshold_overrides": dict(spec.dimension_threshold_overrides),
+            }
+            for name, spec in result.manifest.profile_templates.items()
+        }
         for concept in result.loaded_files["concepts"].concepts:
             key = namespaced_concept(pack_name, concept.id)
+            resolved_profile = resolve_mastery_profile(
+                concept.mastery_profile.model_dump(),
+                templates,
+                default_dimension_thresholds,
+            )
             merged.concept_data[key] = {
                 "id": concept.id,
                 "title": concept.title,
+                "description": concept.description,
                 "pack": pack_name,
-                "prerequisites": list(concept.prerequisites),
+                "prerequisites": [namespaced_concept(pack_name, p) for p in concept.prerequisites],
                 "mastery_signals": list(concept.mastery_signals),
+                "mastery_profile": resolved_profile,
             }
-            merged.graph.add_node(key)
-
-    for pack_name in merged.load_order:
-        result = valid[pack_name]
-        for concept in result.loaded_files["concepts"].concepts:
-            concept_key = namespaced_concept(pack_name, concept.id)
-            for prereq in concept.prerequisites:
-                prereq_key = namespaced_concept(pack_name, prereq)
-                if prereq_key in merged.graph:
-                    merged.graph.add_edge(prereq_key, concept_key)
         for project in result.loaded_files["projects"].projects:
             merged.project_catalog.append({
                 "id": f"{pack_name}::{project.id}",

@@ -1,6 +1,10 @@
 concepts:
   - id: model-checking
     title: Model Checking
+    description: Critiquing assumptions, fit, and implications of a probabilistic model.
     prerequisites: []
     mastery_signals:
       - compare model assumptions
+      - critique a simple inference model
+    mastery_profile:
+      template: critique_heavy

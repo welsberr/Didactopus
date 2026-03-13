@@ -13,10 +13,6 @@ class ModelProvider:
     def __init__(self, config: ModelProviderConfig) -> None:
         self.config = config
 
-    def describe(self) -> str:
-        local = self.config.local
-        return f"mode={self.config.mode}, local={local.backend}:{local.model_name}"
-
     def generate(self, prompt: str) -> ModelResponse:
         local = self.config.local
         preview = prompt.strip().replace("\n", " ")[:120]

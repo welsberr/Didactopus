@@ -1,12 +1,26 @@
 concepts:
   - id: descriptive-statistics
     title: Descriptive Statistics
+    description: Core summaries of distributions, central tendency, and spread.
     prerequisites: []
     mastery_signals:
-      - explain central tendency
+      - explain mean median and variance
+      - summarize a simple dataset
+    mastery_profile:
+      template: foundation_concept
+
   - id: probability-basics
     title: Probability Basics
+    description: Basic event probability and conditional probability.
     prerequisites:
       - descriptive-statistics
     mastery_signals:
       - explain event probability
+      - calculate simple conditional probability
+    mastery_profile:
+      required_dimensions:
+        - correctness
+        - explanation
+        - transfer
+      dimension_threshold_overrides:
+        transfer: 0.72

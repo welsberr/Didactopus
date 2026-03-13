@@ -9,35 +9,13 @@ class ProviderEndpoint(BaseModel):
     model_name: str = "llama3.1:8b"
 
 
-class RemoteProvider(BaseModel):
-    enabled: bool = False
-    provider_name: str = "none"
-    endpoint: str = ""
-    model_name: str = ""
-
-
 class ModelProviderConfig(BaseModel):
     mode: str = Field(default="local_first")
     local: ProviderEndpoint = Field(default_factory=ProviderEndpoint)
-    remote: RemoteProvider = Field(default_factory=RemoteProvider)
 
 
 class PlatformConfig(BaseModel):
-    verification_required: bool = True
-    require_learner_explanations: bool = True
-    permit_direct_answers: bool = False
-    resurfacing_threshold: float = 0.55
-    confidence_threshold: float = 0.8
-    evidence_weights: dict[str, float] = Field(
-        default_factory=lambda: {
-            "explanation": 1.0,
-            "problem": 1.5,
-            "project": 2.5,
-            "transfer": 2.0,
-        }
-    )
-    recent_evidence_multiplier: float = 1.35
-    dimension_thresholds: dict[str, float] = Field(
+    default_dimension_thresholds: dict[str, float] = Field(
         default_factory=lambda: {
             "correctness": 0.8,
             "explanation": 0.75,
@@ -50,7 +28,6 @@ class PlatformConfig(BaseModel):
 
 class ArtifactConfig(BaseModel):
     local_pack_dirs: list[str] = Field(default_factory=lambda: ["domain-packs"])
-    allow_third_party_packs: bool = True
 
 
 class AppConfig(BaseModel):
