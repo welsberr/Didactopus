@@ -2,18 +2,18 @@ import argparse
 import os
 from pathlib import Path
 
+from .agentic_loop import run_agentic_learning_loop
 from .artifact_registry import check_pack_dependencies, detect_dependency_cycles, discover_domain_packs
 from .config import load_config
-from .graph_builder import build_concept_graph, suggest_semantic_links
-from .planner import PlannerWeights, rank_next_concepts
+from .graph_builder import build_concept_graph
+from .learning_graph import build_merged_learning_graph
+from .planner import PlannerWeights
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Didactopus graph-aware planner")
+    parser = argparse.ArgumentParser(description="Didactopus agentic learner loop")
     parser.add_argument("--target", default="bayes-extension::posterior")
-    parser.add_argument("--mastered", nargs="*", default=[])
-    parser.add_argument("--export-dot", default="")
-    parser.add_argument("--export-cytoscape", default="")
+    parser.add_argument("--steps", type=int, default=5)
     parser.add_argument("--config", default=os.environ.get("DIDACTOPUS_CONFIG", "configs/config.example.yaml"))
     return parser
 
@@ -35,30 +35,13 @@ def main() -> None:
             print(f"- {' -> '.join(cycle)}")
         return
 
+    merged = build_merged_learning_graph(results, config.platform.default_dimension_thresholds)
     graph = build_concept_graph(results, config.platform.default_dimension_thresholds)
-    mastered = set(args.mastered)
 
-    weak_dimensions_by_concept = {
-        "bayes-extension::prior": ["explanation", "transfer"],
-    }
-    fragile_concepts = {"bayes-extension::prior"}
-
-    ranked = rank_next_concepts(
+    state = run_agentic_learning_loop(
         graph=graph,
-        mastered=mastered,
-        targets=[args.target],
-        weak_dimensions_by_concept=weak_dimensions_by_concept,
-        fragile_concepts=fragile_concepts,
-        project_catalog=[
-            {
-                "id": "bayes-extension::bayes-mini-project",
-                "prerequisites": ["bayes-extension::prior"],
-            },
-            {
-                "id": "applied-inference::inference-project",
-                "prerequisites": ["applied-inference::model-checking"],
-            },
-        ],
+        project_catalog=merged.project_catalog,
+        target_concepts=[args.target],
         weights=PlannerWeights(
             readiness_bonus=config.planner.readiness_bonus,
             target_distance_weight=config.planner.target_distance_weight,
@@ -67,36 +50,21 @@ def main() -> None:
             project_unlock_bonus=config.planner.project_unlock_bonus,
             semantic_similarity_weight=config.planner.semantic_similarity_weight,
         ),
+        max_steps=args.steps,
     )
 
-    print("== Didactopus Graph-Aware Planner ==")
-    print(f"Target concept: {args.target}")
+    print("== Didactopus Agentic Learner Loop ==")
+    print(f"Target: {args.target}")
+    print(f"Steps executed: {len(state.attempt_history)}")
     print()
-    print("Curriculum path from current mastery:")
-    for item in graph.curriculum_path_to_target(mastered, args.target):
-        print(f"- {item}")
+    print("Mastered concepts:")
+    if state.mastered_concepts:
+        for item in sorted(state.mastered_concepts):
+            print(f"- {item}")
+    else:
+        print("- none")
     print()
-    print("Ready concepts:")
-    for item in graph.ready_concepts(mastered):
-        print(f"- {item}")
-    print()
-    print("Ranked next concepts:")
-    for item in ranked:
-        print(f"- {item['concept']}: {item['score']:.2f}")
-        for name, value in item["components"].items():
-            print(f"  * {name}: {value:.2f}")
-    print()
-    print("Suggested semantic links:")
-    for a, b, score in suggest_semantic_links(graph, minimum_similarity=0.10)[:8]:
-        print(f"- {a} <-> {b} : {score:.2f}")
-
-    if args.export_dot:
-        graph.export_graphviz(args.export_dot)
-        print(f"Exported Graphviz DOT to {args.export_dot}")
-    if args.export_cytoscape:
-        graph.export_cytoscape_json(args.export_cytoscape)
-        print(f"Exported Cytoscape JSON to {args.export_cytoscape}")
-
-
-if __name__ == "__main__":
-    main()
+    print("Attempt history:")
+    for item in state.attempt_history:
+        weak = ", ".join(item["weak_dimensions"]) if item["weak_dimensions"] else "none"
+        print(f"- {item['concept']}: mastered={item['mastered']}, weak={weak}")

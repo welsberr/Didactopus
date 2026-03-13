@@ -22,7 +22,8 @@ def _distance_bonus(graph: ConceptGraph, concept: str, targets: list[str]) -> fl
     best = inf
     for target in targets:
         try:
-            dist = len(__import__("networkx").shortest_path(pg, concept, target)) - 1
+            import networkx as nx
+            dist = len(nx.shortest_path(pg, concept, target)) - 1
             best = min(best, dist)
         except Exception:
             continue
@@ -32,11 +33,7 @@ def _distance_bonus(graph: ConceptGraph, concept: str, targets: list[str]) -> fl
 
 
 def _project_unlock_bonus(concept: str, project_catalog: list[dict]) -> float:
-    count = 0
-    for project in project_catalog:
-        if concept in project.get("prerequisites", []):
-            count += 1
-    return float(count)
+    return float(sum(1 for project in project_catalog if concept in project.get("prerequisites", [])))
 
 
 def _semantic_bonus(graph: ConceptGraph, concept: str, targets: list[str]) -> float:
@@ -90,11 +87,7 @@ def rank_next_concepts(
         score += semantic
         components["semantic_similarity"] = semantic
 
-        ranked.append({
-            "concept": concept,
-            "score": score,
-            "components": components,
-        })
+        ranked.append({"concept": concept, "score": score, "components": components})
 
     ranked.sort(key=lambda item: item["score"], reverse=True)
     return ranked

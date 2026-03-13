@@ -24,9 +24,24 @@ class PlannerConfig(BaseModel):
     semantic_similarity_weight: float = 1.0
 
 
+class EvidenceConfig(BaseModel):
+    resurfacing_threshold: float = 0.55
+    confidence_threshold: float = 0.8
+    evidence_weights: dict[str, float] = Field(
+        default_factory=lambda: {
+            "explanation": 1.0,
+            "problem": 1.5,
+            "project": 2.5,
+            "transfer": 2.0,
+        }
+    )
+    recent_evidence_multiplier: float = 1.35
+
+
 class AppConfig(BaseModel):
     platform: PlatformConfig = Field(default_factory=PlatformConfig)
     planner: PlannerConfig = Field(default_factory=PlannerConfig)
+    evidence: EvidenceConfig = Field(default_factory=EvidenceConfig)
 
 
 def load_config(path: str | Path) -> AppConfig:

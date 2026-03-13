@@ -38,20 +38,8 @@ class ConceptGraph:
                 g.add_edge(u, v)
         return g
 
-    def prerequisites(self, concept: str) -> list[str]:
-        return list(self.prerequisite_subgraph().predecessors(concept))
-
     def prerequisite_chain(self, concept: str) -> list[str]:
         return list(nx.ancestors(self.prerequisite_subgraph(), concept))
-
-    def dependents(self, concept: str) -> list[str]:
-        return list(self.prerequisite_subgraph().successors(concept))
-
-    def learning_path(self, start: str, target: str) -> list[str] | None:
-        try:
-            return nx.shortest_path(self.prerequisite_subgraph(), start, target)
-        except nx.NetworkXNoPath:
-            return None
 
     def curriculum_path_to_target(self, mastered: set[str], target: str) -> list[str]:
         pg = self.prerequisite_subgraph()
