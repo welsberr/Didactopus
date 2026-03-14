@@ -1,6 +1,6 @@
 sources:
-  - source_id: mit-ocw-bayes
-    title: Example MIT OpenCourseWare Bayesian Materials
+  - source_id: mit-ocw-bayes-demo
+    title: Example MIT OpenCourseWare Course Page
     url: https://ocw.mit.edu/courses/example-course/
     publisher: Massachusetts Institute of Technology
     creator: MIT OpenCourseWare
@@ -8,12 +8,16 @@ sources:
     license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
     retrieved_at: 2026-03-13
     adapted: true
-    attribution_text: Derived in part from MIT OpenCourseWare material used under CC BY-NC-SA 4.0.
+    adaptation_notes: >
+      Didactopus extracted topic structure, concepts, and exercise prompts into a derived domain pack.
+    attribution_text: >
+      Derived in part from MIT OpenCourseWare material, used under CC BY-NC-SA 4.0.
     excluded_from_upstream_license: false
     exclusion_notes: ""
+    tags: [mit-ocw, bayes, course]
 
-  - source_id: excluded-figure
-    title: Example Third-Party Figure
+  - source_id: mit-ocw-third-party-note
+    title: Example Excluded Third-Party Item
     url: https://ocw.mit.edu/courses/example-course/pages/lecture-videos/
     publisher: Massachusetts Institute of Technology
     creator: Third-party rights holder
@@ -21,6 +25,10 @@ sources:
     license_url: ""
     retrieved_at: 2026-03-13
     adapted: false
-    attribution_text: Tracked for exclusion; not reused in redistributed pack content.
+    adaptation_notes: ""
+    attribution_text: >
+      Referenced only for exclusion tracking; not reused in redistributed Didactopus artifacts.
     excluded_from_upstream_license: true
-    exclusion_notes: Figure flagged as excluded from the course-level Creative Commons license.
+    exclusion_notes: >
+      This item was flagged as excluded from the OCW Creative Commons license and should not be redistributed as pack content.
+    tags: [mit-ocw, excluded-content]
