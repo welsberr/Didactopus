@@ -20,6 +20,8 @@ class RefreshTokenORM(Base):
 class PackORM(Base):
     __tablename__ = "packs"
     id: Mapped[str] = mapped_column(String(100), primary_key=True)
+    owner_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    policy_lane: Mapped[str] = mapped_column(String(50), default="personal")
     title: Mapped[str] = mapped_column(String(255))
     subtitle: Mapped[str] = mapped_column(Text, default="")
     level: Mapped[str] = mapped_column(String(100), default="novice-friendly")
@@ -36,6 +38,7 @@ class PackVersionORM(Base):
     pack_id: Mapped[str] = mapped_column(ForeignKey("packs.id"), index=True)
     version_number: Mapped[int] = mapped_column(Integer)
     submitted_by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    policy_lane: Mapped[str] = mapped_column(String(50), default="personal")
     status: Mapped[str] = mapped_column(String(50), default="draft")
     data_json: Mapped[str] = mapped_column(Text)
     change_summary: Mapped[str] = mapped_column(Text, default="")
@@ -56,6 +59,7 @@ class ContributionSubmissionORM(Base):
     __tablename__ = "contribution_submissions"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     pack_id: Mapped[str] = mapped_column(String(100), index=True)
+    policy_lane: Mapped[str] = mapped_column(String(50), default="community")
     proposed_version_number: Mapped[int] = mapped_column(Integer, default=1)
     contributor_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     status: Mapped[str] = mapped_column(String(50), default="submitted")

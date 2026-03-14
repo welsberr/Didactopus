@@ -4,11 +4,46 @@ from datetime import datetime, timezone
 from sqlalchemy import select
 from .db import SessionLocal
 from .orm import UserORM, RefreshTokenORM, PackORM, PackVersionORM, ReviewCommentORM, ContributionSubmissionORM, ReviewTaskORM, LearnerORM, MasteryRecordORM, EvidenceEventORM, EvaluatorJobORM
-from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent
+from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent, DeploymentPolicyProfile
 from .auth import verify_password
+from .config import load_settings
+
+settings = load_settings()
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+def deployment_policy_profile() -> DeploymentPolicyProfile:
+    profile = settings.deployment_policy_profile
+    if profile == "community_repo":
+        return DeploymentPolicyProfile(
+            profile_name="community_repo",
+            default_personal_lane_enabled=True,
+            default_community_lane_enabled=True,
+            community_publish_requires_approval=True,
+            personal_publish_direct=True,
+            reviewer_assignment_required=True,
+            description="Shared repository deployment with stronger community controls."
+        )
+    if profile == "team_lab":
+        return DeploymentPolicyProfile(
+            profile_name="team_lab",
+            default_personal_lane_enabled=True,
+            default_community_lane_enabled=True,
+            community_publish_requires_approval=True,
+            personal_publish_direct=True,
+            reviewer_assignment_required=False,
+            description="Team deployment with shared review but moderate overhead."
+        )
+    return DeploymentPolicyProfile(
+        profile_name="single_user",
+        default_personal_lane_enabled=True,
+        default_community_lane_enabled=True,
+        community_publish_requires_approval=True,
+        personal_publish_direct=True,
+        reviewer_assignment_required=False,
+        description="Single-user/private-first deployment."
+    )
 
 def pack_diff(old_pack: dict | None, new_pack: dict) -> dict:
     old_pack = old_pack or {}
@@ -74,23 +109,33 @@ def revoke_refresh_token(token_id: str):
             row.is_revoked = True
             db.commit()
 
-def list_packs(include_unpublished: bool = False):
+def list_packs_for_user(user_id: int | None = None, include_unpublished: bool = False):
     with SessionLocal() as db:
         stmt = select(PackORM)
         if not include_unpublished:
             stmt = stmt.where(PackORM.is_published == True)
         rows = db.execute(stmt).scalars().all()
-        return [PackData.model_validate(json.loads(r.data_json)) for r in rows]
+        out = []
+        for r in rows:
+            if r.policy_lane == "community":
+                out.append(PackData.model_validate(json.loads(r.data_json)))
+            elif user_id is not None and r.owner_user_id == user_id:
+                out.append(PackData.model_validate(json.loads(r.data_json)))
+        return out
 
 def list_pack_admin_rows():
     with SessionLocal() as db:
         rows = db.execute(select(PackORM).order_by(PackORM.id)).scalars().all()
-        return [{"id": r.id, "title": r.title, "is_published": r.is_published, "subtitle": r.subtitle, "governance_state": r.governance_state, "current_version": r.current_version} for r in rows]
+        return [{"id": r.id, "title": r.title, "policy_lane": r.policy_lane, "is_published": r.is_published, "subtitle": r.subtitle, "governance_state": r.governance_state, "current_version": r.current_version} for r in rows]
 
 def get_pack(pack_id: str):
     with SessionLocal() as db:
         row = db.get(PackORM, pack_id)
         return None if row is None else PackData.model_validate(json.loads(row.data_json))
+
+def get_pack_row(pack_id: str):
+    with SessionLocal() as db:
+        return db.get(PackORM, pack_id)
 
 def get_pack_validation(pack_id: str):
     with SessionLocal() as db:
@@ -119,36 +164,44 @@ def validation_and_provenance_for_pack(pack: PackData):
     }
     return validation, provenance
 
-def upsert_pack(pack: PackData, submitted_by_user_id: int, is_published: bool = False, change_summary: str = ""):
+def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "personal", is_published: bool = False, change_summary: str = ""):
     validation, provenance = validation_and_provenance_for_pack(pack)
     with SessionLocal() as db:
         row = db.get(PackORM, pack.id)
         payload = json.dumps(pack.model_dump())
         if row is None:
             row = PackORM(
-                id=pack.id, title=pack.title, subtitle=pack.subtitle, level=pack.level,
+                id=pack.id,
+                owner_user_id=submitted_by_user_id if policy_lane == "personal" else None,
+                policy_lane=policy_lane,
+                title=pack.title, subtitle=pack.subtitle, level=pack.level,
                 data_json=payload, validation_json=json.dumps(validation), provenance_json=json.dumps(provenance),
-                governance_state="draft", current_version=1, is_published=is_published
+                governance_state="draft" if policy_lane == "community" else "personal_ready",
+                current_version=1, is_published=is_published if policy_lane == "personal" else False
             )
             db.add(row)
             version_number = 1
         else:
+            row.owner_user_id = submitted_by_user_id if policy_lane == "personal" else row.owner_user_id
+            row.policy_lane = policy_lane
             row.title = pack.title
             row.subtitle = pack.subtitle
             row.level = pack.level
             row.data_json = payload
             row.validation_json = json.dumps(validation)
             row.provenance_json = json.dumps(provenance)
-            row.is_published = is_published
             row.current_version += 1
-            row.governance_state = "draft"
+            row.governance_state = "draft" if policy_lane == "community" else "personal_ready"
+            if policy_lane == "personal":
+                row.is_published = is_published
             version_number = row.current_version
         db.flush()
         db.add(PackVersionORM(
             pack_id=pack.id,
             version_number=version_number,
             submitted_by_user_id=submitted_by_user_id,
-            status="draft",
+            policy_lane=policy_lane,
+            status="draft" if policy_lane == "community" else "personal_ready",
             data_json=payload,
             change_summary=change_summary,
             created_at=now_iso(),
@@ -166,8 +219,12 @@ def create_submission(pack: PackData, contributor_user_id: int, submission_summa
         proposed_payload = pack.model_dump()
         diff = pack_diff(current_payload, proposed_payload)
         gates = gate_summary(validation, provenance)
+        task_note = "Community submission awaiting reviewer attention"
+        if deployment_policy_profile().reviewer_assignment_required:
+            task_note += " (reviewer assignment required by deployment policy)"
         sub = ContributionSubmissionORM(
             pack_id=pack.id,
+            policy_lane="community",
             proposed_version_number=proposed_version,
             contributor_user_id=contributor_user_id,
             status="submitted",
@@ -183,7 +240,7 @@ def create_submission(pack: PackData, contributor_user_id: int, submission_summa
             submission_id=sub.id,
             reviewer_user_id=None,
             task_status="open",
-            task_note="Submission awaiting reviewer attention",
+            task_note=task_note,
             created_at=now_iso(),
         ))
         db.commit()
@@ -195,16 +252,13 @@ def list_submissions():
         return [{
             "submission_id": r.id,
             "pack_id": r.pack_id,
+            "policy_lane": r.policy_lane,
             "proposed_version_number": r.proposed_version_number,
             "contributor_user_id": r.contributor_user_id,
             "status": r.status,
             "submission_summary": r.submission_summary,
             "created_at": r.created_at,
         } for r in rows]
-
-def get_submission(submission_id: int):
-    with SessionLocal() as db:
-        return db.get(ContributionSubmissionORM, submission_id)
 
 def get_submission_diff(submission_id: int):
     with SessionLocal() as db:
@@ -228,21 +282,49 @@ def list_review_tasks():
             "created_at": r.created_at,
         } for r in rows]
 
+def can_publish_pack(pack_id: str) -> tuple[bool, str]:
+    with SessionLocal() as db:
+        row = db.get(PackORM, pack_id)
+        if row is None:
+            return False, "Pack not found"
+        if row.policy_lane == "personal":
+            return True, "Personal lane pack may publish directly"
+        if deployment_policy_profile().community_publish_requires_approval and row.governance_state != "approved":
+            return False, "Community lane pack must be approved before publication"
+        validation = json.loads(row.validation_json or "{}")
+        provenance = json.loads(row.provenance_json or "{}")
+        gates = gate_summary(validation, provenance)
+        if not gates.get("ready_for_review", False):
+            return False, "Community lane gates not satisfied"
+        return True, "Community lane pack passed publish gates"
+
 def set_pack_publication(pack_id: str, is_published: bool):
     with SessionLocal() as db:
         row = db.get(PackORM, pack_id)
         if row is None:
-            return False
+            return False, "Pack not found"
+        if is_published:
+            ok, reason = can_publish_pack(pack_id)
+            if not ok:
+                return False, reason
         row.is_published = is_published
         db.commit()
-        return True
+        return True, "Updated"
 
 def set_governance_state(pack_id: str, status: str, review_summary: str):
     with SessionLocal() as db:
         row = db.get(PackORM, pack_id)
         if row is None:
             return False
-        row.governance_state = status
+        if row.policy_lane == "personal":
+            row.governance_state = status
+        else:
+            validation = json.loads(row.validation_json or "{}")
+            provenance = json.loads(row.provenance_json or "{}")
+            gates = gate_summary(validation, provenance)
+            if status == "approved" and not gates.get("ready_for_review", False):
+                return False
+            row.governance_state = status
         version = db.execute(select(PackVersionORM).where(PackVersionORM.pack_id == pack_id, PackVersionORM.version_number == row.current_version)).scalar_one_or_none()
         if version is not None:
             version.status = status
@@ -255,6 +337,7 @@ def list_pack_versions(pack_id: str):
         rows = db.execute(select(PackVersionORM).where(PackVersionORM.pack_id == pack_id).order_by(PackVersionORM.version_number.desc())).scalars().all()
         return [{
             "version_number": r.version_number,
+            "policy_lane": r.policy_lane,
             "status": r.status,
             "change_summary": r.change_summary,
             "created_at": r.created_at,

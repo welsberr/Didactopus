@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 from typing import Literal
 
 EvidenceKind = Literal["checkpoint", "project", "exercise", "review"]
+PolicyLane = Literal["personal", "community"]
 
 class TokenPair(BaseModel):
     access_token: str
@@ -17,6 +18,26 @@ class LoginRequest(BaseModel):
 
 class RefreshRequest(BaseModel):
     refresh_token: str
+
+class DeploymentPolicyProfile(BaseModel):
+    profile_name: str
+    default_personal_lane_enabled: bool = True
+    default_community_lane_enabled: bool = True
+    community_publish_requires_approval: bool = True
+    personal_publish_direct: bool = True
+    reviewer_assignment_required: bool = False
+    description: str = ""
+
+class AgentCapabilityManifest(BaseModel):
+    supports_pack_listing: bool = True
+    supports_pack_write_personal: bool = True
+    supports_pack_submit_community: bool = True
+    supports_recommendations: bool = True
+    supports_learner_state_read: bool = True
+    supports_learner_state_write: bool = True
+    supports_evaluator_jobs: bool = True
+    supports_governance_endpoints: bool = True
+    supports_review_queue: bool = True
 
 class PackConcept(BaseModel):
     id: str
@@ -43,6 +64,7 @@ class PackData(BaseModel):
 
 class CreatePackRequest(BaseModel):
     pack: PackData
+    policy_lane: PolicyLane = "personal"
     is_published: bool = False
     change_summary: str = ""
 
@@ -96,3 +118,13 @@ class EvaluatorJobStatus(BaseModel):
     result_score: float | None = None
     result_confidence_hint: float | None = None
     result_notes: str = ""
+
+class AgentLearnerPlanRequest(BaseModel):
+    learner_id: str
+    pack_id: str
+
+class AgentLearnerPlanResponse(BaseModel):
+    learner_id: str
+    pack_id: str
+    next_cards: list[dict] = Field(default_factory=list)
+    suggested_actions: list[str] = Field(default_factory=list)

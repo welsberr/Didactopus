@@ -28,7 +28,23 @@ def main():
             compliance=PackCompliance(sources=2, attributionRequired=True, shareAlikeRequired=True, noncommercialOnly=True, flags=["share-alike","noncommercial","excluded-third-party-content"])
         ),
         submitted_by_user_id=1,
+        policy_lane="community",
         is_published=True,
-        change_summary="Initial seed version"
+        change_summary="Initial shared seed version"
+    )
+    upsert_pack(
+        PackData(
+            id="wesley-private-pack",
+            title="Wesley Private Pack",
+            subtitle="Personal pack example without community friction.",
+            level="novice-friendly",
+            concepts=[PackConcept(id="intro", title="Intro", prerequisites=[], masteryDimension="mastery", exerciseReward="Intro marker")],
+            onboarding={"headline":"Start privately","body":"Personal pack lane.","checklist":["Create pack","Use pack"]},
+            compliance=PackCompliance(sources=0, attributionRequired=False, shareAlikeRequired=False, noncommercialOnly=False, flags=[])
+        ),
+        submitted_by_user_id=1,
+        policy_lane="personal",
+        is_published=True,
+        change_summary="Initial personal pack"
     )
     print("Seeded database. Demo users: wesley/demo-pass and contrib/demo-pass")
