@@ -4,46 +4,11 @@ from datetime import datetime, timezone
 from sqlalchemy import select
 from .db import SessionLocal
 from .orm import UserORM, RefreshTokenORM, PackORM, PackVersionORM, ReviewCommentORM, ContributionSubmissionORM, ReviewTaskORM, LearnerORM, MasteryRecordORM, EvidenceEventORM, EvaluatorJobORM
-from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent, DeploymentPolicyProfile
+from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent
 from .auth import verify_password
-from .config import load_settings
-
-settings = load_settings()
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
-
-def deployment_policy_profile() -> DeploymentPolicyProfile:
-    profile = settings.deployment_policy_profile
-    if profile == "community_repo":
-        return DeploymentPolicyProfile(
-            profile_name="community_repo",
-            default_personal_lane_enabled=True,
-            default_community_lane_enabled=True,
-            community_publish_requires_approval=True,
-            personal_publish_direct=True,
-            reviewer_assignment_required=True,
-            description="Shared repository deployment with stronger community controls."
-        )
-    if profile == "team_lab":
-        return DeploymentPolicyProfile(
-            profile_name="team_lab",
-            default_personal_lane_enabled=True,
-            default_community_lane_enabled=True,
-            community_publish_requires_approval=True,
-            personal_publish_direct=True,
-            reviewer_assignment_required=False,
-            description="Team deployment with shared review but moderate overhead."
-        )
-    return DeploymentPolicyProfile(
-        profile_name="single_user",
-        default_personal_lane_enabled=True,
-        default_community_lane_enabled=True,
-        community_publish_requires_approval=True,
-        personal_publish_direct=True,
-        reviewer_assignment_required=False,
-        description="Single-user/private-first deployment."
-    )
 
 def pack_diff(old_pack: dict | None, new_pack: dict) -> dict:
     old_pack = old_pack or {}
@@ -219,9 +184,6 @@ def create_submission(pack: PackData, contributor_user_id: int, submission_summa
         proposed_payload = pack.model_dump()
         diff = pack_diff(current_payload, proposed_payload)
         gates = gate_summary(validation, provenance)
-        task_note = "Community submission awaiting reviewer attention"
-        if deployment_policy_profile().reviewer_assignment_required:
-            task_note += " (reviewer assignment required by deployment policy)"
         sub = ContributionSubmissionORM(
             pack_id=pack.id,
             policy_lane="community",
@@ -240,7 +202,7 @@ def create_submission(pack: PackData, contributor_user_id: int, submission_summa
             submission_id=sub.id,
             reviewer_user_id=None,
             task_status="open",
-            task_note=task_note,
+            task_note="Community submission awaiting reviewer attention",
             created_at=now_iso(),
         ))
         db.commit()
@@ -289,7 +251,7 @@ def can_publish_pack(pack_id: str) -> tuple[bool, str]:
             return False, "Pack not found"
         if row.policy_lane == "personal":
             return True, "Personal lane pack may publish directly"
-        if deployment_policy_profile().community_publish_requires_approval and row.governance_state != "approved":
+        if row.governance_state != "approved":
             return False, "Community lane pack must be approved before publication"
         validation = json.loads(row.validation_json or "{}")
         provenance = json.loads(row.provenance_json or "{}")
@@ -304,9 +266,14 @@ def set_pack_publication(pack_id: str, is_published: bool):
         if row is None:
             return False, "Pack not found"
         if is_published:
-            ok, reason = can_publish_pack(pack_id)
-            if not ok:
-                return False, reason
+            validation = json.loads(row.validation_json or "{}")
+            provenance = json.loads(row.provenance_json or "{}")
+            gates = gate_summary(validation, provenance)
+            if row.policy_lane == "community":
+                if row.governance_state != "approved":
+                    return False, "Community lane pack must be approved before publication"
+                if not gates.get("ready_for_review", False):
+                    return False, "Community lane gates not satisfied"
         row.is_published = is_published
         db.commit()
         return True, "Updated"

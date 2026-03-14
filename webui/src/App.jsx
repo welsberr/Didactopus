@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { login, refresh, fetchDeploymentPolicy, fetchAgentCapabilities, fetchPacks, upsertPack, createContribution, fetchAdminPacks, fetchPackValidation, fetchPackProvenance, fetchPackVersions, fetchPackComments, fetchSubmissions, fetchSubmissionDiff, fetchSubmissionGates, fetchReviewTasks, publishPack, fetchPublishability } from "./api";
+import { login, refresh, fetchPacks, upsertPack, createContribution, fetchAdminPacks, fetchPackValidation, fetchPackProvenance, fetchPackVersions, fetchPackComments, fetchSubmissions, fetchSubmissionDiff, fetchSubmissionGates, fetchReviewTasks, publishPack, fetchPublishability, governanceAction, addReviewComment } from "./api";
 import { loadAuth, saveAuth, clearAuth } from "./authStore";
 
 function LoginView({ onAuth }) {
@@ -29,7 +29,6 @@ function LoginView({ onAuth }) {
 function NavTabs({ tab, setTab, role }) {
   return (
     <div className="tab-row">
-      <button className={tab==="policy" ? "active-tab" : ""} onClick={() => setTab("policy")}>Policy & agent hooks</button>
       <button className={tab==="personal" ? "active-tab" : ""} onClick={() => setTab("personal")}>Personal packs</button>
       <button className={tab==="contribute" ? "active-tab" : ""} onClick={() => setTab("contribute")}>Community contribution</button>
       {role === "admin" ? <>
@@ -42,9 +41,7 @@ function NavTabs({ tab, setTab, role }) {
 
 export default function App() {
   const [auth, setAuth] = useState(loadAuth());
-  const [tab, setTab] = useState("policy");
-  const [deploymentPolicy, setDeploymentPolicy] = useState(null);
-  const [agentCapabilities, setAgentCapabilities] = useState(null);
+  const [tab, setTab] = useState("personal");
   const [packs, setPacks] = useState([]);
   const [adminPacks, setAdminPacks] = useState([]);
   const [selectedPackId, setSelectedPackId] = useState("");
@@ -58,6 +55,8 @@ export default function App() {
   const [submissionGates, setSubmissionGates] = useState(null);
   const [publishability, setPublishability] = useState(null);
   const [reviewTasks, setReviewTasks] = useState([]);
+  const [commentText, setCommentText] = useState("Looks structurally plausible.");
+  const [reviewSummary, setReviewSummary] = useState("Reviewed and ready for next stage.");
   const [message, setMessage] = useState("");
   const [personalPack, setPersonalPack] = useState({
     id: "my-private-pack",
@@ -104,14 +103,11 @@ export default function App() {
   useEffect(() => {
     if (!auth) return;
     async function load() {
-      setDeploymentPolicy(await guarded((token) => fetchDeploymentPolicy(token)));
-      setAgentCapabilities(await guarded((token) => fetchAgentCapabilities(token)));
       const p = await guarded((token) => fetchPacks(token));
       setPacks(p);
+      setSelectedPackId((prev) => prev || p[0]?.id || "");
       if (auth.role === "admin") {
-        const ap = await guarded((token) => fetchAdminPacks(token));
-        setAdminPacks(ap);
-        setSelectedPackId((prev) => prev || ap[0]?.id || "");
+        setAdminPacks(await guarded((token) => fetchAdminPacks(token)));
         setSubmissions(await guarded((token) => fetchSubmissions(token)));
         setReviewTasks(await guarded((token) => fetchReviewTasks(token)));
       }
@@ -151,6 +147,21 @@ export default function App() {
     setMessage(`Community submission created: ${result.submission_id}`);
   }
 
+  async function doGovernance(status) {
+    await guarded((token) => governanceAction(token, selectedPackId, { status, review_summary: reviewSummary }));
+    setAdminPacks(await guarded((token) => fetchAdminPacks(token)));
+    setVersions(await guarded((token) => fetchPackVersions(token, selectedPackId)));
+    setPublishability(await guarded((token) => fetchPublishability(token, selectedPackId)));
+    setMessage(`Pack moved to ${status}`);
+  }
+
+  async function addCommentNow() {
+    const versionNumber = versions[0]?.version_number || 1;
+    await guarded((token) => addReviewComment(token, selectedPackId, versionNumber, { comment_text: commentText, disposition: "comment" }));
+    setComments(await guarded((token) => fetchPackComments(token, selectedPackId)));
+    setMessage("Review comment added");
+  }
+
   async function publishSelected() {
     const result = await guarded((token) => publishPack(token, selectedPackId, true));
     setMessage(result.reason || "Publish updated");
@@ -164,8 +175,8 @@ export default function App() {
     <div className="page">
       <header className="hero">
         <div>
-          <h1>Didactopus deployment policy + agent hooks</h1>
-          <p>Policy profiles plus explicit API parity for human UI use and AI learner use.</p>
+          <h1>Didactopus dual-lane policy layer</h1>
+          <p>Personal packs stay low-friction. Community packs keep gates, review, and approval workflows.</p>
           <div className="muted">Signed in as {auth.username} ({auth.role})</div>
           {message ? <div className="message">{message}</div> : null}
         </div>
@@ -178,20 +189,6 @@ export default function App() {
       </header>
 
       <NavTabs tab={tab} setTab={setTab} role={auth.role} />
-
-      {tab === "policy" && (
-        <main className="layout twocol">
-          <section className="card">
-            <h2>Deployment policy profile</h2>
-            <pre className="prebox">{JSON.stringify(deploymentPolicy, null, 2)}</pre>
-          </section>
-          <section className="card">
-            <h2>AI learner capability hooks</h2>
-            <p className="muted">This installation exposes direct API hooks for an AI learner instead of requiring UI mediation.</p>
-            <pre className="prebox">{JSON.stringify(agentCapabilities, null, 2)}</pre>
-          </section>
-        </main>
-      )}
 
       {tab === "personal" && (
         <main className="layout onecol">
@@ -257,7 +254,13 @@ export default function App() {
         <main className="layout twocol">
           <section className="card">
             <h2>Governance and publishability</h2>
-            <button onClick={publishSelected}>Publish</button>
+            <div className="button-row">
+              <button onClick={() => doGovernance("in_review")}>Move to in_review</button>
+              <button onClick={() => doGovernance("approved")}>Approve</button>
+              <button onClick={() => doGovernance("rejected")}>Reject</button>
+              <button onClick={publishSelected}>Publish</button>
+            </div>
+            <label>Review summary<textarea value={reviewSummary} onChange={(e) => setReviewSummary(e.target.value)} /></label>
             <h3>Publishability</h3>
             <pre className="prebox">{JSON.stringify(publishability, null, 2)}</pre>
             <h3>Validation</h3>
@@ -269,6 +272,8 @@ export default function App() {
             <h2>Versions and comments</h2>
             <h3>Versions</h3>
             <pre className="prebox">{JSON.stringify(versions, null, 2)}</pre>
+            <label>Reviewer comment<textarea value={commentText} onChange={(e) => setCommentText(e.target.value)} /></label>
+            <button className="primary" onClick={addCommentNow}>Add comment</button>
             <h3>Comments</h3>
             <pre className="prebox">{JSON.stringify(comments, null, 2)}</pre>
           </section>

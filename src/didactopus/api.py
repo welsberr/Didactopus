@@ -5,10 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from .config import load_settings
 from .db import Base, engine
-from .models import LoginRequest, RefreshRequest, TokenPair, CreateLearnerRequest, LearnerState, EvidenceEvent, EvaluatorSubmission, EvaluatorJobStatus, CreatePackRequest, GovernanceAction, ReviewCommentCreate, ContributionSubmissionCreate, AgentCapabilityManifest, AgentLearnerPlanRequest, AgentLearnerPlanResponse
+from .models import LoginRequest, RefreshRequest, TokenPair, CreateLearnerRequest, LearnerState, EvidenceEvent, EvaluatorSubmission, EvaluatorJobStatus, CreatePackRequest, GovernanceAction, ReviewCommentCreate, ContributionSubmissionCreate
 from .repository import (
     authenticate_user, get_user_by_id, store_refresh_token, refresh_token_active, revoke_refresh_token,
-    deployment_policy_profile, list_packs_for_user, list_pack_admin_rows, get_pack, get_pack_row, get_pack_validation, get_pack_provenance,
+    list_packs_for_user, list_pack_admin_rows, get_pack, get_pack_row, get_pack_validation, get_pack_provenance,
     upsert_pack, create_submission, list_submissions, get_submission_diff, get_submission_gates, list_review_tasks,
     set_pack_publication, can_publish_pack, set_governance_state, list_pack_versions, add_review_comment, list_review_comments,
     create_learner, list_learners_for_user, learner_owned_by_user, load_learner_state,
@@ -56,35 +56,6 @@ def ensure_pack_access(user, pack_id: str):
     if row.owner_user_id == user.id:
         return row
     raise HTTPException(status_code=403, detail="Pack not accessible by this user")
-
-@app.get("/api/deployment-policy")
-def api_deployment_policy(user = Depends(current_user)):
-    return deployment_policy_profile().model_dump()
-
-@app.get("/api/agent/capabilities", response_model=AgentCapabilityManifest)
-def api_agent_capabilities(user = Depends(current_user)):
-    return AgentCapabilityManifest()
-
-@app.post("/api/agent/learner-plan", response_model=AgentLearnerPlanResponse)
-def api_agent_learner_plan(payload: AgentLearnerPlanRequest, user = Depends(current_user)):
-    ensure_learner_access(user, payload.learner_id)
-    ensure_pack_access(user, payload.pack_id)
-    state = load_learner_state(payload.learner_id)
-    pack = get_pack(payload.pack_id)
-    if pack is None:
-        raise HTTPException(status_code=404, detail="Pack not found")
-    cards = recommend_next(state, pack)
-    return AgentLearnerPlanResponse(
-        learner_id=payload.learner_id,
-        pack_id=payload.pack_id,
-        next_cards=cards,
-        suggested_actions=[
-            "Read current learner state",
-            "Select the highest-priority next card",
-            "Attempt the exercise or checkpoint",
-            "Post evidence and refresh recommendations",
-        ],
-    )
 
 @app.post("/api/login", response_model=TokenPair)
 def login(payload: LoginRequest):

@@ -21,7 +21,7 @@ class PackORM(Base):
     __tablename__ = "packs"
     id: Mapped[str] = mapped_column(String(100), primary_key=True)
     owner_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    policy_lane: Mapped[str] = mapped_column(String(50), default="personal")
+    policy_lane: Mapped[str] = mapped_column(String(50), default="personal")  # personal | community
     title: Mapped[str] = mapped_column(String(255))
     subtitle: Mapped[str] = mapped_column(Text, default="")
     level: Mapped[str] = mapped_column(String(100), default="novice-friendly")

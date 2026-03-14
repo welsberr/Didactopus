@@ -38,7 +38,9 @@ def main():
             title="Wesley Private Pack",
             subtitle="Personal pack example without community friction.",
             level="novice-friendly",
-            concepts=[PackConcept(id="intro", title="Intro", prerequisites=[], masteryDimension="mastery", exerciseReward="Intro marker")],
+            concepts=[
+                PackConcept(id="intro", title="Intro", prerequisites=[], masteryDimension="mastery", exerciseReward="Intro marker"),
+            ],
             onboarding={"headline":"Start privately","body":"Personal pack lane.","checklist":["Create pack","Use pack"]},
             compliance=PackCompliance(sources=0, attributionRequired=False, shareAlikeRequired=False, noncommercialOnly=False, flags=[])
         ),

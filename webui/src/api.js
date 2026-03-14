@@ -16,8 +16,6 @@ export async function refresh(refreshToken) {
   if (!res.ok) throw new Error("refresh failed");
   return await res.json();
 }
-export async function fetchDeploymentPolicy(token) { const res = await fetch(`${API}/deployment-policy`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchDeploymentPolicy failed"); return await res.json(); }
-export async function fetchAgentCapabilities(token) { const res = await fetch(`${API}/agent/capabilities`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchAgentCapabilities failed"); return await res.json(); }
 export async function fetchPacks(token) { const res = await fetch(`${API}/packs`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchPacks failed"); return await res.json(); }
 export async function upsertPack(token, payload) { const res = await fetch(`${API}/packs`, { method: "POST", headers: authHeaders(token), body: JSON.stringify(payload) }); if (!res.ok) throw new Error("upsertPack failed"); return await res.json(); }
 export async function createContribution(token, payload) { const res = await fetch(`${API}/contributions`, { method: "POST", headers: authHeaders(token), body: JSON.stringify(payload) }); if (!res.ok) throw new Error("createContribution failed"); return await res.json(); }
@@ -32,3 +30,5 @@ export async function fetchSubmissionGates(token, submissionId) { const res = aw
 export async function fetchReviewTasks(token) { const res = await fetch(`${API}/admin/review-tasks`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchReviewTasks failed"); return await res.json(); }
 export async function publishPack(token, packId, isPublished) { const res = await fetch(`${API}/admin/packs/${packId}/publish?is_published=${isPublished}`, { method: "POST", headers: authHeaders(token, false) }); if (!res.ok) throw new Error("publishPack failed"); return await res.json(); }
 export async function fetchPublishability(token, packId) { const res = await fetch(`${API}/admin/packs/${packId}/publishability`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchPublishability failed"); return await res.json(); }
+export async function governanceAction(token, packId, payload) { const res = await fetch(`${API}/admin/packs/${packId}/governance`, { method: "POST", headers: authHeaders(token), body: JSON.stringify(payload) }); if (!res.ok) throw new Error("governanceAction failed"); return await res.json(); }
+export async function addReviewComment(token, packId, versionNumber, payload) { const res = await fetch(`${API}/admin/packs/${packId}/comments?version_number=${versionNumber}`, { method: "POST", headers: authHeaders(token), body: JSON.stringify(payload) }); if (!res.ok) throw new Error("addReviewComment failed"); return await res.json(); }
