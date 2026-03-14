@@ -1,33 +1,13 @@
 concepts:
-  - id: a
-    title: Foundations
-    description: Introductory foundations concept with broad scope.
-    prerequisites: [c]
-  - id: b
-    title: Advanced Analysis
-    description: Advanced analysis of results in a difficult domain.
-    prerequisites: [a]
-  - id: c
-    title: Methods
-    description: Methods and procedures for analysis in context.
-    prerequisites: [b]
-  - id: isolated
-    title: Isolated Topic
-    description: A topic disconnected from the rest of the graph.
+  - id: prior-and-posterior
+    title: Prior and Posterior
+    description: Beliefs before and after evidence.
     prerequisites: []
-  - id: bottleneck
-    title: Core Bottleneck
-    description: Central concept required by many dependents in the pack.
+  - id: posterior-analysis
+    title: Posterior Analysis
+    description: Beliefs before and after evidence.
     prerequisites: []
-  - id: d1
-    title: Dependent One
-    description: Depends on a single core bottleneck concept.
-    prerequisites: [bottleneck]
-  - id: d2
-    title: Dependent Two
-    description: Depends on a single core bottleneck concept.
-    prerequisites: [bottleneck]
-  - id: d3
-    title: Dependent Three
-    description: Depends on a single core bottleneck concept.
-    prerequisites: [bottleneck]
+  - id: statistics-and-probability
+    title: Statistics and Probability
+    description: General overview.
+    prerequisites: []

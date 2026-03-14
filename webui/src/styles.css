@@ -18,6 +18,7 @@ button:hover { border-color: var(--accent); }
 .preview-grid { margin-top: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .layout { margin-top: 16px; display: grid; grid-template-columns: 290px 1fr 360px; gap: 16px; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 16px; }
+.semantic-card { grid-column: span 4; }
 .sidebar, .content, .rightbar { display: flex; flex-direction: column; gap: 16px; }
 .concept-btn { width: 100%; text-align: left; display: flex; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
 .concept-btn.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(45,108,223,0.08); }
@@ -36,5 +37,6 @@ ul { padding-left: 18px; }
 .checkline input { width: auto; margin-top: 0; }
 @media (max-width: 1100px) {
   .summary-grid, .preview-grid { grid-template-columns: repeat(2, 1fr); }
+  .semantic-card { grid-column: span 2; }
   .layout { grid-template-columns: 1fr; }
 }

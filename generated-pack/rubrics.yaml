@@ -1,1 +1,6 @@
-rubrics: []
+rubrics:
+  - id: basic-rubric
+    title: Basic Rubric
+    criteria:
+      - correctness
+      - explanation

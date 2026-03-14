@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "didactopus"
 version = "0.1.0"
-description = "Didactopus: graph-aware prerequisite analysis"
+description = "Didactopus: semantic QA layer for domain packs"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}

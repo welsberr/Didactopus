@@ -153,10 +153,10 @@ export default function App() {
     <div className="page">
       <header className="hero">
         <div>
-          <h1>Didactopus Graph QA</h1>
+          <h1>Didactopus Semantic QA</h1>
           <p>
             Reduce the activation-energy hump from generated draft packs to curated review workspaces
-            by surfacing prerequisite-graph problems before import.
+            by surfacing semantic curation issues before import.
           </p>
           <div className="small">{message}</div>
         </div>
@@ -202,18 +202,21 @@ export default function App() {
             <div><strong>Pack:</strong> {importPreview.summary?.display_name || importPreview.summary?.pack_name || "-"}</div>
             <div><strong>Version:</strong> {importPreview.summary?.version || "-"}</div>
             <div><strong>Concepts:</strong> {importPreview.summary?.concept_count ?? "-"}</div>
+            <div><strong>Roadmap Stages:</strong> {importPreview.summary?.roadmap_stage_count ?? "-"}</div>
+            <div><strong>Projects:</strong> {importPreview.summary?.project_count ?? "-"}</div>
+            <div><strong>Rubrics:</strong> {importPreview.summary?.rubric_count ?? "-"}</div>
           </div>
           <div className="card">
             <h2>Validation Errors</h2>
             <ul>{(importPreview.errors || []).length ? importPreview.errors.map((x, i) => <li key={i}>{x}</li>) : <li>none</li>}</ul>
           </div>
           <div className="card">
+            <h2>Validation Warnings</h2>
+            <ul>{(importPreview.warnings || []).length ? importPreview.warnings.map((x, i) => <li key={i}>{x}</li>) : <li>none</li>}</ul>
+          </div>
+          <div className="card semantic-card">
             <h2>Semantic QA Warnings</h2>
             <ul>{(importPreview.semantic_warnings || []).length ? importPreview.semantic_warnings.map((x, i) => <li key={i}>{x}</li>) : <li>none</li>}</ul>
-          </div>
-          <div className="card">
-            <h2>Graph QA Warnings</h2>
-            <ul>{(importPreview.graph_warnings || []).length ? importPreview.graph_warnings.map((x, i) => <li key={i}>{x}</li>) : <li>none</li>}</ul>
           </div>
         </section>
       )}

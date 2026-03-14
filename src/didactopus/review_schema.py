@@ -56,4 +56,3 @@ class ImportPreview(BaseModel):
     warnings: list[str] = Field(default_factory=list)
     summary: dict = Field(default_factory=dict)
     semantic_warnings: list[str] = Field(default_factory=list)
-    graph_warnings: list[str] = Field(default_factory=list)
