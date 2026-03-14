@@ -1,9 +1,5 @@
 stages:
   - id: stage-1
-    title: Foundations
+    title: Bad Stage
     concepts:
-      - statistics-and-probability
-  - id: stage-2
-    title: Advanced Inference
-    concepts:
-      - posterior-analysis
+      - missing-concept

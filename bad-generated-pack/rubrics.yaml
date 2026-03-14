@@ -1,5 +1,4 @@
 rubrics:
-  - id: basic-rubric
-    title: Basic Rubric
-    criteria:
-      - correctness
+  - id:
+    title: Broken Rubric
+    criteria: invalid

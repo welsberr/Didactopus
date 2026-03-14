@@ -1,1 +1,5 @@
-projects: []
+projects:
+  - id: bad-project
+    title: Bad Project
+    prerequisites:
+      - missing-concept

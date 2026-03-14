@@ -46,11 +46,7 @@ export default function App() {
     });
     const data = await res.json();
     setImportPreview(data);
-    if (data.ok) {
-      setMessage("Import preview ready.");
-    } else {
-      setMessage("Import preview found blocking errors.");
-    }
+    setMessage(data.ok ? "Import preview ready." : "Import preview found blocking errors.");
   }
 
   async function importWorkspace() {
@@ -157,10 +153,10 @@ export default function App() {
     <div className="page">
       <header className="hero">
         <div>
-          <h1>Didactopus Import Validation</h1>
+          <h1>Didactopus Full Pack Validation</h1>
           <p>
             Reduce the activation-energy hump from generated draft packs to curated review workspaces
-            by previewing structure, warnings, and overwrite risk before import.
+            by previewing structural coherence, warnings, and overwrite risk before import.
           </p>
           <div className="small">{message}</div>
         </div>
@@ -205,14 +201,17 @@ export default function App() {
             <div><strong>Overwrite Required:</strong> {String(importPreview.overwrite_required)}</div>
             <div><strong>Pack:</strong> {importPreview.summary?.display_name || importPreview.summary?.pack_name || "-"}</div>
             <div><strong>Version:</strong> {importPreview.summary?.version || "-"}</div>
-            <div><strong>Concept Count:</strong> {importPreview.summary?.concept_count ?? "-"}</div>
+            <div><strong>Concepts:</strong> {importPreview.summary?.concept_count ?? "-"}</div>
+            <div><strong>Roadmap Stages:</strong> {importPreview.summary?.roadmap_stage_count ?? "-"}</div>
+            <div><strong>Projects:</strong> {importPreview.summary?.project_count ?? "-"}</div>
+            <div><strong>Rubrics:</strong> {importPreview.summary?.rubric_count ?? "-"}</div>
           </div>
           <div className="card">
-            <h2>Errors</h2>
+            <h2>Validation Errors</h2>
             <ul>{(importPreview.errors || []).length ? importPreview.errors.map((x, i) => <li key={i}>{x}</li>) : <li>none</li>}</ul>
           </div>
           <div className="card">
-            <h2>Warnings</h2>
+            <h2>Validation Warnings</h2>
             <ul>{(importPreview.warnings || []).length ? importPreview.warnings.map((x, i) => <li key={i}>{x}</li>) : <li>none</li>}</ul>
           </div>
         </section>

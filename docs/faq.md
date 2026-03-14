@@ -1,28 +1,32 @@
 # FAQ
 
-## Why add import validation?
+## Why add a full pack validator?
 
-Because reducing startup friction does not mean hiding risk. A user still needs
-a clear signal about whether a generated draft pack is structurally usable.
+Because import safety is not only about whether files exist. It is also about
+whether the pack makes sense as a Didactopus artifact set.
 
-## How does this support the activation-energy goal?
+## How does this help with the activation-energy problem?
 
-It removes uncertainty from the handoff step. Users can see whether a draft pack
-looks valid before committing it into a workspace.
+It reduces uncertainty at a crucial point. Users can see whether a generated pack
+is coherent enough to work with before losing momentum in manual debugging.
 
-## What does the preview check do?
+## What does it validate?
 
-In this scaffold it checks:
+In this scaffold it validates:
 - required files
-- basic YAML parsing
-- key metadata presence
-- concept count
-- overwrite conditions
+- YAML parsing
+- metadata presence
+- duplicate concept ids
+- roadmap references
+- project prerequisite references
+- rubric structure
+- weak concept entries
 
-## Does preview guarantee correctness?
+## Does validation guarantee quality?
 
-No. It is a safety and structure check, not a guarantee of pedagogical quality.
+No. It checks structural coherence, not whether the pack is the best possible
+representation of a domain.
 
-## Can import still overwrite an existing workspace?
+## Where are validation results shown?
 
-Yes, but only if overwrite is explicitly allowed.
+They are included in import preview results and surfaced in the UI.

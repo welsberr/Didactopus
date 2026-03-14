@@ -120,7 +120,7 @@ class ReviewBridgeHandler(BaseHTTPRequestHandler):
         json_response(self, 404, {"error": "not found"})
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Didactopus local review bridge server with import validation")
+    parser = argparse.ArgumentParser(description="Didactopus local review bridge server with full pack validation")
     parser.add_argument("--config", default="configs/config.example.yaml")
     return parser
 

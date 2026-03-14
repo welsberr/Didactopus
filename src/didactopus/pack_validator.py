@@ -11,52 +11,32 @@ def _safe_load_yaml(path: Path, errors: list[str], label: str):
         errors.append(f"Could not parse {label}: {exc}")
         return {}
 
-def load_pack_artifacts(source_dir: str | Path) -> dict:
+def validate_pack_directory(source_dir: str | Path) -> dict:
     source = Path(source_dir)
     errors: list[str] = []
+    warnings: list[str] = []
+    summary: dict = {}
+
     if not source.exists():
-        return {"ok": False, "errors": [f"Source directory does not exist: {source}"], "warnings": [], "summary": {}, "artifacts": {}}
+        return {"ok": False, "errors": [f"Source directory does not exist: {source}"], "warnings": [], "summary": {}}
     if not source.is_dir():
-        return {"ok": False, "errors": [f"Source path is not a directory: {source}"], "warnings": [], "summary": {}, "artifacts": {}}
+        return {"ok": False, "errors": [f"Source path is not a directory: {source}"], "warnings": [], "summary": {}}
 
     for filename in REQUIRED_FILES:
         if not (source / filename).exists():
             errors.append(f"Missing required file: {filename}")
+
     if errors:
-        return {"ok": False, "errors": errors, "warnings": [], "summary": {}, "artifacts": {}}
+        return {"ok": False, "errors": errors, "warnings": warnings, "summary": summary}
 
     pack_data = _safe_load_yaml(source / "pack.yaml", errors, "pack.yaml")
     concepts_data = _safe_load_yaml(source / "concepts.yaml", errors, "concepts.yaml")
     roadmap_data = _safe_load_yaml(source / "roadmap.yaml", errors, "roadmap.yaml")
     projects_data = _safe_load_yaml(source / "projects.yaml", errors, "projects.yaml")
     rubrics_data = _safe_load_yaml(source / "rubrics.yaml", errors, "rubrics.yaml")
-    return {
-        "ok": len(errors) == 0,
-        "errors": errors,
-        "warnings": [],
-        "summary": {},
-        "artifacts": {
-            "pack": pack_data,
-            "concepts": concepts_data,
-            "roadmap": roadmap_data,
-            "projects": projects_data,
-            "rubrics": rubrics_data,
-        },
-    }
 
-def validate_pack_directory(source_dir: str | Path) -> dict:
-    loaded = load_pack_artifacts(source_dir)
-    errors = list(loaded["errors"])
-    warnings = list(loaded["warnings"])
-    summary = dict(loaded["summary"])
-    if not loaded["ok"]:
+    if errors:
         return {"ok": False, "errors": errors, "warnings": warnings, "summary": summary}
-
-    pack_data = loaded["artifacts"]["pack"]
-    concepts_data = loaded["artifacts"]["concepts"]
-    roadmap_data = loaded["artifacts"]["roadmap"]
-    projects_data = loaded["artifacts"]["projects"]
-    rubrics_data = loaded["artifacts"]["rubrics"]
 
     for field in ["name", "display_name", "version"]:
         if field not in pack_data:
