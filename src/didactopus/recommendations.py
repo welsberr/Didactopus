@@ -13,14 +13,7 @@ def recommend_next_concepts(
     for concept in concepts:
         cid = concept.get("id")
         prereqs = list(concept.get("prerequisites", []) or [])
-        ready = concept_ready(
-            state,
-            cid,
-            prereqs,
-            dimension=dimension,
-            min_score=min_score,
-            min_confidence=min_confidence,
-        )
+        ready = concept_ready(state, cid, prereqs, dimension=dimension, min_score=min_score, min_confidence=min_confidence)
         if ready:
             existing = state.get_record(cid, dimension)
             if existing is None or existing.score < min_score or existing.confidence < min_confidence:
