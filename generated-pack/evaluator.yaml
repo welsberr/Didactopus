@@ -1,8 +1,10 @@
 dimensions:
+  - name: correctness
+    description: factual and inferential correctness
   - name: explanation
-    description: quality of explanation
-  - name: comparison
-    description: quality of comparison
+    description: quality of explanation and comparison
+  - name: critique
+    description: quality of critical assessment
 evidence_types:
   - explanation
-  - comparison report
+  - critique report

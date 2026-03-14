@@ -1,13 +1,5 @@
 stages:
   - id: stage-1
     title: Start
-    concepts: [c1, c2, c3]
-    checkpoint: []
-  - id: stage-2
-    title: Tiny Bridge
-    concepts: [c4]
-    checkpoint: []
-  - id: stage-3
-    title: Ending
-    concepts: [c5]
+    concepts: [c1, c2]
     checkpoint: []

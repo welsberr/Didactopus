@@ -2,12 +2,10 @@ concepts:
   - id: bayes-prior
     title: Bayes Prior
     description: Prior beliefs before evidence in a probabilistic model.
-    prerequisites: []
+    mastery_signals:
+      - Explain a prior distribution clearly.
   - id: bayes-posterior
     title: Bayes Posterior
     description: Updated beliefs after evidence in a probabilistic model.
-    prerequisites: [bayes-prior]
-  - id: model-checking
-    title: Model Checking
-    description: Evaluate whether model assumptions and fit remain plausible.
-    prerequisites: [bayes-posterior]
+    mastery_signals:
+      - Compare prior and posterior beliefs.

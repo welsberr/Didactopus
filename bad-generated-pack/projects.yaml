@@ -1,6 +1,6 @@
 projects:
-  - id: early-capstone
-    title: Capstone Final Project
+  - id: p1
+    title: Final Memo
     prerequisites: [c1]
     deliverables:
-      - short memo
+      - brief memo

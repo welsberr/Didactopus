@@ -9,8 +9,3 @@ stages:
     concepts: [bayes-posterior]
     checkpoint:
       - Compare prior and posterior beliefs.
-  - id: stage-3
-    title: Model Checking
-    concepts: [model-checking]
-    checkpoint:
-      - Critique a model fit.

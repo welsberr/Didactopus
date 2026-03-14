@@ -2,20 +2,10 @@ concepts:
   - id: c1
     title: Foundations
     description: Broad foundations topic with many ideas.
-    prerequisites: []
+    mastery_signals:
+      - Explain core foundations.
   - id: c2
     title: Methods
-    description: Methods concept.
-    prerequisites: [c1]
-  - id: c3
-    title: Advanced Inference
-    description: Advanced inference topic.
-    prerequisites: [c1, c2]
-  - id: c4
-    title: Detached Topic
-    description: Detached topic with no assessment coverage.
-    prerequisites: []
-  - id: c5
-    title: Capstone Topic
-    description: Final synthesis topic.
-    prerequisites: [c3]
+    description: Methods concept with sparse explicit assessment.
+    mastery_signals:
+      - Use methods appropriately.

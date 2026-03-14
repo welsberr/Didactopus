@@ -1,6 +1,7 @@
 projects:
-  - id: culminating-analysis
-    title: Final Model Critique
-    prerequisites: [bayes-prior, bayes-posterior, model-checking]
+  - id: p1
+    title: Final Bayesian Comparison
+    prerequisites: [bayes-prior, bayes-posterior]
     deliverables:
-      - short report
+      - explanation of prior and posterior updates
+      - critique report
