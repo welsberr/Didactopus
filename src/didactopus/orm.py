@@ -10,13 +10,6 @@ class UserORM(Base):
     role: Mapped[str] = mapped_column(String(50), default="learner")
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
-class RefreshTokenORM(Base):
-    __tablename__ = "refresh_tokens"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
-    token_id: Mapped[str] = mapped_column(String(255), unique=True, index=True)
-    is_revoked: Mapped[bool] = mapped_column(Boolean, default=False)
-
 class PackORM(Base):
     __tablename__ = "packs"
     id: Mapped[str] = mapped_column(String(100), primary_key=True)
@@ -28,61 +21,85 @@ class PackORM(Base):
     data_json: Mapped[str] = mapped_column(Text)
     is_published: Mapped[bool] = mapped_column(Boolean, default=False)
 
-class LearnerORM(Base):
-    __tablename__ = "learners"
-    id: Mapped[str] = mapped_column(String(100), primary_key=True)
-    owner_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
-    display_name: Mapped[str] = mapped_column(String(255), default="")
-
-class MasteryRecordORM(Base):
-    __tablename__ = "mastery_records"
+class KnowledgeCandidateORM(Base):
+    __tablename__ = "knowledge_candidates"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    learner_id: Mapped[str] = mapped_column(ForeignKey("learners.id"), index=True)
-    concept_id: Mapped[str] = mapped_column(String(100), index=True)
-    dimension: Mapped[str] = mapped_column(String(100), default="mastery")
-    score: Mapped[float] = mapped_column(Float, default=0.0)
-    confidence: Mapped[float] = mapped_column(Float, default=0.0)
-    evidence_count: Mapped[int] = mapped_column(Integer, default=0)
-    last_updated: Mapped[str] = mapped_column(String(100), default="")
-
-class EvidenceEventORM(Base):
-    __tablename__ = "evidence_events"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    learner_id: Mapped[str] = mapped_column(ForeignKey("learners.id"), index=True)
-    concept_id: Mapped[str] = mapped_column(String(100), index=True)
-    dimension: Mapped[str] = mapped_column(String(100), default="mastery")
-    score: Mapped[float] = mapped_column(Float, default=0.0)
-    confidence_hint: Mapped[float] = mapped_column(Float, default=0.5)
-    timestamp: Mapped[str] = mapped_column(String(100), default="")
-    kind: Mapped[str] = mapped_column(String(50), default="exercise")
-    source_id: Mapped[str] = mapped_column(String(255), default="")
-
-class RenderJobORM(Base):
-    __tablename__ = "render_jobs"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    source_type: Mapped[str] = mapped_column(String(50), default="learner_export")
+    source_artifact_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     learner_id: Mapped[str] = mapped_column(String(100), index=True)
     pack_id: Mapped[str] = mapped_column(String(100), index=True)
-    requested_format: Mapped[str] = mapped_column(String(20), default="gif")
-    fps: Mapped[int] = mapped_column(Integer, default=2)
-    theme: Mapped[str] = mapped_column(String(100), default="default")
-    status: Mapped[str] = mapped_column(String(50), default="queued")
-    bundle_dir: Mapped[str] = mapped_column(Text, default="")
-    payload_json: Mapped[str] = mapped_column(Text, default="")
-    manifest_path: Mapped[str] = mapped_column(Text, default="")
-    script_path: Mapped[str] = mapped_column(Text, default="")
-    error_text: Mapped[str] = mapped_column(Text, default="")
+    candidate_kind: Mapped[str] = mapped_column(String(100), index=True)
+    title: Mapped[str] = mapped_column(String(255))
+    summary: Mapped[str] = mapped_column(Text, default="")
+    structured_payload_json: Mapped[str] = mapped_column(Text, default="{}")
+    evidence_summary: Mapped[str] = mapped_column(Text, default="")
+    confidence_hint: Mapped[float] = mapped_column(Float, default=0.0)
+    novelty_score: Mapped[float] = mapped_column(Float, default=0.0)
+    synthesis_score: Mapped[float] = mapped_column(Float, default=0.0)
+    triage_lane: Mapped[str] = mapped_column(String(50), default="archive")
+    current_status: Mapped[str] = mapped_column(String(50), default="captured")
+    created_at: Mapped[str] = mapped_column(String(100), default="")
 
-class ArtifactORM(Base):
-    __tablename__ = "artifacts"
+class PromotionRecordORM(Base):
+    __tablename__ = "promotion_records"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    render_job_id: Mapped[int] = mapped_column(ForeignKey("render_jobs.id"), index=True)
-    learner_id: Mapped[str] = mapped_column(String(100), index=True)
+    candidate_id: Mapped[int] = mapped_column(ForeignKey("knowledge_candidates.id"), index=True)
+    promotion_target: Mapped[str] = mapped_column(String(50), index=True)
+    target_object_id: Mapped[str] = mapped_column(String(100), default="")
+    promotion_status: Mapped[str] = mapped_column(String(50), default="draft")
+    promoted_by: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    created_at: Mapped[str] = mapped_column(String(100), default="")
+
+class PackPatchProposalORM(Base):
+    __tablename__ = "pack_patch_proposals"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    candidate_id: Mapped[int] = mapped_column(ForeignKey("knowledge_candidates.id"), index=True)
     pack_id: Mapped[str] = mapped_column(String(100), index=True)
-    artifact_type: Mapped[str] = mapped_column(String(50), default="render_bundle")
-    format: Mapped[str] = mapped_column(String(20), default="gif")
-    title: Mapped[str] = mapped_column(String(255), default="")
-    path: Mapped[str] = mapped_column(Text, default="")
-    metadata_json: Mapped[str] = mapped_column(Text, default="{}")
-    retention_class: Mapped[str] = mapped_column(String(50), default="standard")
-    expires_at: Mapped[str] = mapped_column(String(100), default="")
-    is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
+    patch_type: Mapped[str] = mapped_column(String(100), default="content_revision")
+    title: Mapped[str] = mapped_column(String(255))
+    proposed_change_json: Mapped[str] = mapped_column(Text, default="{}")
+    evidence_summary: Mapped[str] = mapped_column(Text, default="")
+    reviewer_notes: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[str] = mapped_column(String(50), default="proposed")
+    current_version: Mapped[int] = mapped_column(Integer, default=1)
+    created_at: Mapped[str] = mapped_column(String(100), default="")
+
+class CurriculumDraftORM(Base):
+    __tablename__ = "curriculum_drafts"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    candidate_id: Mapped[int] = mapped_column(ForeignKey("knowledge_candidates.id"), index=True)
+    topic_focus: Mapped[str] = mapped_column(String(255), default="")
+    product_type: Mapped[str] = mapped_column(String(100), default="lesson_outline")
+    audience: Mapped[str] = mapped_column(String(100), default="general")
+    source_concepts_json: Mapped[str] = mapped_column(Text, default="[]")
+    content_markdown: Mapped[str] = mapped_column(Text, default="")
+    editorial_notes: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[str] = mapped_column(String(50), default="draft")
+    current_version: Mapped[int] = mapped_column(Integer, default=1)
+    created_at: Mapped[str] = mapped_column(String(100), default="")
+
+class SkillBundleORM(Base):
+    __tablename__ = "skill_bundles"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    candidate_id: Mapped[int] = mapped_column(ForeignKey("knowledge_candidates.id"), index=True)
+    skill_name: Mapped[str] = mapped_column(String(255))
+    domain: Mapped[str] = mapped_column(String(100), default="")
+    prerequisites_json: Mapped[str] = mapped_column(Text, default="[]")
+    expected_inputs_json: Mapped[str] = mapped_column(Text, default="[]")
+    failure_modes_json: Mapped[str] = mapped_column(Text, default="[]")
+    validation_checks_json: Mapped[str] = mapped_column(Text, default="[]")
+    canonical_examples_json: Mapped[str] = mapped_column(Text, default="[]")
+    status: Mapped[str] = mapped_column(String(50), default="draft")
+    current_version: Mapped[int] = mapped_column(Integer, default=1)
+    created_at: Mapped[str] = mapped_column(String(100), default="")
+
+class ObjectVersionORM(Base):
+    __tablename__ = "object_versions"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    object_kind: Mapped[str] = mapped_column(String(50), index=True)
+    object_id: Mapped[int] = mapped_column(Integer, index=True)
+    version_number: Mapped[int] = mapped_column(Integer, default=1)
+    payload_json: Mapped[str] = mapped_column(Text, default="{}")
+    editor_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    note: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[str] = mapped_column(String(100), default="")

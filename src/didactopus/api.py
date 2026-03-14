@@ -1,26 +1,27 @@
 from __future__ import annotations
-from fastapi import FastAPI, HTTPException, Header, Depends, BackgroundTasks
+from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
 import uvicorn
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from .db import Base, engine
-from .models import LoginRequest, RefreshRequest, TokenPair, CreateLearnerRequest, LearnerState, MediaRenderRequest, ArtifactRetentionUpdate, KnowledgeExportRequest
+from .models import (
+    LoginRequest, TokenPair, KnowledgeCandidateCreate, PromoteRequest,
+    SynthesisRunRequest, SynthesisPromoteRequest, CreateLearnerRequest,
+    ObjectEditRequest, PatchApplyRequest
+)
 from .repository import (
-    authenticate_user, get_user_by_id, store_refresh_token, refresh_token_active, revoke_refresh_token,
-    list_packs_for_user, get_pack, get_pack_row, create_learner, learner_owned_by_user, load_learner_state, save_learner_state,
-    create_render_job, list_render_jobs, list_artifacts, get_artifact, update_artifact_retention, soft_delete_artifact
+    authenticate_user, get_user_by_id, create_learner, create_candidate, list_candidates, get_candidate,
+    create_promotion, list_promotions, list_pack_patches, list_curriculum_drafts, list_skill_bundles,
+    list_synthesis_candidates, get_synthesis_candidate,
+    edit_pack_patch, edit_curriculum_draft, edit_skill_bundle, list_versions,
+    apply_pack_patch, export_curriculum_draft, export_skill_bundle
 )
 from .auth import issue_access_token, issue_refresh_token, decode_token, new_token_id
-from .engine import build_graph_frames, stable_layout
-from .worker import process_render_job
-from .knowledge_export import build_knowledge_snapshot
+from .synthesis import generate_synthesis_candidates
 
 Base.metadata.create_all(bind=engine)
-
-app = FastAPI(title="Didactopus API Prototype")
+app = FastAPI(title="Didactopus Object Versioning and Export API")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+_refresh_tokens = {}
 
 def current_user(authorization: str = Header(default="")):
     token = authorization.removeprefix("Bearer ").strip()
@@ -32,164 +33,118 @@ def current_user(authorization: str = Header(default="")):
         raise HTTPException(status_code=401, detail="Unauthorized")
     return user
 
-def ensure_learner_access(user, learner_id: str):
-    if user.role == "admin":
-        return
-    if not learner_owned_by_user(user.id, learner_id):
-        raise HTTPException(status_code=403, detail="Learner not accessible by this user")
-
-def ensure_pack_access(user, pack_id: str):
-    row = get_pack_row(pack_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="Pack not found")
-    if user.role == "admin":
-        return row
-    if row.policy_lane == "community":
-        return row
-    if row.owner_user_id == user.id:
-        return row
-    raise HTTPException(status_code=403, detail="Pack not accessible by this user")
-
-def future_iso(days: int) -> str:
-    return (datetime.now(timezone.utc) + timedelta(days=days)).isoformat()
+def require_reviewer(user = Depends(current_user)):
+    if user.role not in {"admin", "reviewer"}:
+        raise HTTPException(status_code=403, detail="Reviewer role required")
+    return user
 
 @app.post("/api/login", response_model=TokenPair)
 def login(payload: LoginRequest):
     user = authenticate_user(payload.username, payload.password)
-    if user is None:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    token_id = new_token_id()
-    store_refresh_token(user.id, token_id)
-    return TokenPair(access_token=issue_access_token(user.id, user.username, user.role), refresh_token=issue_refresh_token(user.id, user.username, user.role, token_id), username=user.username, role=user.role)
-
-@app.post("/api/refresh", response_model=TokenPair)
-def refresh(payload: RefreshRequest):
-    data = decode_token(payload.refresh_token)
-    if not data or data.get("kind") != "refresh":
-        raise HTTPException(status_code=401, detail="Invalid refresh token")
-    token_id = data.get("jti")
-    if not token_id or not refresh_token_active(token_id):
-        raise HTTPException(status_code=401, detail="Refresh token inactive")
-    user = get_user_by_id(int(data["sub"]))
-    if user is None:
-        raise HTTPException(status_code=401, detail="User not found")
-    revoke_refresh_token(token_id)
-    new_jti = new_token_id()
-    store_refresh_token(user.id, new_jti)
-    return TokenPair(access_token=issue_access_token(user.id, user.username, user.role), refresh_token=issue_refresh_token(user.id, user.username, user.role, new_jti), username=user.username, role=user.role)
-
-@app.get("/api/packs")
-def api_list_packs(user = Depends(current_user)):
-    return [p.model_dump() for p in list_packs_for_user(user.id, include_unpublished=(user.role == "admin"))]
+    if user is None: raise HTTPException(status_code=401, detail="Invalid credentials")
+    token_id = new_token_id(); _refresh_tokens[token_id] = user.id
+    return TokenPair(access_token=issue_access_token(user.id, user.username, user.role),
+                     refresh_token=issue_refresh_token(user.id, user.username, user.role, token_id),
+                     username=user.username, role=user.role)
 
 @app.post("/api/learners")
 def api_create_learner(payload: CreateLearnerRequest, user = Depends(current_user)):
     create_learner(user.id, payload.learner_id, payload.display_name)
     return {"ok": True, "learner_id": payload.learner_id}
 
-@app.get("/api/learners/{learner_id}/state")
-def api_get_learner_state(learner_id: str, user = Depends(current_user)):
-    ensure_learner_access(user, learner_id)
-    return load_learner_state(learner_id).model_dump()
+@app.post("/api/knowledge-candidates")
+def api_create_candidate(payload: KnowledgeCandidateCreate, reviewer = Depends(require_reviewer)):
+    return {"candidate_id": create_candidate(payload)}
 
-@app.put("/api/learners/{learner_id}/state")
-def api_put_learner_state(learner_id: str, state: LearnerState, user = Depends(current_user)):
-    ensure_learner_access(user, learner_id)
-    if learner_id != state.learner_id:
-        raise HTTPException(status_code=400, detail="Learner ID mismatch")
-    return save_learner_state(state).model_dump()
+@app.get("/api/knowledge-candidates")
+def api_list_candidates(reviewer = Depends(require_reviewer)):
+    return list_candidates()
 
-@app.get("/api/packs/{pack_id}/layout")
-def api_pack_layout(pack_id: str, user = Depends(current_user)):
-    ensure_pack_access(user, pack_id)
-    pack = get_pack(pack_id)
-    return {"pack_id": pack_id, "layout": stable_layout(pack)} if pack else {"pack_id": pack_id, "layout": {}}
+@app.post("/api/knowledge-candidates/{candidate_id}/promote")
+def api_promote_candidate(candidate_id: int, payload: PromoteRequest, reviewer = Depends(require_reviewer)):
+    if get_candidate(candidate_id) is None: raise HTTPException(status_code=404, detail="Candidate not found")
+    return {"promotion_id": create_promotion(candidate_id, reviewer.id, payload)}
 
-@app.get("/api/learners/{learner_id}/graph-animation/{pack_id}")
-def api_graph_animation(learner_id: str, pack_id: str, user = Depends(current_user)):
-    ensure_learner_access(user, learner_id)
-    ensure_pack_access(user, pack_id)
-    pack = get_pack(pack_id)
-    state = load_learner_state(learner_id)
-    frames = build_graph_frames(state, pack)
-    return {
-        "learner_id": learner_id,
-        "pack_id": pack_id,
-        "pack_title": pack.title if pack else "",
-        "frames": frames,
-        "concepts": [{"id": c.id, "title": c.title, "prerequisites": c.prerequisites, "cross_pack_links": [l.model_dump() for l in c.cross_pack_links]} for c in pack.concepts] if pack else [],
-    }
+@app.get("/api/promotions")
+def api_list_promotions(reviewer = Depends(require_reviewer)):
+    return list_promotions()
 
-@app.post("/api/learners/{learner_id}/render-jobs/{pack_id}")
-def api_render_job(learner_id: str, pack_id: str, payload: MediaRenderRequest, background_tasks: BackgroundTasks, user = Depends(current_user)):
-    ensure_learner_access(user, learner_id)
-    ensure_pack_access(user, pack_id)
-    pack = get_pack(pack_id)
-    state = load_learner_state(learner_id)
-    animation = {
-        "learner_id": learner_id,
-        "pack_id": pack_id,
-        "pack_title": pack.title if pack else "",
-        "frames": build_graph_frames(state, pack),
-    }
-    job_id = create_render_job(learner_id, pack_id, payload.format, payload.fps, payload.theme)
-    background_tasks.add_task(process_render_job, job_id, learner_id, pack_id, payload.format, payload.fps, payload.theme, payload.retention_class, payload.retention_days, animation)
-    return {"job_id": job_id, "status": "queued"}
+@app.get("/api/pack-patches")
+def api_list_pack_patches(reviewer = Depends(require_reviewer)):
+    return list_pack_patches()
 
-@app.get("/api/render-jobs")
-def api_list_render_jobs(learner_id: str | None = None, user = Depends(current_user)):
-    if learner_id:
-        ensure_learner_access(user, learner_id)
-    return list_render_jobs(learner_id)
+@app.get("/api/curriculum-drafts")
+def api_list_curriculum_drafts(reviewer = Depends(require_reviewer)):
+    return list_curriculum_drafts()
 
-@app.get("/api/artifacts")
-def api_list_artifacts(learner_id: str | None = None, user = Depends(current_user)):
-    if learner_id:
-        ensure_learner_access(user, learner_id)
-    return list_artifacts(learner_id)
+@app.get("/api/skill-bundles")
+def api_list_skill_bundles(reviewer = Depends(require_reviewer)):
+    return list_skill_bundles()
 
-@app.get("/api/artifacts/{artifact_id}/download")
-def api_download_artifact(artifact_id: int, user = Depends(current_user)):
-    artifact = get_artifact(artifact_id)
-    if artifact is None or artifact.is_deleted:
-        raise HTTPException(status_code=404, detail="Artifact not found")
-    ensure_learner_access(user, artifact.learner_id)
-    path = Path(artifact.path)
-    if not path.exists():
-        raise HTTPException(status_code=404, detail="Artifact path missing")
-    if path.is_dir():
-        manifest = path / "render_manifest.json"
-        if not manifest.exists():
-            raise HTTPException(status_code=404, detail="Artifact manifest missing")
-        return FileResponse(str(manifest), filename=f"artifact-{artifact_id}-manifest.json")
-    return FileResponse(str(path), filename=path.name)
+@app.post("/api/pack-patches/{patch_id}/edit")
+def api_edit_patch(patch_id: int, payload: ObjectEditRequest, reviewer = Depends(require_reviewer)):
+    row = edit_pack_patch(patch_id, payload.payload, reviewer.id, payload.note)
+    if row is None: raise HTTPException(status_code=404, detail="Patch not found")
+    return {"patch_id": row.id, "current_version": row.current_version}
 
-@app.post("/api/artifacts/{artifact_id}/retention")
-def api_update_artifact_retention(artifact_id: int, payload: ArtifactRetentionUpdate, user = Depends(current_user)):
-    artifact = get_artifact(artifact_id)
-    if artifact is None or artifact.is_deleted:
-        raise HTTPException(status_code=404, detail="Artifact not found")
-    ensure_learner_access(user, artifact.learner_id)
-    expires_at = "" if payload.retention_days is None else future_iso(payload.retention_days)
-    updated = update_artifact_retention(artifact_id, payload.retention_class, expires_at)
-    return {"artifact_id": updated.id, "retention_class": updated.retention_class, "expires_at": updated.expires_at}
+@app.post("/api/curriculum-drafts/{draft_id}/edit")
+def api_edit_curriculum(draft_id: int, payload: ObjectEditRequest, reviewer = Depends(require_reviewer)):
+    row = edit_curriculum_draft(draft_id, payload.payload, reviewer.id, payload.note)
+    if row is None: raise HTTPException(status_code=404, detail="Draft not found")
+    return {"draft_id": row.id, "current_version": row.current_version}
 
-@app.delete("/api/artifacts/{artifact_id}")
-def api_delete_artifact(artifact_id: int, user = Depends(current_user)):
-    artifact = get_artifact(artifact_id)
-    if artifact is None or artifact.is_deleted:
-        raise HTTPException(status_code=404, detail="Artifact not found")
-    ensure_learner_access(user, artifact.learner_id)
-    updated = soft_delete_artifact(artifact_id)
-    return {"artifact_id": updated.id, "is_deleted": updated.is_deleted}
+@app.post("/api/skill-bundles/{bundle_id}/edit")
+def api_edit_skill(bundle_id: int, payload: ObjectEditRequest, reviewer = Depends(require_reviewer)):
+    row = edit_skill_bundle(bundle_id, payload.payload, reviewer.id, payload.note)
+    if row is None: raise HTTPException(status_code=404, detail="Skill bundle not found")
+    return {"skill_bundle_id": row.id, "current_version": row.current_version}
 
-@app.post("/api/learners/{learner_id}/knowledge-export/{pack_id}")
-def api_knowledge_export(learner_id: str, pack_id: str, payload: KnowledgeExportRequest, user = Depends(current_user)):
-    ensure_learner_access(user, learner_id)
-    ensure_pack_access(user, pack_id)
-    snapshot = build_knowledge_snapshot(learner_id, pack_id)
-    snapshot["requested_export_kind"] = payload.export_kind
-    return snapshot
+@app.get("/api/object-versions/{object_kind}/{object_id}")
+def api_object_versions(object_kind: str, object_id: int, reviewer = Depends(require_reviewer)):
+    return list_versions(object_kind, object_id)
+
+@app.post("/api/pack-patches/{patch_id}/apply")
+def api_apply_patch(patch_id: int, payload: PatchApplyRequest, reviewer = Depends(require_reviewer)):
+    row = apply_pack_patch(patch_id, reviewer.id, payload.note)
+    if row is None: raise HTTPException(status_code=404, detail="Patch or pack not found")
+    return {"patch_id": row.id, "status": row.status}
+
+@app.get("/api/curriculum-drafts/{draft_id}/export")
+def api_export_curriculum(draft_id: int, reviewer = Depends(require_reviewer)):
+    out = export_curriculum_draft(draft_id)
+    if out is None: raise HTTPException(status_code=404, detail="Draft not found")
+    return out
+
+@app.get("/api/skill-bundles/{bundle_id}/export")
+def api_export_skill(bundle_id: int, reviewer = Depends(require_reviewer)):
+    out = export_skill_bundle(bundle_id)
+    if out is None: raise HTTPException(status_code=404, detail="Skill bundle not found")
+    return out
+
+@app.post("/api/synthesis/run")
+def api_run_synthesis(payload: SynthesisRunRequest, reviewer = Depends(require_reviewer)):
+    created = generate_synthesis_candidates(payload.source_pack_id, payload.target_pack_id, payload.limit)
+    return {"created_count": len(created), "synthesis_ids": created}
+
+@app.get("/api/synthesis/candidates")
+def api_list_synthesis(reviewer = Depends(require_reviewer)):
+    return list_synthesis_candidates()
+
+@app.post("/api/synthesis/candidates/{synthesis_id}/promote")
+def api_promote_synthesis(synthesis_id: int, payload: SynthesisPromoteRequest, reviewer = Depends(require_reviewer)):
+    syn = get_synthesis_candidate(synthesis_id)
+    if syn is None: raise HTTPException(status_code=404, detail="Synthesis candidate not found")
+    candidate_id = create_candidate(KnowledgeCandidateCreate(
+        source_type="synthesis_engine", learner_id="system", pack_id=syn["source_pack_id"],
+        candidate_kind="synthesis_proposal",
+        title=f"Synthesis: {syn['source_concept_id']} ↔ {syn['target_concept_id']}",
+        summary=syn["explanation"], structured_payload=syn,
+        evidence_summary="Promoted from synthesis engine candidate",
+        confidence_hint=syn["score_total"], novelty_score=syn["evidence"].get("novelty", 0.0),
+        synthesis_score=syn["score_total"], triage_lane=payload.promotion_target,
+    ))
+    promotion_id = create_promotion(candidate_id, reviewer.id, PromoteRequest(promotion_target=payload.promotion_target, target_object_id="", promotion_status="approved"))
+    return {"candidate_id": candidate_id, "promotion_id": promotion_id}
 
 def main():
     uvicorn.run(app, host="127.0.0.1", port=8011)

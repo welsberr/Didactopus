@@ -12,14 +12,12 @@ dependencies = [
   "uvicorn>=0.30",
   "sqlalchemy>=2.0",
   "passlib[bcrypt]>=1.7",
-  "python-jose[cryptography]>=3.3"
+  "python-jose[cryptography]>=3.3",
+  "pyyaml>=6.0.2"
 ]
 
 [project.scripts]
 didactopus-api = "didactopus.api:main"
-didactopus-export-svg = "didactopus.export_svg:main"
-didactopus-render-bundle = "didactopus.render_bundle:main"
-didactopus-export-knowledge = "didactopus.knowledge_export:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
