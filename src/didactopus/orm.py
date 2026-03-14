@@ -1,5 +1,5 @@
-from sqlalchemy import String, Integer, Float, ForeignKey, Text, Boolean
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, Integer, Float, Boolean, ForeignKey, Text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .db import Base
 
 class UserORM(Base):
@@ -7,32 +7,22 @@ class UserORM(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     username: Mapped[str] = mapped_column(String(100), unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(String(255))
-    role: Mapped[str] = mapped_column(String(50), default="learner")
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-
-class RefreshTokenORM(Base):
-    __tablename__ = "refresh_tokens"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
-    token_id: Mapped[str] = mapped_column(String(255), unique=True, index=True)
-    is_revoked: Mapped[bool] = mapped_column(Boolean, default=False)
+    token: Mapped[str] = mapped_column(String(255), unique=True, index=True)
 
 class PackORM(Base):
     __tablename__ = "packs"
     id: Mapped[str] = mapped_column(String(100), primary_key=True)
-    owner_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    policy_lane: Mapped[str] = mapped_column(String(50), default="personal")
     title: Mapped[str] = mapped_column(String(255))
     subtitle: Mapped[str] = mapped_column(Text, default="")
     level: Mapped[str] = mapped_column(String(100), default="novice-friendly")
     data_json: Mapped[str] = mapped_column(Text)
-    is_published: Mapped[bool] = mapped_column(Boolean, default=False)
 
 class LearnerORM(Base):
     __tablename__ = "learners"
     id: Mapped[str] = mapped_column(String(100), primary_key=True)
     owner_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     display_name: Mapped[str] = mapped_column(String(255), default="")
+    owner = relationship("UserORM")
 
 class MasteryRecordORM(Base):
     __tablename__ = "mastery_records"
@@ -44,6 +34,7 @@ class MasteryRecordORM(Base):
     confidence: Mapped[float] = mapped_column(Float, default=0.0)
     evidence_count: Mapped[int] = mapped_column(Integer, default=0)
     last_updated: Mapped[str] = mapped_column(String(100), default="")
+    learner = relationship("LearnerORM")
 
 class EvidenceEventORM(Base):
     __tablename__ = "evidence_events"
@@ -56,30 +47,18 @@ class EvidenceEventORM(Base):
     timestamp: Mapped[str] = mapped_column(String(100), default="")
     kind: Mapped[str] = mapped_column(String(50), default="exercise")
     source_id: Mapped[str] = mapped_column(String(255), default="")
+    learner = relationship("LearnerORM")
 
-class RenderJobORM(Base):
-    __tablename__ = "render_jobs"
+class EvaluatorJobORM(Base):
+    __tablename__ = "evaluator_jobs"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    learner_id: Mapped[str] = mapped_column(String(100), index=True)
-    pack_id: Mapped[str] = mapped_column(String(100), index=True)
-    requested_format: Mapped[str] = mapped_column(String(20), default="gif")
-    fps: Mapped[int] = mapped_column(Integer, default=2)
-    theme: Mapped[str] = mapped_column(String(100), default="default")
+    learner_id: Mapped[str] = mapped_column(ForeignKey("learners.id"), index=True)
+    pack_id: Mapped[str] = mapped_column(ForeignKey("packs.id"), index=True)
+    concept_id: Mapped[str] = mapped_column(String(100), index=True)
+    submitted_text: Mapped[str] = mapped_column(Text, default="")
     status: Mapped[str] = mapped_column(String(50), default="queued")
-    bundle_dir: Mapped[str] = mapped_column(Text, default="")
-    payload_json: Mapped[str] = mapped_column(Text, default="")
-    manifest_path: Mapped[str] = mapped_column(Text, default="")
-    script_path: Mapped[str] = mapped_column(Text, default="")
-    error_text: Mapped[str] = mapped_column(Text, default="")
-
-class ArtifactORM(Base):
-    __tablename__ = "artifacts"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    render_job_id: Mapped[int] = mapped_column(ForeignKey("render_jobs.id"), index=True)
-    learner_id: Mapped[str] = mapped_column(String(100), index=True)
-    pack_id: Mapped[str] = mapped_column(String(100), index=True)
-    artifact_type: Mapped[str] = mapped_column(String(50), default="render_bundle")
-    format: Mapped[str] = mapped_column(String(20), default="gif")
-    title: Mapped[str] = mapped_column(String(255), default="")
-    path: Mapped[str] = mapped_column(Text, default="")
-    metadata_json: Mapped[str] = mapped_column(Text, default="{}")
+    result_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    result_confidence_hint: Mapped[float | None] = mapped_column(Float, nullable=True)
+    result_notes: Mapped[str] = mapped_column(Text, default="")
+    learner = relationship("LearnerORM")
+    pack = relationship("PackORM")

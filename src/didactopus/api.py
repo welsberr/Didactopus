@@ -2,78 +2,77 @@ from __future__ import annotations
 from fastapi import FastAPI, HTTPException, Header, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from .config import load_settings
 from .db import Base, engine
-from .models import LoginRequest, RefreshRequest, TokenPair, CreateLearnerRequest, LearnerState, MediaRenderRequest
+from .models import LoginRequest, LoginResponse, CreateLearnerRequest, LearnerState, EvidenceEvent, EvaluatorSubmission, EvaluatorJobStatus
 from .repository import (
-    authenticate_user, get_user_by_id, store_refresh_token, refresh_token_active, revoke_refresh_token,
-    list_packs_for_user, get_pack, get_pack_row, create_learner, learner_owned_by_user, load_learner_state, save_learner_state,
-    create_render_job, update_render_job, list_render_jobs, list_artifacts
+    authenticate_user, get_user_by_token, list_packs, get_pack, create_learner,
+    learner_owned_by_user, load_learner_state, save_learner_state,
+    create_evaluator_job, get_evaluator_job, update_evaluator_job
 )
-from .auth import issue_access_token, issue_refresh_token, decode_token, new_token_id
-from .engine import build_graph_frames, stable_layout
-from .worker import process_render_job
+from .engine import apply_evidence, recommend_next
 
+settings = load_settings()
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Didactopus API Prototype")
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def current_user(authorization: str = Header(default="")):
     token = authorization.removeprefix("Bearer ").strip()
-    payload = decode_token(token) if token else None
-    if not payload or payload.get("kind") != "access":
-        raise HTTPException(status_code=401, detail="Unauthorized")
-    user = get_user_by_id(int(payload["sub"]))
-    if user is None or not user.is_active:
+    user = get_user_by_token(token) if token else None
+    if user is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
     return user
 
 def ensure_learner_access(user, learner_id: str):
-    if user.role == "admin":
-        return
     if not learner_owned_by_user(user.id, learner_id):
         raise HTTPException(status_code=403, detail="Learner not accessible by this user")
 
-def ensure_pack_access(user, pack_id: str):
-    row = get_pack_row(pack_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="Pack not found")
-    if user.role == "admin":
-        return row
-    if row.policy_lane == "community":
-        return row
-    if row.owner_user_id == user.id:
-        return row
-    raise HTTPException(status_code=403, detail="Pack not accessible by this user")
+def simulate_evaluator_job(job_id: int):
+    job = get_evaluator_job(job_id)
+    if job is None:
+        return
+    update_evaluator_job(job_id, "running")
+    score = 0.78 if len(job.submitted_text.strip()) > 20 else 0.62
+    confidence_hint = 0.72 if len(job.submitted_text.strip()) > 20 else 0.45
+    notes = "Prototype evaluator: longer responses scored somewhat higher."
+    update_evaluator_job(job_id, "completed", score=score, confidence_hint=confidence_hint, notes=notes)
+    state = load_learner_state(job.learner_id)
+    state = apply_evidence(state, EvidenceEvent(
+        concept_id=job.concept_id,
+        dimension="mastery",
+        score=score,
+        confidence_hint=confidence_hint,
+        timestamp="2026-03-13T12:00:00+00:00",
+        kind="review",
+        source_id=f"evaluator-job-{job_id}",
+    ))
+    save_learner_state(state)
 
-@app.post("/api/login", response_model=TokenPair)
+@app.post("/api/login", response_model=LoginResponse)
 def login(payload: LoginRequest):
     user = authenticate_user(payload.username, payload.password)
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    token_id = new_token_id()
-    store_refresh_token(user.id, token_id)
-    return TokenPair(access_token=issue_access_token(user.id, user.username, user.role), refresh_token=issue_refresh_token(user.id, user.username, user.role, token_id), username=user.username, role=user.role)
-
-@app.post("/api/refresh", response_model=TokenPair)
-def refresh(payload: RefreshRequest):
-    data = decode_token(payload.refresh_token)
-    if not data or data.get("kind") != "refresh":
-        raise HTTPException(status_code=401, detail="Invalid refresh token")
-    token_id = data.get("jti")
-    if not token_id or not refresh_token_active(token_id):
-        raise HTTPException(status_code=401, detail="Refresh token inactive")
-    user = get_user_by_id(int(data["sub"]))
-    if user is None:
-        raise HTTPException(status_code=401, detail="User not found")
-    revoke_refresh_token(token_id)
-    new_jti = new_token_id()
-    store_refresh_token(user.id, new_jti)
-    return TokenPair(access_token=issue_access_token(user.id, user.username, user.role), refresh_token=issue_refresh_token(user.id, user.username, user.role, new_jti), username=user.username, role=user.role)
+    return LoginResponse(token=user.token, username=user.username)
 
 @app.get("/api/packs")
 def api_list_packs(user = Depends(current_user)):
-    return [p.model_dump() for p in list_packs_for_user(user.id, include_unpublished=(user.role == "admin"))]
+    return [p.model_dump() for p in list_packs()]
+
+@app.get("/api/packs/{pack_id}")
+def api_get_pack(pack_id: str, user = Depends(current_user)):
+    pack = get_pack(pack_id)
+    if pack is None:
+        raise HTTPException(status_code=404, detail="Pack not found")
+    return pack.model_dump()
 
 @app.post("/api/learners")
 def api_create_learner(payload: CreateLearnerRequest, user = Depends(current_user)):
@@ -92,54 +91,45 @@ def api_put_learner_state(learner_id: str, state: LearnerState, user = Depends(c
         raise HTTPException(status_code=400, detail="Learner ID mismatch")
     return save_learner_state(state).model_dump()
 
-@app.get("/api/packs/{pack_id}/layout")
-def api_pack_layout(pack_id: str, user = Depends(current_user)):
-    ensure_pack_access(user, pack_id)
-    pack = get_pack(pack_id)
-    return {"pack_id": pack_id, "layout": stable_layout(pack)} if pack else {"pack_id": pack_id, "layout": {}}
-
-@app.get("/api/learners/{learner_id}/graph-animation/{pack_id}")
-def api_graph_animation(learner_id: str, pack_id: str, user = Depends(current_user)):
+@app.post("/api/learners/{learner_id}/evidence")
+def api_post_evidence(learner_id: str, event: EvidenceEvent, user = Depends(current_user)):
     ensure_learner_access(user, learner_id)
-    ensure_pack_access(user, pack_id)
-    pack = get_pack(pack_id)
     state = load_learner_state(learner_id)
-    frames = build_graph_frames(state, pack)
-    return {
-        "learner_id": learner_id,
-        "pack_id": pack_id,
-        "pack_title": pack.title if pack else "",
-        "frames": frames,
-        "concepts": [{"id": c.id, "title": c.title, "prerequisites": c.prerequisites, "cross_pack_links": [l.model_dump() for l in c.cross_pack_links]} for c in pack.concepts] if pack else [],
-    }
+    state = apply_evidence(state, event)
+    save_learner_state(state)
+    return state.model_dump()
 
-@app.post("/api/learners/{learner_id}/render-jobs/{pack_id}")
-def api_render_job(learner_id: str, pack_id: str, payload: MediaRenderRequest, background_tasks: BackgroundTasks, user = Depends(current_user)):
+@app.get("/api/learners/{learner_id}/recommendations/{pack_id}")
+def api_get_recommendations(learner_id: str, pack_id: str, user = Depends(current_user)):
     ensure_learner_access(user, learner_id)
-    ensure_pack_access(user, pack_id)
-    pack = get_pack(pack_id)
     state = load_learner_state(learner_id)
-    animation = {
-        "learner_id": learner_id,
-        "pack_id": pack_id,
-        "pack_title": pack.title if pack else "",
-        "frames": build_graph_frames(state, pack),
-    }
-    job_id = create_render_job(learner_id, pack_id, payload.format, payload.fps, payload.theme)
-    background_tasks.add_task(process_render_job, job_id, learner_id, pack_id, payload.format, payload.fps, payload.theme, animation)
-    return {"job_id": job_id, "status": "queued"}
+    pack = get_pack(pack_id)
+    if pack is None:
+        raise HTTPException(status_code=404, detail="Pack not found")
+    return {"cards": recommend_next(state, pack)}
 
-@app.get("/api/render-jobs")
-def api_list_render_jobs(learner_id: str | None = None, user = Depends(current_user)):
-    if learner_id:
-        ensure_learner_access(user, learner_id)
-    return list_render_jobs(learner_id)
+@app.post("/api/learners/{learner_id}/evaluator-jobs", response_model=EvaluatorJobStatus)
+def api_submit_evaluator_job(learner_id: str, payload: EvaluatorSubmission, background_tasks: BackgroundTasks, user = Depends(current_user)):
+    ensure_learner_access(user, learner_id)
+    job_id = create_evaluator_job(learner_id, payload.pack_id, payload.concept_id, payload.submitted_text)
+    background_tasks.add_task(simulate_evaluator_job, job_id)
+    return EvaluatorJobStatus(job_id=job_id, status="queued")
 
-@app.get("/api/artifacts")
-def api_list_artifacts(learner_id: str | None = None, user = Depends(current_user)):
-    if learner_id:
-        ensure_learner_access(user, learner_id)
-    return list_artifacts(learner_id)
+@app.get("/api/evaluator-jobs/{job_id}", response_model=EvaluatorJobStatus)
+def api_get_evaluator_job(job_id: int, user = Depends(current_user)):
+    job = get_evaluator_job(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return EvaluatorJobStatus(
+        job_id=job.id,
+        status=job.status,
+        result_score=job.result_score,
+        result_confidence_hint=job.result_confidence_hint,
+        result_notes=job.result_notes,
+    )
 
 def main():
-    uvicorn.run(app, host="127.0.0.1", port=8011)
+    uvicorn.run(app, host=settings.host, port=settings.port)
+
+if __name__ == "__main__":
+    main()
