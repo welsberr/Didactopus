@@ -8,6 +8,8 @@ class Settings(BaseModel):
     port: int = int(os.getenv("DIDACTOPUS_PORT", "8011"))
     jwt_secret: str = os.getenv("DIDACTOPUS_JWT_SECRET", "change-me")
     jwt_algorithm: str = "HS256"
+    access_token_minutes: int = 30
+    refresh_token_days: int = 14
 
 def load_settings() -> Settings:
     return Settings()

@@ -1,18 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { login, refresh, fetchPacks, fetchAdminPacks, fetchPackValidation, fetchPackProvenance, upsertPack, publishPack, listLearners, createLearner, fetchLearnerState, fetchRecommendations, postEvidence, submitEvaluatorJob, fetchEvaluatorHistory, fetchEvaluatorTrace } from "./api";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  login, refresh, fetchPacks, fetchAdminPacks, upsertPack, publishPack,
+  createLearner, listLearners, fetchLearnerState, fetchRecommendations, postEvidence,
+  submitEvaluatorJob, fetchEvaluatorHistory
+} from "./api";
 import { loadAuth, saveAuth, clearAuth } from "./authStore";
 
 function LoginView({ onAuth }) {
   const [username, setUsername] = useState("wesley");
   const [password, setPassword] = useState("demo-pass");
   const [error, setError] = useState("");
+
   async function doLogin() {
     try {
       const result = await login(username, password);
       saveAuth(result);
       onAuth(result);
-    } catch { setError("Login failed"); }
+    } catch {
+      setError("Login failed");
+    }
   }
+
   return (
     <div className="page narrow-page">
       <section className="card narrow">
@@ -32,32 +40,7 @@ function NavTabs({ tab, setTab, role }) {
       <button className={tab==="learner" ? "active-tab" : ""} onClick={() => setTab("learner")}>Learner</button>
       <button className={tab==="history" ? "active-tab" : ""} onClick={() => setTab("history")}>Evaluator history</button>
       <button className={tab==="manage" ? "active-tab" : ""} onClick={() => setTab("manage")}>Learners</button>
-      {role === "admin" ? <>
-        <button className={tab==="admin" ? "active-tab" : ""} onClick={() => setTab("admin")}>Pack admin</button>
-        <button className={tab==="review" ? "active-tab" : ""} onClick={() => setTab("review")}>Curation review</button>
-      </> : null}
-    </div>
-  );
-}
-
-function PackAuthorForm({ value, onChange, onSave }) {
-  function setField(field, val) { onChange({ ...value, [field]: val }); }
-  function setCompliance(field, val) { onChange({ ...value, compliance: { ...value.compliance, [field]: val } }); }
-  return (
-    <div className="form-grid">
-      <label>Pack ID<input value={value.id} onChange={(e) => setField("id", e.target.value)} /></label>
-      <label>Title<input value={value.title} onChange={(e) => setField("title", e.target.value)} /></label>
-      <label className="full">Subtitle<input value={value.subtitle} onChange={(e) => setField("subtitle", e.target.value)} /></label>
-      <label>Level<input value={value.level} onChange={(e) => setField("level", e.target.value)} /></label>
-      <label>Source count<input type="number" value={value.compliance.sources} onChange={(e) => setCompliance("sources", Number(e.target.value))} /></label>
-      <label className="full">Onboarding headline<input value={value.onboarding.headline} onChange={(e) => onChange({ ...value, onboarding: { ...value.onboarding, headline: e.target.value } })} /></label>
-      <label className="full">Onboarding body<textarea value={value.onboarding.body} onChange={(e) => onChange({ ...value, onboarding: { ...value.onboarding, body: e.target.value } })} /></label>
-      <div className="checkrow full">
-        <label><input type="checkbox" checked={value.compliance.attributionRequired} onChange={(e) => setCompliance("attributionRequired", e.target.checked)} /> Attribution required</label>
-        <label><input type="checkbox" checked={value.compliance.shareAlikeRequired} onChange={(e) => setCompliance("shareAlikeRequired", e.target.checked)} /> Share-alike</label>
-        <label><input type="checkbox" checked={value.compliance.noncommercialOnly} onChange={(e) => setCompliance("noncommercialOnly", e.target.checked)} /> Noncommercial only</label>
-      </div>
-      <div className="full"><button className="primary" onClick={onSave}>Save pack</button></div>
+      {role === "admin" ? <button className={tab==="admin" ? "active-tab" : ""} onClick={() => setTab("admin")}>Pack admin</button> : null}
     </div>
   );
 }
@@ -73,128 +56,158 @@ export default function App() {
   const [learnerState, setLearnerState] = useState(null);
   const [cards, setCards] = useState([]);
   const [history, setHistory] = useState([]);
-  const [selectedTrace, setSelectedTrace] = useState(null);
-  const [validation, setValidation] = useState(null);
-  const [provenance, setProvenance] = useState(null);
   const [newLearnerId, setNewLearnerId] = useState("wesley-learner");
-  const [formPack, setFormPack] = useState({ id: "new-pack", title: "New Pack", subtitle: "Editable admin pack scaffold", level: "novice-friendly", concepts: [], onboarding: { headline: "Start here", body: "Begin", checklist: [] }, compliance: { sources: 0, attributionRequired: false, shareAlikeRequired: false, noncommercialOnly: false, flags: [] } });
+  const [newPackJson, setNewPackJson] = useState(JSON.stringify({
+    pack: {
+      id: "new-pack",
+      title: "New Pack",
+      subtitle: "Editable admin pack scaffold",
+      level: "novice-friendly",
+      concepts: [],
+      onboarding: { headline: "Start here", body: "Begin", checklist: [] },
+      compliance: { sources: 0, attributionRequired: false, shareAlikeRequired: false, noncommercialOnly: false, flags: [] }
+    },
+    is_published: false
+  }, null, 2));
   const [message, setMessage] = useState("");
 
   async function refreshAuthToken() {
-    if (!auth?.refresh_token) return null;
+    if (!auth?.refresh_token) return null
     try {
-      const result = await refresh(auth.refresh_token);
-      saveAuth(result);
-      setAuth(result);
-      return result;
+      const result = await refresh(auth.refresh_token)
+      saveAuth(result)
+      setAuth(result)
+      return result
     } catch {
-      clearAuth();
-      setAuth(null);
-      return null;
+      clearAuth()
+      setAuth(null)
+      return null
     }
   }
 
   async function guarded(fn) {
-    try { return await fn(auth.access_token); }
-    catch {
-      const next = await refreshAuthToken();
-      if (!next) throw new Error("auth failed");
-      return await fn(next.access_token);
+    try {
+      return await fn(auth.access_token)
+    } catch {
+      const next = await refreshAuthToken()
+      if (!next) throw new Error("auth failed")
+      return await fn(next.access_token)
     }
   }
 
   useEffect(() => {
-    if (!auth) return;
+    if (!auth) return
     async function load() {
-      const p = await guarded((token) => fetchPacks(token));
-      setPacks(p);
-      setSelectedPackId((prev) => prev || p[0]?.id || "");
-      let ls = await guarded((token) => listLearners(token));
+      const p = await guarded((token) => fetchPacks(token))
+      setPacks(p)
+      setSelectedPackId((prev) => prev || p[0]?.id || "")
+      const ls = await guarded((token) => listLearners(token))
+      setLearners(ls)
       if (ls.length === 0) {
-        await guarded((token) => createLearner(token, selectedLearnerId, selectedLearnerId));
-        ls = await guarded((token) => listLearners(token));
+        await guarded((token) => createLearner(token, selectedLearnerId, selectedLearnerId))
+        const ls2 = await guarded((token) => listLearners(token))
+        setLearners(ls2)
       }
-      setLearners(ls);
       if (auth.role === "admin") {
-        const ap = await guarded((token) => fetchAdminPacks(token));
-        setAdminPacks(ap);
+        const ap = await guarded((token) => fetchAdminPacks(token))
+        setAdminPacks(ap)
       }
     }
-    load();
-  }, [auth]);
+    load()
+  }, [auth])
 
   useEffect(() => {
-    if (!auth || !selectedLearnerId || !selectedPackId) return;
+    if (!auth || !selectedLearnerId || !selectedPackId) return
     async function loadLearnerStuff() {
-      setLearnerState(await guarded((token) => fetchLearnerState(token, selectedLearnerId)));
-      const recs = await guarded((token) => fetchRecommendations(token, selectedLearnerId, selectedPackId));
-      setCards(recs.cards || []);
-      setHistory(await guarded((token) => fetchEvaluatorHistory(token, selectedLearnerId)));
-      if (auth.role === "admin") {
-        setValidation(await guarded((token) => fetchPackValidation(token, selectedPackId)));
-        setProvenance(await guarded((token) => fetchPackProvenance(token, selectedPackId)));
-      }
+      const state = await guarded((token) => fetchLearnerState(token, selectedLearnerId))
+      setLearnerState(state)
+      const recs = await guarded((token) => fetchRecommendations(token, selectedLearnerId, selectedPackId))
+      setCards(recs.cards || [])
+      const hist = await guarded((token) => fetchEvaluatorHistory(token, selectedLearnerId))
+      setHistory(hist)
     }
-    loadLearnerStuff();
-  }, [auth, selectedLearnerId, selectedPackId]);
+    loadLearnerStuff()
+  }, [auth, selectedLearnerId, selectedPackId])
+
+  const pack = useMemo(() => packs.find((p) => p.id === selectedPackId) || null, [packs, selectedPackId])
 
   async function simulateCard(card) {
-    await guarded((token) => postEvidence(token, selectedLearnerId, { concept_id: card.conceptId, dimension: "mastery", score: card.scoreHint, confidence_hint: card.confidenceHint, timestamp: new Date().toISOString(), kind: "checkpoint", source_id: `ui-${card.id}` }));
-    setLearnerState(await guarded((token) => fetchLearnerState(token, selectedLearnerId)));
-    const recs = await guarded((token) => fetchRecommendations(token, selectedLearnerId, selectedPackId));
-    setCards(recs.cards || []);
-    setMessage(card.reward);
+    await guarded((token) => postEvidence(token, selectedLearnerId, {
+      concept_id: card.conceptId,
+      dimension: "mastery",
+      score: card.scoreHint,
+      confidence_hint: card.confidenceHint,
+      timestamp: new Date().toISOString(),
+      kind: "checkpoint",
+      source_id: `ui-${card.id}`
+    }))
+    const state = await guarded((token) => fetchLearnerState(token, selectedLearnerId))
+    setLearnerState(state)
+    const recs = await guarded((token) => fetchRecommendations(token, selectedLearnerId, selectedPackId))
+    setCards(recs.cards || [])
+    setMessage(card.reward)
   }
 
   async function runEvaluator() {
-    const conceptId = packs.find((p) => p.id === selectedPackId)?.concepts?.[0]?.id || "prior";
-    await guarded((token) => submitEvaluatorJob(token, selectedLearnerId, { pack_id: selectedPackId, concept_id: conceptId, submitted_text: "This is a moderately detailed learner response intended to trigger a somewhat better prototype evaluator score.", kind: "checkpoint" }));
+    if (!pack?.concepts?.length) return
+    await guarded((token) => submitEvaluatorJob(token, selectedLearnerId, {
+      pack_id: selectedPackId,
+      concept_id: pack.concepts[0].id,
+      submitted_text: "This is a moderately detailed learner response intended to trigger a somewhat better prototype evaluator score.",
+      kind: "checkpoint"
+    }))
     setTimeout(async () => {
-      setHistory(await guarded((token) => fetchEvaluatorHistory(token, selectedLearnerId)));
-      setLearnerState(await guarded((token) => fetchLearnerState(token, selectedLearnerId)));
-      const recs = await guarded((token) => fetchRecommendations(token, selectedLearnerId, selectedPackId));
-      setCards(recs.cards || []);
-    }, 1200);
+      const hist = await guarded((token) => fetchEvaluatorHistory(token, selectedLearnerId))
+      setHistory(hist)
+      const state = await guarded((token) => fetchLearnerState(token, selectedLearnerId))
+      setLearnerState(state)
+      const recs = await guarded((token) => fetchRecommendations(token, selectedLearnerId, selectedPackId))
+      setCards(recs.cards || [])
+    }, 1200)
   }
 
   async function createLearnerNow() {
-    await guarded((token) => createLearner(token, newLearnerId, newLearnerId));
-    const ls = await guarded((token) => listLearners(token));
-    setLearners(ls);
-    setSelectedLearnerId(newLearnerId);
+    await guarded((token) => createLearner(token, newLearnerId, newLearnerId))
+    const ls = await guarded((token) => listLearners(token))
+    setLearners(ls)
+    setSelectedLearnerId(newLearnerId)
   }
 
   async function savePack() {
-    await guarded((token) => upsertPack(token, { pack: formPack, is_published: false }));
-    setAdminPacks(await guarded((token) => fetchAdminPacks(token)));
-    setPacks(await guarded((token) => fetchPacks(token)));
-    setMessage("Pack saved");
+    const payload = JSON.parse(newPackJson)
+    await guarded((token) => upsertPack(token, payload))
+    const ap = await guarded((token) => fetchAdminPacks(token))
+    const p = await guarded((token) => fetchPacks(token))
+    setAdminPacks(ap)
+    setPacks(p)
   }
 
   async function togglePublish(packId, isPublished) {
-    await guarded((token) => publishPack(token, packId, isPublished));
-    setAdminPacks(await guarded((token) => fetchAdminPacks(token)));
-    setPacks(await guarded((token) => fetchPacks(token)));
+    await guarded((token) => publishPack(token, packId, isPublished))
+    const ap = await guarded((token) => fetchAdminPacks(token))
+    const p = await guarded((token) => fetchPacks(token))
+    setAdminPacks(ap)
+    setPacks(p)
   }
 
-  async function loadTrace(jobId) {
-    setSelectedTrace(await guarded((token) => fetchEvaluatorTrace(token, jobId)));
-  }
-
-  if (!auth) return <LoginView onAuth={setAuth} />;
+  if (!auth) return <LoginView onAuth={setAuth} />
 
   return (
     <div className="page">
       <header className="hero">
         <div>
-          <h1>Didactopus admin curation layer</h1>
-          <p>Pack validation review, provenance inspection, evaluator traces, and form-driven pack authoring.</p>
+          <h1>Didactopus workflow scaffold</h1>
+          <p>Login, refresh, learner management, evaluator history, and admin pack publication workflows.</p>
           <div className="muted">Signed in as {auth.username} ({auth.role})</div>
           {message ? <div className="message">{message}</div> : null}
         </div>
         <div className="hero-controls">
-          <label>Learner<select value={selectedLearnerId} onChange={(e) => setSelectedLearnerId(e.target.value)}>{learners.map((l) => <option key={l.learner_id} value={l.learner_id}>{l.display_name || l.learner_id}</option>)}</select></label>
-          <label>Pack<select value={selectedPackId} onChange={(e) => setSelectedPackId(e.target.value)}>{packs.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}</select></label>
+          <label>Learner<select value={selectedLearnerId} onChange={(e) => setSelectedLearnerId(e.target.value)}>
+            {learners.map((l) => <option key={l.learner_id} value={l.learner_id}>{l.display_name || l.learner_id}</option>)}
+          </select></label>
+          <label>Pack<select value={selectedPackId} onChange={(e) => setSelectedPackId(e.target.value)}>
+            {packs.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
+          </select></label>
           <button onClick={() => { clearAuth(); setAuth(null); }}>Logout</button>
         </div>
       </header>
@@ -202,19 +215,28 @@ export default function App() {
       <NavTabs tab={tab} setTab={setTab} role={auth.role} />
 
       {tab === "learner" && (
-        <main className="layout onecol">
+        <main className="layout">
           <section className="card">
             <h2>Learner dashboard</h2>
+            <p><strong>Pack:</strong> {pack?.title || "-"}</p>
+            <p>{pack?.subtitle || ""}</p>
             <button onClick={runEvaluator}>Submit demo evaluator job</button>
+            <h3>Next actions</h3>
             <div className="steps-stack">
               {cards.length ? cards.map((card) => (
                 <div key={card.id} className="step-card">
                   <div className="step-header">
-                    <div><h4>{card.title}</h4><div className="muted">{card.minutes} minutes</div></div>
+                    <div>
+                      <h4>{card.title}</h4>
+                      <div className="muted">{card.minutes} minutes</div>
+                    </div>
                     <div className="reward-pill">{card.reward}</div>
                   </div>
                   <p>{card.reason}</p>
-                  <details><summary>Why this is recommended</summary><ul>{card.why.map((w, idx) => <li key={idx}>{w}</li>)}</ul></details>
+                  <details>
+                    <summary>Why this is recommended</summary>
+                    <ul>{card.why.map((w, idx) => <li key={idx}>{w}</li>)}</ul>
+                  </details>
                   <button className="primary" onClick={() => simulateCard(card)}>Simulate step</button>
                 </div>
               )) : <div className="muted">No recommendations available.</div>}
@@ -226,12 +248,12 @@ export default function App() {
       )}
 
       {tab === "history" && (
-        <main className="layout twocol">
+        <main className="layout onecol">
           <section className="card">
             <h2>Evaluator history</h2>
             {history.length ? (
               <table className="table">
-                <thead><tr><th>Job</th><th>Status</th><th>Concept</th><th>Score</th><th>Trace</th></tr></thead>
+                <thead><tr><th>Job</th><th>Status</th><th>Concept</th><th>Score</th><th>Confidence</th><th>Notes</th></tr></thead>
                 <tbody>
                   {history.map((row) => (
                     <tr key={row.job_id}>
@@ -239,16 +261,13 @@ export default function App() {
                       <td>{row.status}</td>
                       <td>{row.concept_id}</td>
                       <td>{row.result_score ?? "-"}</td>
-                      <td><button onClick={() => loadTrace(row.job_id)}>Inspect trace</button></td>
+                      <td>{row.result_confidence_hint ?? "-"}</td>
+                      <td>{row.result_notes || ""}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             ) : <div className="muted">No evaluator jobs yet.</div>}
-          </section>
-          <section className="card">
-            <h2>Evaluator trace</h2>
-            <pre className="prebox">{JSON.stringify(selectedTrace, null, 2)}</pre>
           </section>
         </main>
       )}
@@ -281,8 +300,9 @@ export default function App() {
       {tab === "admin" && auth.role === "admin" && (
         <main className="layout twocol">
           <section className="card">
-            <h2>Richer pack authoring</h2>
-            <PackAuthorForm value={formPack} onChange={setFormPack} onSave={savePack} />
+            <h2>Pack editor</h2>
+            <textarea className="bigtext" value={newPackJson} onChange={(e) => setNewPackJson(e.target.value)} />
+            <button className="primary" onClick={savePack}>Save pack</button>
           </section>
           <section className="card">
             <h2>Pack administration</h2>
@@ -302,19 +322,6 @@ export default function App() {
           </section>
         </main>
       )}
-
-      {tab === "review" && auth.role === "admin" && (
-        <main className="layout twocol">
-          <section className="card">
-            <h2>Pack validation review</h2>
-            <pre className="prebox">{JSON.stringify(validation, null, 2)}</pre>
-          </section>
-          <section className="card">
-            <h2>Attribution / provenance inspection</h2>
-            <pre className="prebox">{JSON.stringify(provenance, null, 2)}</pre>
-          </section>
-        </main>
-      )}
     </div>
-  );
+  )
 }

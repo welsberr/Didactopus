@@ -8,17 +8,27 @@ def process_job(job_id: int):
     job = get_evaluator_job(job_id)
     if job is None:
         return
-    update_evaluator_job(job_id, "running", trace={"rubric_dimension_scores": [{"dimension": "mastery", "score": 0.35}], "notes": ["Job running", "Prototype trace generated"], "token_count_estimate": len(job.submitted_text.split())})
+    update_evaluator_job(job_id, "running")
     score = 0.78 if len(job.submitted_text.strip()) > 20 else 0.62
     confidence_hint = 0.72 if len(job.submitted_text.strip()) > 20 else 0.45
     notes = "Prototype evaluator: longer responses scored somewhat higher."
-    trace = {"rubric_dimension_scores": [{"dimension": "mastery", "score": score}], "notes": ["Prototype evaluator completed", notes], "token_count_estimate": len(job.submitted_text.split()), "decision_basis": ["response length heuristic", "single-dimension mastery proxy"]}
-    update_evaluator_job(job_id, "completed", score=score, confidence_hint=confidence_hint, notes=notes, trace=trace)
+    update_evaluator_job(job_id, "completed", score=score, confidence_hint=confidence_hint, notes=notes)
     state = load_learner_state(job.learner_id)
-    state = apply_evidence(state, EvidenceEvent(concept_id=job.concept_id, dimension="mastery", score=score, confidence_hint=confidence_hint, timestamp="2026-03-13T12:00:00+00:00", kind="review", source_id=f"evaluator-job-{job_id}"))
+    state = apply_evidence(state, EvidenceEvent(
+        concept_id=job.concept_id,
+        dimension="mastery",
+        score=score,
+        confidence_hint=confidence_hint,
+        timestamp="2026-03-13T12:00:00+00:00",
+        kind="review",
+        source_id=f"evaluator-job-{job_id}",
+    ))
     save_learner_state(state)
 
 def main():
     print("Didactopus worker scaffold running. Replace this with a real queue worker.")
     while True:
         time.sleep(60)
+
+if __name__ == "__main__":
+    main()

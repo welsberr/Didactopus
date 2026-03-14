@@ -41,14 +41,6 @@ class PackData(BaseModel):
     onboarding: dict = Field(default_factory=dict)
     compliance: PackCompliance = Field(default_factory=PackCompliance)
 
-class CreatePackRequest(BaseModel):
-    pack: PackData
-    is_published: bool = True
-
-class CreateLearnerRequest(BaseModel):
-    learner_id: str
-    display_name: str = ""
-
 class MasteryRecord(BaseModel):
     concept_id: str
     dimension: str
@@ -71,6 +63,10 @@ class LearnerState(BaseModel):
     records: list[MasteryRecord] = Field(default_factory=list)
     history: list[EvidenceEvent] = Field(default_factory=list)
 
+class CreateLearnerRequest(BaseModel):
+    learner_id: str
+    display_name: str = ""
+
 class EvaluatorSubmission(BaseModel):
     pack_id: str
     concept_id: str
@@ -83,3 +79,7 @@ class EvaluatorJobStatus(BaseModel):
     result_score: float | None = None
     result_confidence_hint: float | None = None
     result_notes: str = ""
+
+class CreatePackRequest(BaseModel):
+    pack: PackData
+    is_published: bool = True

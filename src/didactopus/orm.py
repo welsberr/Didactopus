@@ -24,8 +24,6 @@ class PackORM(Base):
     subtitle: Mapped[str] = mapped_column(Text, default="")
     level: Mapped[str] = mapped_column(String(100), default="novice-friendly")
     data_json: Mapped[str] = mapped_column(Text)
-    validation_json: Mapped[str] = mapped_column(Text, default="{}")
-    provenance_json: Mapped[str] = mapped_column(Text, default="{}")
     is_published: Mapped[bool] = mapped_column(Boolean, default=True)
 
 class LearnerORM(Base):
@@ -68,4 +66,3 @@ class EvaluatorJobORM(Base):
     result_score: Mapped[float | None] = mapped_column(Float, nullable=True)
     result_confidence_hint: Mapped[float | None] = mapped_column(Float, nullable=True)
     result_notes: Mapped[str] = mapped_column(Text, default="")
-    trace_json: Mapped[str] = mapped_column(Text, default="{}")
