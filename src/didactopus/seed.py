@@ -14,19 +14,16 @@ def main():
         db.commit()
     upsert_pack(
         PackData(
-            id="bayes-pack",
-            title="Bayesian Reasoning",
-            subtitle="Probability, evidence, updating, and model criticism.",
+            id="wesley-private-pack",
+            title="Wesley Private Pack",
+            subtitle="Personal pack example.",
             level="novice-friendly",
-            concepts=[
-                PackConcept(id="prior", title="Prior", prerequisites=[], masteryDimension="mastery", exerciseReward="Prior badge earned"),
-                PackConcept(id="posterior", title="Posterior", prerequisites=["prior"], masteryDimension="mastery", exerciseReward="Posterior path opened"),
-            ],
-            onboarding={"headline":"Start with a fast visible win","body":"Read one short orientation, answer one guided question, and leave with your first mastery marker.","checklist":["Read the one-screen topic orientation","Answer one guided exercise","Write one explanation in your own words"]},
-            compliance=PackCompliance(sources=2, attributionRequired=True, shareAlikeRequired=True, noncommercialOnly=True, flags=["share-alike","noncommercial","excluded-third-party-content"])
+            concepts=[PackConcept(id="intro", title="Intro", prerequisites=[], masteryDimension="mastery", exerciseReward="Intro marker")],
+            onboarding={"headline":"Start privately","body":"Personal pack lane.","checklist":["Create pack","Use pack"]},
+            compliance=PackCompliance()
         ),
         submitted_by_user_id=1,
+        policy_lane="personal",
         is_published=True,
-        change_summary="Initial seed version"
+        change_summary="Initial personal pack"
     )
-    print("Seeded database. Demo user: wesley / demo-pass")

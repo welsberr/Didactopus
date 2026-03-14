@@ -25,6 +25,9 @@ def issue_access_token(user_id: int, username: str, role: str) -> str:
 def issue_refresh_token(user_id: int, username: str, role: str, token_id: str) -> str:
     return _encode_token({"sub": str(user_id), "username": username, "role": role, "kind": "refresh", "jti": token_id}, timedelta(days=14))
 
+def issue_service_access_token(service_account_id: int, name: str, scopes: list[str]) -> str:
+    return _encode_token({"sub": str(service_account_id), "service_account_name": name, "kind": "service", "scopes": scopes}, timedelta(hours=8))
+
 def decode_token(token: str) -> dict | None:
     try:
         return jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
@@ -32,4 +35,7 @@ def decode_token(token: str) -> dict | None:
         return None
 
 def new_token_id() -> str:
+    return secrets.token_urlsafe(24)
+
+def new_secret() -> str:
     return secrets.token_urlsafe(24)
