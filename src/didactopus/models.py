@@ -48,28 +48,3 @@ class LearnerState(BaseModel):
     learner_id: str
     records: list[MasteryRecord] = Field(default_factory=list)
     history: list[EvidenceEvent] = Field(default_factory=list)
-
-class LoginRequest(BaseModel):
-    username: str
-    password: str
-
-class LoginResponse(BaseModel):
-    token: str
-    username: str
-
-class CreateLearnerRequest(BaseModel):
-    learner_id: str
-    display_name: str = ""
-
-class EvaluatorSubmission(BaseModel):
-    pack_id: str
-    concept_id: str
-    submitted_text: str
-    kind: str = "checkpoint"
-
-class EvaluatorJobStatus(BaseModel):
-    job_id: int
-    status: str
-    result_score: float | None = None
-    result_confidence_hint: float | None = None
-    result_notes: str = ""

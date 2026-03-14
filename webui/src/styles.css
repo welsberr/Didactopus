@@ -21,18 +21,13 @@ body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--b
 .domain-meta { margin-top: 10px; display: flex; gap: 12px; color: var(--muted); font-size: 14px; }
 .layout { display: grid; grid-template-columns: 1fr 1.25fr 0.95fr; gap: 16px; margin-top: 16px; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 18px; }
-.narrow { max-width: 420px; margin: 60px auto; }
-label { display: block; font-weight: 600; margin-bottom: 12px; }
-input { width: 100%; margin-top: 6px; border: 1px solid var(--border); border-radius: 10px; padding: 10px; font: inherit; }
 .muted { color: var(--muted); }
-.error { color: #b42318; margin-top: 10px; }
 .steps-stack { display: grid; gap: 14px; }
 .step-card { border: 1px solid var(--border); border-radius: 16px; padding: 14px; background: #fcfdff; }
 .step-header { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
 .reward-pill { background: var(--soft); border: 1px solid var(--border); border-radius: 999px; padding: 8px 10px; font-size: 12px; }
 button { border: 1px solid var(--border); background: white; border-radius: 12px; padding: 10px 14px; cursor: pointer; }
-.primary { background: var(--accent); color: white; border: none; }
-.button-row { display: flex; gap: 10px; }
+.primary { margin-top: 10px; background: var(--accent); color: white; border: none; }
 .map-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 .map-node { border: 1px solid var(--border); border-radius: 16px; padding: 14px; }
 .map-node.mastered { background: #eef9f0; }
@@ -43,7 +38,12 @@ button { border: 1px solid var(--border); background: white; border-radius: 12px
 .progress-wrap { margin-bottom: 14px; }
 .progress-bar { width: 100%; height: 12px; border-radius: 999px; background: #e9edf4; overflow: hidden; margin: 8px 0; }
 .progress-fill { height: 100%; background: var(--accent); }
+.reward-banner { background: #fff7dd; border: 1px solid #ecdca2; border-radius: 14px; padding: 12px; margin-bottom: 12px; font-weight: 700; }
+.readiness-box { border: 1px solid var(--border); background: #fbfcfe; border-radius: 14px; padding: 12px; }
+.readiness-box.ready { background: #eef9f0; }
 .compliance-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.flag-row { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+.flag { border: 1px solid var(--border); background: #f4f7fc; border-radius: 999px; padding: 6px 10px; font-size: 12px; }
 details summary { cursor: pointer; color: var(--accent); }
 @media (max-width: 1100px) {
   .layout { grid-template-columns: 1fr; }

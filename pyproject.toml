@@ -10,14 +10,11 @@ dependencies = [
   "pydantic>=2.7",
   "pyyaml>=6.0",
   "fastapi>=0.115",
-  "uvicorn>=0.30",
-  "sqlalchemy>=2.0",
-  "passlib[bcrypt]>=1.7"
+  "uvicorn>=0.30"
 ]
 
 [project.scripts]
 didactopus-api = "didactopus.api:main"
-didactopus-seed-db = "didactopus.seed:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
