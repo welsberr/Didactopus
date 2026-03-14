@@ -1,66 +1,116 @@
-# Didactopus FAQ: Artifact Lifecycle and Knowledge Reuse
 
-## Why keep artifacts after rendering?
+# Didactopus FAQ
 
-Artifacts are evidence of learning trajectories, pack structure, and interpretation.
-They support:
-- learner reflection
-- mentor review
-- debugging AI learners
-- presentation and publication
+## What problem does Didactopus solve?
 
-## Why do retention policies matter?
+Most learning systems record only test scores or completion status.  
+Didactopus records the **structure of knowledge and the trajectory of learning**, allowing deeper analysis of how understanding develops.
 
-Not every artifact should be stored forever. Some are transient debugging outputs;
-others are durable portfolio items or research artifacts.
+---
 
-Retention policy support lets deployments distinguish:
-- short-lived temporary outputs
-- retained educational outputs
-- archival artifacts worth preserving
+## Is Didactopus only for AI learners?
 
-## How can learner knowledge be used outside Didactopus?
+No.
 
-A learner's activity can be exported into structured forms that support:
-- revised or expanded domain packs
-- lesson plans and conventional curriculum products
-- AI skill definitions or prompts
-- mentor-facing notes about misconceptions and discoveries
+It is designed for:
 
-## Can learners improve domain packs?
+- human learners
+- AI learners
+- mixed human‑AI learning systems
 
-Yes. Learners sometimes notice:
-- confusing sequence order
-- hidden prerequisites
-- missing examples
-- better analogies
-- edge cases mentors overlooked
+The architecture intentionally treats both types of learners similarly so their progress can be compared and analyzed.
 
-Didactopus should capture these as improvement suggestions rather than losing them.
+---
 
-## How could this support agentic AI skills?
+## Why represent knowledge as graphs?
 
-A learner knowledge export can be mapped into:
-- scope and goals
-- prerequisite structure
-- canonical examples
-- failure modes
-- evaluation checks
-- recommended actions
+Knowledge graphs make relationships explicit:
 
-That makes it a plausible source for building agent skills or skill-like bundles.
+- prerequisites
+- conceptual similarity
+- cross‑domain analogies
 
-## How could this support traditional curriculum products?
+Graph representations make it easier to visualize and analyze the structure of understanding.
 
-Knowledge export can seed:
-- lesson outlines
-- exercise sets
-- study guides
-- formative assessment prompts
-- instructor notes
-- capstone project ideas
+---
 
-## Is exported learner knowledge treated as automatically correct?
+## What is synthesis?
 
-No. Exported learner knowledge should be treated as candidate structured knowledge.
-It is useful, but it still needs review, validation, and provenance tracking.
+Synthesis is the process of **connecting ideas across different domains**.
+
+Many major intellectual advances come from recognizing structural similarities between fields.
+
+Didactopus supports synthesis by:
+
+- allowing cross‑pack concept links
+- visualizing conceptual overlap
+- encouraging learners to explore related domains
+
+---
+
+## Can learners modify domain packs?
+
+Learners can propose improvements through knowledge export artifacts.
+
+These proposals may then be reviewed by:
+
+- mentors
+- domain pack maintainers
+- automated validation systems
+
+Accepted improvements can be incorporated into future pack versions.
+
+---
+
+## What are artifacts?
+
+Artifacts are outputs produced by Didactopus that capture aspects of learning.
+
+Examples:
+
+- concept graph animations
+- mastery snapshots
+- knowledge export bundles
+- research datasets
+
+Artifacts allow learning to be inspected, shared, and reused.
+
+---
+
+## Why have artifact retention policies?
+
+Learning systems can produce large numbers of artifacts.
+
+Retention policies allow systems to:
+
+- automatically remove temporary artifacts
+- preserve historically important outputs
+- archive discoveries or milestones
+
+---
+
+## Can Didactopus help build curricula?
+
+Yes.
+
+Knowledge exports and learner artifacts can be used to produce:
+
+- textbooks
+- course modules
+- visual learning materials
+- interactive exercises
+
+---
+
+## How does Didactopus help AI systems?
+
+AI agents can use domain packs as structured skill maps.
+
+Learner state tracking allows researchers to observe:
+
+- reasoning development
+- concept acquisition
+- cross‑domain transfer
+
+This makes Didactopus useful for studying AI learning as well as human learning.
+
