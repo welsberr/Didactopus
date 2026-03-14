@@ -5,18 +5,20 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "didactopus"
 version = "0.1.0"
-description = "Didactopus: semantic QA layer for domain packs"
-readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "MIT"}
-authors = [{name = "Wesley R. Elsberry"}]
-dependencies = ["pydantic>=2.7", "pyyaml>=6.0"]
-
-[project.optional-dependencies]
-dev = ["pytest>=8.0", "ruff>=0.6"]
+dependencies = [
+  "pydantic>=2.7",
+  "pyyaml>=6.0",
+  "fastapi>=0.115",
+  "uvicorn>=0.30",
+  "sqlalchemy>=2.0",
+  "psycopg[binary]>=3.1",
+  "passlib[bcrypt]>=1.7",
+  "python-jose[cryptography]>=3.3"
+]
 
 [project.scripts]
-didactopus-review-bridge = "didactopus.review_bridge_server:main"
+didactopus-api = "didactopus.api:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

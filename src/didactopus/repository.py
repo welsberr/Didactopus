@@ -1,16 +1,10 @@
 from __future__ import annotations
 import json
-from datetime import datetime, timezone
 from sqlalchemy import select
 from .db import SessionLocal
-from .orm import (
-    UserORM, PackORM, LearnerORM, MasteryRecordORM,
-    KnowledgeCandidateORM, ReviewRecordORM, PromotionRecordORM, SynthesisCandidateORM
-)
+from .orm import UserORM, RefreshTokenORM, PackORM, LearnerORM, MasteryRecordORM, EvidenceEventORM, EvaluatorJobORM
+from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent
 from .auth import verify_password
-
-def now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
 
 def get_user_by_username(username: str):
     with SessionLocal() as db:
@@ -26,13 +20,89 @@ def authenticate_user(username: str, password: str):
         return None
     return user
 
-def list_packs():
+def store_refresh_token(user_id: int, token_id: str):
     with SessionLocal() as db:
-        return db.execute(select(PackORM).order_by(PackORM.id)).scalars().all()
+        db.add(RefreshTokenORM(user_id=user_id, token_id=token_id, is_revoked=False))
+        db.commit()
+
+def refresh_token_active(token_id: str) -> bool:
+    with SessionLocal() as db:
+        row = db.execute(select(RefreshTokenORM).where(RefreshTokenORM.token_id == token_id)).scalar_one_or_none()
+        return row is not None and not row.is_revoked
+
+def revoke_refresh_token(token_id: str):
+    with SessionLocal() as db:
+        row = db.execute(select(RefreshTokenORM).where(RefreshTokenORM.token_id == token_id)).scalar_one_or_none()
+        if row:
+            row.is_revoked = True
+            db.commit()
+
+def list_packs(include_unpublished: bool = False):
+    with SessionLocal() as db:
+        stmt = select(PackORM)
+        if not include_unpublished:
+            stmt = stmt.where(PackORM.is_published == True)
+        rows = db.execute(stmt).scalars().all()
+        return [PackData.model_validate(json.loads(r.data_json)) for r in rows]
+
+def list_pack_admin_rows():
+    with SessionLocal() as db:
+        rows = db.execute(select(PackORM).order_by(PackORM.id)).scalars().all()
+        return [{"id": r.id, "title": r.title, "is_published": r.is_published, "subtitle": r.subtitle} for r in rows]
 
 def get_pack(pack_id: str):
     with SessionLocal() as db:
-        return db.get(PackORM, pack_id)
+        row = db.get(PackORM, pack_id)
+        return None if row is None else PackData.model_validate(json.loads(row.data_json))
+
+def get_pack_validation(pack_id: str):
+    with SessionLocal() as db:
+        row = db.get(PackORM, pack_id)
+        return {} if row is None else json.loads(row.validation_json or "{}")
+
+def get_pack_provenance(pack_id: str):
+    with SessionLocal() as db:
+        row = db.get(PackORM, pack_id)
+        return {} if row is None else json.loads(row.provenance_json or "{}")
+
+def upsert_pack(pack: PackData, is_published: bool = True):
+    validation = {
+        "ok": len(pack.concepts) > 0,
+        "warnings": [] if len(pack.concepts) > 0 else ["Pack has no concepts."],
+        "errors": [],
+        "summary": {"concept_count": len(pack.concepts), "has_onboarding": bool(pack.onboarding)}
+    }
+    provenance = {
+        "source_count": pack.compliance.sources,
+        "licenses_present": ["CC BY-NC-SA 4.0"] if pack.compliance.shareAlikeRequired or pack.compliance.noncommercialOnly else [],
+        "restrictive_flags": list(pack.compliance.flags),
+        "sources": [
+            {"source_id": "sample-source-1", "title": f"Provenance placeholder for {pack.title}", "license_id": "CC BY-NC-SA 4.0" if pack.compliance.shareAlikeRequired or pack.compliance.noncommercialOnly else "unspecified", "attribution_text": "Sample attribution text placeholder"}
+        ] if pack.compliance.sources else []
+    }
+    with SessionLocal() as db:
+        row = db.get(PackORM, pack.id)
+        payload = json.dumps(pack.model_dump())
+        if row is None:
+            db.add(PackORM(id=pack.id, title=pack.title, subtitle=pack.subtitle, level=pack.level, data_json=payload, validation_json=json.dumps(validation), provenance_json=json.dumps(provenance), is_published=is_published))
+        else:
+            row.title = pack.title
+            row.subtitle = pack.subtitle
+            row.level = pack.level
+            row.data_json = payload
+            row.validation_json = json.dumps(validation)
+            row.provenance_json = json.dumps(provenance)
+            row.is_published = is_published
+        db.commit()
+
+def set_pack_publication(pack_id: str, is_published: bool):
+    with SessionLocal() as db:
+        row = db.get(PackORM, pack_id)
+        if row is None:
+            return False
+        row.is_published = is_published
+        db.commit()
+        return True
 
 def create_learner(owner_user_id: int, learner_id: str, display_name: str = ""):
     with SessionLocal() as db:
@@ -40,244 +110,66 @@ def create_learner(owner_user_id: int, learner_id: str, display_name: str = ""):
             db.add(LearnerORM(id=learner_id, owner_user_id=owner_user_id, display_name=display_name))
             db.commit()
 
+def list_learners_for_user(user_id: int, is_admin: bool = False):
+    with SessionLocal() as db:
+        stmt = select(LearnerORM).order_by(LearnerORM.id)
+        if not is_admin:
+            stmt = stmt.where(LearnerORM.owner_user_id == user_id)
+        rows = db.execute(stmt).scalars().all()
+        return [{"learner_id": r.id, "display_name": r.display_name, "owner_user_id": r.owner_user_id} for r in rows]
+
 def learner_owned_by_user(user_id: int, learner_id: str) -> bool:
     with SessionLocal() as db:
         learner = db.get(LearnerORM, learner_id)
         return learner is not None and learner.owner_user_id == user_id
 
-def list_mastery_records(learner_id: str):
+def load_learner_state(learner_id: str):
     with SessionLocal() as db:
-        rows = db.execute(select(MasteryRecordORM).where(MasteryRecordORM.learner_id == learner_id)).scalars().all()
-        return [{
-            "concept_id": r.concept_id,
-            "dimension": r.dimension,
-            "score": r.score,
-            "confidence": r.confidence,
-            "evidence_count": r.evidence_count,
-            "last_updated": r.last_updated,
-        } for r in rows]
-
-def create_candidate(payload):
-    with SessionLocal() as db:
-        row = KnowledgeCandidateORM(
-            source_type=payload.source_type,
-            source_artifact_id=payload.source_artifact_id,
-            learner_id=payload.learner_id,
-            pack_id=payload.pack_id,
-            candidate_kind=payload.candidate_kind,
-            title=payload.title,
-            summary=payload.summary,
-            structured_payload_json=json.dumps(payload.structured_payload),
-            evidence_summary=payload.evidence_summary,
-            confidence_hint=payload.confidence_hint,
-            novelty_score=payload.novelty_score,
-            synthesis_score=payload.synthesis_score,
-            triage_lane=payload.triage_lane,
-            current_status="triaged",
-            created_at=now_iso(),
+        records = db.execute(select(MasteryRecordORM).where(MasteryRecordORM.learner_id == learner_id)).scalars().all()
+        history = db.execute(select(EvidenceEventORM).where(EvidenceEventORM.learner_id == learner_id)).scalars().all()
+        return LearnerState(
+            learner_id=learner_id,
+            records=[MasteryRecord(concept_id=r.concept_id, dimension=r.dimension, score=r.score, confidence=r.confidence, evidence_count=r.evidence_count, last_updated=r.last_updated) for r in records],
+            history=[EvidenceEvent(concept_id=h.concept_id, dimension=h.dimension, score=h.score, confidence_hint=h.confidence_hint, timestamp=h.timestamp, kind=h.kind, source_id=h.source_id) for h in history],
         )
-        db.add(row)
+
+def save_learner_state(state: LearnerState):
+    with SessionLocal() as db:
+        db.query(MasteryRecordORM).filter(MasteryRecordORM.learner_id == state.learner_id).delete()
+        db.query(EvidenceEventORM).filter(EvidenceEventORM.learner_id == state.learner_id).delete()
+        for r in state.records:
+            db.add(MasteryRecordORM(learner_id=state.learner_id, concept_id=r.concept_id, dimension=r.dimension, score=r.score, confidence=r.confidence, evidence_count=r.evidence_count, last_updated=r.last_updated))
+        for h in state.history:
+            db.add(EvidenceEventORM(learner_id=state.learner_id, concept_id=h.concept_id, dimension=h.dimension, score=h.score, confidence_hint=h.confidence_hint, timestamp=h.timestamp, kind=h.kind, source_id=h.source_id))
         db.commit()
-        db.refresh(row)
-        return row.id
+    return state
 
-def list_candidates():
+def create_evaluator_job(learner_id: str, pack_id: str, concept_id: str, submitted_text: str) -> int:
     with SessionLocal() as db:
-        rows = db.execute(select(KnowledgeCandidateORM).order_by(KnowledgeCandidateORM.id.desc())).scalars().all()
-        return [{
-            "candidate_id": r.id,
-            "source_type": r.source_type,
-            "source_artifact_id": r.source_artifact_id,
-            "learner_id": r.learner_id,
-            "pack_id": r.pack_id,
-            "candidate_kind": r.candidate_kind,
-            "title": r.title,
-            "summary": r.summary,
-            "structured_payload": json.loads(r.structured_payload_json or "{}"),
-            "evidence_summary": r.evidence_summary,
-            "confidence_hint": r.confidence_hint,
-            "novelty_score": r.novelty_score,
-            "synthesis_score": r.synthesis_score,
-            "triage_lane": r.triage_lane,
-            "current_status": r.current_status,
-            "created_at": r.created_at,
-        } for r in rows]
-
-def get_candidate(candidate_id: int):
-    with SessionLocal() as db:
-        r = db.get(KnowledgeCandidateORM, candidate_id)
-        if r is None:
-            return None
-        return {
-            "candidate_id": r.id,
-            "source_type": r.source_type,
-            "source_artifact_id": r.source_artifact_id,
-            "learner_id": r.learner_id,
-            "pack_id": r.pack_id,
-            "candidate_kind": r.candidate_kind,
-            "title": r.title,
-            "summary": r.summary,
-            "structured_payload": json.loads(r.structured_payload_json or "{}"),
-            "evidence_summary": r.evidence_summary,
-            "confidence_hint": r.confidence_hint,
-            "novelty_score": r.novelty_score,
-            "synthesis_score": r.synthesis_score,
-            "triage_lane": r.triage_lane,
-            "current_status": r.current_status,
-            "created_at": r.created_at,
-        }
-
-def update_candidate(candidate_id: int, triage_lane=None, current_status=None):
-    with SessionLocal() as db:
-        row = db.get(KnowledgeCandidateORM, candidate_id)
-        if row is None:
-            return None
-        if triage_lane is not None:
-            row.triage_lane = triage_lane
-        if current_status is not None:
-            row.current_status = current_status
+        trace = {"rubric_dimension_scores": [{"dimension": "mastery", "score": 0.0}], "notes": ["Job queued", "Awaiting evaluator"], "token_count_estimate": len(submitted_text.split())}
+        job = EvaluatorJobORM(learner_id=learner_id, pack_id=pack_id, concept_id=concept_id, submitted_text=submitted_text, status="queued", trace_json=json.dumps(trace))
+        db.add(job)
         db.commit()
-        db.refresh(row)
-        return row
+        db.refresh(job)
+        return job.id
 
-def create_review(candidate_id: int, reviewer_id: int, payload):
+def list_evaluator_jobs_for_learner(learner_id: str):
     with SessionLocal() as db:
-        row = ReviewRecordORM(
-            candidate_id=candidate_id,
-            reviewer_id=reviewer_id,
-            review_kind=payload.review_kind,
-            verdict=payload.verdict,
-            rationale=payload.rationale,
-            requested_changes=payload.requested_changes,
-            created_at=now_iso(),
-        )
-        db.add(row)
+        return db.execute(select(EvaluatorJobORM).where(EvaluatorJobORM.learner_id == learner_id).order_by(EvaluatorJobORM.id.desc())).scalars().all()
+
+def get_evaluator_job(job_id: int):
+    with SessionLocal() as db:
+        return db.get(EvaluatorJobORM, job_id)
+
+def update_evaluator_job(job_id: int, status: str, score: float | None = None, confidence_hint: float | None = None, notes: str = "", trace: dict | None = None):
+    with SessionLocal() as db:
+        job = db.get(EvaluatorJobORM, job_id)
+        if job is None:
+            return
+        job.status = status
+        job.result_score = score
+        job.result_confidence_hint = confidence_hint
+        job.result_notes = notes
+        if trace is not None:
+            job.trace_json = json.dumps(trace)
         db.commit()
-        db.refresh(row)
-        return row.id
-
-def list_reviews(candidate_id: int):
-    with SessionLocal() as db:
-        rows = db.execute(select(ReviewRecordORM).where(ReviewRecordORM.candidate_id == candidate_id).order_by(ReviewRecordORM.id.desc())).scalars().all()
-        return [{
-            "review_id": r.id,
-            "candidate_id": r.candidate_id,
-            "reviewer_id": r.reviewer_id,
-            "review_kind": r.review_kind,
-            "verdict": r.verdict,
-            "rationale": r.rationale,
-            "requested_changes": r.requested_changes,
-            "created_at": r.created_at,
-        } for r in rows]
-
-def create_promotion(candidate_id: int, promoted_by: int, payload):
-    with SessionLocal() as db:
-        row = PromotionRecordORM(
-            candidate_id=candidate_id,
-            promotion_target=payload.promotion_target,
-            target_object_id=payload.target_object_id,
-            promotion_status=payload.promotion_status,
-            promoted_by=promoted_by,
-            created_at=now_iso(),
-        )
-        db.add(row)
-        candidate = db.get(KnowledgeCandidateORM, candidate_id)
-        if candidate:
-            candidate.current_status = "promoted"
-            candidate.triage_lane = payload.promotion_target
-        db.commit()
-        db.refresh(row)
-        return row.id
-
-def list_promotions():
-    with SessionLocal() as db:
-        rows = db.execute(select(PromotionRecordORM).order_by(PromotionRecordORM.id.desc())).scalars().all()
-        return [{
-            "promotion_id": r.id,
-            "candidate_id": r.candidate_id,
-            "promotion_target": r.promotion_target,
-            "target_object_id": r.target_object_id,
-            "promotion_status": r.promotion_status,
-            "promoted_by": r.promoted_by,
-            "created_at": r.created_at,
-        } for r in rows]
-
-def create_synthesis_candidate(
-    source_concept_id: str,
-    target_concept_id: str,
-    source_pack_id: str,
-    target_pack_id: str,
-    synthesis_kind: str,
-    score_semantic: float,
-    score_structural: float,
-    score_trajectory: float,
-    score_review_history: float,
-    explanation: str,
-    evidence: dict
-):
-    score_total = 0.35 * score_semantic + 0.25 * score_structural + 0.20 * score_trajectory + 0.10 * score_review_history + 0.10 * evidence.get("novelty", 0.0)
-    with SessionLocal() as db:
-        row = SynthesisCandidateORM(
-            source_concept_id=source_concept_id,
-            target_concept_id=target_concept_id,
-            source_pack_id=source_pack_id,
-            target_pack_id=target_pack_id,
-            synthesis_kind=synthesis_kind,
-            score_total=score_total,
-            score_semantic=score_semantic,
-            score_structural=score_structural,
-            score_trajectory=score_trajectory,
-            score_review_history=score_review_history,
-            explanation=explanation,
-            evidence_json=json.dumps(evidence),
-            current_status="proposed",
-            created_at=now_iso(),
-        )
-        db.add(row)
-        db.commit()
-        db.refresh(row)
-        return row.id
-
-def list_synthesis_candidates():
-    with SessionLocal() as db:
-        rows = db.execute(select(SynthesisCandidateORM).order_by(SynthesisCandidateORM.score_total.desc(), SynthesisCandidateORM.id.desc())).scalars().all()
-        return [{
-            "synthesis_id": r.id,
-            "source_concept_id": r.source_concept_id,
-            "target_concept_id": r.target_concept_id,
-            "source_pack_id": r.source_pack_id,
-            "target_pack_id": r.target_pack_id,
-            "synthesis_kind": r.synthesis_kind,
-            "score_total": r.score_total,
-            "score_semantic": r.score_semantic,
-            "score_structural": r.score_structural,
-            "score_trajectory": r.score_trajectory,
-            "score_review_history": r.score_review_history,
-            "explanation": r.explanation,
-            "evidence": json.loads(r.evidence_json or "{}"),
-            "current_status": r.current_status,
-            "created_at": r.created_at,
-        } for r in rows]
-
-def get_synthesis_candidate(synthesis_id: int):
-    with SessionLocal() as db:
-        r = db.get(SynthesisCandidateORM, synthesis_id)
-        if r is None:
-            return None
-        return {
-            "synthesis_id": r.id,
-            "source_concept_id": r.source_concept_id,
-            "target_concept_id": r.target_concept_id,
-            "source_pack_id": r.source_pack_id,
-            "target_pack_id": r.target_pack_id,
-            "synthesis_kind": r.synthesis_kind,
-            "score_total": r.score_total,
-            "score_semantic": r.score_semantic,
-            "score_structural": r.score_structural,
-            "score_trajectory": r.score_trajectory,
-            "score_review_history": r.score_review_history,
-            "explanation": r.explanation,
-            "evidence": json.loads(r.evidence_json or "{}"),
-            "current_status": r.current_status,
-            "created_at": r.created_at,
-        }

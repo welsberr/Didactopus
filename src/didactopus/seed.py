@@ -1,53 +1,27 @@
 from __future__ import annotations
-import json
 from sqlalchemy import select
 from .db import Base, engine, SessionLocal
-from .orm import UserORM, PackORM
+from .orm import UserORM
 from .auth import hash_password
+from .repository import upsert_pack
+from .models import PackData, PackConcept, PackCompliance
 
 def main():
     Base.metadata.create_all(bind=engine)
     with SessionLocal() as db:
         if db.execute(select(UserORM).where(UserORM.username == "wesley")).scalar_one_or_none() is None:
             db.add(UserORM(username="wesley", password_hash=hash_password("demo-pass"), role="admin", is_active=True))
-        if db.execute(select(UserORM).where(UserORM.username == "reviewer")).scalar_one_or_none() is None:
-            db.add(UserORM(username="reviewer", password_hash=hash_password("demo-pass"), role="reviewer", is_active=True))
-        if db.get(PackORM, "biology-pack") is None:
-            db.add(PackORM(
-                id="biology-pack",
-                owner_user_id=1,
-                policy_lane="personal",
-                title="Biology Pack",
-                subtitle="Core biology concepts",
-                level="novice-friendly",
-                is_published=True,
-                data_json=json.dumps({
-                    "id": "biology-pack",
-                    "title": "Biology Pack",
-                    "concepts": [
-                        {"id": "selection", "title": "Natural Selection", "prerequisites": ["variation"]},
-                        {"id": "variation", "title": "Variation", "prerequisites": []},
-                        {"id": "drift", "title": "Genetic Drift", "prerequisites": ["variation"]}
-                    ]
-                })
-            ))
-        if db.get(PackORM, "math-pack") is None:
-            db.add(PackORM(
-                id="math-pack",
-                owner_user_id=1,
-                policy_lane="personal",
-                title="Math Pack",
-                subtitle="Core math concepts",
-                level="novice-friendly",
-                is_published=True,
-                data_json=json.dumps({
-                    "id": "math-pack",
-                    "title": "Math Pack",
-                    "concepts": [
-                        {"id": "random_walk", "title": "Random Walk", "prerequisites": ["variation"]},
-                        {"id": "variation", "title": "Variation in Models", "prerequisites": []},
-                        {"id": "optimization", "title": "Optimization", "prerequisites": []}
-                    ]
-                })
-            ))
         db.commit()
+    upsert_pack(PackData(
+        id="bayes-pack",
+        title="Bayesian Reasoning",
+        subtitle="Probability, evidence, updating, and model criticism.",
+        level="novice-friendly",
+        concepts=[
+            PackConcept(id="prior", title="Prior", prerequisites=[], masteryDimension="mastery", exerciseReward="Prior badge earned"),
+            PackConcept(id="posterior", title="Posterior", prerequisites=["prior"], masteryDimension="mastery", exerciseReward="Posterior path opened"),
+        ],
+        onboarding={"headline":"Start with a fast visible win","body":"Read one short orientation, answer one guided question, and leave with your first mastery marker.","checklist":["Read the one-screen topic orientation","Answer one guided exercise","Write one explanation in your own words"]},
+        compliance=PackCompliance(sources=2, attributionRequired=True, shareAlikeRequired=True, noncommercialOnly=True, flags=["share-alike","noncommercial","excluded-third-party-content"])
+    ), is_published=True)
+    print("Seeded database. Demo user: wesley / demo-pass")

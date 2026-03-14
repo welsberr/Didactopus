@@ -1,9 +1,8 @@
 from __future__ import annotations
 from pydantic import BaseModel, Field
+from typing import Literal
 
-class LoginRequest(BaseModel):
-    username: str
-    password: str
+EvidenceKind = Literal["checkpoint", "project", "exercise", "review"]
 
 class TokenPair(BaseModel):
     access_token: str
@@ -12,43 +11,39 @@ class TokenPair(BaseModel):
     username: str
     role: str
 
-class KnowledgeCandidateCreate(BaseModel):
-    source_type: str = "learner_export"
-    source_artifact_id: int | None = None
-    learner_id: str
-    pack_id: str
-    candidate_kind: str
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+class PackConcept(BaseModel):
+    id: str
     title: str
-    summary: str = ""
-    structured_payload: dict = Field(default_factory=dict)
-    evidence_summary: str = ""
-    confidence_hint: float = 0.0
-    novelty_score: float = 0.0
-    synthesis_score: float = 0.0
-    triage_lane: str = "archive"
+    prerequisites: list[str] = Field(default_factory=list)
+    masteryDimension: str = "mastery"
+    exerciseReward: str = ""
 
-class KnowledgeCandidateUpdate(BaseModel):
-    triage_lane: str | None = None
-    current_status: str | None = None
+class PackCompliance(BaseModel):
+    sources: int = 0
+    attributionRequired: bool = False
+    shareAlikeRequired: bool = False
+    noncommercialOnly: bool = False
+    flags: list[str] = Field(default_factory=list)
 
-class ReviewCreate(BaseModel):
-    review_kind: str = "human_review"
-    verdict: str
-    rationale: str = ""
-    requested_changes: str = ""
+class PackData(BaseModel):
+    id: str
+    title: str
+    subtitle: str = ""
+    level: str = "novice-friendly"
+    concepts: list[PackConcept] = Field(default_factory=list)
+    onboarding: dict = Field(default_factory=dict)
+    compliance: PackCompliance = Field(default_factory=PackCompliance)
 
-class PromoteRequest(BaseModel):
-    promotion_target: str
-    target_object_id: str = ""
-    promotion_status: str = "approved"
-
-class SynthesisRunRequest(BaseModel):
-    source_pack_id: str | None = None
-    target_pack_id: str | None = None
-    limit: int = 20
-
-class SynthesisPromoteRequest(BaseModel):
-    promotion_target: str = "pack_improvement"
+class CreatePackRequest(BaseModel):
+    pack: PackData
+    is_published: bool = True
 
 class CreateLearnerRequest(BaseModel):
     learner_id: str
@@ -62,6 +57,29 @@ class MasteryRecord(BaseModel):
     evidence_count: int = 0
     last_updated: str = ""
 
+class EvidenceEvent(BaseModel):
+    concept_id: str
+    dimension: str
+    score: float
+    confidence_hint: float = 0.5
+    timestamp: str
+    kind: EvidenceKind = "exercise"
+    source_id: str = ""
+
 class LearnerState(BaseModel):
     learner_id: str
     records: list[MasteryRecord] = Field(default_factory=list)
+    history: list[EvidenceEvent] = Field(default_factory=list)
+
+class EvaluatorSubmission(BaseModel):
+    pack_id: str
+    concept_id: str
+    submitted_text: str
+    kind: str = "checkpoint"
+
+class EvaluatorJobStatus(BaseModel):
+    job_id: int
+    status: str
+    result_score: float | None = None
+    result_confidence_hint: float | None = None
+    result_notes: str = ""
