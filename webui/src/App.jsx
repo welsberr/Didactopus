@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { login, refresh, fetchPacks, fetchLearnerState, putLearnerState, fetchGraphAnimation } from "./api";
+import React, { useEffect, useMemo, useState } from "react";
+import { login, refresh, fetchPacks, fetchLearnerState, putLearnerState, createLearnerRun, addWorkflowEvent, fetchAnimation } from "./api";
 import { loadAuth, saveAuth, clearAuth } from "./authStore";
 
 function LoginView({ onAuth }) {
@@ -26,41 +26,23 @@ function LoginView({ onAuth }) {
   );
 }
 
-function nodeColor(status) {
-  if (status === "mastered") return "#1f7a1f";
-  if (status === "active") return "#2d6cdf";
-  if (status === "available") return "#c48a00";
-  return "#9aa4b2";
-}
-
-function GraphView({ frame }) {
+function AnimationBars({ frame, concepts }) {
   if (!frame) return null;
   return (
-    <svg viewBox="0 0 960 560" className="graph">
-      {frame.edges.map((edge, idx) => {
-        const s = frame.nodes.find((n) => n.id === edge.source);
-        const t = frame.nodes.find((n) => n.id === edge.target);
-        if (!s || !t) return null;
-        return <line key={idx} x1={s.x} y1={s.y} x2={t.x} y2={t.y} stroke="#b8c2cf" strokeWidth="3" markerEnd="url(#arrow)" />;
+    <div className="bars">
+      {concepts.map((concept) => {
+        const value = frame.scores?.[concept] ?? 0;
+        return (
+          <div className="bar-row" key={concept}>
+            <div className="bar-label">{concept}</div>
+            <div className="bar-track">
+              <div className="bar-fill" style={{ width: `${Math.max(0, Math.min(100, value * 100))}%` }} />
+            </div>
+            <div className="bar-value">{value.toFixed(2)}</div>
+          </div>
+        );
       })}
-      {frame.cross_pack_links.map((edge, idx) => {
-        const s = frame.nodes.find((n) => n.id === edge.source);
-        if (!s) return null;
-        return <line key={`c${idx}`} x1={s.x} y1={s.y} x2={s.x + 120} y2={s.y - 60} stroke="#cc4bc2" strokeWidth="2" strokeDasharray="8 6" />;
-      })}
-      <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
-          <path d="M0,0 L0,6 L9,3 z" fill="#b8c2cf" />
-        </marker>
-      </defs>
-      {frame.nodes.map((node) => (
-        <g key={node.id}>
-          <circle cx={node.x} cy={node.y} r={node.size} fill={nodeColor(node.status)} opacity="0.92" />
-          <text x={node.x} y={node.y - 4} textAnchor="middle" className="svg-label">{node.title}</text>
-          <text x={node.x} y={node.y + 14} textAnchor="middle" className="svg-small">{node.score.toFixed(2)} · {node.status}</text>
-        </g>
-      ))}
-    </svg>
+    </div>
   );
 }
 
@@ -69,7 +51,7 @@ export default function App() {
   const [packs, setPacks] = useState([]);
   const [learnerId] = useState("wesley-learner");
   const [packId, setPackId] = useState("");
-  const [graphData, setGraphData] = useState(null);
+  const [animation, setAnimation] = useState(null);
   const [frameIndex, setFrameIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [message, setMessage] = useState("");
@@ -97,9 +79,9 @@ export default function App() {
     }
   }
 
-  async function reload(pid) {
-    const data = await guarded((token) => fetchGraphAnimation(token, learnerId, pid));
-    setGraphData(data);
+  async function reloadAnimation(pid) {
+    const data = await guarded((token) => fetchAnimation(token, learnerId, pid));
+    setAnimation(data);
     setFrameIndex(0);
   }
 
@@ -110,80 +92,92 @@ export default function App() {
       setPacks(p);
       const pid = p[0]?.id || "";
       setPackId(pid);
-      if (pid) await reload(pid);
+      if (pid) await reloadAnimation(pid);
     }
     load();
   }, [auth]);
 
   useEffect(() => {
-    if (!playing || !graphData?.frames?.length) return;
+    if (!playing || !animation?.frames?.length) return;
     const t = setInterval(() => {
-      setFrameIndex((idx) => idx >= graphData.frames.length - 1 ? 0 : idx + 1);
+      setFrameIndex((idx) => {
+        if (idx >= animation.frames.length - 1) {
+          return 0;
+        }
+        return idx + 1;
+      });
     }, 900);
     return () => clearInterval(t);
-  }, [playing, graphData]);
+  }, [playing, animation]);
 
-  async function generateDemo() {
+  const currentFrame = animation?.frames?.[frameIndex];
+  const concepts = useMemo(() => animation?.concepts || [], [animation]);
+
+  async function simulateLearning() {
+    const run = await guarded((token) => createLearnerRun(token, { learner_id: learnerId, pack_id: packId, title: "Demo animation run", actor_kind: "human" }));
     let state = await guarded((token) => fetchLearnerState(token, learnerId));
-    const base = Date.now();
-    const events = [
-      ["intro", 0.30, "exercise", 0],
-      ["intro", 0.78, "review", 1000],
-      ["second", 0.42, "exercise", 2000],
-      ["second", 0.72, "review", 3000],
-      ["third", 0.25, "exercise", 4000],
-      ["branch", 0.60, "exercise", 5000],
-    ];
-    const latest = {}
-    for (const [cid, score, kind, offset] of events) {
-      const ts = new Date(base + offset).toISOString();
-      state.history.push({ concept_id: cid, dimension: "mastery", score, confidence_hint: 0.6, timestamp: ts, kind, source_id: `demo-${cid}-${offset}` });
-      latest[cid] = { concept_id: cid, dimension: "mastery", score, confidence: Math.min(0.9, score), evidence_count: (latest[cid]?.evidence_count || 0) + 1, last_updated: ts };
-    }
-    state.records = Object.values(latest);
+    const now1 = new Date().toISOString();
+    state.history.push({ concept_id: "intro", dimension: "mastery", score: 0.35, confidence_hint: 0.5, timestamp: now1, kind: "exercise", source_id: "demo-1" });
+    state.records = [{ concept_id: "intro", dimension: "mastery", score: 0.35, confidence: 0.35, evidence_count: 1, last_updated: now1 }];
     await guarded((token) => putLearnerState(token, learnerId, state));
-    await reload(packId);
-    setMessage("Stable-layout graph demo generated.");
+    await guarded((token) => addWorkflowEvent(token, { run_id: run.run_id, learner_id: learnerId, event_type: "exercise_completed", concept_id: "intro", timestamp: now1, detail: { score: 0.35 } }));
+
+    const now2 = new Date(Date.now() + 1000).toISOString();
+    state.history.push({ concept_id: "intro", dimension: "mastery", score: 0.75, confidence_hint: 0.7, timestamp: now2, kind: "review", source_id: "demo-2" });
+    state.records = [{ concept_id: "intro", dimension: "mastery", score: 0.75, confidence: 0.68, evidence_count: 2, last_updated: now2 }];
+    await guarded((token) => putLearnerState(token, learnerId, state));
+    await guarded((token) => addWorkflowEvent(token, { run_id: run.run_id, learner_id: learnerId, event_type: "review_completed", concept_id: "intro", timestamp: now2, detail: { score: 0.75 } }));
+
+    const now3 = new Date(Date.now() + 2000).toISOString();
+    state.history.push({ concept_id: "second", dimension: "mastery", score: 0.45, confidence_hint: 0.5, timestamp: now3, kind: "exercise", source_id: "demo-3" });
+    state.records = [
+      { concept_id: "intro", dimension: "mastery", score: 0.75, confidence: 0.68, evidence_count: 2, last_updated: now2 },
+      { concept_id: "second", dimension: "mastery", score: 0.45, confidence: 0.40, evidence_count: 1, last_updated: now3 },
+    ];
+    await guarded((token) => putLearnerState(token, learnerId, state));
+    await guarded((token) => addWorkflowEvent(token, { run_id: run.run_id, learner_id: learnerId, event_type: "unlock_progress", concept_id: "second", timestamp: now3, detail: { score: 0.45 } }));
+
+    await reloadAnimation(packId);
+    setMessage(`Demo run ${run.run_id} generated animation frames.`);
   }
 
   if (!auth) return <LoginView onAuth={setAuth} />;
-
-  const frame = graphData?.frames?.[frameIndex];
 
   return (
     <div className="page">
       <header className="hero">
         <div>
-          <h1>Didactopus layout-aware graph engine</h1>
-          <p>Stable node positions, cross-pack links, and export-ready graph frames.</p>
+          <h1>Didactopus learning animation</h1>
+          <p>Replay mastery changes for human or AI learners over time.</p>
           <div className="muted">{message}</div>
         </div>
         <div className="controls">
           <label>Pack
-            <select value={packId} onChange={async (e) => { setPackId(e.target.value); await reload(e.target.value); }}>
+            <select value={packId} onChange={async (e) => { setPackId(e.target.value); await reloadAnimation(e.target.value); }}>
               {packs.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
             </select>
           </label>
           <button onClick={() => setPlaying((x) => !x)}>{playing ? "Pause" : "Play"}</button>
-          <button onClick={generateDemo}>Generate demo</button>
+          <button onClick={simulateLearning}>Generate demo run</button>
           <button onClick={() => { clearAuth(); setAuth(null); }}>Logout</button>
         </div>
       </header>
 
       <main className="layout twocol">
         <section className="card">
-          <h2>Graph animation</h2>
+          <h2>Current frame</h2>
           <div className="frame-meta">
-            <div><strong>Frame:</strong> {frameIndex + 1} / {graphData?.frames?.length || 0}</div>
-            <div><strong>Event:</strong> {frame?.event_kind || "-"}</div>
-            <div><strong>Focus:</strong> {frame?.focus_concept_id || "-"}</div>
-            <div><strong>Timestamp:</strong> {frame?.timestamp || "-"}</div>
+            <div><strong>Frame:</strong> {frameIndex + 1} / {animation?.frames?.length || 0}</div>
+            <div><strong>Event:</strong> {currentFrame?.event_kind || "-"}</div>
+            <div><strong>Concept:</strong> {currentFrame?.concept_id || "-"}</div>
+            <div><strong>Timestamp:</strong> {currentFrame?.timestamp || "-"}</div>
           </div>
-          <GraphView frame={frame} />
+          <AnimationBars frame={currentFrame} concepts={concepts} />
         </section>
+
         <section className="card">
-          <h2>Frame payload</h2>
-          <pre className="prebox">{JSON.stringify(graphData, null, 2)}</pre>
+          <h2>Animation data</h2>
+          <pre className="prebox">{JSON.stringify(animation, null, 2)}</pre>
         </section>
       </main>
     </div>

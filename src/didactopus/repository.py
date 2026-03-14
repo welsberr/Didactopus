@@ -1,10 +1,28 @@
 from __future__ import annotations
 import json
+from datetime import datetime, timezone
 from sqlalchemy import select
 from .db import SessionLocal
-from .orm import UserORM, RefreshTokenORM, PackORM, LearnerORM, MasteryRecordORM, EvidenceEventORM
-from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent
-from .auth import verify_password
+from .orm import UserORM, ServiceAccountORM, AgentAuditLogORM, LearnerRunORM, WorkflowEventORM, RefreshTokenORM, PackORM, LearnerORM, MasteryRecordORM, EvidenceEventORM, EvaluatorJobORM
+from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent, DeploymentPolicyProfile
+from .auth import verify_password, hash_password
+from .config import load_settings
+
+settings = load_settings()
+
+def now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+def deployment_policy_profile() -> DeploymentPolicyProfile:
+    return DeploymentPolicyProfile(
+        profile_name=settings.deployment_policy_profile,
+        default_personal_lane_enabled=True,
+        default_community_lane_enabled=True,
+        community_publish_requires_approval=True,
+        personal_publish_direct=True,
+        reviewer_assignment_required=False,
+        description="Deployment policy scaffold."
+    )
 
 def get_user_by_username(username: str):
     with SessionLocal() as db:
@@ -19,6 +37,153 @@ def authenticate_user(username: str, password: str):
     if user is None or not verify_password(password, user.password_hash) or not user.is_active:
         return None
     return user
+
+def create_service_account(name: str, owner_user_id: int | None, description: str, scopes: list[str], secret: str):
+    with SessionLocal() as db:
+        sa = ServiceAccountORM(
+            name=name,
+            owner_user_id=owner_user_id,
+            description=description,
+            scopes_json=json.dumps(scopes),
+            secret_hash=hash_password(secret),
+            is_active=True,
+        )
+        db.add(sa)
+        db.commit()
+        db.refresh(sa)
+        return sa
+
+def list_service_accounts():
+    with SessionLocal() as db:
+        rows = db.execute(select(ServiceAccountORM).order_by(ServiceAccountORM.id)).scalars().all()
+        return [{"id": r.id, "name": r.name, "owner_user_id": r.owner_user_id, "description": r.description, "scopes": json.loads(r.scopes_json or "[]"), "is_active": r.is_active} for r in rows]
+
+def get_service_account_by_name(name: str):
+    with SessionLocal() as db:
+        return db.execute(select(ServiceAccountORM).where(ServiceAccountORM.name == name)).scalar_one_or_none()
+
+def authenticate_service_account(name: str, secret: str):
+    sa = get_service_account_by_name(name)
+    if sa is None or not sa.is_active or not verify_password(secret, sa.secret_hash):
+        return None
+    return sa
+
+def rotate_service_account_secret(name: str, new_secret: str):
+    with SessionLocal() as db:
+        sa = db.execute(select(ServiceAccountORM).where(ServiceAccountORM.name == name)).scalar_one_or_none()
+        if sa is None:
+            return None
+        sa.secret_hash = hash_password(new_secret)
+        db.commit()
+        db.refresh(sa)
+        return sa
+
+def set_service_account_active(name: str, is_active: bool):
+    with SessionLocal() as db:
+        sa = db.execute(select(ServiceAccountORM).where(ServiceAccountORM.name == name)).scalar_one_or_none()
+        if sa is None:
+            return None
+        sa.is_active = is_active
+        db.commit()
+        db.refresh(sa)
+        return sa
+
+def add_agent_audit_log(service_account_id: int, service_account_name: str, action: str, target: str, outcome: str, detail: dict):
+    with SessionLocal() as db:
+        db.add(AgentAuditLogORM(
+            service_account_id=service_account_id,
+            service_account_name=service_account_name,
+            action=action,
+            target=target,
+            outcome=outcome,
+            detail_json=json.dumps(detail),
+            created_at=now_iso(),
+        ))
+        db.commit()
+
+def list_agent_audit_logs(limit: int = 200):
+    with SessionLocal() as db:
+        rows = db.execute(select(AgentAuditLogORM).order_by(AgentAuditLogORM.id.desc())).scalars().all()[:limit]
+        return [{
+            "id": r.id,
+            "service_account_id": r.service_account_id,
+            "service_account_name": r.service_account_name,
+            "action": r.action,
+            "target": r.target,
+            "outcome": r.outcome,
+            "detail": json.loads(r.detail_json or "{}"),
+            "created_at": r.created_at,
+        } for r in rows]
+
+def create_learner_run(learner_id: str, pack_id: str, actor_kind: str, actor_name: str, title: str):
+    with SessionLocal() as db:
+        row = LearnerRunORM(
+            learner_id=learner_id,
+            pack_id=pack_id,
+            actor_kind=actor_kind,
+            actor_name=actor_name,
+            title=title,
+            status="running",
+            started_at=now_iso(),
+            ended_at="",
+        )
+        db.add(row)
+        db.commit()
+        db.refresh(row)
+        return row.id
+
+def end_learner_run(run_id: int):
+    with SessionLocal() as db:
+        row = db.get(LearnerRunORM, run_id)
+        if row is None:
+            return None
+        row.status = "completed"
+        row.ended_at = now_iso()
+        db.commit()
+        return row
+
+def list_learner_runs(learner_id: str):
+    with SessionLocal() as db:
+        rows = db.execute(select(LearnerRunORM).where(LearnerRunORM.learner_id == learner_id).order_by(LearnerRunORM.id.desc())).scalars().all()
+        return [{
+            "run_id": r.id,
+            "learner_id": r.learner_id,
+            "pack_id": r.pack_id,
+            "actor_kind": r.actor_kind,
+            "actor_name": r.actor_name,
+            "title": r.title,
+            "status": r.status,
+            "started_at": r.started_at,
+            "ended_at": r.ended_at,
+        } for r in rows]
+
+def add_workflow_event(run_id: int, learner_id: str, event_type: str, concept_id: str, timestamp: str, detail: dict):
+    with SessionLocal() as db:
+        row = WorkflowEventORM(
+            run_id=run_id,
+            learner_id=learner_id,
+            event_type=event_type,
+            concept_id=concept_id,
+            timestamp=timestamp,
+            detail_json=json.dumps(detail),
+        )
+        db.add(row)
+        db.commit()
+        db.refresh(row)
+        return row.id
+
+def list_workflow_events(run_id: int):
+    with SessionLocal() as db:
+        rows = db.execute(select(WorkflowEventORM).where(WorkflowEventORM.run_id == run_id).order_by(WorkflowEventORM.id)).scalars().all()
+        return [{
+            "id": r.id,
+            "run_id": r.run_id,
+            "learner_id": r.learner_id,
+            "event_type": r.event_type,
+            "concept_id": r.concept_id,
+            "timestamp": r.timestamp,
+            "detail": json.loads(r.detail_json or "{}"),
+        } for r in rows]
 
 def store_refresh_token(user_id: int, token_id: str):
     with SessionLocal() as db:
@@ -60,7 +225,9 @@ def get_pack_row(pack_id: str):
     with SessionLocal() as db:
         return db.get(PackORM, pack_id)
 
-def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "personal", is_published: bool = False):
+def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "personal", is_published: bool = False, change_summary: str = ""):
+    validation = {"ok": len(pack.concepts) > 0, "warnings": [] if len(pack.concepts) > 0 else ["Pack has no concepts."], "errors": []}
+    provenance = {"source_count": pack.compliance.sources, "restrictive_flags": list(pack.compliance.flags)}
     with SessionLocal() as db:
         row = db.get(PackORM, pack.id)
         payload = json.dumps(pack.model_dump())
@@ -73,6 +240,10 @@ def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "p
                 subtitle=pack.subtitle,
                 level=pack.level,
                 data_json=payload,
+                validation_json=json.dumps(validation),
+                provenance_json=json.dumps(provenance),
+                governance_state="personal_ready" if policy_lane == "personal" else "draft",
+                current_version=1,
                 is_published=is_published if policy_lane == "personal" else False,
             )
             db.add(row)
@@ -83,6 +254,9 @@ def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "p
             row.subtitle = pack.subtitle
             row.level = pack.level
             row.data_json = payload
+            row.validation_json = json.dumps(validation)
+            row.provenance_json = json.dumps(provenance)
+            row.current_version += 1
             if policy_lane == "personal":
                 row.is_published = is_published
         db.commit()
@@ -118,3 +292,32 @@ def save_learner_state(state: LearnerState):
             db.add(EvidenceEventORM(learner_id=state.learner_id, concept_id=h.concept_id, dimension=h.dimension, score=h.score, confidence_hint=h.confidence_hint, timestamp=h.timestamp, kind=h.kind, source_id=h.source_id))
         db.commit()
     return state
+
+def create_evaluator_job(learner_id: str, pack_id: str, concept_id: str, submitted_text: str):
+    with SessionLocal() as db:
+        job = EvaluatorJobORM(learner_id=learner_id, pack_id=pack_id, concept_id=concept_id, submitted_text=submitted_text, status="queued", trace_json=json.dumps({"notes": ["Job queued"]}))
+        db.add(job)
+        db.commit()
+        db.refresh(job)
+        return job.id
+
+def list_evaluator_jobs_for_learner(learner_id: str):
+    with SessionLocal() as db:
+        return db.execute(select(EvaluatorJobORM).where(EvaluatorJobORM.learner_id == learner_id).order_by(EvaluatorJobORM.id.desc())).scalars().all()
+
+def get_evaluator_job(job_id: int):
+    with SessionLocal() as db:
+        return db.get(EvaluatorJobORM, job_id)
+
+def update_evaluator_job(job_id: int, status: str, score: float | None = None, confidence_hint: float | None = None, notes: str = "", trace: dict | None = None):
+    with SessionLocal() as db:
+        job = db.get(EvaluatorJobORM, job_id)
+        if job is None:
+            return
+        job.status = status
+        job.result_score = score
+        job.result_confidence_hint = confidence_hint
+        job.result_notes = notes
+        if trace is not None:
+            job.trace_json = json.dumps(trace)
+        db.commit()

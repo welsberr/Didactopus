@@ -8,6 +8,7 @@ class Settings(BaseModel):
     port: int = int(os.getenv("DIDACTOPUS_PORT", "8011"))
     jwt_secret: str = os.getenv("DIDACTOPUS_JWT_SECRET", "change-me")
     jwt_algorithm: str = "HS256"
+    deployment_policy_profile: str = os.getenv("DIDACTOPUS_POLICY_PROFILE", "single_user")
 
 def load_settings() -> Settings:
     return Settings()
