@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { login, refresh, fetchDeploymentPolicy, fetchAgentCapabilities, listServiceAccounts, createServiceAccount, rotateServiceAccount, setServiceAccountState, listAgentAuditLogs } from "./api";
+import { login, refresh, fetchDeploymentPolicy, fetchAgentCapabilities, listServiceAccounts, createServiceAccount } from "./api";
 import { loadAuth, saveAuth, clearAuth } from "./authStore";
 
 function LoginView({ onAuth }) {
@@ -31,9 +31,7 @@ export default function App() {
   const [policy, setPolicy] = useState(null);
   const [caps, setCaps] = useState(null);
   const [serviceAccounts, setServiceAccounts] = useState([]);
-  const [auditLogs, setAuditLogs] = useState([]);
   const [created, setCreated] = useState(null);
-  const [rotated, setRotated] = useState(null);
   const [form, setForm] = useState({ name: "agent-learner-1", description: "AI learner account", scopes: ["packs:read","learners:read","learners:write","recommendations:read","evaluators:submit","evaluators:read"] });
 
   async function refreshAuthToken() {
@@ -59,35 +57,22 @@ export default function App() {
     }
   }
 
-  async function reload() {
-    setPolicy(await guarded((token) => fetchDeploymentPolicy(token)));
-    setCaps(await guarded((token) => fetchAgentCapabilities(token)));
-    if (auth.role === "admin") {
-      setServiceAccounts(await guarded((token) => listServiceAccounts(token)));
-      setAuditLogs(await guarded((token) => listAgentAuditLogs(token)));
-    }
-  }
-
   useEffect(() => {
     if (!auth) return;
-    reload();
+    async function load() {
+      setPolicy(await guarded((token) => fetchDeploymentPolicy(token)));
+      setCaps(await guarded((token) => fetchAgentCapabilities(token)));
+      if (auth.role === "admin") {
+        setServiceAccounts(await guarded((token) => listServiceAccounts(token)));
+      }
+    }
+    load();
   }, [auth]);
 
   async function createNow() {
     const result = await guarded((token) => createServiceAccount(token, form));
     setCreated(result);
-    await reload();
-  }
-
-  async function rotateNow(name) {
-    const result = await guarded((token) => rotateServiceAccount(token, name));
-    setRotated(result);
-    await reload();
-  }
-
-  async function toggleState(name, isActive) {
-    await guarded((token) => setServiceAccountState(token, name, isActive));
-    await reload();
+    setServiceAccounts(await guarded((token) => listServiceAccounts(token)));
   }
 
   if (!auth) return <LoginView onAuth={setAuth} />;
@@ -96,8 +81,8 @@ export default function App() {
     <div className="page">
       <header className="hero">
         <div>
-          <h1>Didactopus agent audit + key rotation</h1>
-          <p>Scoped machine identities with audit events, rotation, and disable controls.</p>
+          <h1>Didactopus agent service-account layer</h1>
+          <p>First-class machine identities with scoped API access for AI learners.</p>
           <div className="muted">Signed in as {auth.username} ({auth.role})</div>
         </div>
         <button onClick={() => { clearAuth(); setAuth(null); }}>Logout</button>
@@ -121,36 +106,12 @@ export default function App() {
               <button className="primary" onClick={createNow}>Create service account</button>
               <h3>Created credential</h3>
               <pre className="prebox">{JSON.stringify(created, null, 2)}</pre>
-              <h3>Rotated credential</h3>
-              <pre className="prebox">{JSON.stringify(rotated, null, 2)}</pre>
               <h3>Existing accounts</h3>
-              <div className="table-wrap">
-                <table className="table">
-                  <thead><tr><th>Name</th><th>Active</th><th>Scopes</th><th>Actions</th></tr></thead>
-                  <tbody>
-                    {serviceAccounts.map((sa) => (
-                      <tr key={sa.id}>
-                        <td>{sa.name}</td>
-                        <td>{String(sa.is_active)}</td>
-                        <td>{sa.scopes.join(", ")}</td>
-                        <td>
-                          <button onClick={() => rotateNow(sa.name)}>Rotate</button>
-                          <button onClick={() => toggleState(sa.name, !sa.is_active)}>{sa.is_active ? "Disable" : "Enable"}</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <pre className="prebox">{JSON.stringify(serviceAccounts, null, 2)}</pre>
             </>
           ) : (
             <div className="muted">Admin required.</div>
           )}
-        </section>
-
-        <section className="card full">
-          <h2>Agent audit logs</h2>
-          <pre className="prebox tall">{JSON.stringify(auditLogs, null, 2)}</pre>
         </section>
       </main>
     </div>

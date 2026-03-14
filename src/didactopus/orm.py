@@ -20,17 +20,6 @@ class ServiceAccountORM(Base):
     secret_hash: Mapped[str] = mapped_column(String(255))
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
-class AgentAuditLogORM(Base):
-    __tablename__ = "agent_audit_logs"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    service_account_id: Mapped[int] = mapped_column(ForeignKey("service_accounts.id"), index=True)
-    service_account_name: Mapped[str] = mapped_column(String(120), index=True)
-    action: Mapped[str] = mapped_column(String(120), index=True)
-    target: Mapped[str] = mapped_column(String(255), default="")
-    outcome: Mapped[str] = mapped_column(String(50), default="ok")
-    detail_json: Mapped[str] = mapped_column(Text, default="{}")
-    created_at: Mapped[str] = mapped_column(String(100), default="")
-
 class RefreshTokenORM(Base):
     __tablename__ = "refresh_tokens"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

@@ -31,12 +31,6 @@ class ServiceAccountCreateRequest(BaseModel):
     description: str = ""
     scopes: list[str] = Field(default_factory=list)
 
-class ServiceAccountRotateRequest(BaseModel):
-    name: str
-
-class ServiceAccountStateRequest(BaseModel):
-    is_active: bool
-
 class RefreshRequest(BaseModel):
     refresh_token: str
 
@@ -60,8 +54,6 @@ class AgentCapabilityManifest(BaseModel):
     supports_governance_endpoints: bool = True
     supports_review_queue: bool = True
     supports_service_accounts: bool = True
-    supports_agent_audit_logs: bool = True
-    supports_service_account_rotation: bool = True
 
 class PackConcept(BaseModel):
     id: str
@@ -91,6 +83,10 @@ class CreatePackRequest(BaseModel):
     policy_lane: PolicyLane = "personal"
     is_published: bool = False
     change_summary: str = ""
+
+class ContributionSubmissionCreate(BaseModel):
+    pack: PackData
+    submission_summary: str = ""
 
 class CreateLearnerRequest(BaseModel):
     learner_id: str

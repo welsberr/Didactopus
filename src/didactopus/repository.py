@@ -3,7 +3,7 @@ import json
 from datetime import datetime, timezone
 from sqlalchemy import select
 from .db import SessionLocal
-from .orm import UserORM, ServiceAccountORM, AgentAuditLogORM, RefreshTokenORM, PackORM, LearnerORM, MasteryRecordORM, EvidenceEventORM, EvaluatorJobORM
+from .orm import UserORM, ServiceAccountORM, RefreshTokenORM, PackORM, LearnerORM, MasteryRecordORM, EvidenceEventORM, EvaluatorJobORM
 from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent, DeploymentPolicyProfile
 from .auth import verify_password, hash_password
 from .config import load_settings
@@ -58,62 +58,12 @@ def list_service_accounts():
         rows = db.execute(select(ServiceAccountORM).order_by(ServiceAccountORM.id)).scalars().all()
         return [{"id": r.id, "name": r.name, "owner_user_id": r.owner_user_id, "description": r.description, "scopes": json.loads(r.scopes_json or "[]"), "is_active": r.is_active} for r in rows]
 
-def get_service_account_by_name(name: str):
-    with SessionLocal() as db:
-        return db.execute(select(ServiceAccountORM).where(ServiceAccountORM.name == name)).scalar_one_or_none()
-
 def authenticate_service_account(name: str, secret: str):
-    sa = get_service_account_by_name(name)
-    if sa is None or not sa.is_active or not verify_password(secret, sa.secret_hash):
-        return None
-    return sa
-
-def rotate_service_account_secret(name: str, new_secret: str):
     with SessionLocal() as db:
         sa = db.execute(select(ServiceAccountORM).where(ServiceAccountORM.name == name)).scalar_one_or_none()
-        if sa is None:
+        if sa is None or not sa.is_active or not verify_password(secret, sa.secret_hash):
             return None
-        sa.secret_hash = hash_password(new_secret)
-        db.commit()
-        db.refresh(sa)
         return sa
-
-def set_service_account_active(name: str, is_active: bool):
-    with SessionLocal() as db:
-        sa = db.execute(select(ServiceAccountORM).where(ServiceAccountORM.name == name)).scalar_one_or_none()
-        if sa is None:
-            return None
-        sa.is_active = is_active
-        db.commit()
-        db.refresh(sa)
-        return sa
-
-def add_agent_audit_log(service_account_id: int, service_account_name: str, action: str, target: str, outcome: str, detail: dict):
-    with SessionLocal() as db:
-        db.add(AgentAuditLogORM(
-            service_account_id=service_account_id,
-            service_account_name=service_account_name,
-            action=action,
-            target=target,
-            outcome=outcome,
-            detail_json=json.dumps(detail),
-            created_at=now_iso(),
-        ))
-        db.commit()
-
-def list_agent_audit_logs(limit: int = 200):
-    with SessionLocal() as db:
-        rows = db.execute(select(AgentAuditLogORM).order_by(AgentAuditLogORM.id.desc())).scalars().all()[:limit]
-        return [{
-            "id": r.id,
-            "service_account_id": r.service_account_id,
-            "service_account_name": r.service_account_name,
-            "action": r.action,
-            "target": r.target,
-            "outcome": r.outcome,
-            "detail": json.loads(r.detail_json or "{}"),
-            "created_at": r.created_at,
-        } for r in rows]
 
 def store_refresh_token(user_id: int, token_id: str):
     with SessionLocal() as db:
@@ -196,6 +146,14 @@ def create_learner(owner_user_id: int, learner_id: str, display_name: str = ""):
         if db.get(LearnerORM, learner_id) is None:
             db.add(LearnerORM(id=learner_id, owner_user_id=owner_user_id, display_name=display_name))
             db.commit()
+
+def list_learners_for_user(user_id: int, is_admin: bool = False):
+    with SessionLocal() as db:
+        stmt = select(LearnerORM).order_by(LearnerORM.id)
+        if not is_admin:
+            stmt = stmt.where(LearnerORM.owner_user_id == user_id)
+        rows = db.execute(stmt).scalars().all()
+        return [{"learner_id": r.id, "display_name": r.display_name, "owner_user_id": r.owner_user_id} for r in rows]
 
 def learner_owned_by_user(user_id: int, learner_id: str) -> bool:
     with SessionLocal() as db:
