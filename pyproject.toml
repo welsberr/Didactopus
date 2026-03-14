@@ -17,6 +17,8 @@ dependencies = [
 
 [project.scripts]
 didactopus-api = "didactopus.api:main"
+didactopus-export-svg = "didactopus.export_svg:main"
+didactopus-render-bundle = "didactopus.render_bundle:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

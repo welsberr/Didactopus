@@ -15,12 +15,24 @@ class LoginRequest(BaseModel):
 class RefreshRequest(BaseModel):
     refresh_token: str
 
+class GraphPosition(BaseModel):
+    x: float
+    y: float
+
+class CrossPackLink(BaseModel):
+    source_concept_id: str
+    target_pack_id: str
+    target_concept_id: str
+    relationship: str = "related"
+
 class PackConcept(BaseModel):
     id: str
     title: str
     prerequisites: list[str] = Field(default_factory=list)
     masteryDimension: str = "mastery"
     exerciseReward: str = ""
+    position: GraphPosition | None = None
+    cross_pack_links: list[CrossPackLink] = Field(default_factory=list)
 
 class PackData(BaseModel):
     id: str
@@ -56,3 +68,10 @@ class LearnerState(BaseModel):
     learner_id: str
     records: list[MasteryRecord] = Field(default_factory=list)
     history: list[EvidenceEvent] = Field(default_factory=list)
+
+class MediaRenderRequest(BaseModel):
+    learner_id: str
+    pack_id: str
+    format: str = "gif"
+    fps: int = 2
+    theme: str = "default"

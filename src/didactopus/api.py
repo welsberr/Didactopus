@@ -1,12 +1,17 @@
 from __future__ import annotations
-from fastapi import FastAPI, HTTPException, Header, Depends
+from fastapi import FastAPI, HTTPException, Header, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from .db import Base, engine
-from .models import LoginRequest, RefreshRequest, TokenPair, CreateLearnerRequest, LearnerState
-from .repository import authenticate_user, get_user_by_id, store_refresh_token, refresh_token_active, revoke_refresh_token, list_packs_for_user, get_pack, get_pack_row, create_learner, learner_owned_by_user, load_learner_state, save_learner_state
+from .models import LoginRequest, RefreshRequest, TokenPair, CreateLearnerRequest, LearnerState, MediaRenderRequest
+from .repository import (
+    authenticate_user, get_user_by_id, store_refresh_token, refresh_token_active, revoke_refresh_token,
+    list_packs_for_user, get_pack, get_pack_row, create_learner, learner_owned_by_user, load_learner_state, save_learner_state,
+    create_render_job, update_render_job, list_render_jobs, list_artifacts
+)
 from .auth import issue_access_token, issue_refresh_token, decode_token, new_token_id
-from .engine import build_graph_frames
+from .engine import build_graph_frames, stable_layout
+from .worker import process_render_job
 
 Base.metadata.create_all(bind=engine)
 
@@ -87,6 +92,12 @@ def api_put_learner_state(learner_id: str, state: LearnerState, user = Depends(c
         raise HTTPException(status_code=400, detail="Learner ID mismatch")
     return save_learner_state(state).model_dump()
 
+@app.get("/api/packs/{pack_id}/layout")
+def api_pack_layout(pack_id: str, user = Depends(current_user)):
+    ensure_pack_access(user, pack_id)
+    pack = get_pack(pack_id)
+    return {"pack_id": pack_id, "layout": stable_layout(pack)} if pack else {"pack_id": pack_id, "layout": {}}
+
 @app.get("/api/learners/{learner_id}/graph-animation/{pack_id}")
 def api_graph_animation(learner_id: str, pack_id: str, user = Depends(current_user)):
     ensure_learner_access(user, learner_id)
@@ -99,8 +110,36 @@ def api_graph_animation(learner_id: str, pack_id: str, user = Depends(current_us
         "pack_id": pack_id,
         "pack_title": pack.title if pack else "",
         "frames": frames,
-        "concepts": [{"id": c.id, "title": c.title, "prerequisites": c.prerequisites} for c in pack.concepts] if pack else [],
+        "concepts": [{"id": c.id, "title": c.title, "prerequisites": c.prerequisites, "cross_pack_links": [l.model_dump() for l in c.cross_pack_links]} for c in pack.concepts] if pack else [],
     }
+
+@app.post("/api/learners/{learner_id}/render-jobs/{pack_id}")
+def api_render_job(learner_id: str, pack_id: str, payload: MediaRenderRequest, background_tasks: BackgroundTasks, user = Depends(current_user)):
+    ensure_learner_access(user, learner_id)
+    ensure_pack_access(user, pack_id)
+    pack = get_pack(pack_id)
+    state = load_learner_state(learner_id)
+    animation = {
+        "learner_id": learner_id,
+        "pack_id": pack_id,
+        "pack_title": pack.title if pack else "",
+        "frames": build_graph_frames(state, pack),
+    }
+    job_id = create_render_job(learner_id, pack_id, payload.format, payload.fps, payload.theme)
+    background_tasks.add_task(process_render_job, job_id, learner_id, pack_id, payload.format, payload.fps, payload.theme, animation)
+    return {"job_id": job_id, "status": "queued"}
+
+@app.get("/api/render-jobs")
+def api_list_render_jobs(learner_id: str | None = None, user = Depends(current_user)):
+    if learner_id:
+        ensure_learner_access(user, learner_id)
+    return list_render_jobs(learner_id)
+
+@app.get("/api/artifacts")
+def api_list_artifacts(learner_id: str | None = None, user = Depends(current_user)):
+    if learner_id:
+        ensure_learner_access(user, learner_id)
+    return list_artifacts(learner_id)
 
 def main():
     uvicorn.run(app, host="127.0.0.1", port=8011)

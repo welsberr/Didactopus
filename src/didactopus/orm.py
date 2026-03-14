@@ -56,3 +56,30 @@ class EvidenceEventORM(Base):
     timestamp: Mapped[str] = mapped_column(String(100), default="")
     kind: Mapped[str] = mapped_column(String(50), default="exercise")
     source_id: Mapped[str] = mapped_column(String(255), default="")
+
+class RenderJobORM(Base):
+    __tablename__ = "render_jobs"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    learner_id: Mapped[str] = mapped_column(String(100), index=True)
+    pack_id: Mapped[str] = mapped_column(String(100), index=True)
+    requested_format: Mapped[str] = mapped_column(String(20), default="gif")
+    fps: Mapped[int] = mapped_column(Integer, default=2)
+    theme: Mapped[str] = mapped_column(String(100), default="default")
+    status: Mapped[str] = mapped_column(String(50), default="queued")
+    bundle_dir: Mapped[str] = mapped_column(Text, default="")
+    payload_json: Mapped[str] = mapped_column(Text, default="")
+    manifest_path: Mapped[str] = mapped_column(Text, default="")
+    script_path: Mapped[str] = mapped_column(Text, default="")
+    error_text: Mapped[str] = mapped_column(Text, default="")
+
+class ArtifactORM(Base):
+    __tablename__ = "artifacts"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    render_job_id: Mapped[int] = mapped_column(ForeignKey("render_jobs.id"), index=True)
+    learner_id: Mapped[str] = mapped_column(String(100), index=True)
+    pack_id: Mapped[str] = mapped_column(String(100), index=True)
+    artifact_type: Mapped[str] = mapped_column(String(50), default="render_bundle")
+    format: Mapped[str] = mapped_column(String(20), default="gif")
+    title: Mapped[str] = mapped_column(String(255), default="")
+    path: Mapped[str] = mapped_column(Text, default="")
+    metadata_json: Mapped[str] = mapped_column(Text, default="{}")
