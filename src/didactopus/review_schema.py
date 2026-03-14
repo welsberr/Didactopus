@@ -2,7 +2,7 @@ from __future__ import annotations
 from pydantic import BaseModel, Field
 from typing import Literal
 
-TrustStatus = Literal["trusted", "provisional", "rejected", "needs_review"]
+TrustStatus = Literal["trusted","provisional","rejected","needs_review"]
 
 class ConceptReviewEntry(BaseModel):
     concept_id: str
@@ -55,3 +55,7 @@ class ImportPreview(BaseModel):
     errors: list[str] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
     summary: dict = Field(default_factory=dict)
+    semantic_warnings: list[str] = Field(default_factory=list)
+    graph_warnings: list[str] = Field(default_factory=list)
+    path_warnings: list[str] = Field(default_factory=list)
+    coverage_warnings: list[str] = Field(default_factory=list)

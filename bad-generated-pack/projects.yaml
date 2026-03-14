@@ -1,5 +1,6 @@
 projects:
-  - id: bad-project
-    title: Bad Project
-    prerequisites:
-      - missing-concept
+  - id: narrow-project
+    title: Final Memo
+    prerequisites: [c1]
+    deliverables:
+      - brief memo

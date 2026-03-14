@@ -1,8 +1,7 @@
 projects:
-  - id: compare-beliefs
-    title: Compare Prior and Posterior
-    prerequisites:
-      - bayes-prior
-      - bayes-posterior
+  - id: culminating-analysis
+    title: Final Model Critique
+    prerequisites: [bayes-prior, bayes-posterior, model-checking]
     deliverables:
-      - short report
+      - short critique report
+      - explanation of prior and posterior updates

@@ -1,4 +1,4 @@
 rubrics:
-  - id:
-    title: Broken Rubric
-    criteria: invalid
+  - id: r1
+    title: Basic
+    criteria: [style, formatting]

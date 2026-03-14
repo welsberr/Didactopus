@@ -1,6 +1,4 @@
 rubrics:
-  - id: basic-rubric
-    title: Basic Rubric
-    criteria:
-      - correctness
-      - explanation
+  - id: r1
+    title: Basic
+    criteria: [correctness, explanation, critique]

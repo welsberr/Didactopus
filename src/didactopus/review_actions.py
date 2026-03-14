@@ -1,4 +1,3 @@
-from __future__ import annotations
 from .review_schema import ReviewAction, ReviewLedgerEntry, ReviewSession
 
 def _find_concept(session: ReviewSession, concept_id: str):

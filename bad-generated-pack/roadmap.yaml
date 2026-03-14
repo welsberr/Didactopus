@@ -1,5 +1,9 @@
 stages:
   - id: stage-1
-    title: Bad Stage
-    concepts:
-      - missing-concept
+    title: Start
+    concepts: [c1, c2, c3]
+    checkpoint: []
+  - id: stage-2
+    title: Tiny Bridge
+    concepts: [c4]
+    checkpoint: []

@@ -1,7 +1,5 @@
 concepts:
   - id: descriptive-statistics
     title: Descriptive Statistics
-    description: Measures of center and spread.
+    description: Measures of center and spread in descriptive data analysis.
     prerequisites: []
-    mastery_signals:
-      - Explain mean, median, and variance.
