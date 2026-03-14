@@ -1,11 +1,33 @@
 concepts:
-  - id: c1
+  - id: a
     title: Foundations
-    description: Broad foundations topic.
-    mastery_signals:
-      - Explain core foundations clearly.
-  - id: c2
+    description: Introductory foundations concept with broad scope.
+    prerequisites: [c]
+  - id: b
+    title: Advanced Analysis
+    description: Advanced analysis of results in a difficult domain.
+    prerequisites: [a]
+  - id: c
     title: Methods
-    description: Methods topic.
-    mastery_signals:
-      - Use methods appropriately.
+    description: Methods and procedures for analysis in context.
+    prerequisites: [b]
+  - id: isolated
+    title: Isolated Topic
+    description: A topic disconnected from the rest of the graph.
+    prerequisites: []
+  - id: bottleneck
+    title: Core Bottleneck
+    description: Central concept required by many dependents in the pack.
+    prerequisites: []
+  - id: d1
+    title: Dependent One
+    description: Depends on a single core bottleneck concept.
+    prerequisites: [bottleneck]
+  - id: d2
+    title: Dependent Two
+    description: Depends on a single core bottleneck concept.
+    prerequisites: [bottleneck]
+  - id: d3
+    title: Dependent Three
+    description: Depends on a single core bottleneck concept.
+    prerequisites: [bottleneck]

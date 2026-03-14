@@ -1,6 +1,13 @@
 stages:
   - id: stage-1
-    title: Start
-    concepts: [c1, c2]
-    checkpoint:
-      - oral discussion
+    title: Foundations
+    concepts: [a, bottleneck]
+  - id: stage-2
+    title: Advanced Analysis
+    concepts: [b, d1]
+  - id: stage-3
+    title: Methods
+    concepts: [c, d2, d3]
+  - id: stage-4
+    title: Detached Topic
+    concepts: [isolated]

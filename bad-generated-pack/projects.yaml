@@ -1,6 +1,1 @@
-projects:
-  - id: p1
-    title: Final Memo
-    prerequisites: [c1]
-    deliverables:
-      - brief memo
+projects: []

@@ -1,4 +1,1 @@
-rubrics:
-  - id: r1
-    title: Basic
-    criteria: [correctness, explanation]
+rubrics: []

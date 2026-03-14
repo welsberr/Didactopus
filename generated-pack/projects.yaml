@@ -1,7 +1,1 @@
-projects:
-  - id: p1
-    title: Final Bayesian Comparison
-    prerequisites: [bayes-prior, bayes-posterior]
-    deliverables:
-      - explanation
-      - comparison report
+projects: []

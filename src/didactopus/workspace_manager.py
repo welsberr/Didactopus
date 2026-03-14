@@ -38,7 +38,15 @@ class WorkspaceManager:
             )
         if not (draft_dir / "concepts.yaml").exists():
             (draft_dir / "concepts.yaml").write_text("concepts: []\n", encoding="utf-8")
-        meta = WorkspaceMeta(workspace_id=workspace_id, title=title, path=str(workspace_dir), created_at=utc_now(), last_opened_at=utc_now(), notes=notes)
+
+        meta = WorkspaceMeta(
+            workspace_id=workspace_id,
+            title=title,
+            path=str(workspace_dir),
+            created_at=utc_now(),
+            last_opened_at=utc_now(),
+            notes=notes,
+        )
         registry.workspaces = [w for w in registry.workspaces if w.workspace_id != workspace_id] + [meta]
         registry.recent_workspace_ids = [workspace_id] + [w for w in registry.recent_workspace_ids if w != workspace_id]
         self.save_registry(registry)
@@ -49,7 +57,9 @@ class WorkspaceManager:
         target = None
         for ws in registry.workspaces:
             if ws.workspace_id == workspace_id:
-                ws.last_opened_at = utc_now(); target = ws; break
+                ws.last_opened_at = utc_now()
+                target = ws
+                break
         if target is not None:
             registry.recent_workspace_ids = [workspace_id] + [w for w in registry.recent_workspace_ids if w != workspace_id]
             self.save_registry(registry)
@@ -58,7 +68,8 @@ class WorkspaceManager:
     def get_workspace(self, workspace_id: str) -> WorkspaceMeta | None:
         registry = self.load_registry()
         for ws in registry.workspaces:
-            if ws.workspace_id == workspace_id: return ws
+            if ws.workspace_id == workspace_id:
+                return ws
         return None
 
     def preview_import(self, source_dir: str | Path, workspace_id: str):
@@ -76,20 +87,27 @@ class WorkspaceManager:
         existing = self.get_workspace(workspace_id)
         if existing is not None and not allow_overwrite:
             raise FileExistsError(f"Workspace '{workspace_id}' already exists; set allow_overwrite to replace its draft pack.")
-        meta = existing if existing is not None else self.create_workspace(workspace_id, title or workspace_id, notes=notes)
-        if existing is not None:
+
+        meta = existing
+        if meta is None:
+            meta = self.create_workspace(workspace_id, title or workspace_id, notes=notes)
+        else:
             self.touch_recent(workspace_id)
+
         workspace_dir = Path(meta.path)
         target_draft = workspace_dir / "draft_pack"
         if target_draft.exists():
             shutil.rmtree(target_draft)
         shutil.copytree(Path(source_dir), target_draft)
+
         registry = self.load_registry()
         for ws in registry.workspaces:
             if ws.workspace_id == workspace_id:
                 ws.last_opened_at = utc_now()
-                if title: ws.title = title
-                if notes: ws.notes = notes
+                if title:
+                    ws.title = title
+                if notes:
+                    ws.notes = notes
                 meta = ws
                 break
         registry.recent_workspace_ids = [workspace_id] + [w for w in registry.recent_workspace_ids if w != workspace_id]

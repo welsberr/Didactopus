@@ -1,1 +1,17 @@
-{"name":"didactopus-review-ui","private":true,"version":"0.1.0","type":"module"}
+{
+  "name": "didactopus-review-ui",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}
