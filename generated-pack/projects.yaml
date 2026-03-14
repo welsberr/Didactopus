@@ -3,5 +3,4 @@ projects:
     title: Final Model Critique
     prerequisites: [bayes-prior, bayes-posterior, model-checking]
     deliverables:
-      - short critique report
-      - explanation of prior and posterior updates
+      - short report

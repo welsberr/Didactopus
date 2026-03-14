@@ -1,4 +1,4 @@
 rubrics:
   - id: r1
     title: Basic
-    criteria: [correctness, explanation, critique]
+    criteria: [correctness, explanation]

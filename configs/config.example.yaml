@@ -1,5 +1,6 @@
 review:
   default_reviewer: "Wesley R. Elsberry"
+  write_promoted_pack: true
 bridge:
   host: "127.0.0.1"
   port: 8765

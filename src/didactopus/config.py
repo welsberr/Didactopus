@@ -4,6 +4,7 @@ import yaml
 
 class ReviewConfig(BaseModel):
     default_reviewer: str = "Unknown Reviewer"
+    write_promoted_pack: bool = True
 
 class BridgeConfig(BaseModel):
     host: str = "127.0.0.1"
@@ -17,4 +18,5 @@ class AppConfig(BaseModel):
 
 def load_config(path: str | Path) -> AppConfig:
     with open(path, "r", encoding="utf-8") as handle:
-        return AppConfig.model_validate(yaml.safe_load(handle) or {})
+        data = yaml.safe_load(handle) or {}
+    return AppConfig.model_validate(data)
