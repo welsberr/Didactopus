@@ -6,10 +6,20 @@ build-backend = "setuptools.build_meta"
 name = "didactopus"
 version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = ["pydantic>=2.7", "pyyaml>=6.0"]
+dependencies = [
+  "pydantic>=2.7",
+  "pyyaml>=6.0",
+  "fastapi>=0.115",
+  "uvicorn>=0.30",
+  "sqlalchemy>=2.0",
+  "psycopg[binary]>=3.1",
+  "passlib[bcrypt]>=1.7",
+  "python-jose[cryptography]>=3.3"
+]
 
 [project.scripts]
-didactopus-pack-to-frontend = "didactopus.pack_to_frontend:main"
+didactopus-api = "didactopus.api:main"
+didactopus-worker = "didactopus.worker:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

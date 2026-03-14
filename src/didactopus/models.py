@@ -1,5 +1,8 @@
 from __future__ import annotations
 from pydantic import BaseModel, Field
+from typing import Literal
+
+EvidenceKind = Literal["checkpoint", "project", "exercise", "review"]
 
 class TokenPair(BaseModel):
     access_token: str
@@ -15,24 +18,19 @@ class LoginRequest(BaseModel):
 class RefreshRequest(BaseModel):
     refresh_token: str
 
-class GraphPosition(BaseModel):
-    x: float
-    y: float
-
-class CrossPackLink(BaseModel):
-    source_concept_id: str
-    target_pack_id: str
-    target_concept_id: str
-    relationship: str = "related"
-
 class PackConcept(BaseModel):
     id: str
     title: str
     prerequisites: list[str] = Field(default_factory=list)
     masteryDimension: str = "mastery"
     exerciseReward: str = ""
-    position: GraphPosition | None = None
-    cross_pack_links: list[CrossPackLink] = Field(default_factory=list)
+
+class PackCompliance(BaseModel):
+    sources: int = 0
+    attributionRequired: bool = False
+    shareAlikeRequired: bool = False
+    noncommercialOnly: bool = False
+    flags: list[str] = Field(default_factory=list)
 
 class PackData(BaseModel):
     id: str
@@ -41,11 +39,7 @@ class PackData(BaseModel):
     level: str = "novice-friendly"
     concepts: list[PackConcept] = Field(default_factory=list)
     onboarding: dict = Field(default_factory=dict)
-    compliance: dict = Field(default_factory=dict)
-
-class CreateLearnerRequest(BaseModel):
-    learner_id: str
-    display_name: str = ""
+    compliance: PackCompliance = Field(default_factory=PackCompliance)
 
 class MasteryRecord(BaseModel):
     concept_id: str
@@ -61,7 +55,7 @@ class EvidenceEvent(BaseModel):
     score: float
     confidence_hint: float = 0.5
     timestamp: str
-    kind: str = "exercise"
+    kind: EvidenceKind = "exercise"
     source_id: str = ""
 
 class LearnerState(BaseModel):
@@ -69,9 +63,23 @@ class LearnerState(BaseModel):
     records: list[MasteryRecord] = Field(default_factory=list)
     history: list[EvidenceEvent] = Field(default_factory=list)
 
-class MediaRenderRequest(BaseModel):
+class CreateLearnerRequest(BaseModel):
     learner_id: str
+    display_name: str = ""
+
+class EvaluatorSubmission(BaseModel):
     pack_id: str
-    format: str = "gif"
-    fps: int = 2
-    theme: str = "default"
+    concept_id: str
+    submitted_text: str
+    kind: str = "checkpoint"
+
+class EvaluatorJobStatus(BaseModel):
+    job_id: int
+    status: str
+    result_score: float | None = None
+    result_confidence_hint: float | None = None
+    result_notes: str = ""
+
+class CreatePackRequest(BaseModel):
+    pack: PackData
+    is_published: bool = True

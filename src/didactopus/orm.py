@@ -1,5 +1,5 @@
 from sqlalchemy import String, Integer, Float, ForeignKey, Text, Boolean
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .db import Base
 
 class UserORM(Base):
@@ -20,13 +20,11 @@ class RefreshTokenORM(Base):
 class PackORM(Base):
     __tablename__ = "packs"
     id: Mapped[str] = mapped_column(String(100), primary_key=True)
-    owner_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    policy_lane: Mapped[str] = mapped_column(String(50), default="personal")
     title: Mapped[str] = mapped_column(String(255))
     subtitle: Mapped[str] = mapped_column(Text, default="")
     level: Mapped[str] = mapped_column(String(100), default="novice-friendly")
     data_json: Mapped[str] = mapped_column(Text)
-    is_published: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_published: Mapped[bool] = mapped_column(Boolean, default=True)
 
 class LearnerORM(Base):
     __tablename__ = "learners"
@@ -56,3 +54,15 @@ class EvidenceEventORM(Base):
     timestamp: Mapped[str] = mapped_column(String(100), default="")
     kind: Mapped[str] = mapped_column(String(50), default="exercise")
     source_id: Mapped[str] = mapped_column(String(255), default="")
+
+class EvaluatorJobORM(Base):
+    __tablename__ = "evaluator_jobs"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    learner_id: Mapped[str] = mapped_column(ForeignKey("learners.id"), index=True)
+    pack_id: Mapped[str] = mapped_column(ForeignKey("packs.id"), index=True)
+    concept_id: Mapped[str] = mapped_column(String(100), index=True)
+    submitted_text: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[str] = mapped_column(String(50), default="queued")
+    result_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    result_confidence_hint: Mapped[float | None] = mapped_column(Float, nullable=True)
+    result_notes: Mapped[str] = mapped_column(Text, default="")
