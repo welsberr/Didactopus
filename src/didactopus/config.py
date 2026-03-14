@@ -1,10 +1,13 @@
-from pathlib import Path
+from __future__ import annotations
+import os
 from pydantic import BaseModel
 
 class Settings(BaseModel):
-    database_url: str = "sqlite:///./didactopus.db"
-    host: str = "127.0.0.1"
-    port: int = 8011
+    database_url: str = os.getenv("DIDACTOPUS_DATABASE_URL", "postgresql+psycopg://didactopus:didactopus-dev-password@localhost:5432/didactopus")
+    host: str = os.getenv("DIDACTOPUS_HOST", "127.0.0.1")
+    port: int = int(os.getenv("DIDACTOPUS_PORT", "8011"))
+    jwt_secret: str = os.getenv("DIDACTOPUS_JWT_SECRET", "change-me")
+    jwt_algorithm: str = "HS256"
 
 def load_settings() -> Settings:
     return Settings()

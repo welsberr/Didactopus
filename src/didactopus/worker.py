@@ -1,37 +1,24 @@
 from __future__ import annotations
-import json, tempfile
-from pathlib import Path
-from .repository import update_render_job, register_artifact
-from .render_bundle import make_render_bundle
+from .repository import get_evaluator_job, update_evaluator_job, load_learner_state, save_learner_state
+from .engine import apply_evidence
+from .models import EvidenceEvent
+import time
 
-def process_render_job(job_id: int, learner_id: str, pack_id: str, fmt: str, fps: int, theme: str, animation_payload: dict):
-    update_render_job(job_id, status="running")
-    try:
-        base = Path(tempfile.mkdtemp(prefix=f"didactopus_job_{job_id}_"))
-        payload_json = base / "animation_payload.json"
-        payload_json.write_text(json.dumps(animation_payload, indent=2), encoding="utf-8")
-        out_dir = base / "bundle"
-        make_render_bundle(str(payload_json), str(out_dir), fps=fps, fmt=fmt)
-        manifest_path = out_dir / "render_manifest.json"
-        script_path = out_dir / "render.sh"
-        update_render_job(
-            job_id,
-            status="completed",
-            bundle_dir=str(out_dir),
-            payload_json=str(payload_json),
-            manifest_path=str(manifest_path),
-            script_path=str(script_path),
-            error_text="",
-        )
-        register_artifact(
-            render_job_id=job_id,
-            learner_id=learner_id,
-            pack_id=pack_id,
-            artifact_type="render_bundle",
-            fmt=fmt,
-            title=f"{pack_id} animation bundle",
-            path=str(out_dir),
-            metadata={"fps": fps, "theme": theme, "manifest_path": str(manifest_path), "script_path": str(script_path)},
-        )
-    except Exception as e:
-        update_render_job(job_id, status="failed", error_text=str(e))
+def process_job(job_id: int):
+    job = get_evaluator_job(job_id)
+    if job is None:
+        return
+    update_evaluator_job(job_id, "running", trace={"rubric_dimension_scores": [{"dimension": "mastery", "score": 0.35}], "notes": ["Job running", "Prototype trace generated"], "token_count_estimate": len(job.submitted_text.split())})
+    score = 0.78 if len(job.submitted_text.strip()) > 20 else 0.62
+    confidence_hint = 0.72 if len(job.submitted_text.strip()) > 20 else 0.45
+    notes = "Prototype evaluator: longer responses scored somewhat higher."
+    trace = {"rubric_dimension_scores": [{"dimension": "mastery", "score": score}], "notes": ["Prototype evaluator completed", notes], "token_count_estimate": len(job.submitted_text.split()), "decision_basis": ["response length heuristic", "single-dimension mastery proxy"]}
+    update_evaluator_job(job_id, "completed", score=score, confidence_hint=confidence_hint, notes=notes, trace=trace)
+    state = load_learner_state(job.learner_id)
+    state = apply_evidence(state, EvidenceEvent(concept_id=job.concept_id, dimension="mastery", score=score, confidence_hint=confidence_hint, timestamp="2026-03-13T12:00:00+00:00", kind="review", source_id=f"evaluator-job-{job_id}"))
+    save_learner_state(state)
+
+def main():
+    print("Didactopus worker scaffold running. Replace this with a real queue worker.")
+    while True:
+        time.sleep(60)

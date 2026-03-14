@@ -4,6 +4,20 @@ from typing import Literal
 
 EvidenceKind = Literal["checkpoint", "project", "exercise", "review"]
 
+class TokenPair(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+    username: str
+    role: str
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
 class PackConcept(BaseModel):
     id: str
     title: str
@@ -27,6 +41,27 @@ class PackData(BaseModel):
     onboarding: dict = Field(default_factory=dict)
     compliance: PackCompliance = Field(default_factory=PackCompliance)
 
+class CreatePackRequest(BaseModel):
+    pack: PackData
+    is_published: bool = False
+    change_summary: str = ""
+
+class GovernanceAction(BaseModel):
+    status: str
+    review_summary: str = ""
+
+class ReviewCommentCreate(BaseModel):
+    comment_text: str
+    disposition: str = "comment"
+
+class ContributionSubmissionCreate(BaseModel):
+    pack: PackData
+    submission_summary: str = ""
+
+class CreateLearnerRequest(BaseModel):
+    learner_id: str
+    display_name: str = ""
+
 class MasteryRecord(BaseModel):
     concept_id: str
     dimension: str
@@ -48,3 +83,16 @@ class LearnerState(BaseModel):
     learner_id: str
     records: list[MasteryRecord] = Field(default_factory=list)
     history: list[EvidenceEvent] = Field(default_factory=list)
+
+class EvaluatorSubmission(BaseModel):
+    pack_id: str
+    concept_id: str
+    submitted_text: str
+    kind: str = "checkpoint"
+
+class EvaluatorJobStatus(BaseModel):
+    job_id: int
+    status: str
+    result_score: float | None = None
+    result_confidence_hint: float | None = None
+    result_notes: str = ""
