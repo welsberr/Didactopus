@@ -20,10 +20,10 @@ def _encode_token(payload: dict, expires_delta: timedelta) -> str:
     return jwt.encode(to_encode, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 def issue_access_token(user_id: int, username: str, role: str) -> str:
-    return _encode_token({"sub": str(user_id), "username": username, "role": role, "kind": "access"}, timedelta(minutes=settings.access_token_minutes))
+    return _encode_token({"sub": str(user_id), "username": username, "role": role, "kind": "access"}, timedelta(minutes=30))
 
 def issue_refresh_token(user_id: int, username: str, role: str, token_id: str) -> str:
-    return _encode_token({"sub": str(user_id), "username": username, "role": role, "kind": "refresh", "jti": token_id}, timedelta(days=settings.refresh_token_days))
+    return _encode_token({"sub": str(user_id), "username": username, "role": role, "kind": "refresh", "jti": token_id}, timedelta(days=14))
 
 def decode_token(token: str) -> dict | None:
     try:

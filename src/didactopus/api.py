@@ -1,15 +1,12 @@
 from __future__ import annotations
+import json
 from fastapi import FastAPI, HTTPException, Header, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from .config import load_settings
 from .db import Base, engine
-from .models import LoginRequest, RefreshRequest, TokenPair, CreateLearnerRequest, LearnerState, EvidenceEvent, EvaluatorSubmission, EvaluatorJobStatus, CreatePackRequest
-from .repository import (
-    authenticate_user, get_user_by_id, store_refresh_token, refresh_token_active, revoke_refresh_token,
-    list_packs, get_pack, upsert_pack, create_learner, learner_owned_by_user, load_learner_state,
-    save_learner_state, create_evaluator_job, get_evaluator_job, list_evaluator_jobs_for_learner
-)
+from .models import LoginRequest, RefreshRequest, TokenPair, CreateLearnerRequest, LearnerState, EvidenceEvent, EvaluatorSubmission, EvaluatorJobStatus, CreatePackRequest, GovernanceAction, ReviewCommentCreate
+from .repository import authenticate_user, get_user_by_id, store_refresh_token, refresh_token_active, revoke_refresh_token, list_packs, list_pack_admin_rows, get_pack, get_pack_validation, get_pack_provenance, upsert_pack, set_pack_publication, set_governance_state, list_pack_versions, add_review_comment, list_review_comments, create_learner, list_learners_for_user, learner_owned_by_user, load_learner_state, save_learner_state, create_evaluator_job, get_evaluator_job, list_evaluator_jobs_for_learner
 from .engine import apply_evidence, recommend_next
 from .auth import issue_access_token, issue_refresh_token, decode_token, new_token_id
 from .worker import process_job
@@ -18,13 +15,7 @@ settings = load_settings()
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Didactopus API Prototype")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 def current_user(authorization: str = Header(default="")):
     token = authorization.removeprefix("Bearer ").strip()
@@ -54,12 +45,7 @@ def login(payload: LoginRequest):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token_id = new_token_id()
     store_refresh_token(user.id, token_id)
-    return TokenPair(
-        access_token=issue_access_token(user.id, user.username, user.role),
-        refresh_token=issue_refresh_token(user.id, user.username, user.role, token_id),
-        username=user.username,
-        role=user.role,
-    )
+    return TokenPair(access_token=issue_access_token(user.id, user.username, user.role), refresh_token=issue_refresh_token(user.id, user.username, user.role, token_id), username=user.username, role=user.role)
 
 @app.post("/api/refresh", response_model=TokenPair)
 def refresh(payload: RefreshRequest):
@@ -75,34 +61,64 @@ def refresh(payload: RefreshRequest):
     revoke_refresh_token(token_id)
     new_jti = new_token_id()
     store_refresh_token(user.id, new_jti)
-    return TokenPair(
-        access_token=issue_access_token(user.id, user.username, user.role),
-        refresh_token=issue_refresh_token(user.id, user.username, user.role, new_jti),
-        username=user.username,
-        role=user.role,
-    )
+    return TokenPair(access_token=issue_access_token(user.id, user.username, user.role), refresh_token=issue_refresh_token(user.id, user.username, user.role, new_jti), username=user.username, role=user.role)
 
 @app.get("/api/packs")
 def api_list_packs(user = Depends(current_user)):
-    include_unpublished = user.role == "admin"
-    return [p.model_dump() for p in list_packs(include_unpublished=include_unpublished)]
+    return [p.model_dump() for p in list_packs(include_unpublished=(user.role == "admin"))]
 
-@app.get("/api/packs/{pack_id}")
-def api_get_pack(pack_id: str, user = Depends(current_user)):
-    pack = get_pack(pack_id)
-    if pack is None:
-        raise HTTPException(status_code=404, detail="Pack not found")
-    return pack.model_dump()
+@app.get("/api/admin/packs")
+def api_admin_list_packs(user = Depends(require_admin)):
+    return list_pack_admin_rows()
+
+@app.get("/api/admin/packs/{pack_id}/validation")
+def api_admin_pack_validation(pack_id: str, user = Depends(require_admin)):
+    return get_pack_validation(pack_id)
+
+@app.get("/api/admin/packs/{pack_id}/provenance")
+def api_admin_pack_provenance(pack_id: str, user = Depends(require_admin)):
+    return get_pack_provenance(pack_id)
+
+@app.get("/api/admin/packs/{pack_id}/versions")
+def api_admin_pack_versions(pack_id: str, user = Depends(require_admin)):
+    return list_pack_versions(pack_id)
+
+@app.get("/api/admin/packs/{pack_id}/comments")
+def api_admin_pack_comments(pack_id: str, user = Depends(require_admin)):
+    return list_review_comments(pack_id)
 
 @app.post("/api/admin/packs")
 def api_upsert_pack(payload: CreatePackRequest, user = Depends(require_admin)):
-    upsert_pack(payload.pack, is_published=payload.is_published)
+    upsert_pack(payload.pack, submitted_by_user_id=user.id, is_published=payload.is_published, change_summary=payload.change_summary)
     return {"ok": True, "pack_id": payload.pack.id}
+
+@app.post("/api/admin/packs/{pack_id}/publish")
+def api_publish_pack(pack_id: str, is_published: bool, user = Depends(require_admin)):
+    ok = set_pack_publication(pack_id, is_published)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Pack not found")
+    return {"ok": True, "pack_id": pack_id, "is_published": is_published}
+
+@app.post("/api/admin/packs/{pack_id}/governance")
+def api_governance_action(pack_id: str, payload: GovernanceAction, user = Depends(require_admin)):
+    ok = set_governance_state(pack_id, payload.status, payload.review_summary)
+    if not ok:
+        raise HTTPException(status_code=404, detail="Pack not found")
+    return {"ok": True, "pack_id": pack_id, "status": payload.status}
+
+@app.post("/api/admin/packs/{pack_id}/comments")
+def api_add_review_comment(pack_id: str, version_number: int, payload: ReviewCommentCreate, user = Depends(require_admin)):
+    add_review_comment(pack_id, version_number, user.id, payload.comment_text, payload.disposition)
+    return {"ok": True}
 
 @app.post("/api/learners")
 def api_create_learner(payload: CreateLearnerRequest, user = Depends(current_user)):
     create_learner(user.id, payload.learner_id, payload.display_name)
     return {"ok": True, "learner_id": payload.learner_id}
+
+@app.get("/api/learners")
+def api_list_learners(user = Depends(current_user)):
+    return list_learners_for_user(user.id, is_admin=(user.role == "admin"))
 
 @app.get("/api/learners/{learner_id}/state")
 def api_get_learner_state(learner_id: str, user = Depends(current_user)):
@@ -147,6 +163,13 @@ def api_get_evaluator_job(job_id: int, user = Depends(current_user)):
         raise HTTPException(status_code=404, detail="Job not found")
     return EvaluatorJobStatus(job_id=job.id, status=job.status, result_score=job.result_score, result_confidence_hint=job.result_confidence_hint, result_notes=job.result_notes)
 
+@app.get("/api/evaluator-jobs/{job_id}/trace")
+def api_get_evaluator_job_trace(job_id: int, user = Depends(current_user)):
+    job = get_evaluator_job(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return json.loads(job.trace_json or "{}")
+
 @app.get("/api/learners/{learner_id}/evaluator-history")
 def api_get_evaluator_history(learner_id: str, user = Depends(current_user)):
     ensure_learner_access(user, learner_id)
@@ -155,6 +178,3 @@ def api_get_evaluator_history(learner_id: str, user = Depends(current_user)):
 
 def main():
     uvicorn.run(app, host=settings.host, port=settings.port)
-
-if __name__ == "__main__":
-    main()

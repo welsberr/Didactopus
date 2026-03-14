@@ -11,13 +11,28 @@ export async function login(username, password) {
   if (!res.ok) throw new Error("login failed");
   return await res.json();
 }
+
 export async function refresh(refreshToken) {
   const res = await fetch(`${API}/refresh`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refresh_token: refreshToken }) });
   if (!res.ok) throw new Error("refresh failed");
   return await res.json();
 }
+
 export async function fetchPacks(token) { const res = await fetch(`${API}/packs`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchPacks failed"); return await res.json(); }
+export async function fetchAdminPacks(token) { const res = await fetch(`${API}/admin/packs`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchAdminPacks failed"); return await res.json(); }
+export async function fetchPackValidation(token, packId) { const res = await fetch(`${API}/admin/packs/${packId}/validation`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchPackValidation failed"); return await res.json(); }
+export async function fetchPackProvenance(token, packId) { const res = await fetch(`${API}/admin/packs/${packId}/provenance`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchPackProvenance failed"); return await res.json(); }
+export async function fetchPackVersions(token, packId) { const res = await fetch(`${API}/admin/packs/${packId}/versions`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchPackVersions failed"); return await res.json(); }
+export async function fetchPackComments(token, packId) { const res = await fetch(`${API}/admin/packs/${packId}/comments`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchPackComments failed"); return await res.json(); }
+export async function upsertPack(token, payload) { const res = await fetch(`${API}/admin/packs`, { method: "POST", headers: authHeaders(token), body: JSON.stringify(payload) }); if (!res.ok) throw new Error("upsertPack failed"); return await res.json(); }
+export async function publishPack(token, packId, isPublished) { const res = await fetch(`${API}/admin/packs/${packId}/publish?is_published=${isPublished}`, { method: "POST", headers: authHeaders(token, false) }); if (!res.ok) throw new Error("publishPack failed"); return await res.json(); }
+export async function governanceAction(token, packId, payload) { const res = await fetch(`${API}/admin/packs/${packId}/governance`, { method: "POST", headers: authHeaders(token), body: JSON.stringify(payload) }); if (!res.ok) throw new Error("governanceAction failed"); return await res.json(); }
+export async function addReviewComment(token, packId, versionNumber, payload) { const res = await fetch(`${API}/admin/packs/${packId}/comments?version_number=${versionNumber}`, { method: "POST", headers: authHeaders(token), body: JSON.stringify(payload) }); if (!res.ok) throw new Error("addReviewComment failed"); return await res.json(); }
+export async function listLearners(token) { const res = await fetch(`${API}/learners`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("listLearners failed"); return await res.json(); }
+export async function createLearner(token, learnerId, displayName) { const res = await fetch(`${API}/learners`, { method: "POST", headers: authHeaders(token), body: JSON.stringify({ learner_id: learnerId, display_name: displayName }) }); if (!res.ok) throw new Error("createLearner failed"); return await res.json(); }
 export async function fetchLearnerState(token, learnerId) { const res = await fetch(`${API}/learners/${learnerId}/state`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchLearnerState failed"); return await res.json(); }
-export async function putLearnerState(token, learnerId, state) { const res = await fetch(`${API}/learners/${learnerId}/state`, { method: "PUT", headers: authHeaders(token), body: JSON.stringify(state) }); if (!res.ok) throw new Error("putLearnerState failed"); return await res.json(); }
-export async function fetchGraphAnimation(token, learnerId, packId) { const res = await fetch(`${API}/learners/${learnerId}/graph-animation/${packId}`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchGraphAnimation failed"); return await res.json(); }
-export async function createRenderBundle(token, learnerId, packId, payload) { const res = await fetch(`${API}/learners/${learnerId}/render-bundle/${packId}`, { method: "POST", headers: authHeaders(token), body: JSON.stringify(payload) }); if (!res.ok) throw new Error("createRenderBundle failed"); return await res.json(); }
+export async function fetchRecommendations(token, learnerId, packId) { const res = await fetch(`${API}/learners/${learnerId}/recommendations/${packId}`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchRecommendations failed"); return await res.json(); }
+export async function postEvidence(token, learnerId, event) { const res = await fetch(`${API}/learners/${learnerId}/evidence`, { method: "POST", headers: authHeaders(token), body: JSON.stringify(event) }); if (!res.ok) throw new Error("postEvidence failed"); return await res.json(); }
+export async function submitEvaluatorJob(token, learnerId, payload) { const res = await fetch(`${API}/learners/${learnerId}/evaluator-jobs`, { method: "POST", headers: authHeaders(token), body: JSON.stringify(payload) }); if (!res.ok) throw new Error("submitEvaluatorJob failed"); return await res.json(); }
+export async function fetchEvaluatorHistory(token, learnerId) { const res = await fetch(`${API}/learners/${learnerId}/evaluator-history`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchEvaluatorHistory failed"); return await res.json(); }
+export async function fetchEvaluatorTrace(token, jobId) { const res = await fetch(`${API}/evaluator-jobs/${jobId}/trace`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchEvaluatorTrace failed"); return await res.json(); }

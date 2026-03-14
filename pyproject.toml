@@ -19,7 +19,6 @@ dependencies = [
 
 [project.scripts]
 didactopus-api = "didactopus.api:main"
-didactopus-worker = "didactopus.worker:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

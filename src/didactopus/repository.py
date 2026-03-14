@@ -1,10 +1,14 @@
 from __future__ import annotations
 import json
-from sqlalchemy import select
+from datetime import datetime, timezone
+from sqlalchemy import select, func
 from .db import SessionLocal
-from .orm import UserORM, RefreshTokenORM, PackORM, LearnerORM, MasteryRecordORM, EvidenceEventORM, EvaluatorJobORM
+from .orm import UserORM, RefreshTokenORM, PackORM, PackVersionORM, ReviewCommentORM, LearnerORM, MasteryRecordORM, EvidenceEventORM, EvaluatorJobORM
 from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent
 from .auth import verify_password
+
+def now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 def get_user_by_username(username: str):
     with SessionLocal() as db:
@@ -37,7 +41,7 @@ def revoke_refresh_token(token_id: str):
             row.is_revoked = True
             db.commit()
 
-def list_packs(include_unpublished: bool = False) -> list[PackData]:
+def list_packs(include_unpublished: bool = False):
     with SessionLocal() as db:
         stmt = select(PackORM)
         if not include_unpublished:
@@ -45,24 +49,141 @@ def list_packs(include_unpublished: bool = False) -> list[PackData]:
         rows = db.execute(stmt).scalars().all()
         return [PackData.model_validate(json.loads(r.data_json)) for r in rows]
 
+def list_pack_admin_rows():
+    with SessionLocal() as db:
+        rows = db.execute(select(PackORM).order_by(PackORM.id)).scalars().all()
+        return [{"id": r.id, "title": r.title, "is_published": r.is_published, "subtitle": r.subtitle, "governance_state": r.governance_state, "current_version": r.current_version} for r in rows]
+
 def get_pack(pack_id: str):
     with SessionLocal() as db:
         row = db.get(PackORM, pack_id)
         return None if row is None else PackData.model_validate(json.loads(row.data_json))
 
-def upsert_pack(pack: PackData, is_published: bool = True):
+def get_pack_validation(pack_id: str):
+    with SessionLocal() as db:
+        row = db.get(PackORM, pack_id)
+        return {} if row is None else json.loads(row.validation_json or "{}")
+
+def get_pack_provenance(pack_id: str):
+    with SessionLocal() as db:
+        row = db.get(PackORM, pack_id)
+        return {} if row is None else json.loads(row.provenance_json or "{}")
+
+def upsert_pack(pack: PackData, submitted_by_user_id: int, is_published: bool = False, change_summary: str = ""):
+    validation = {
+        "ok": len(pack.concepts) > 0,
+        "warnings": [] if len(pack.concepts) > 0 else ["Pack has no concepts."],
+        "errors": [],
+        "summary": {"concept_count": len(pack.concepts), "has_onboarding": bool(pack.onboarding)}
+    }
+    provenance = {
+        "source_count": pack.compliance.sources,
+        "licenses_present": ["CC BY-NC-SA 4.0"] if pack.compliance.shareAlikeRequired or pack.compliance.noncommercialOnly else [],
+        "restrictive_flags": list(pack.compliance.flags),
+        "sources": [
+            {"source_id": "sample-source-1", "title": f"Provenance placeholder for {pack.title}", "license_id": "CC BY-NC-SA 4.0" if pack.compliance.shareAlikeRequired or pack.compliance.noncommercialOnly else "unspecified", "attribution_text": "Sample attribution text placeholder"}
+        ] if pack.compliance.sources else []
+    }
     with SessionLocal() as db:
         row = db.get(PackORM, pack.id)
         payload = json.dumps(pack.model_dump())
         if row is None:
-            db.add(PackORM(id=pack.id, title=pack.title, subtitle=pack.subtitle, level=pack.level, data_json=payload, is_published=is_published))
+            row = PackORM(
+                id=pack.id, title=pack.title, subtitle=pack.subtitle, level=pack.level,
+                data_json=payload, validation_json=json.dumps(validation), provenance_json=json.dumps(provenance),
+                governance_state="draft", current_version=1, is_published=is_published
+            )
+            db.add(row)
+            version_number = 1
         else:
             row.title = pack.title
             row.subtitle = pack.subtitle
             row.level = pack.level
             row.data_json = payload
+            row.validation_json = json.dumps(validation)
+            row.provenance_json = json.dumps(provenance)
             row.is_published = is_published
+            row.current_version += 1
+            row.governance_state = "draft"
+            version_number = row.current_version
+        db.flush()
+        db.add(PackVersionORM(
+            pack_id=pack.id,
+            version_number=version_number,
+            submitted_by_user_id=submitted_by_user_id,
+            status="draft",
+            data_json=payload,
+            change_summary=change_summary,
+            created_at=now_iso(),
+            review_summary=""
+        ))
         db.commit()
+
+def set_pack_publication(pack_id: str, is_published: bool):
+    with SessionLocal() as db:
+        row = db.get(PackORM, pack_id)
+        if row is None:
+            return False
+        row.is_published = is_published
+        db.commit()
+        return True
+
+def set_governance_state(pack_id: str, status: str, review_summary: str):
+    with SessionLocal() as db:
+        row = db.get(PackORM, pack_id)
+        if row is None:
+            return False
+        row.governance_state = status
+        version = db.execute(
+            select(PackVersionORM).where(
+                PackVersionORM.pack_id == pack_id,
+                PackVersionORM.version_number == row.current_version
+            )
+        ).scalar_one_or_none()
+        if version is not None:
+            version.status = status
+            version.review_summary = review_summary
+        db.commit()
+        return True
+
+def list_pack_versions(pack_id: str):
+    with SessionLocal() as db:
+        rows = db.execute(
+            select(PackVersionORM).where(PackVersionORM.pack_id == pack_id).order_by(PackVersionORM.version_number.desc())
+        ).scalars().all()
+        return [{
+            "version_number": r.version_number,
+            "status": r.status,
+            "change_summary": r.change_summary,
+            "created_at": r.created_at,
+            "review_summary": r.review_summary,
+            "submitted_by_user_id": r.submitted_by_user_id
+        } for r in rows]
+
+def add_review_comment(pack_id: str, version_number: int, reviewer_user_id: int, comment_text: str, disposition: str):
+    with SessionLocal() as db:
+        db.add(ReviewCommentORM(
+            pack_id=pack_id,
+            version_number=version_number,
+            reviewer_user_id=reviewer_user_id,
+            comment_text=comment_text,
+            disposition=disposition,
+            created_at=now_iso()
+        ))
+        db.commit()
+
+def list_review_comments(pack_id: str):
+    with SessionLocal() as db:
+        rows = db.execute(
+            select(ReviewCommentORM).where(ReviewCommentORM.pack_id == pack_id).order_by(ReviewCommentORM.id.desc())
+        ).scalars().all()
+        return [{
+            "version_number": r.version_number,
+            "reviewer_user_id": r.reviewer_user_id,
+            "comment_text": r.comment_text,
+            "disposition": r.disposition,
+            "created_at": r.created_at
+        } for r in rows]
 
 def create_learner(owner_user_id: int, learner_id: str, display_name: str = ""):
     with SessionLocal() as db:
@@ -70,12 +191,20 @@ def create_learner(owner_user_id: int, learner_id: str, display_name: str = ""):
             db.add(LearnerORM(id=learner_id, owner_user_id=owner_user_id, display_name=display_name))
             db.commit()
 
+def list_learners_for_user(user_id: int, is_admin: bool = False):
+    with SessionLocal() as db:
+        stmt = select(LearnerORM).order_by(LearnerORM.id)
+        if not is_admin:
+            stmt = stmt.where(LearnerORM.owner_user_id == user_id)
+        rows = db.execute(stmt).scalars().all()
+        return [{"learner_id": r.id, "display_name": r.display_name, "owner_user_id": r.owner_user_id} for r in rows]
+
 def learner_owned_by_user(user_id: int, learner_id: str) -> bool:
     with SessionLocal() as db:
         learner = db.get(LearnerORM, learner_id)
         return learner is not None and learner.owner_user_id == user_id
 
-def load_learner_state(learner_id: str) -> LearnerState:
+def load_learner_state(learner_id: str):
     with SessionLocal() as db:
         records = db.execute(select(MasteryRecordORM).where(MasteryRecordORM.learner_id == learner_id)).scalars().all()
         history = db.execute(select(EvidenceEventORM).where(EvidenceEventORM.learner_id == learner_id)).scalars().all()
@@ -96,15 +225,16 @@ def save_learner_state(state: LearnerState):
         db.commit()
     return state
 
-def create_evaluator_job(learner_id: str, pack_id: str, concept_id: str, submitted_text: str) -> int:
+def create_evaluator_job(learner_id: str, pack_id: str, concept_id: str, submitted_text: str):
     with SessionLocal() as db:
-        job = EvaluatorJobORM(learner_id=learner_id, pack_id=pack_id, concept_id=concept_id, submitted_text=submitted_text, status="queued")
+        trace = {"rubric_dimension_scores": [{"dimension": "mastery", "score": 0.0}], "notes": ["Job queued", "Awaiting evaluator"], "token_count_estimate": len(submitted_text.split())}
+        job = EvaluatorJobORM(learner_id=learner_id, pack_id=pack_id, concept_id=concept_id, submitted_text=submitted_text, status="queued", trace_json=json.dumps(trace))
         db.add(job)
         db.commit()
         db.refresh(job)
         return job.id
 
-def list_evaluator_jobs_for_learner(learner_id: str) -> list[EvaluatorJobORM]:
+def list_evaluator_jobs_for_learner(learner_id: str):
     with SessionLocal() as db:
         return db.execute(select(EvaluatorJobORM).where(EvaluatorJobORM.learner_id == learner_id).order_by(EvaluatorJobORM.id.desc())).scalars().all()
 
@@ -112,7 +242,7 @@ def get_evaluator_job(job_id: int):
     with SessionLocal() as db:
         return db.get(EvaluatorJobORM, job_id)
 
-def update_evaluator_job(job_id: int, status: str, score: float | None = None, confidence_hint: float | None = None, notes: str = ""):
+def update_evaluator_job(job_id: int, status: str, score: float | None = None, confidence_hint: float | None = None, notes: str = "", trace: dict | None = None):
     with SessionLocal() as db:
         job = db.get(EvaluatorJobORM, job_id)
         if job is None:
@@ -121,4 +251,6 @@ def update_evaluator_job(job_id: int, status: str, score: float | None = None, c
         job.result_score = score
         job.result_confidence_hint = confidence_hint
         job.result_notes = notes
+        if trace is not None:
+            job.trace_json = json.dumps(trace)
         db.commit()

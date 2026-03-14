@@ -1,5 +1,5 @@
 from sqlalchemy import String, Integer, Float, ForeignKey, Text, Boolean
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from .db import Base
 
 class UserORM(Base):
@@ -24,7 +24,33 @@ class PackORM(Base):
     subtitle: Mapped[str] = mapped_column(Text, default="")
     level: Mapped[str] = mapped_column(String(100), default="novice-friendly")
     data_json: Mapped[str] = mapped_column(Text)
-    is_published: Mapped[bool] = mapped_column(Boolean, default=True)
+    validation_json: Mapped[str] = mapped_column(Text, default="{}")
+    provenance_json: Mapped[str] = mapped_column(Text, default="{}")
+    governance_state: Mapped[str] = mapped_column(String(50), default="draft")
+    current_version: Mapped[int] = mapped_column(Integer, default=1)
+    is_published: Mapped[bool] = mapped_column(Boolean, default=False)
+
+class PackVersionORM(Base):
+    __tablename__ = "pack_versions"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    pack_id: Mapped[str] = mapped_column(ForeignKey("packs.id"), index=True)
+    version_number: Mapped[int] = mapped_column(Integer)
+    submitted_by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    status: Mapped[str] = mapped_column(String(50), default="draft")
+    data_json: Mapped[str] = mapped_column(Text)
+    change_summary: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[str] = mapped_column(String(100), default="")
+    review_summary: Mapped[str] = mapped_column(Text, default="")
+
+class ReviewCommentORM(Base):
+    __tablename__ = "review_comments"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    pack_id: Mapped[str] = mapped_column(ForeignKey("packs.id"), index=True)
+    version_number: Mapped[int] = mapped_column(Integer)
+    reviewer_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    comment_text: Mapped[str] = mapped_column(Text, default="")
+    disposition: Mapped[str] = mapped_column(String(50), default="comment")
+    created_at: Mapped[str] = mapped_column(String(100), default="")
 
 class LearnerORM(Base):
     __tablename__ = "learners"
@@ -66,3 +92,4 @@ class EvaluatorJobORM(Base):
     result_score: Mapped[float | None] = mapped_column(Float, nullable=True)
     result_confidence_hint: Mapped[float | None] = mapped_column(Float, nullable=True)
     result_notes: Mapped[str] = mapped_column(Text, default="")
+    trace_json: Mapped[str] = mapped_column(Text, default="{}")
