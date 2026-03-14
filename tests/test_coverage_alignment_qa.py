@@ -18,3 +18,15 @@ def test_detects_uncovered_concepts(tmp_path: Path) -> None:
     )
     result = coverage_alignment_for_pack(tmp_path)
     assert any("c2" in w for w in result["warnings"])
+
+
+def test_covered_concepts_do_not_warn(tmp_path: Path) -> None:
+    make_pack(
+        tmp_path,
+        "concepts:\n  - id: c1\n    title: Foundations\n    description: enough description here\n    mastery_signals: [Explain foundations]\n",
+        "stages:\n  - id: s1\n    title: One\n    concepts: [c1]\n    checkpoint: [Explain foundations]\n",
+        "projects:\n  - id: p1\n    title: Project\n    prerequisites: [c1]\n    deliverables: [short report]\n",
+        "rubrics:\n  - id: r1\n    title: Basic\n    criteria: [correctness]\n",
+    )
+    result = coverage_alignment_for_pack(tmp_path)
+    assert result["warnings"] == []

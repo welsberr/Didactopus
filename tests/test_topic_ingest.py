@@ -24,3 +24,11 @@ def test_extract_concepts(tmp_path: Path) -> None:
     course = document_to_course(doc, "Topic")
     concepts = extract_concept_candidates(course)
     assert len(concepts) >= 1
+
+
+def test_document_to_course_skips_empty_sections(tmp_path: Path) -> None:
+    a = tmp_path / "a.md"
+    a.write_text("# T\n\n## Empty\n\n### Filled\nBody.", encoding="utf-8")
+    doc = adapt_document(a)
+    course = document_to_course(doc, "Topic")
+    assert [lesson.title for lesson in course.modules[0].lessons] == ["Filled"]

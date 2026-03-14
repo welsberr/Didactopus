@@ -13,8 +13,8 @@ def evidence_flow_ledger_for_pack(source_dir):
     concepts = arts["concepts"].get("concepts", []) or []
     roadmap = arts["roadmap"].get("stages", []) or []
     projects = arts["projects"].get("projects", []) or []
-    evaluator = arts["evaluator"] or {}
-    ledger = arts["mastery_ledger"] or {}
+    evaluator = arts.get("evaluator", {}) or {}
+    ledger = arts.get("mastery_ledger", {}) or {}
 
     dimensions = evaluator.get("dimensions", []) or []
     evidence_types = evaluator.get("evidence_types", []) or []

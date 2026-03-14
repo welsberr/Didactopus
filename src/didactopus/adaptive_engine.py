@@ -57,5 +57,11 @@ def build_adaptive_plan(merged: MergedLearningGraph, profile: LearnerProfile, ne
         p for p in merged.project_catalog
         if set(p["prerequisites"]).issubset(profile.mastered_concepts)
     ]
-    next_best = [k for k, s in status.items() if s == "ready"][:next_limit]
+
+    def ready_priority(concept_key: str) -> tuple[int, int, str]:
+        prereqs = list(merged.graph.predecessors(concept_key))
+        mastered_prereqs = sum(1 for prereq in prereqs if prereq in profile.mastered_concepts)
+        return (0 if mastered_prereqs else 1, -mastered_prereqs, concept_key)
+
+    next_best = sorted((k for k, s in status.items() if s == "ready"), key=ready_priority)[:next_limit]
     return AdaptivePlan(status, roadmap, next_best, eligible)

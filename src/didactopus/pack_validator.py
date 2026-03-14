@@ -3,6 +3,10 @@ from pathlib import Path
 import yaml
 
 REQUIRED_FILES = ["pack.yaml", "concepts.yaml", "roadmap.yaml", "projects.yaml", "rubrics.yaml"]
+OPTIONAL_FILES = {
+    "evaluator": "evaluator.yaml",
+    "mastery_ledger": "mastery_ledger.yaml",
+}
 
 def _safe_load_yaml(path: Path, errors: list[str], label: str):
     try:
@@ -30,6 +34,9 @@ def load_pack_artifacts(source_dir: str | Path) -> dict:
     roadmap_data = _safe_load_yaml(source / "roadmap.yaml", errors, "roadmap.yaml")
     projects_data = _safe_load_yaml(source / "projects.yaml", errors, "projects.yaml")
     rubrics_data = _safe_load_yaml(source / "rubrics.yaml", errors, "rubrics.yaml")
+    optional_data = {}
+    for key, filename in OPTIONAL_FILES.items():
+        optional_data[key] = _safe_load_yaml(source / filename, errors, filename) if (source / filename).exists() else {}
     return {
         "ok": len(errors) == 0,
         "errors": errors,
@@ -41,6 +48,7 @@ def load_pack_artifacts(source_dir: str | Path) -> dict:
             "roadmap": roadmap_data,
             "projects": projects_data,
             "rubrics": rubrics_data,
+            **optional_data,
         },
     }
 

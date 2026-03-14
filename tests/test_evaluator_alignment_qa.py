@@ -18,3 +18,14 @@ def test_detects_uncovered_mastery_signals(tmp_path: Path) -> None:
         "dimensions:\n  - name: typography\n    description: page polish\n")
     result = evaluator_alignment_for_pack(tmp_path)
     assert any('Mastery signal' in w for w in result['warnings'])
+
+
+def test_matching_dimension_suppresses_warning(tmp_path: Path) -> None:
+    make_pack(tmp_path,
+        "concepts:\n  - id: c1\n    title: Foundations\n    description: enough description here\n    mastery_signals: [Explain foundations clearly]\n",
+        "stages:\n  - id: s1\n    title: One\n    concepts: [c1]\n    checkpoint: [Explain foundations]\n",
+        "projects:\n  - id: p1\n    title: Project\n    prerequisites: [c1]\n    deliverables: [report]\n",
+        "rubrics:\n  - id: r1\n    title: Basic\n    criteria: [correctness]\n",
+        "dimensions:\n  - name: explain\n    description: explanation quality\n")
+    result = evaluator_alignment_for_pack(tmp_path)
+    assert result["warnings"] == []

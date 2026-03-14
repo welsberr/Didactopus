@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 
+from .concept_graph import ConceptGraph
 from .evaluator_pipeline import (
     LearnerAttempt,
     RubricEvaluator,
@@ -10,6 +11,7 @@ from .evaluator_pipeline import (
     run_pipeline,
     aggregate,
 )
+from .planner import PlannerWeights, rank_next_concepts
 
 
 @dataclass
@@ -129,4 +131,31 @@ def run_demo_agentic_loop(concepts: list[str]) -> AgenticStudentState:
     for concept in concepts:
         attempt = synthetic_attempt_for_concept(concept)
         integrate_attempt(state, attempt)
+    return state
+
+
+def run_agentic_learning_loop(
+    graph: ConceptGraph,
+    project_catalog: list[dict],
+    target_concepts: list[str],
+    weights: PlannerWeights,
+    max_steps: int = 4,
+) -> AgenticStudentState:
+    state = AgenticStudentState()
+    for _ in range(max_steps):
+        ranked = rank_next_concepts(
+            graph=graph,
+            mastered=state.mastered_concepts,
+            targets=target_concepts,
+            weak_dimensions_by_concept={},
+            fragile_concepts=state.evidence_state.resurfaced_concepts,
+            project_catalog=project_catalog,
+            weights=weights,
+        )
+        if not ranked:
+            break
+        concept = ranked[0]["concept"]
+        integrate_attempt(state, synthetic_attempt_for_concept(concept))
+        if set(target_concepts).issubset(state.mastered_concepts):
+            break
     return state

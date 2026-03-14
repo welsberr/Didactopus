@@ -1,12 +1,12 @@
 from __future__ import annotations
 from pathlib import Path
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 import json, shutil
 from .review_schema import WorkspaceMeta, WorkspaceRegistry
 from .import_validator import preview_draft_pack_import
 
 def utc_now() -> str:
-    return datetime.now(UTC).isoformat()
+    return datetime.now(timezone.utc).isoformat()
 
 class WorkspaceManager:
     def __init__(self, registry_path: str | Path, default_workspace_root: str | Path) -> None:

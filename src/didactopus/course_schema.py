@@ -16,6 +16,11 @@ class NormalizedDocument(BaseModel):
     metadata: dict = Field(default_factory=dict)
 
 
+class NormalizedSourceRecord(NormalizedDocument):
+    source_name: str = ""
+    modules: list["Module"] = Field(default_factory=list)
+
+
 class Lesson(BaseModel):
     title: str
     body: str = ""

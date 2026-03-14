@@ -24,3 +24,12 @@ class DomainMap:
 
     def topological_sequence(self) -> list[str]:
         return list(nx.topological_sort(self.graph))
+
+
+def build_demo_domain_map(domain_name: str) -> DomainMap:
+    dmap = DomainMap(domain_name)
+    dmap.add_concept(ConceptNode(name="foundations"))
+    dmap.add_concept(ConceptNode(name="methods", prerequisites=["foundations"]))
+    dmap.add_concept(ConceptNode(name="analysis", prerequisites=["methods"]))
+    dmap.add_concept(ConceptNode(name="projects", prerequisites=["analysis"]))
+    return dmap

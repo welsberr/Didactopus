@@ -6,7 +6,14 @@ import yaml
 from .course_schema import NormalizedCourse, ConceptCandidate, DraftPack
 
 
-def build_draft_pack(course: NormalizedCourse, concepts: list[ConceptCandidate], author: str, license_name: str, review_flags: list[str], conflicts: list[str]) -> DraftPack:
+def build_draft_pack(
+    course: NormalizedCourse,
+    concepts: list[ConceptCandidate],
+    author: str,
+    license_name: str,
+    review_flags: list[str],
+    conflicts: list[str] | None = None,
+) -> DraftPack:
     pack_name = course.title.lower().replace(" ", "-")
     pack = {
         "name": pack_name,
@@ -76,7 +83,7 @@ def build_draft_pack(course: NormalizedCourse, concepts: list[ConceptCandidate],
         rubrics=rubrics,
         review_report=review_flags,
         attribution=attribution,
-        conflicts=conflicts,
+        conflicts=conflicts or [],
     )
 
 

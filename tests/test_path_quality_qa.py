@@ -18,3 +18,14 @@ def test_detects_checkpoint_and_unassessed_issues(tmp_path: Path) -> None:
     result = path_quality_for_pack(tmp_path)
     assert any("no checkpoint" in w.lower() for w in result["warnings"])
     assert any("not visibly assessed" in w.lower() for w in result["warnings"])
+
+
+def test_assessed_path_has_no_warnings(tmp_path: Path) -> None:
+    make_pack(
+        tmp_path,
+        "concepts:\n  - id: c1\n    title: Foundations\n    description: foundations description enough\n    prerequisites: []\n",
+        "stages:\n  - id: s1\n    title: One\n    concepts: [c1]\n    checkpoint: [quiz]\n",
+        "projects:\n  - id: p1\n    title: Project\n    prerequisites: [c1]\n    deliverables: [report]\n",
+    )
+    result = path_quality_for_pack(tmp_path)
+    assert result["warnings"] == []

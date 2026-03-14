@@ -21,7 +21,7 @@
     "member": "workspace_registry.json",
     "stripped_member": "workspace_registry.json",
     "dest": "/home/netuser/dev/Didactopus/workspace_registry.json",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "645e90afad0d49a75bc5d2c0245ae264a71c5aa169f220b77d1b6f242205284e",
     "strip_depth": 0
   },
@@ -30,7 +30,7 @@
     "member": "docs/workspace-manager.md",
     "stripped_member": "docs/workspace-manager.md",
     "dest": "/home/netuser/dev/Didactopus/docs/workspace-manager.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "5a43d9523e2a2334fccef43ad8a85ae3626f3066c20cba3e8eb73ab75fba1924",
     "strip_depth": 0
   },
@@ -75,7 +75,7 @@
     "member": "tests/test_workspace_manager.py",
     "stripped_member": "tests/test_workspace_manager.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_workspace_manager.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "de8c5277331694ba63ab19ef4a203ff67acd68cf58736087e4cdb18bca95e976",
     "strip_depth": 0
   },
@@ -84,7 +84,7 @@
     "member": "tests/test_review_bridge.py",
     "stripped_member": "tests/test_review_bridge.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_review_bridge.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "f6f6b70588f6b72080ddbcde513548e5d0ea8ea62d9b0c092049b3ee2e5c9fb9",
     "strip_depth": 0
   },
@@ -102,7 +102,7 @@
     "member": "workspaces/stats-foundations/draft_pack/pack.yaml",
     "stripped_member": "workspaces/stats-foundations/draft_pack/pack.yaml",
     "dest": "/home/netuser/dev/Didactopus/workspaces/stats-foundations/draft_pack/pack.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "f948ad0f43d04ba8601177272745f08e3c1fd00637d46b42d8bdcd00feebfeda",
     "strip_depth": 0
   },
@@ -111,7 +111,7 @@
     "member": "workspaces/stats-foundations/draft_pack/concepts.yaml",
     "stripped_member": "workspaces/stats-foundations/draft_pack/concepts.yaml",
     "dest": "/home/netuser/dev/Didactopus/workspaces/stats-foundations/draft_pack/concepts.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "ebeaffbced7f8fd90d360d1430bcaade3ebdd5199ce7fd027814f8e285ea8603",
     "strip_depth": 0
   },
@@ -120,7 +120,7 @@
     "member": "workspaces/stats-foundations/draft_pack/conflict_report.md",
     "stripped_member": "workspaces/stats-foundations/draft_pack/conflict_report.md",
     "dest": "/home/netuser/dev/Didactopus/workspaces/stats-foundations/draft_pack/conflict_report.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "4eb322b1577f1b956fab91d8b4e525891d9c78c712690587396c962b6d8fc582",
     "strip_depth": 0
   },
@@ -129,7 +129,7 @@
     "member": "workspaces/stats-foundations/draft_pack/review_report.md",
     "stripped_member": "workspaces/stats-foundations/draft_pack/review_report.md",
     "dest": "/home/netuser/dev/Didactopus/workspaces/stats-foundations/draft_pack/review_report.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "76939f090cdcfe75a60b7ab4718899db8a2057f591fc5830a65e5f1d4a7fb1d9",
     "strip_depth": 0
   },
@@ -138,7 +138,7 @@
     "member": "workspaces/bayes-intro/draft_pack/pack.yaml",
     "stripped_member": "workspaces/bayes-intro/draft_pack/pack.yaml",
     "dest": "/home/netuser/dev/Didactopus/workspaces/bayes-intro/draft_pack/pack.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "db9490f8df03418cd4bb202300aba0bf0339f4aad48094409a028470f039a4dc",
     "strip_depth": 0
   },
@@ -147,7 +147,7 @@
     "member": "workspaces/bayes-intro/draft_pack/concepts.yaml",
     "stripped_member": "workspaces/bayes-intro/draft_pack/concepts.yaml",
     "dest": "/home/netuser/dev/Didactopus/workspaces/bayes-intro/draft_pack/concepts.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "ebeaffbced7f8fd90d360d1430bcaade3ebdd5199ce7fd027814f8e285ea8603",
     "strip_depth": 0
   },
@@ -156,7 +156,7 @@
     "member": "workspaces/bayes-intro/draft_pack/conflict_report.md",
     "stripped_member": "workspaces/bayes-intro/draft_pack/conflict_report.md",
     "dest": "/home/netuser/dev/Didactopus/workspaces/bayes-intro/draft_pack/conflict_report.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "4eb322b1577f1b956fab91d8b4e525891d9c78c712690587396c962b6d8fc582",
     "strip_depth": 0
   },
@@ -165,7 +165,7 @@
     "member": "workspaces/bayes-intro/draft_pack/review_report.md",
     "stripped_member": "workspaces/bayes-intro/draft_pack/review_report.md",
     "dest": "/home/netuser/dev/Didactopus/workspaces/bayes-intro/draft_pack/review_report.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "76939f090cdcfe75a60b7ab4718899db8a2057f591fc5830a65e5f1d4a7fb1d9",
     "strip_depth": 0
   },
@@ -255,7 +255,7 @@
     "member": "src/didactopus/workspace_manager.py",
     "stripped_member": "src/didactopus/workspace_manager.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/workspace_manager.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "11b9ec10cd61051dba82304793565068088879fb86088099e907daca4acf369c",
     "strip_depth": 0
   },
@@ -264,7 +264,7 @@
     "member": "src/didactopus/review_bridge.py",
     "stripped_member": "src/didactopus/review_bridge.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/review_bridge.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "b8f225af36fb04092557abcb08449c8c83d7c84b1293bb066d463175fe3f1239",
     "strip_depth": 0
   },
@@ -273,15 +273,15 @@
     "member": "src/didactopus/review_bridge_server.py",
     "stripped_member": "src/didactopus/review_bridge_server.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/review_bridge_server.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "241da89239dcfd3bb5ddb3130e4a3e58a54c6d917b61e0b4ec04ce59864c8ea4",
     "strip_depth": 0
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/085-didactopus-workspace-manager-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 55b170f] Apply ZIP update: 085-didactopus-workspace-manager-update.zip [2026-03-14T13:18:42]\n 188 files changed, 15207 insertions(+), 468 deletions(-)\n create mode 100644 .update_readmes/20260314_131842__085-didactopus-workspace-manager-update__README.md\n create mode 100644 .update_readmes/20260314_131846__090-didactopus-draft-pack-import-workflow-update__README.md\n create mode 100644 .update_readmes/20260314_131849__095-didactopus-import-validation-safety-update__README.md\n create mode 100644 .update_readmes/20260314_131853__100-didactopus-full-pack-validation-update__README.md\n create mode 100644 .update_readmes/20260314_131856__105-didactopus-coverage-alignment-update__README.md\n create mode 100644 .update_readmes/20260314_131859__110-didactopus-curriculum-path-quality-update__README.md\n create mode 100644 .update_readmes/20260314_131902__115-didactopus-evaluator-alignment-update__README.md\n create mode 100644 .update_readmes/20260314_131906__120-didactopus-evidence-flow-mastery-ledger-update__README.md\n create mode 100644 .update_readmes/20260314_131909__125-didactopus-graph-prereq-analysis-update__README.md\n create mode 100644 .update_readmes/20260314_131913__130-didactopus-semantic-qa-update__README.md\n create mode 100644 .update_readmes/20260314_131917__135-didactopus-admin-curation-layer__README.md\n create mode 100644 .update_readmes/20260314_131920__140-didactopus-admin-learner-ui-workflows__README.md\n create mode 100644 .update_readmes/20260314_131923__145-didactopus-agent-audit-and-key-rotation-layer__README.md\n create mode 100644 .update_readmes/20260314_131926__150-didactopus-agent-service-account-layer__README.md\n create mode 100644 .update_readmes/20260314_131930__155-didactopus-animated-concept-graph-layer__README.md\n create mode 100644 .update_readmes/20260314_131933__160-didactopus-artifact-registry-layer__README.md\n create mode 100644 .update_readmes/20260314_132003__165-didactopus-attribution-provenance-update__README.md\n create mode 100644 .update_readmes/20260314_132010__170-didactopus-auth-db-async-evaluator-prototype__README.md\n create mode 100644 .update_readmes/20260314_132013__175-didactopus-backend-api-prototype__README.md\n create mode 100644 .update_readmes/20260314_132017__180-didactopus-contribution-management-layer__README.md\n create mode 100644 .update_readmes/20260314_132021__185-didactopus-course-compliance-ui-prototype__README.md\n create mode 100644 .update_readmes/20260314_132024__190-didactopus-deployment-policy-and-agent-hooks__README.md\n create mode 100644 .update_readmes/20260314_132027__195-didactopus-dual-lane-policy-layer__README.md\n create mode 100644 .update_readmes/20260314_132030__200-didactopus-layout-aware-graph-engine-layer__README.md\n create mode 100644 .update_readmes/20260314_132033__205-didactopus-learner-state-progression-update__README.md\n create mode 100644 .update_readmes/20260314_132036__210-didactopus-learning-animation-layer__README.md\n create mode 100644 .update_readmes/20260314_132039__215-didactopus-live-learner-ui-prototype__README.md\n create mode 100644 .update_readmes/20260314_132042__220-didactopus-media-rendering-pipeline-layer__README.md\n create mode 100644 .update_readmes/20260314_132048__225-didactopus-orchestration-ux-update__README.md\n create mode 100644 .update_readmes/20260314_132051__230-didactopus-pack-persistence-update__README.md\n create mode 100644 .update_readmes/20260314_132053__235-didactopus-productionization-scaffold__README.md\n create mode 100644 .update_readmes/20260314_132058__240-didactopus-review-governance-layer__README.md\n create mode 100644 .update_readmes/20260314_132101__245-didactopus-agent-audit-and-key-rotation-layer__README.md\n create mode 100644 .update_readmes/20260314_132104__250-didactopus-artifact-lifecycle-and-knowledge-export-layer__README.md\n create mode 100644 .update_readmes/20260314_132106__255-didactopus-docs-update__README.md\n create mode 100644 .update_readmes/20260314_132109__260-didactopus-object-versioning-and-export-layer__README.md\n create mode 100644 .update_readmes/20260314_132112__270-didactopus-promotion-target-objects-layer__README.md\n create mode 100644 .update_readmes/20260314_132115__275-didactopus-review-promotion-and-synthesis-engine__README.md\n create mode 100644 .update_readmes/20260314_132120__280-didactopus-review-workbench-and-synthesis-scaffold__README.md\n create mode 100644 .zip_update_manifest.json\n create mode 100644 FAQ.md\n create mode 100644 bad-generated-pack/concepts.yaml\n create mode 100644 bad-generated-pack/evaluator.yaml\n create mode 100644 bad-generated-pack/mastery_ledger.yaml\n create mode 100644 bad-generated-pack/pack.yaml\n create mode 100644 bad-generated-pack/projects.yaml\n create mode 100644 bad-generated-pack/roadmap.yaml\n create mode 100644 bad-generated-pack/rubrics.yaml\n create mode 100644 data/packs/bayes-pack.json\n create mode 100644 data/packs/stats-pack.json\n create mode 100644 docs/api_outline.md\n create mode 100644 docs/architecture_summary.json\n create mode 100644 docs/attribution-and-provenance.md\n create mode 100644 docs/coverage-alignment.md\n create mode 100644 docs/curriculum-path-quality.md\n create mode 100644 docs/data_models.md\n create mode 100644 docs/draft-pack-import.md\n create mode 100644 docs/full-pack-validation.md\n create mode 100644 docs/graph-prerequisite-analysis.md\n create mode 100644 docs/import-validation.md\n create mode 100644 docs/license-compliance.md\n create mode 100644 docs/mit-ocw-notes.md\n create mode 100644 docs/review_and_promotion_workflow.md\n create mode 100644 docs/semantic-qa.md\n create mode 100644 docs/synthesis_engine_architecture.md\n create mode 100644 docs/ui_visualization_notes.md\n create mode 100644 docs/ux-notes.md\n create mode 100644 docs/workspace-manager.md\n create mode 100644 example-pack/concepts.yaml\n create mode 100644 example-pack/pack.yaml\n create mode 100644 example-pack/pack_compliance_manifest.json\n create mode 100644 generated-pack/concepts.yaml\n create mode 100644 generated-pack/conflict_report.md\n create mode 100644 generated-pack/evaluator.yaml\n create mode 100644 generated-pack/mastery_ledger.yaml\n create mode 100644 generated-pack/pack.yaml\n create mode 100644 generated-pack/projects.yaml\n create mode 100644 generated-pack/review_report.md\n create mode 100644 generated-pack/roadmap.yaml\n create mode 100644 generated-pack/rubrics.yaml\n create mode 100644 samples/ATTRIBUTION.md\n create mode 100644 samples/concepts.yaml\n create mode 100644 samples/learner_state.json\n create mode 100644 samples/provenance_manifest.json\n create mode 100644 samples/sources.yaml\n create mode 100644 src/didactopus/api.py\n create mode 100644 src/didactopus/attribution_builder.py\n create mode 100644 src/didactopus/attribution_qa.py\n create mode 100644 src/didactopus/auth.py\n create mode 100644 src/didactopus/compliance_models.py\n create mode 100644 src/didactopus/course_ingestion_compliance.py\n create mode 100644 src/didactopus/coverage_alignment_qa.py\n create mode 100644 src/didactopus/db.py\n create mode 100644 src/didactopus/demo_run.py\n create mode 100644 src/didactopus/engine.py\n create mode 100644 src/didactopus/evaluator_alignment_qa.py\n create mode 100644 src/didactopus/evidence_flow_ledger_qa.py\n create mode 100644 src/didactopus/export_svg.py\n create mode 100644 src/didactopus/graph_qa.py\n create mode 100644 src/didactopus/import_validator.py\n create mode 100644 src/didactopus/knowledge_export.py\n create mode 100644 src/didactopus/learner_state.py\n create mode 100644 src/didactopus/models.py\n create mode 100644 src/didactopus/onboarding.py\n create mode 100644 src/didactopus/orchestration_models.py\n create mode 100644 src/didactopus/orchestration_notes.md\n create mode 100644 src/didactopus/orchestrator.py\n create mode 100644 src/didactopus/orm.py\n create mode 100644 src/didactopus/pack_to_frontend.py\n create mode 100644 src/didactopus/pack_validator.py\n create mode 100644 src/didactopus/path_quality_qa.py\n create mode 100644 src/didactopus/progression_engine.py\n create mode 100644 src/didactopus/provenance.py\n create mode 100644 src/didactopus/readiness.py\n create mode 100644 src/didactopus/recommendations.py\n create mode 100644 src/didactopus/render_bundle.py\n create mode 100644 src/didactopus/repository.py\n create mode 100644 src/didactopus/review_bridge.py\n create mode 100644 src/didactopus/review_bridge_server.py\n create mode 100644 src/didactopus/sample_pack_loader.py\n create mode 100644 src/didactopus/seed.py\n create mode 100644 src/didactopus/semantic_qa.py\n create mode 100644 src/didactopus/source_models.py\n create mode 100644 src/didactopus/stop_criteria.py\n create mode 100644 src/didactopus/storage.py\n create mode 100644 src/didactopus/synthesis.py\n create mode 100644 src/didactopus/ux_feedback.py\n create mode 100644 src/didactopus/worker.py\n create mode 100644 src/didactopus/workspace_manager.py\n create mode 100644 tests/test_api_scaffold.py\n create mode 100644 tests/test_attribution_builder.py\n create mode 100644 tests/test_attribution_qa.py\n create mode 100644 tests/test_backend_files.py\n create mode 100644 tests/test_compliance.py\n create mode 100644 tests/test_coverage_alignment_qa.py\n create mode 100644 tests/test_evaluator_alignment_qa.py\n create mode 100644 tests/test_evidence_flow_ledger_qa.py\n create mode 100644 tests/test_files.py\n create mode 100644 tests/test_frontend_files.py\n create mode 100644 tests/test_graph_qa.py\n create mode 100644 tests/test_import_validator.py\n create mode 100644 tests/test_onboarding.py\n create mode 100644 tests/test_orchestrator.py\n create mode 100644 tests/test_pack_export.py\n create mode 100644 tests/test_pack_validator.py\n create mode 100644 tests/test_path_quality_qa.py\n create mode 100644 tests/test_progression_engine.py\n create mode 100644 tests/test_python_scaffold.py\n create mode 100644 tests/test_readiness.py\n create mode 100644 tests/test_recommendations.py\n create mode 100644 tests/test_review_bridge.py\n create mode 100644 tests/test_scaffold_files.py\n create mode 100644 tests/test_semantic_qa.py\n create mode 100644 tests/test_stop_criteria.py\n create mode 100644 tests/test_ui_files.py\n create mode 100644 tests/test_workspace_manager.py\n create mode 100644 webui/public/packs/bayes-pack.json\n create mode 100644 webui/public/packs/stats-pack.json\n create mode 100644 webui/src/api.js\n create mode 100644 webui/src/authStore.js\n create mode 100644 webui/src/domainData.js\n create mode 100644 webui/src/engine.js\n create mode 100644 webui/src/localEngine.js\n create mode 100644 webui/src/sampleData.js\n create mode 100644 webui/src/storage.js\n create mode 100644 workspace_registry.json\n create mode 100644 workspaces/bayes-intro/draft_pack/concepts.yaml\n create mode 100644 workspaces/bayes-intro/draft_pack/conflict_report.md\n create mode 100644 workspaces/bayes-intro/draft_pack/pack.yaml\n create mode 100644 workspaces/bayes-intro/draft_pack/review_report.md\n create mode 100644 workspaces/stats-foundations/draft_pack/concepts.yaml\n create mode 100644 workspaces/stats-foundations/draft_pack/conflict_report.md\n create mode 100644 workspaces/stats-foundations/draft_pack/pack.yaml\n create mode 100644 workspaces/stats-foundations/draft_pack/review_report.md"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/090-didactopus-draft-pack-import-workflow-update.zip",
@@ -314,7 +314,7 @@
     "member": "docs/draft-pack-import.md",
     "stripped_member": "docs/draft-pack-import.md",
     "dest": "/home/netuser/dev/Didactopus/docs/draft-pack-import.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "9061167adc97f821fefe05af453703c1291c3520a4cfef1d8017539cc2c7df77",
     "strip_depth": 0
   },
@@ -359,7 +359,7 @@
     "member": "generated-pack/pack.yaml",
     "stripped_member": "generated-pack/pack.yaml",
     "dest": "/home/netuser/dev/Didactopus/generated-pack/pack.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "785c1d84ecbf3960a85e31dc14855d9af9db4975eb23f7ba4f9bb62fbdad74fe",
     "strip_depth": 0
   },
@@ -368,7 +368,7 @@
     "member": "generated-pack/concepts.yaml",
     "stripped_member": "generated-pack/concepts.yaml",
     "dest": "/home/netuser/dev/Didactopus/generated-pack/concepts.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "3c0cb89f213f3152b8b475a11e163e76eefe7c677752af5676146bfaa1c81060",
     "strip_depth": 0
   },
@@ -377,7 +377,7 @@
     "member": "generated-pack/conflict_report.md",
     "stripped_member": "generated-pack/conflict_report.md",
     "dest": "/home/netuser/dev/Didactopus/generated-pack/conflict_report.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "2be76464e24c583c30bf9ec8985fefa427a2c0eb6c31f312fec13ed4dff69c3f",
     "strip_depth": 0
   },
@@ -386,7 +386,7 @@
     "member": "generated-pack/review_report.md",
     "stripped_member": "generated-pack/review_report.md",
     "dest": "/home/netuser/dev/Didactopus/generated-pack/review_report.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "ba2896556458ad6fb588c6daf0875db46a65e6542437dfc99446c39cb86692b5",
     "strip_depth": 0
   },
@@ -564,8 +564,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/090-didactopus-draft-pack-import-workflow-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 6a98367] Apply ZIP update: 090-didactopus-draft-pack-import-workflow-update.zip [2026-03-14T13:18:46]\n 10 files changed, 105 insertions(+), 53 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/095-didactopus-import-validation-safety-update.zip",
@@ -598,7 +598,7 @@
     "member": "docs/import-validation.md",
     "stripped_member": "docs/import-validation.md",
     "dest": "/home/netuser/dev/Didactopus/docs/import-validation.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "2e34fa37835c9ab36db46ccc46b8c5d230b7328179a86d0a10eff1799500458b",
     "strip_depth": 0
   },
@@ -679,7 +679,7 @@
     "member": "bad-generated-pack/pack.yaml",
     "stripped_member": "bad-generated-pack/pack.yaml",
     "dest": "/home/netuser/dev/Didactopus/bad-generated-pack/pack.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "3204cfd69d466b97eb74c8b7cc1bc6e212eab845d646db1b88212efd6a173292",
     "strip_depth": 0
   },
@@ -688,7 +688,7 @@
     "member": "tests/test_import_validator.py",
     "stripped_member": "tests/test_import_validator.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_import_validator.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "6c22499e1328254a6af284bf40ca7bce600bb37e10076f9609a8b89d0c6a72b2",
     "strip_depth": 0
   },
@@ -832,7 +832,7 @@
     "member": "src/didactopus/import_validator.py",
     "stripped_member": "src/didactopus/import_validator.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/import_validator.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "10ad5be8295441fdc862abf2e62a11c90511a0f29456a2f5e8c0eadb45f1e7ca",
     "strip_depth": 0
   },
@@ -866,8 +866,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/095-didactopus-import-validation-safety-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 8c9776d] Apply ZIP update: 095-didactopus-import-validation-safety-update.zip [2026-03-14T13:18:49]\n 12 files changed, 204 insertions(+), 76 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/100-didactopus-full-pack-validation-update.zip",
@@ -900,7 +900,7 @@
     "member": "docs/full-pack-validation.md",
     "stripped_member": "docs/full-pack-validation.md",
     "dest": "/home/netuser/dev/Didactopus/docs/full-pack-validation.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "ef8890357247f41f0374414c67ce7c8c13cb45db5326d7b933b9ce0acab84c77",
     "strip_depth": 0
   },
@@ -963,7 +963,7 @@
     "member": "generated-pack/roadmap.yaml",
     "stripped_member": "generated-pack/roadmap.yaml",
     "dest": "/home/netuser/dev/Didactopus/generated-pack/roadmap.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "dd366aec07ac74a2af080742f210b0e74607916363abc9c9991de3b3fce4c942",
     "strip_depth": 0
   },
@@ -972,7 +972,7 @@
     "member": "generated-pack/projects.yaml",
     "stripped_member": "generated-pack/projects.yaml",
     "dest": "/home/netuser/dev/Didactopus/generated-pack/projects.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "90a9801c24a0a32390392abcb088407249cf9811de366cc10f52e2211a4f4114",
     "strip_depth": 0
   },
@@ -981,7 +981,7 @@
     "member": "generated-pack/rubrics.yaml",
     "stripped_member": "generated-pack/rubrics.yaml",
     "dest": "/home/netuser/dev/Didactopus/generated-pack/rubrics.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "a0e0a2e88f009bbdc60c59f02b9135baea04e7ea86e0707961526268f175aa97",
     "strip_depth": 0
   },
@@ -1017,7 +1017,7 @@
     "member": "bad-generated-pack/concepts.yaml",
     "stripped_member": "bad-generated-pack/concepts.yaml",
     "dest": "/home/netuser/dev/Didactopus/bad-generated-pack/concepts.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "8c27edd143653756db0373891b380615023fd6364ffc9004138f44b88d432e43",
     "strip_depth": 0
   },
@@ -1026,7 +1026,7 @@
     "member": "bad-generated-pack/roadmap.yaml",
     "stripped_member": "bad-generated-pack/roadmap.yaml",
     "dest": "/home/netuser/dev/Didactopus/bad-generated-pack/roadmap.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "1502ba08af0f272301164f4f8f60f7c387acafac1475eba66463f70ee2c5885d",
     "strip_depth": 0
   },
@@ -1035,7 +1035,7 @@
     "member": "bad-generated-pack/projects.yaml",
     "stripped_member": "bad-generated-pack/projects.yaml",
     "dest": "/home/netuser/dev/Didactopus/bad-generated-pack/projects.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "29e9b0ed4c137889246cb6b2f1d0cce85875224df50cf3ad91c35f5bb26357a6",
     "strip_depth": 0
   },
@@ -1044,7 +1044,7 @@
     "member": "bad-generated-pack/rubrics.yaml",
     "stripped_member": "bad-generated-pack/rubrics.yaml",
     "dest": "/home/netuser/dev/Didactopus/bad-generated-pack/rubrics.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "4ffab26a35d922c04dbe75ea557c8f94d59a131912e444b0984e767aecb2cabb",
     "strip_depth": 0
   },
@@ -1053,7 +1053,7 @@
     "member": "tests/test_pack_validator.py",
     "stripped_member": "tests/test_pack_validator.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_pack_validator.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "26b9f7ce2fcb26c0072b76f04c49943fe8f0078702fd941aa20667cf78f8971f",
     "strip_depth": 0
   },
@@ -1206,7 +1206,7 @@
     "member": "src/didactopus/pack_validator.py",
     "stripped_member": "src/didactopus/pack_validator.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/pack_validator.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "2443eace477d96ae54623003e91acb3d732667fca51700098a3216802598211a",
     "strip_depth": 0
   },
@@ -1249,8 +1249,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/100-didactopus-full-pack-validation-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main f3ea3da] Apply ZIP update: 100-didactopus-full-pack-validation-update.zip [2026-03-14T13:18:53]\n 15 files changed, 102 insertions(+), 156 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/105-didactopus-coverage-alignment-update.zip",
@@ -1283,7 +1283,7 @@
     "member": "docs/coverage-alignment.md",
     "stripped_member": "docs/coverage-alignment.md",
     "dest": "/home/netuser/dev/Didactopus/docs/coverage-alignment.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "765d4ec7a67cc5c6e0e94c476e3b46f8c4374d21f1d1b6ac67f1479800a66549",
     "strip_depth": 0
   },
@@ -1400,7 +1400,7 @@
     "member": "tests/test_coverage_alignment_qa.py",
     "stripped_member": "tests/test_coverage_alignment_qa.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_coverage_alignment_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "fca1a926fddbb8f442c90543052ad150933f445c42d8d5aaca7d601bbd76d263",
     "strip_depth": 0
   },
@@ -1526,7 +1526,7 @@
     "member": "src/didactopus/semantic_qa.py",
     "stripped_member": "src/didactopus/semantic_qa.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/semantic_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "9634dc5c618235f60d92694fc33001d014b7f3ffec72c2111606ffd4d745c9b2",
     "strip_depth": 0
   },
@@ -1535,7 +1535,7 @@
     "member": "src/didactopus/graph_qa.py",
     "stripped_member": "src/didactopus/graph_qa.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/graph_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "bb042141f7cbd1f3c817d0937b52a13febff5a5379bdb54bf5137bbac3db88e4",
     "strip_depth": 0
   },
@@ -1544,7 +1544,7 @@
     "member": "src/didactopus/path_quality_qa.py",
     "stripped_member": "src/didactopus/path_quality_qa.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/path_quality_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "39f9e46d2cb89b8e2ae47f3ddc37af3bb89985d6eb6501abe78aab4dc6c8bca6",
     "strip_depth": 0
   },
@@ -1553,7 +1553,7 @@
     "member": "src/didactopus/coverage_alignment_qa.py",
     "stripped_member": "src/didactopus/coverage_alignment_qa.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/coverage_alignment_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "ab6c5ccb715c39303b55d4cfeb6ce31c57af2ca543a241e4b368b627a1ff7ea7",
     "strip_depth": 0
   },
@@ -1596,8 +1596,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/105-didactopus-coverage-alignment-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main ac4c975] Apply ZIP update: 105-didactopus-coverage-alignment-update.zip [2026-03-14T13:18:56]\n 29 files changed, 372 insertions(+), 567 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/110-didactopus-curriculum-path-quality-update.zip",
@@ -1630,7 +1630,7 @@
     "member": "docs/curriculum-path-quality.md",
     "stripped_member": "docs/curriculum-path-quality.md",
     "dest": "/home/netuser/dev/Didactopus/docs/curriculum-path-quality.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "ff0145e9c5ee09cee8145909258a29347062821d26e9099226a74e2111517e48",
     "strip_depth": 0
   },
@@ -1675,7 +1675,7 @@
     "member": "tests/test_path_quality_qa.py",
     "stripped_member": "tests/test_path_quality_qa.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_path_quality_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "b1f34c68aa19d15099dac20d6d29d6d1b3e6f197180cd222aaf80feba6be19d3",
     "strip_depth": 0
   },
@@ -1979,8 +1979,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/110-didactopus-curriculum-path-quality-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 6428cfb] Apply ZIP update: 110-didactopus-curriculum-path-quality-update.zip [2026-03-14T13:18:59]\n 30 files changed, 420 insertions(+), 418 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/115-didactopus-evaluator-alignment-update.zip",
@@ -2058,7 +2058,7 @@
     "member": "generated-pack/evaluator.yaml",
     "stripped_member": "generated-pack/evaluator.yaml",
     "dest": "/home/netuser/dev/Didactopus/generated-pack/evaluator.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "4d5438ee698d8f5da3f14861e3aa251f08e9b30bdd5c777437e0ca59f7e18375",
     "strip_depth": 0
   },
@@ -2112,7 +2112,7 @@
     "member": "bad-generated-pack/evaluator.yaml",
     "stripped_member": "bad-generated-pack/evaluator.yaml",
     "dest": "/home/netuser/dev/Didactopus/bad-generated-pack/evaluator.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "faefcadcd485512206052fdc9cd8abe8016b39dbd658a05ce7cf52f18ee80597",
     "strip_depth": 0
   },
@@ -2121,7 +2121,7 @@
     "member": "tests/test_evaluator_alignment_qa.py",
     "stripped_member": "tests/test_evaluator_alignment_qa.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_evaluator_alignment_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "dcb6423a40224fa29b8768c9289bf84d5730cec8fc3103870b6fbef361e1fe78",
     "strip_depth": 0
   },
@@ -2175,7 +2175,7 @@
     "member": "src/didactopus/evaluator_alignment_qa.py",
     "stripped_member": "src/didactopus/evaluator_alignment_qa.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/evaluator_alignment_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "a95bf5c6a2d6d3a25fc18f99aca253a3b3a89eef608d0dcfdcf5b2e8144b367e",
     "strip_depth": 0
   },
@@ -2191,8 +2191,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/115-didactopus-evaluator-alignment-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main c9eb0b2] Apply ZIP update: 115-didactopus-evaluator-alignment-update.zip [2026-03-14T13:19:02]\n 19 files changed, 121 insertions(+), 398 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/120-didactopus-evidence-flow-mastery-ledger-update.zip",
@@ -2279,7 +2279,7 @@
     "member": "generated-pack/mastery_ledger.yaml",
     "stripped_member": "generated-pack/mastery_ledger.yaml",
     "dest": "/home/netuser/dev/Didactopus/generated-pack/mastery_ledger.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "729b412bfc0e5a6e989028e84154fb296b74bbd072f10cf5af2bd3f3fced506c",
     "strip_depth": 0
   },
@@ -2342,7 +2342,7 @@
     "member": "bad-generated-pack/mastery_ledger.yaml",
     "stripped_member": "bad-generated-pack/mastery_ledger.yaml",
     "dest": "/home/netuser/dev/Didactopus/bad-generated-pack/mastery_ledger.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "824e394a5d522f6b3480a5e941c3814f81fe1dab97a7c076321459373884e9f6",
     "strip_depth": 0
   },
@@ -2351,7 +2351,7 @@
     "member": "tests/test_evidence_flow_ledger_qa.py",
     "stripped_member": "tests/test_evidence_flow_ledger_qa.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_evidence_flow_ledger_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "c6ae01e8f3ac2e4b60db8350691ba475dc9f0d0291dc587f9d7a1134f1969729",
     "strip_depth": 0
   },
@@ -2450,7 +2450,7 @@
     "member": "src/didactopus/evidence_flow_ledger_qa.py",
     "stripped_member": "src/didactopus/evidence_flow_ledger_qa.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/evidence_flow_ledger_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "4a9e8e2f4ca9b9b51ccaa6806b8e8338a354863c5c0fb17ed8ed2894aa6d823f",
     "strip_depth": 0
   },
@@ -2466,8 +2466,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/120-didactopus-evidence-flow-mastery-ledger-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 59005dd] Apply ZIP update: 120-didactopus-evidence-flow-mastery-ledger-update.zip [2026-03-14T13:19:06]\n 17 files changed, 109 insertions(+), 345 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/125-didactopus-graph-prereq-analysis-update.zip",
@@ -2500,7 +2500,7 @@
     "member": "docs/graph-prerequisite-analysis.md",
     "stripped_member": "docs/graph-prerequisite-analysis.md",
     "dest": "/home/netuser/dev/Didactopus/docs/graph-prerequisite-analysis.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "36430f8a868820da5476f6735dc18f494d4478a74b1fc2f7a87d68bf3da986c8",
     "strip_depth": 0
   },
@@ -2635,7 +2635,7 @@
     "member": "tests/test_graph_qa.py",
     "stripped_member": "tests/test_graph_qa.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_graph_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "9e145ec68cae5cba22a29e25bdb6958746a86a3217ae101c52d3051cf01a7094",
     "strip_depth": 0
   },
@@ -2849,8 +2849,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/125-didactopus-graph-prereq-analysis-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 943f65e] Apply ZIP update: 125-didactopus-graph-prereq-analysis-update.zip [2026-03-14T13:19:09]\n 27 files changed, 901 insertions(+), 180 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/130-didactopus-semantic-qa-update.zip",
@@ -2883,7 +2883,7 @@
     "member": "docs/semantic-qa.md",
     "stripped_member": "docs/semantic-qa.md",
     "dest": "/home/netuser/dev/Didactopus/docs/semantic-qa.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "45c82683ed652c9af0d6e5afd6092620c489fb2aa9b4fd46fbb3508636e5ef11",
     "strip_depth": 0
   },
@@ -3018,7 +3018,7 @@
     "member": "tests/test_semantic_qa.py",
     "stripped_member": "tests/test_semantic_qa.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_semantic_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "b4c14f2e6d487f3ea54f89445639504c588c401b5ba48bea27d724059b716932",
     "strip_depth": 0
   },
@@ -3223,8 +3223,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/130-didactopus-semantic-qa-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main c049fc4] Apply ZIP update: 130-didactopus-semantic-qa-update.zip [2026-03-14T13:19:13]\n 18 files changed, 93 insertions(+), 80 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/135-didactopus-admin-curation-layer.zip",
@@ -3266,7 +3266,7 @@
     "member": "tests/test_scaffold_files.py",
     "stripped_member": "tests/test_scaffold_files.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_scaffold_files.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "422ed2af486b957f852c599c8c779d7838711f1d9f0ad9c1e03a5d223544753a",
     "strip_depth": 0
   },
@@ -3284,7 +3284,7 @@
     "member": "webui/src/api.js",
     "stripped_member": "webui/src/api.js",
     "dest": "/home/netuser/dev/Didactopus/webui/src/api.js",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "9042eaec7d8690047a52ca8133a10b2b83595736f8fe93de1ff465ef72aaee0b",
     "strip_depth": 0
   },
@@ -3293,7 +3293,7 @@
     "member": "webui/src/authStore.js",
     "stripped_member": "webui/src/authStore.js",
     "dest": "/home/netuser/dev/Didactopus/webui/src/authStore.js",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "d26a0e35b95996613ef24574fdfc8d97bfd2df9d8ef9c1cff5833461d162c4a0",
     "strip_depth": 0
   },
@@ -3338,7 +3338,7 @@
     "member": "src/didactopus/db.py",
     "stripped_member": "src/didactopus/db.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/db.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "5773454c709c7288aed68dbd73e3134deececb328214ff5cf649a51fd0ea7790",
     "strip_depth": 0
   },
@@ -3347,7 +3347,7 @@
     "member": "src/didactopus/orm.py",
     "stripped_member": "src/didactopus/orm.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/orm.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "5dccc5c757bc249a64e11629ad333267f9059679ddf2da1dc78a69568e276521",
     "strip_depth": 0
   },
@@ -3356,7 +3356,7 @@
     "member": "src/didactopus/models.py",
     "stripped_member": "src/didactopus/models.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/models.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "6c603508dd85170787e7cb156441cde4f3ce9e5d83100a228fbc94abb1f75c8d",
     "strip_depth": 0
   },
@@ -3365,7 +3365,7 @@
     "member": "src/didactopus/auth.py",
     "stripped_member": "src/didactopus/auth.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/auth.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "554a347973d3beec8511c99074a583d9679c7d06d84b5573df4220c75830bd23",
     "strip_depth": 0
   },
@@ -3374,7 +3374,7 @@
     "member": "src/didactopus/engine.py",
     "stripped_member": "src/didactopus/engine.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/engine.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "16dadf1b4f917b1b2c67edfbf8bf494c6753c3d6269778832daeea8795a4022d",
     "strip_depth": 0
   },
@@ -3383,7 +3383,7 @@
     "member": "src/didactopus/repository.py",
     "stripped_member": "src/didactopus/repository.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/repository.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "c5549f9ee14740c49a87f4fa293b4c4d7ea341ce97e46a2979ea49fca4489ba4",
     "strip_depth": 0
   },
@@ -3392,7 +3392,7 @@
     "member": "src/didactopus/worker.py",
     "stripped_member": "src/didactopus/worker.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/worker.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "4dc2ad94224943d12846b513aec761361f71340b2731a45957e7c38f0f8ac93e",
     "strip_depth": 0
   },
@@ -3401,7 +3401,7 @@
     "member": "src/didactopus/seed.py",
     "stripped_member": "src/didactopus/seed.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/seed.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "091783218c68e132b5850c94a18b5019bf33c70f11b465e825b1c57e81dae4a7",
     "strip_depth": 0
   },
@@ -3410,15 +3410,15 @@
     "member": "src/didactopus/api.py",
     "stripped_member": "src/didactopus/api.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/api.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "0f64b0219914982497ed6eb7b6049125d019af29122aa564235858dc2a1e76fa",
     "strip_depth": 0
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/135-didactopus-admin-curation-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 5b64420] Apply ZIP update: 135-didactopus-admin-curation-layer.zip [2026-03-14T13:19:17]\n 17 files changed, 773 insertions(+), 971 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/140-didactopus-admin-learner-ui-workflows.zip",
@@ -3611,8 +3611,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/140-didactopus-admin-learner-ui-workflows.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 5b4221d] Apply ZIP update: 140-didactopus-admin-learner-ui-workflows.zip [2026-03-14T13:19:20]\n 15 files changed, 370 insertions(+), 255 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/145-didactopus-agent-audit-and-key-rotation-layer.zip",
@@ -3805,8 +3805,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/145-didactopus-agent-audit-and-key-rotation-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 5c3ba24] Apply ZIP update: 145-didactopus-agent-audit-and-key-rotation-layer.zip [2026-03-14T13:19:23]\n 16 files changed, 576 insertions(+), 603 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/150-didactopus-agent-service-account-layer.zip",
@@ -3999,8 +3999,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/150-didactopus-agent-service-account-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 15d52f6] Apply ZIP update: 150-didactopus-agent-service-account-layer.zip [2026-03-14T13:19:26]\n 10 files changed, 66 insertions(+), 204 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/155-didactopus-animated-concept-graph-layer.zip",
@@ -4184,8 +4184,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/155-didactopus-animated-concept-graph-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main f94619c] Apply ZIP update: 155-didactopus-animated-concept-graph-layer.zip [2026-03-14T13:19:30]\n 14 files changed, 241 insertions(+), 475 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/160-didactopus-artifact-registry-layer.zip",
@@ -4344,7 +4344,7 @@
     "member": "src/didactopus/export_svg.py",
     "stripped_member": "src/didactopus/export_svg.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/export_svg.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "66ac201888b73537cdf2ce3f4c6bb912e67f49679d82339378418575be0c3c27",
     "strip_depth": 0
   },
@@ -4353,7 +4353,7 @@
     "member": "src/didactopus/render_bundle.py",
     "stripped_member": "src/didactopus/render_bundle.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/render_bundle.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "d448e20bd0829a12b1e35b0c2729396db5ddf6ab6e12aefdc322638dcf3793ad",
     "strip_depth": 0
   },
@@ -4387,8 +4387,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/160-didactopus-artifact-registry-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 59d97e3] Apply ZIP update: 160-didactopus-artifact-registry-layer.zip [2026-03-14T13:19:33]\n 13 files changed, 255 insertions(+), 156 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/165-didactopus-attribution-provenance-update.zip",
@@ -4412,7 +4412,7 @@
     "member": "docs/attribution-and-provenance.md",
     "stripped_member": "docs/attribution-and-provenance.md",
     "dest": "/home/netuser/dev/Didactopus/docs/attribution-and-provenance.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "bea1519fc9de1d76e61dcee0f9520eeccca10e79eea1aeb6f8604fc8a346d02d",
     "strip_depth": 0
   },
@@ -4421,7 +4421,7 @@
     "member": "docs/mit-ocw-notes.md",
     "stripped_member": "docs/mit-ocw-notes.md",
     "dest": "/home/netuser/dev/Didactopus/docs/mit-ocw-notes.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "ce5ef2bbace3bece34479f11d3580f937edf47dcd301fa73fec1f55cd0922cc3",
     "strip_depth": 0
   },
@@ -4430,7 +4430,7 @@
     "member": "samples/sources.yaml",
     "stripped_member": "samples/sources.yaml",
     "dest": "/home/netuser/dev/Didactopus/samples/sources.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "b2c03987c8d31a3c681c6ad7c3301178bf388416877af68484b79b4113fa2d94",
     "strip_depth": 0
   },
@@ -4439,7 +4439,7 @@
     "member": "samples/ATTRIBUTION.md",
     "stripped_member": "samples/ATTRIBUTION.md",
     "dest": "/home/netuser/dev/Didactopus/samples/ATTRIBUTION.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "e9a62a7405bb11fd34bcfdd5eb0ee674ff14fcaa103ffe15e38d8c0b7c5dea6e",
     "strip_depth": 0
   },
@@ -4448,7 +4448,7 @@
     "member": "samples/provenance_manifest.json",
     "stripped_member": "samples/provenance_manifest.json",
     "dest": "/home/netuser/dev/Didactopus/samples/provenance_manifest.json",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "24610c4d30414a4421e44462af0ab642d683c9c4f53849f183173badb9d77ffc",
     "strip_depth": 0
   },
@@ -4457,7 +4457,7 @@
     "member": "tests/test_attribution_qa.py",
     "stripped_member": "tests/test_attribution_qa.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_attribution_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "555f0cd93a7756f14ed5e04a7b46415a7ce3958e56ad37d79a93df79214c1d56",
     "strip_depth": 0
   },
@@ -4466,7 +4466,7 @@
     "member": "tests/test_attribution_builder.py",
     "stripped_member": "tests/test_attribution_builder.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_attribution_builder.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "e5c4835be2e3fee8a815e919301c039f2c15e10f870c93f721697318d243ca1c",
     "strip_depth": 0
   },
@@ -4484,7 +4484,7 @@
     "member": "src/didactopus/source_models.py",
     "stripped_member": "src/didactopus/source_models.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/source_models.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "3f907061575703268eeefed47391649c8cfa08dc92cc5f63bbaf95b50dbfaff4",
     "strip_depth": 0
   },
@@ -4493,7 +4493,7 @@
     "member": "src/didactopus/provenance.py",
     "stripped_member": "src/didactopus/provenance.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/provenance.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "0a9900e310daa3ee1670e6ea98f343f5e94c3d678751a0528a5100d3b069f382",
     "strip_depth": 0
   },
@@ -4502,7 +4502,7 @@
     "member": "src/didactopus/attribution_builder.py",
     "stripped_member": "src/didactopus/attribution_builder.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/attribution_builder.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "c9ee5f5052465a939a62baf2f25be866268f9e050f797a47c0abfa04e462f83a",
     "strip_depth": 0
   },
@@ -4511,15 +4511,15 @@
     "member": "src/didactopus/attribution_qa.py",
     "stripped_member": "src/didactopus/attribution_qa.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/attribution_qa.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "66fd23b041a0d3d85f2775c2a5051fc0e8cfef8c22e870bffd5957914cf63aec",
     "strip_depth": 0
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/165-didactopus-attribution-provenance-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 8939908] Apply ZIP update: 165-didactopus-attribution-provenance-update.zip [2026-03-14T13:20:03]\n 2 files changed, 17 insertions(+), 18 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/170-didactopus-auth-db-async-evaluator-prototype.zip",
@@ -4561,7 +4561,7 @@
     "member": "tests/test_backend_files.py",
     "stripped_member": "tests/test_backend_files.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_backend_files.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "ada92c7b8e81a1141a52b424cbb35bf3211aa00058600d4fa44a8796f5b22a02",
     "strip_depth": 0
   },
@@ -4570,7 +4570,7 @@
     "member": "tests/test_frontend_files.py",
     "stripped_member": "tests/test_frontend_files.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_frontend_files.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "53599da7b205c24662df70122c430df43ac82eb770a7436412200b625eb0971e",
     "strip_depth": 0
   },
@@ -4597,7 +4597,7 @@
     "member": "webui/src/localEngine.js",
     "stripped_member": "webui/src/localEngine.js",
     "dest": "/home/netuser/dev/Didactopus/webui/src/localEngine.js",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "ae2f6bb5adaea5c5e310c930cf6ddcdc4ba7e88f18acb3b6676a07381220cec0",
     "strip_depth": 0
   },
@@ -4712,8 +4712,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/170-didactopus-auth-db-async-evaluator-prototype.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main d851515] Apply ZIP update: 170-didactopus-auth-db-async-evaluator-prototype.zip [2026-03-14T13:20:10]\n 17 files changed, 717 insertions(+), 584 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/175-didactopus-backend-api-prototype.zip",
@@ -4755,7 +4755,7 @@
     "member": "tests/test_api_scaffold.py",
     "stripped_member": "tests/test_api_scaffold.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_api_scaffold.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "0413ec7afef89d58e321bcee510af66a1ac800fe5962fa8ec788579a83d8215f",
     "strip_depth": 0
   },
@@ -4764,7 +4764,7 @@
     "member": "tests/test_pack_export.py",
     "stripped_member": "tests/test_pack_export.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_pack_export.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "03b8b8b829b7df5af3177c0f7a3e3dd946e6c8afffada765373e69a6f3fa9333",
     "strip_depth": 0
   },
@@ -4818,7 +4818,7 @@
     "member": "data/packs/bayes-pack.json",
     "stripped_member": "data/packs/bayes-pack.json",
     "dest": "/home/netuser/dev/Didactopus/data/packs/bayes-pack.json",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "cdcedf1e3e9444e634f5ad2ed1c64dffefd70b7428603ecd58aa2242cf4609e2",
     "strip_depth": 0
   },
@@ -4827,7 +4827,7 @@
     "member": "data/packs/stats-pack.json",
     "stripped_member": "data/packs/stats-pack.json",
     "dest": "/home/netuser/dev/Didactopus/data/packs/stats-pack.json",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "7e387aee07646b47fc5de857dacca0f3caef74e48cf7c6d57da0808c903e9209",
     "strip_depth": 0
   },
@@ -4863,7 +4863,7 @@
     "member": "src/didactopus/storage.py",
     "stripped_member": "src/didactopus/storage.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/storage.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "9a6958e7098f3e2df9638f678c38293e4e51c992a978debf3f7ddc76d018f323",
     "strip_depth": 0
   },
@@ -4879,8 +4879,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/175-didactopus-backend-api-prototype.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main efafa2f] Apply ZIP update: 175-didactopus-backend-api-prototype.zip [2026-03-14T13:20:13]\n 10 files changed, 123 insertions(+), 286 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/180-didactopus-contribution-management-layer.zip",
@@ -5073,8 +5073,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/180-didactopus-contribution-management-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 3fa217c] Apply ZIP update: 180-didactopus-contribution-management-layer.zip [2026-03-14T13:20:17]\n 18 files changed, 918 insertions(+), 498 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/185-didactopus-course-compliance-ui-prototype.zip",
@@ -5098,7 +5098,7 @@
     "member": "docs/license-compliance.md",
     "stripped_member": "docs/license-compliance.md",
     "dest": "/home/netuser/dev/Didactopus/docs/license-compliance.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "0a834da991612ab49ee9511e15f6c39b0f5bc1e611c7364b4bb65d1f8b9f7280",
     "strip_depth": 0
   },
@@ -5134,7 +5134,7 @@
     "member": "tests/test_compliance.py",
     "stripped_member": "tests/test_compliance.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_compliance.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "3e12a5ffaee722a16f4facfb9ca2ca2350b7a956e776fda556b622075b4cb924",
     "strip_depth": 0
   },
@@ -5161,7 +5161,7 @@
     "member": "webui/src/sampleData.js",
     "stripped_member": "webui/src/sampleData.js",
     "dest": "/home/netuser/dev/Didactopus/webui/src/sampleData.js",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "ed5e0938b7dd5c9d4f1b393fa6412cd3550860c1a4c55b94c99e4761a0d624f9",
     "strip_depth": 0
   },
@@ -5197,7 +5197,7 @@
     "member": "src/didactopus/compliance_models.py",
     "stripped_member": "src/didactopus/compliance_models.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/compliance_models.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "1dd7ddd1bfa14c251424c5f048d4ecb2b7610c5af03f2314307e8e2e4ccd1fb5",
     "strip_depth": 0
   },
@@ -5206,15 +5206,15 @@
     "member": "src/didactopus/course_ingestion_compliance.py",
     "stripped_member": "src/didactopus/course_ingestion_compliance.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/course_ingestion_compliance.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "00be5a5569b9178e8736c81a88619343862fcc13ca316a27553b6bfc4571b617",
     "strip_depth": 0
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/185-didactopus-course-compliance-ui-prototype.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main d7b7c23] Apply ZIP update: 185-didactopus-course-compliance-ui-prototype.zip [2026-03-14T13:20:21]\n 7 files changed, 320 insertions(+), 274 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/190-didactopus-deployment-policy-and-agent-hooks.zip",
@@ -5407,8 +5407,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/190-didactopus-deployment-policy-and-agent-hooks.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 27bc03f] Apply ZIP update: 190-didactopus-deployment-policy-and-agent-hooks.zip [2026-03-14T13:20:24]\n 13 files changed, 518 insertions(+), 344 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/195-didactopus-dual-lane-policy-layer.zip",
@@ -5601,8 +5601,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/195-didactopus-dual-lane-policy-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main ebd754c] Apply ZIP update: 195-didactopus-dual-lane-policy-layer.zip [2026-03-14T13:20:27]\n 11 files changed, 54 insertions(+), 139 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/200-didactopus-layout-aware-graph-engine-layer.zip",
@@ -5795,8 +5795,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/200-didactopus-layout-aware-graph-engine-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main adac1e1] Apply ZIP update: 200-didactopus-layout-aware-graph-engine-layer.zip [2026-03-14T13:20:30]\n 15 files changed, 284 insertions(+), 849 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/205-didactopus-learner-state-progression-update.zip",
@@ -5820,7 +5820,7 @@
     "member": "samples/concepts.yaml",
     "stripped_member": "samples/concepts.yaml",
     "dest": "/home/netuser/dev/Didactopus/samples/concepts.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "2f4d7fba89a155898b3de77ec9d9bd07d4115dab804467cd98664070f4666171",
     "strip_depth": 0
   },
@@ -5829,7 +5829,7 @@
     "member": "samples/learner_state.json",
     "stripped_member": "samples/learner_state.json",
     "dest": "/home/netuser/dev/Didactopus/samples/learner_state.json",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "a7097af8a9eca427b7afa0ea919c71b156c41a05ae2680ddc86d6647b769c917",
     "strip_depth": 0
   },
@@ -5838,7 +5838,7 @@
     "member": "tests/test_progression_engine.py",
     "stripped_member": "tests/test_progression_engine.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_progression_engine.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "48c8032c0e137542c6191f569d0bafceda90473a83d6932c111ecf50156173b8",
     "strip_depth": 0
   },
@@ -5847,7 +5847,7 @@
     "member": "tests/test_readiness.py",
     "stripped_member": "tests/test_readiness.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_readiness.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "90d6bbee88c0991e4850a4c06043658fc1be8992815e7aa9a8a9e2ee93889edf",
     "strip_depth": 0
   },
@@ -5856,7 +5856,7 @@
     "member": "tests/test_recommendations.py",
     "stripped_member": "tests/test_recommendations.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_recommendations.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "f580cbc906f2891b50277552a28bcbbdcc016fc4009cefb0362b2a5db8e1f6d7",
     "strip_depth": 0
   },
@@ -5874,7 +5874,7 @@
     "member": "src/didactopus/learner_state.py",
     "stripped_member": "src/didactopus/learner_state.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/learner_state.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "b489447274d2123e95d38e88f188d1d7e77779fb3be34d5e646770278047e92f",
     "strip_depth": 0
   },
@@ -5883,7 +5883,7 @@
     "member": "src/didactopus/progression_engine.py",
     "stripped_member": "src/didactopus/progression_engine.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/progression_engine.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "c69487c4d6d0bbe8fa3f38f6e6ece8d129137544fdd385cd48f7de591fb4f314",
     "strip_depth": 0
   },
@@ -5892,7 +5892,7 @@
     "member": "src/didactopus/readiness.py",
     "stripped_member": "src/didactopus/readiness.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/readiness.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "0bc447a1731c7d24c1374e63cad53064d8400e11770ed0b68f11fcc84f6ed7f4",
     "strip_depth": 0
   },
@@ -5901,7 +5901,7 @@
     "member": "src/didactopus/recommendations.py",
     "stripped_member": "src/didactopus/recommendations.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/recommendations.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "437a6c2135cb44f55e9d91d06bc89ad7584aa29445b1f342e19e204f449d032a",
     "strip_depth": 0
   },
@@ -5910,15 +5910,15 @@
     "member": "src/didactopus/sample_pack_loader.py",
     "stripped_member": "src/didactopus/sample_pack_loader.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/sample_pack_loader.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "ce1321ac4299ec0f9bd82287e619a776a88f2fd4dc232d9ddefd85497802b3a2",
     "strip_depth": 0
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/205-didactopus-learner-state-progression-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main ed60c1d] Apply ZIP update: 205-didactopus-learner-state-progression-update.zip [2026-03-14T13:20:33]\n 3 files changed, 36 insertions(+), 15 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/210-didactopus-learning-animation-layer.zip",
@@ -6111,8 +6111,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/210-didactopus-learning-animation-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 82f827b] Apply ZIP update: 210-didactopus-learning-animation-layer.zip [2026-03-14T13:20:36]\n 16 files changed, 775 insertions(+), 237 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/215-didactopus-live-learner-ui-prototype.zip",
@@ -6154,7 +6154,7 @@
     "member": "tests/test_ui_files.py",
     "stripped_member": "tests/test_ui_files.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_ui_files.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "a69dc7496c470c40d47161092455a358987484fa2072b4f7a71889f6b9ede808",
     "strip_depth": 0
   },
@@ -6163,7 +6163,7 @@
     "member": "tests/test_python_scaffold.py",
     "stripped_member": "tests/test_python_scaffold.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_python_scaffold.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "a6b1ed226ffec7bc0e22658019ae8266f6ae6dd37409f277927f1568da0ef7fc",
     "strip_depth": 0
   },
@@ -6181,7 +6181,7 @@
     "member": "webui/src/domainData.js",
     "stripped_member": "webui/src/domainData.js",
     "dest": "/home/netuser/dev/Didactopus/webui/src/domainData.js",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "680f889c5588a3e07a239d6f718d9a19eb2842d36d911566bb1ef788cd42edea",
     "strip_depth": 0
   },
@@ -6190,7 +6190,7 @@
     "member": "webui/src/engine.js",
     "stripped_member": "webui/src/engine.js",
     "dest": "/home/netuser/dev/Didactopus/webui/src/engine.js",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "84518dff7228ace172c5aa3ac60932362cd5b64f144bdbcc38679a8bcf18c05f",
     "strip_depth": 0
   },
@@ -6244,15 +6244,15 @@
     "member": "src/didactopus/orchestration_notes.md",
     "stripped_member": "src/didactopus/orchestration_notes.md",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/orchestration_notes.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "3ff2fd270d459b71cf5f7a44734c02ee3854476199f0e7b6e7282961053130b4",
     "strip_depth": 0
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/215-didactopus-live-learner-ui-prototype.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 03ceea7] Apply ZIP update: 215-didactopus-live-learner-ui-prototype.zip [2026-03-14T13:20:39]\n 9 files changed, 454 insertions(+), 236 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/220-didactopus-media-rendering-pipeline-layer.zip",
@@ -6454,8 +6454,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/220-didactopus-media-rendering-pipeline-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 9f51559] Apply ZIP update: 220-didactopus-media-rendering-pipeline-layer.zip [2026-03-14T13:20:42]\n 18 files changed, 364 insertions(+), 1128 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/225-didactopus-orchestration-ux-update.zip",
@@ -6479,7 +6479,7 @@
     "member": "docs/ux-notes.md",
     "stripped_member": "docs/ux-notes.md",
     "dest": "/home/netuser/dev/Didactopus/docs/ux-notes.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "bd5453654207c99d87a4ce6ef19dc5eef7510e4d7ed19eb2ecf45f4d0c00ec56",
     "strip_depth": 0
   },
@@ -6497,7 +6497,7 @@
     "member": "tests/test_onboarding.py",
     "stripped_member": "tests/test_onboarding.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_onboarding.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "fefcb73c8f18ec64eb52cb0f3b9ef0d8259a2d0a37a13d9dac29d1c29a814d22",
     "strip_depth": 0
   },
@@ -6506,7 +6506,7 @@
     "member": "tests/test_stop_criteria.py",
     "stripped_member": "tests/test_stop_criteria.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_stop_criteria.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "4573cbd8be4ba165af25bf63b8170c63269678afe044df6067c303f24e867c82",
     "strip_depth": 0
   },
@@ -6515,7 +6515,7 @@
     "member": "tests/test_orchestrator.py",
     "stripped_member": "tests/test_orchestrator.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_orchestrator.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "8c65c5202ccff72f58fddf83d4543f5f3e36eb8b725a236b69b9c5fab63b2160",
     "strip_depth": 0
   },
@@ -6569,7 +6569,7 @@
     "member": "src/didactopus/orchestration_models.py",
     "stripped_member": "src/didactopus/orchestration_models.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/orchestration_models.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "2acd2a148706f1b819f78f48053a0a1afd6c864ea105d777b038db0bf9c4291b",
     "strip_depth": 0
   },
@@ -6578,7 +6578,7 @@
     "member": "src/didactopus/onboarding.py",
     "stripped_member": "src/didactopus/onboarding.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/onboarding.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "0715def1f0ef3ca45687e3ed28fe0315ed20c1ba5366a40d66d2253fa9fed12b",
     "strip_depth": 0
   },
@@ -6587,7 +6587,7 @@
     "member": "src/didactopus/ux_feedback.py",
     "stripped_member": "src/didactopus/ux_feedback.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/ux_feedback.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "1c6674974440bade22028e565cd1e75d71a891a1cda02ac3f6315beac7c733c1",
     "strip_depth": 0
   },
@@ -6596,7 +6596,7 @@
     "member": "src/didactopus/stop_criteria.py",
     "stripped_member": "src/didactopus/stop_criteria.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/stop_criteria.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "33842bb1d8e9c3071eadb952db9968ce66a10ccd54fc81d3769969c1f4bdac62",
     "strip_depth": 0
   },
@@ -6605,7 +6605,7 @@
     "member": "src/didactopus/orchestrator.py",
     "stripped_member": "src/didactopus/orchestrator.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/orchestrator.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "81817f8760660c3fe96c71fa556a79801bf99105a710cd942a052e94506bbbfc",
     "strip_depth": 0
   },
@@ -6614,15 +6614,15 @@
     "member": "src/didactopus/demo_run.py",
     "stripped_member": "src/didactopus/demo_run.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/demo_run.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "fafd7e7cd20c342b3adb47a9239f2aa8fd1e0fa50928d7e641d20f593879e00f",
     "strip_depth": 0
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/225-didactopus-orchestration-ux-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 3405d45] Apply ZIP update: 225-didactopus-orchestration-ux-update.zip [2026-03-14T13:20:48]\n 2 files changed, 3 insertions(+), 19 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/230-didactopus-pack-persistence-update.zip",
@@ -6646,7 +6646,7 @@
     "member": "example-pack/pack.yaml",
     "stripped_member": "example-pack/pack.yaml",
     "dest": "/home/netuser/dev/Didactopus/example-pack/pack.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "8fc1d1e02decf75c4e955b4c852ee478c5a4a5d2dcbec60a23c655f696adf9aa",
     "strip_depth": 0
   },
@@ -6655,7 +6655,7 @@
     "member": "example-pack/concepts.yaml",
     "stripped_member": "example-pack/concepts.yaml",
     "dest": "/home/netuser/dev/Didactopus/example-pack/concepts.yaml",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "d22d9d2fa82513a03508c570e017756dc543032e91aa68b878015de70cea46c9",
     "strip_depth": 0
   },
@@ -6664,7 +6664,7 @@
     "member": "example-pack/pack_compliance_manifest.json",
     "stripped_member": "example-pack/pack_compliance_manifest.json",
     "dest": "/home/netuser/dev/Didactopus/example-pack/pack_compliance_manifest.json",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "6694ceb21eaccb05f5623e5884b00f901cf9a8b74fe6b609eef8171c4d00c673",
     "strip_depth": 0
   },
@@ -6718,7 +6718,7 @@
     "member": "webui/src/storage.js",
     "stripped_member": "webui/src/storage.js",
     "dest": "/home/netuser/dev/Didactopus/webui/src/storage.js",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "98533070a240370b37a8425d8c734c717568403b9e2d67b3df8ff94c49f9f53e",
     "strip_depth": 0
   },
@@ -6754,7 +6754,7 @@
     "member": "webui/public/packs/bayes-pack.json",
     "stripped_member": "webui/public/packs/bayes-pack.json",
     "dest": "/home/netuser/dev/Didactopus/webui/public/packs/bayes-pack.json",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "cdcedf1e3e9444e634f5ad2ed1c64dffefd70b7428603ecd58aa2242cf4609e2",
     "strip_depth": 0
   },
@@ -6763,7 +6763,7 @@
     "member": "webui/public/packs/stats-pack.json",
     "stripped_member": "webui/public/packs/stats-pack.json",
     "dest": "/home/netuser/dev/Didactopus/webui/public/packs/stats-pack.json",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "7e387aee07646b47fc5de857dacca0f3caef74e48cf7c6d57da0808c903e9209",
     "strip_depth": 0
   },
@@ -6781,15 +6781,15 @@
     "member": "src/didactopus/pack_to_frontend.py",
     "stripped_member": "src/didactopus/pack_to_frontend.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/pack_to_frontend.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "dc9e380b9e1ff8c7cb80abbffbd1cc82777236ea4ab2ba853c743a1bd8172a5b",
     "strip_depth": 0
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/230-didactopus-pack-persistence-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main b722c37] Apply ZIP update: 230-didactopus-pack-persistence-update.zip [2026-03-14T13:20:51]\n 9 files changed, 264 insertions(+), 170 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/235-didactopus-productionization-scaffold.zip",
@@ -6849,7 +6849,7 @@
     "member": "tests/test_files.py",
     "stripped_member": "tests/test_files.py",
     "dest": "/home/netuser/dev/Didactopus/tests/test_files.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "c843d5b9910ec82c49f711233e05d2f2da682ea63b71a7fec3bcdd7df5970635",
     "strip_depth": 0
   },
@@ -6982,8 +6982,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/235-didactopus-productionization-scaffold.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 664f959] Apply ZIP update: 235-didactopus-productionization-scaffold.zip [2026-03-14T13:20:53]\n 15 files changed, 278 insertions(+), 507 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/240-didactopus-review-governance-layer.zip",
@@ -7176,8 +7176,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/240-didactopus-review-governance-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 8738897] Apply ZIP update: 240-didactopus-review-governance-layer.zip [2026-03-14T13:20:58]\n 15 files changed, 683 insertions(+), 130 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/245-didactopus-agent-audit-and-key-rotation-layer.zip",
@@ -7370,8 +7370,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/245-didactopus-agent-audit-and-key-rotation-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 14e1ccf] Apply ZIP update: 245-didactopus-agent-audit-and-key-rotation-layer.zip [2026-03-14T13:21:01]\n 14 files changed, 499 insertions(+), 589 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/250-didactopus-artifact-lifecycle-and-knowledge-export-layer.zip",
@@ -7386,7 +7386,7 @@
     "member": "FAQ.md",
     "stripped_member": "FAQ.md",
     "dest": "/home/netuser/dev/Didactopus/FAQ.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "6c70ab8cd64326d10b66190b7e7993fa66904b696a51bd622d02af1d2be9a4b9",
     "strip_depth": 0
   },
@@ -7557,7 +7557,7 @@
     "member": "src/didactopus/knowledge_export.py",
     "stripped_member": "src/didactopus/knowledge_export.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/knowledge_export.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "9f674593d60658c9c4565e202b3d7f9b190c72b723499b2a344a2c63e7fd158c",
     "strip_depth": 0
   },
@@ -7600,8 +7600,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/250-didactopus-artifact-lifecycle-and-knowledge-export-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 58fba87] Apply ZIP update: 250-didactopus-artifact-lifecycle-and-knowledge-export-layer.zip [2026-03-14T13:21:04]\n 18 files changed, 593 insertions(+), 692 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/255-didactopus-docs-update.zip",
@@ -7623,8 +7623,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/255-didactopus-docs-update.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 8074d09] Apply ZIP update: 255-didactopus-docs-update.zip [2026-03-14T13:21:06]\n 1 file changed, 99 insertions(+), 49 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/260-didactopus-object-versioning-and-export-layer.zip",
@@ -7774,7 +7774,7 @@
     "member": "src/didactopus/synthesis.py",
     "stripped_member": "src/didactopus/synthesis.py",
     "dest": "/home/netuser/dev/Didactopus/src/didactopus/synthesis.py",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "9cc1cdc1e8ecaabf0496ab1953b9570d8692c7c00c0e80a0ebcecd762ee9c291",
     "strip_depth": 0
   },
@@ -7799,8 +7799,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/260-didactopus-object-versioning-and-export-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main cbeb474] Apply ZIP update: 260-didactopus-object-versioning-and-export-layer.zip [2026-03-14T13:21:09]\n 13 files changed, 971 insertions(+), 679 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/270-didactopus-promotion-target-objects-layer.zip",
@@ -7975,8 +7975,8 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/270-didactopus-promotion-target-objects-layer.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 33c0694] Apply ZIP update: 270-didactopus-promotion-target-objects-layer.zip [2026-03-14T13:21:12]\n 12 files changed, 363 insertions(+), 526 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/275-didactopus-review-promotion-and-synthesis-engine.zip",
@@ -8000,7 +8000,7 @@
     "member": "docs/review_and_promotion_workflow.md",
     "stripped_member": "docs/review_and_promotion_workflow.md",
     "dest": "/home/netuser/dev/Didactopus/docs/review_and_promotion_workflow.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "1680d4871560a441e2330d3a7b527acdf63baa4f140ed672e58824cad4d8f05a",
     "strip_depth": 0
   },
@@ -8009,7 +8009,7 @@
     "member": "docs/synthesis_engine_architecture.md",
     "stripped_member": "docs/synthesis_engine_architecture.md",
     "dest": "/home/netuser/dev/Didactopus/docs/synthesis_engine_architecture.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "5c44d1ec8f9910439dce5a711f7d2ea7f50263f3a76aab62580933416e8b2aa8",
     "strip_depth": 0
   },
@@ -8018,7 +8018,7 @@
     "member": "docs/data_models.md",
     "stripped_member": "docs/data_models.md",
     "dest": "/home/netuser/dev/Didactopus/docs/data_models.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "b6daece30f98521e42475110fb2d749a3c3e105c0b659e4906bd67862f39e864",
     "strip_depth": 0
   },
@@ -8027,7 +8027,7 @@
     "member": "docs/api_outline.md",
     "stripped_member": "docs/api_outline.md",
     "dest": "/home/netuser/dev/Didactopus/docs/api_outline.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "dde226ae3a7cd283ca35fe29b51f887100735948817c873d84dce77aadfffa69",
     "strip_depth": 0
   },
@@ -8036,7 +8036,7 @@
     "member": "docs/ui_visualization_notes.md",
     "stripped_member": "docs/ui_visualization_notes.md",
     "dest": "/home/netuser/dev/Didactopus/docs/ui_visualization_notes.md",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "56b57388194513162ca20bc1b35e084f3df3823818e5056fd27379e3f8a374a4",
     "strip_depth": 0
   },
@@ -8045,15 +8045,15 @@
     "member": "docs/architecture_summary.json",
     "stripped_member": "docs/architecture_summary.json",
     "dest": "/home/netuser/dev/Didactopus/docs/architecture_summary.json",
-    "action": "create",
+    "action": "overwrite",
     "sha256": "391c43ba566978d001f839c967f5caf8dd1bc090565ac3978da1196dbcfbab03",
     "strip_depth": 0
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/275-didactopus-review-promotion-and-synthesis-engine.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 255bf19] Apply ZIP update: 275-didactopus-review-promotion-and-synthesis-engine.zip [2026-03-14T13:21:15]\n 1 file changed, 56 insertions(+), 84 deletions(-)"
   },
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/280-didactopus-review-workbench-and-synthesis-scaffold.zip",
@@ -8228,7 +8228,7 @@
   {
     "zip": "/home/netuser/Downloads/Didactopus-extra/280-didactopus-review-workbench-and-synthesis-scaffold.zip",
     "action": "git_commit",
-    "status": "skipped_or_failed",
-    "message": "git commit failed: Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'netuser@nerdanel.(none)')"
+    "status": "ok",
+    "message": "[main 420cdf0] Apply ZIP update: 280-didactopus-review-workbench-and-synthesis-scaffold.zip [2026-03-14T13:21:20]\n 10 files changed, 211 insertions(+), 306 deletions(-)"
   }
 ]

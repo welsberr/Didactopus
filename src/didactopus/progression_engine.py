@@ -1,4 +1,6 @@
 from __future__ import annotations
+from datetime import datetime
+
 from .learner_state import LearnerState, EvidenceEvent, MasteryRecord
 
 def apply_evidence(
@@ -28,4 +30,15 @@ def apply_evidence(
     rec.evidence_count += 1
     rec.last_updated = event.timestamp
     state.history.append(event)
+    return state
+
+
+def decay_confidence(state: LearnerState, now_timestamp: str, daily_decay: float = 0.01) -> LearnerState:
+    now = datetime.fromisoformat(now_timestamp)
+    for record in state.records:
+        if not record.last_updated:
+            continue
+        updated = datetime.fromisoformat(record.last_updated)
+        elapsed_days = max(0.0, (now - updated).total_seconds() / 86400.0)
+        record.confidence = max(0.0, record.confidence * ((1.0 - daily_decay) ** elapsed_days))
     return state

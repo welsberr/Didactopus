@@ -116,6 +116,16 @@ def parse_source_file(path: str | Path, title: str = "") -> NormalizedSourceReco
     return parse_markdown_like(text=text, title=inferred_title, source_name=p.name, source_path=str(p))
 
 
+def parse_markdown_course(text: str, course_title: str, rights_note: str = "") -> NormalizedCourse:
+    record = parse_markdown_like(
+        text=text,
+        title=course_title,
+        source_name=f"{slugify(course_title)}.md",
+        source_path=f"{slugify(course_title)}.md",
+    )
+    return merge_source_records([record], course_title=course_title, rights_note=rights_note)
+
+
 def merge_source_records(records: list[NormalizedSourceRecord], course_title: str, rights_note: str = "", merge_same_named_lessons: bool = True) -> NormalizedCourse:
     modules_by_title: dict[str, Module] = {}
     for record in records:

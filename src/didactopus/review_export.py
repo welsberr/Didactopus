@@ -32,3 +32,14 @@ def export_promoted_pack(session: ReviewSession, outdir: str | Path) -> None:
     (outdir / "concepts.yaml").write_text(yaml.safe_dump({"concepts": concepts}, sort_keys=False), encoding="utf-8")
     (outdir / "review_ledger.json").write_text(json.dumps(session.model_dump(), indent=2), encoding="utf-8")
     (outdir / "license_attribution.json").write_text(json.dumps(session.draft_pack.attribution, indent=2), encoding="utf-8")
+
+
+def export_review_ui_data(session: ReviewSession, outdir: str | Path) -> None:
+    outdir = Path(outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "reviewer": session.reviewer,
+        "draft_pack": session.draft_pack.model_dump(),
+        "ledger": [entry.model_dump() for entry in session.ledger],
+    }
+    (outdir / "review_data.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")

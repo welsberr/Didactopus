@@ -28,6 +28,8 @@ def document_to_course(doc: NormalizedDocument, course_title: str) -> Normalized
     lessons = []
     for section in doc.sections:
         body = section.body.strip()
+        if not body:
+            continue
         lines = body.splitlines()
         objectives = []
         exercises = []
