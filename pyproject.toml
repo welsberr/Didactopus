@@ -12,8 +12,7 @@ dependencies = [
   "uvicorn>=0.30",
   "sqlalchemy>=2.0",
   "passlib[bcrypt]>=1.7",
-  "python-jose[cryptography]>=3.3",
-  "pyyaml>=6.0.2"
+  "python-jose[cryptography]>=3.3"
 ]
 
 [project.scripts]

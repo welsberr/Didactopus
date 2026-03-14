@@ -27,6 +27,12 @@ class KnowledgeCandidateCreate(BaseModel):
     synthesis_score: float = 0.0
     triage_lane: str = "archive"
 
+class ReviewCreate(BaseModel):
+    review_kind: str = "human_review"
+    verdict: str
+    rationale: str = ""
+    requested_changes: str = ""
+
 class PromoteRequest(BaseModel):
     promotion_target: str
     target_object_id: str = ""
@@ -39,13 +45,6 @@ class SynthesisRunRequest(BaseModel):
 
 class SynthesisPromoteRequest(BaseModel):
     promotion_target: str = "pack_improvement"
-
-class ObjectEditRequest(BaseModel):
-    payload: dict = Field(default_factory=dict)
-    note: str = ""
-
-class PatchApplyRequest(BaseModel):
-    note: str = "Applied pack patch"
 
 class CreateLearnerRequest(BaseModel):
     learner_id: str

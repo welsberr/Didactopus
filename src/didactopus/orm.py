@@ -40,6 +40,17 @@ class KnowledgeCandidateORM(Base):
     current_status: Mapped[str] = mapped_column(String(50), default="captured")
     created_at: Mapped[str] = mapped_column(String(100), default="")
 
+class ReviewRecordORM(Base):
+    __tablename__ = "review_records"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    candidate_id: Mapped[int] = mapped_column(ForeignKey("knowledge_candidates.id"), index=True)
+    reviewer_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    review_kind: Mapped[str] = mapped_column(String(50), default="human_review")
+    verdict: Mapped[str] = mapped_column(String(100), default="")
+    rationale: Mapped[str] = mapped_column(Text, default="")
+    requested_changes: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[str] = mapped_column(String(100), default="")
+
 class PromotionRecordORM(Base):
     __tablename__ = "promotion_records"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -48,6 +59,24 @@ class PromotionRecordORM(Base):
     target_object_id: Mapped[str] = mapped_column(String(100), default="")
     promotion_status: Mapped[str] = mapped_column(String(50), default="draft")
     promoted_by: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    created_at: Mapped[str] = mapped_column(String(100), default="")
+
+class SynthesisCandidateORM(Base):
+    __tablename__ = "synthesis_candidates"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    source_concept_id: Mapped[str] = mapped_column(String(100), index=True)
+    target_concept_id: Mapped[str] = mapped_column(String(100), index=True)
+    source_pack_id: Mapped[str] = mapped_column(String(100), index=True)
+    target_pack_id: Mapped[str] = mapped_column(String(100), index=True)
+    synthesis_kind: Mapped[str] = mapped_column(String(100), default="cross_pack_similarity")
+    score_total: Mapped[float] = mapped_column(Float, default=0.0)
+    score_semantic: Mapped[float] = mapped_column(Float, default=0.0)
+    score_structural: Mapped[float] = mapped_column(Float, default=0.0)
+    score_trajectory: Mapped[float] = mapped_column(Float, default=0.0)
+    score_review_history: Mapped[float] = mapped_column(Float, default=0.0)
+    explanation: Mapped[str] = mapped_column(Text, default="")
+    evidence_json: Mapped[str] = mapped_column(Text, default="{}")
+    current_status: Mapped[str] = mapped_column(String(50), default="proposed")
     created_at: Mapped[str] = mapped_column(String(100), default="")
 
 class PackPatchProposalORM(Base):
@@ -61,7 +90,6 @@ class PackPatchProposalORM(Base):
     evidence_summary: Mapped[str] = mapped_column(Text, default="")
     reviewer_notes: Mapped[str] = mapped_column(Text, default="")
     status: Mapped[str] = mapped_column(String(50), default="proposed")
-    current_version: Mapped[int] = mapped_column(Integer, default=1)
     created_at: Mapped[str] = mapped_column(String(100), default="")
 
 class CurriculumDraftORM(Base):
@@ -75,7 +103,6 @@ class CurriculumDraftORM(Base):
     content_markdown: Mapped[str] = mapped_column(Text, default="")
     editorial_notes: Mapped[str] = mapped_column(Text, default="")
     status: Mapped[str] = mapped_column(String(50), default="draft")
-    current_version: Mapped[int] = mapped_column(Integer, default=1)
     created_at: Mapped[str] = mapped_column(String(100), default="")
 
 class SkillBundleORM(Base):
@@ -90,16 +117,4 @@ class SkillBundleORM(Base):
     validation_checks_json: Mapped[str] = mapped_column(Text, default="[]")
     canonical_examples_json: Mapped[str] = mapped_column(Text, default="[]")
     status: Mapped[str] = mapped_column(String(50), default="draft")
-    current_version: Mapped[int] = mapped_column(Integer, default=1)
-    created_at: Mapped[str] = mapped_column(String(100), default="")
-
-class ObjectVersionORM(Base):
-    __tablename__ = "object_versions"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    object_kind: Mapped[str] = mapped_column(String(50), index=True)
-    object_id: Mapped[int] = mapped_column(Integer, index=True)
-    version_number: Mapped[int] = mapped_column(Integer, default=1)
-    payload_json: Mapped[str] = mapped_column(Text, default="{}")
-    editor_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
-    note: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[str] = mapped_column(String(100), default="")
