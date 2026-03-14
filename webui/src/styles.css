@@ -15,6 +15,7 @@ body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--b
 button { border: 1px solid var(--border); background: white; border-radius: 12px; padding: 10px 14px; cursor: pointer; }
 button:hover { border-color: var(--accent); }
 .summary-grid { margin-top: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.preview-grid { margin-top: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .layout { margin-top: 16px; display: grid; grid-template-columns: 290px 1fr 360px; gap: 16px; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 16px; }
 .sidebar, .content, .rightbar { display: flex; flex-direction: column; gap: 16px; }
@@ -30,7 +31,10 @@ input, textarea, select { width: 100%; margin-top: 6px; border: 1px solid var(--
 .small { color: var(--muted); }
 .conflict { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 12px; }
 ul { padding-left: 18px; }
+.button-row { display: flex; gap: 10px; }
+.checkline { display: flex; gap: 10px; align-items: center; }
+.checkline input { width: auto; margin-top: 0; }
 @media (max-width: 1100px) {
-  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .summary-grid, .preview-grid { grid-template-columns: repeat(2, 1fr); }
   .layout { grid-template-columns: 1fr; }
 }

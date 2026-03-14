@@ -46,3 +46,12 @@ class WorkspaceMeta(BaseModel):
 class WorkspaceRegistry(BaseModel):
     workspaces: list[WorkspaceMeta] = Field(default_factory=list)
     recent_workspace_ids: list[str] = Field(default_factory=list)
+
+class ImportPreview(BaseModel):
+    ok: bool = False
+    source_dir: str
+    workspace_id: str
+    overwrite_required: bool = False
+    errors: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+    summary: dict = Field(default_factory=dict)

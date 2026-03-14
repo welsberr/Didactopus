@@ -8,6 +8,8 @@ export default function App() {
   const [workspaceId, setWorkspaceId] = useState("");
   const [workspaceTitle, setWorkspaceTitle] = useState("");
   const [importSource, setImportSource] = useState("");
+  const [importPreview, setImportPreview] = useState(null);
+  const [allowOverwrite, setAllowOverwrite] = useState(false);
   const [session, setSession] = useState(null);
   const [selectedId, setSelectedId] = useState("");
   const [pendingActions, setPendingActions] = useState([]);
@@ -17,7 +19,7 @@ export default function App() {
     const res = await fetch(`${API}/api/workspaces`);
     const data = await res.json();
     setRegistry(data);
-    if (!session) setMessage("Choose, create, or import a workspace.");
+    if (!session) setMessage("Choose, create, preview, or import a workspace.");
   }
 
   useEffect(() => {
@@ -35,6 +37,22 @@ export default function App() {
     await openWorkspace(workspaceId);
   }
 
+  async function previewImport() {
+    if (!workspaceId || !importSource) return;
+    const res = await fetch(`${API}/api/workspaces/import-preview`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ workspace_id: workspaceId, source_dir: importSource })
+    });
+    const data = await res.json();
+    setImportPreview(data);
+    if (data.ok) {
+      setMessage("Import preview ready.");
+    } else {
+      setMessage("Import preview found blocking errors.");
+    }
+  }
+
   async function importWorkspace() {
     if (!workspaceId || !importSource) return;
     const res = await fetch(`${API}/api/workspaces/import`, {
@@ -43,7 +61,8 @@ export default function App() {
       body: JSON.stringify({
         workspace_id: workspaceId,
         title: workspaceTitle || workspaceId,
-        source_dir: importSource
+        source_dir: importSource,
+        allow_overwrite: allowOverwrite
       })
     });
     const data = await res.json();
@@ -138,10 +157,10 @@ export default function App() {
     <div className="page">
       <header className="hero">
         <div>
-          <h1>Didactopus Workspace Manager</h1>
+          <h1>Didactopus Import Validation</h1>
           <p>
-            Reduce the activation-energy hump from raw course material to reviewed domain pack
-            by organizing draft-pack curation as a manageable local workflow.
+            Reduce the activation-energy hump from generated draft packs to curated review workspaces
+            by previewing structure, warnings, and overwrite risk before import.
           </p>
           <div className="small">{message}</div>
         </div>
@@ -159,10 +178,14 @@ export default function App() {
           <button onClick={createWorkspace}>Create</button>
         </div>
         <div className="card">
-          <h2>Import Draft Pack</h2>
+          <h2>Preview / Import Draft Pack</h2>
           <label>Workspace ID<input value={workspaceId} onChange={(e) => setWorkspaceId(e.target.value)} /></label>
           <label>Draft Pack Source Directory<input value={importSource} onChange={(e) => setImportSource(e.target.value)} placeholder="e.g. generated-pack" /></label>
-          <button onClick={importWorkspace}>Import into Workspace</button>
+          <label className="checkline"><input type="checkbox" checked={allowOverwrite} onChange={(e) => setAllowOverwrite(e.target.checked)} /> Allow overwrite of existing workspace draft_pack</label>
+          <div className="button-row">
+            <button onClick={previewImport}>Preview</button>
+            <button onClick={importWorkspace}>Import</button>
+          </div>
         </div>
         <div className="card">
           <h2>Recent</h2>
@@ -173,6 +196,27 @@ export default function App() {
           <ul>{registry.workspaces.map((ws) => <li key={ws.workspace_id}><button onClick={() => openWorkspace(ws.workspace_id)}>{ws.title} ({ws.workspace_id})</button></li>)}</ul>
         </div>
       </section>
+
+      {importPreview && (
+        <section className="preview-grid">
+          <div className="card">
+            <h2>Import Preview</h2>
+            <div><strong>OK:</strong> {String(importPreview.ok)}</div>
+            <div><strong>Overwrite Required:</strong> {String(importPreview.overwrite_required)}</div>
+            <div><strong>Pack:</strong> {importPreview.summary?.display_name || importPreview.summary?.pack_name || "-"}</div>
+            <div><strong>Version:</strong> {importPreview.summary?.version || "-"}</div>
+            <div><strong>Concept Count:</strong> {importPreview.summary?.concept_count ?? "-"}</div>
+          </div>
+          <div className="card">
+            <h2>Errors</h2>
+            <ul>{(importPreview.errors || []).length ? importPreview.errors.map((x, i) => <li key={i}>{x}</li>) : <li>none</li>}</ul>
+          </div>
+          <div className="card">
+            <h2>Warnings</h2>
+            <ul>{(importPreview.warnings || []).length ? importPreview.warnings.map((x, i) => <li key={i}>{x}</li>) : <li>none</li>}</ul>
+          </div>
+        </section>
+      )}
 
       {session && (
         <main className="layout">

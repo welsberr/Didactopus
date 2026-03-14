@@ -73,16 +73,31 @@ class ReviewBridgeHandler(BaseHTTPRequestHandler):
             json_response(self, 200, {"ok": True, "workspace_id": self.active_workspace_id})
             return
 
+        if self.path == "/api/workspaces/import-preview":
+            preview = self.workspace_manager.preview_import(
+                source_dir=payload["source_dir"],
+                workspace_id=payload["workspace_id"]
+            )
+            json_response(self, 200, preview.model_dump())
+            return
+
         if self.path == "/api/workspaces/import":
             try:
                 meta = self.workspace_manager.import_draft_pack(
                     source_dir=payload["source_dir"],
                     workspace_id=payload["workspace_id"],
                     title=payload.get("title"),
-                    notes=payload.get("notes", "")
+                    notes=payload.get("notes", ""),
+                    allow_overwrite=bool(payload.get("allow_overwrite", False)),
                 )
             except FileNotFoundError as exc:
-                json_response(self, 404, {"error": str(exc)})
+                json_response(self, 404, {"ok": False, "error": str(exc)})
+                return
+            except FileExistsError as exc:
+                json_response(self, 409, {"ok": False, "error": str(exc)})
+                return
+            except ValueError as exc:
+                json_response(self, 400, {"ok": False, "error": str(exc)})
                 return
             self.set_active_workspace(meta.workspace_id)
             json_response(self, 200, {"ok": True, "workspace": meta.model_dump()})
@@ -105,7 +120,7 @@ class ReviewBridgeHandler(BaseHTTPRequestHandler):
         json_response(self, 404, {"error": "not found"})
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Didactopus local review bridge server with workspace manager")
+    parser = argparse.ArgumentParser(description="Didactopus local review bridge server with import validation")
     parser.add_argument("--config", default="configs/config.example.yaml")
     return parser
 

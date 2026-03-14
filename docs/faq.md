@@ -1,24 +1,28 @@
 # FAQ
 
-## Why add a draft-pack import feature?
+## Why add import validation?
 
-Because the transition from generated draft pack to curated workspace is one of the
-places where users can lose momentum.
+Because reducing startup friction does not mean hiding risk. A user still needs
+a clear signal about whether a generated draft pack is structurally usable.
 
-## How does this relate to the activation-energy goal?
+## How does this support the activation-energy goal?
 
-Even when online course contents can be ingested, people may still stall if the next
-steps are awkward. Importing a draft pack into a workspace should feel like one
-smooth continuation, not a separate manual task.
+It removes uncertainty from the handoff step. Users can see whether a draft pack
+looks valid before committing it into a workspace.
 
-## What does import do?
+## What does the preview check do?
 
-In this scaffold it:
-- creates or updates a workspace
-- copies a source draft-pack directory into that workspace
-- makes it ready to open in the review UI
+In this scaffold it checks:
+- required files
+- basic YAML parsing
+- key metadata presence
+- concept count
+- overwrite conditions
 
-## Is the import workflow validated?
+## Does preview guarantee correctness?
 
-Only lightly in this scaffold. A future revision should add stronger schema checks,
-collision handling, and overwrite safeguards.
+No. It is a safety and structure check, not a guarantee of pedagogical quality.
+
+## Can import still overwrite an existing workspace?
+
+Yes, but only if overwrite is explicitly allowed.

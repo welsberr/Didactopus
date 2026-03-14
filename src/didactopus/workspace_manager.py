@@ -3,6 +3,7 @@ from pathlib import Path
 from datetime import datetime, UTC
 import json, shutil
 from .review_schema import WorkspaceMeta, WorkspaceRegistry
+from .import_validator import preview_draft_pack_import
 
 def utc_now() -> str:
     return datetime.now(UTC).isoformat()
@@ -71,12 +72,23 @@ class WorkspaceManager:
                 return ws
         return None
 
-    def import_draft_pack(self, source_dir: str | Path, workspace_id: str, title: str | None = None, notes: str = "") -> WorkspaceMeta:
-        source_dir = Path(source_dir)
-        if not source_dir.exists():
-            raise FileNotFoundError(f"Draft pack source does not exist: {source_dir}")
+    def preview_import(self, source_dir: str | Path, workspace_id: str):
+        preview = preview_draft_pack_import(source_dir, workspace_id)
+        existing = self.get_workspace(workspace_id)
+        if existing is not None:
+            preview.overwrite_required = True
+            preview.warnings.append(f"Workspace '{workspace_id}' already exists and import will overwrite draft_pack.")
+        return preview
 
-        meta = self.get_workspace(workspace_id)
+    def import_draft_pack(self, source_dir: str | Path, workspace_id: str, title: str | None = None, notes: str = "", allow_overwrite: bool = False) -> WorkspaceMeta:
+        preview = self.preview_import(source_dir, workspace_id)
+        if not preview.ok:
+            raise ValueError("Draft pack preview failed: " + "; ".join(preview.errors))
+        existing = self.get_workspace(workspace_id)
+        if existing is not None and not allow_overwrite:
+            raise FileExistsError(f"Workspace '{workspace_id}' already exists; set allow_overwrite to replace its draft pack.")
+
+        meta = existing
         if meta is None:
             meta = self.create_workspace(workspace_id, title or workspace_id, notes=notes)
         else:
@@ -86,7 +98,7 @@ class WorkspaceManager:
         target_draft = workspace_dir / "draft_pack"
         if target_draft.exists():
             shutil.rmtree(target_draft)
-        shutil.copytree(source_dir, target_draft)
+        shutil.copytree(Path(source_dir), target_draft)
 
         registry = self.load_registry()
         for ws in registry.workspaces:
