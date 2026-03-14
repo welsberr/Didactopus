@@ -10,6 +10,27 @@ class UserORM(Base):
     role: Mapped[str] = mapped_column(String(50), default="learner")
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
+class ServiceAccountORM(Base):
+    __tablename__ = "service_accounts"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(120), unique=True, index=True)
+    owner_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    description: Mapped[str] = mapped_column(Text, default="")
+    scopes_json: Mapped[str] = mapped_column(Text, default="[]")
+    secret_hash: Mapped[str] = mapped_column(String(255))
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+class AgentAuditLogORM(Base):
+    __tablename__ = "agent_audit_logs"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    service_account_id: Mapped[int] = mapped_column(ForeignKey("service_accounts.id"), index=True)
+    service_account_name: Mapped[str] = mapped_column(String(120), index=True)
+    action: Mapped[str] = mapped_column(String(120), index=True)
+    target: Mapped[str] = mapped_column(String(255), default="")
+    outcome: Mapped[str] = mapped_column(String(50), default="ok")
+    detail_json: Mapped[str] = mapped_column(Text, default="{}")
+    created_at: Mapped[str] = mapped_column(String(100), default="")
+
 class RefreshTokenORM(Base):
     __tablename__ = "refresh_tokens"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -20,11 +41,17 @@ class RefreshTokenORM(Base):
 class PackORM(Base):
     __tablename__ = "packs"
     id: Mapped[str] = mapped_column(String(100), primary_key=True)
+    owner_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    policy_lane: Mapped[str] = mapped_column(String(50), default="personal")
     title: Mapped[str] = mapped_column(String(255))
     subtitle: Mapped[str] = mapped_column(Text, default="")
     level: Mapped[str] = mapped_column(String(100), default="novice-friendly")
     data_json: Mapped[str] = mapped_column(Text)
-    is_published: Mapped[bool] = mapped_column(Boolean, default=True)
+    validation_json: Mapped[str] = mapped_column(Text, default="{}")
+    provenance_json: Mapped[str] = mapped_column(Text, default="{}")
+    governance_state: Mapped[str] = mapped_column(String(50), default="draft")
+    current_version: Mapped[int] = mapped_column(Integer, default=1)
+    is_published: Mapped[bool] = mapped_column(Boolean, default=False)
 
 class LearnerORM(Base):
     __tablename__ = "learners"
@@ -66,3 +93,4 @@ class EvaluatorJobORM(Base):
     result_score: Mapped[float | None] = mapped_column(Float, nullable=True)
     result_confidence_hint: Mapped[float | None] = mapped_column(Float, nullable=True)
     result_notes: Mapped[str] = mapped_column(Text, default="")
+    trace_json: Mapped[str] = mapped_column(Text, default="{}")

@@ -20,10 +20,13 @@ def _encode_token(payload: dict, expires_delta: timedelta) -> str:
     return jwt.encode(to_encode, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 def issue_access_token(user_id: int, username: str, role: str) -> str:
-    return _encode_token({"sub": str(user_id), "username": username, "role": role, "kind": "access"}, timedelta(minutes=settings.access_token_minutes))
+    return _encode_token({"sub": str(user_id), "username": username, "role": role, "kind": "access"}, timedelta(minutes=30))
 
 def issue_refresh_token(user_id: int, username: str, role: str, token_id: str) -> str:
-    return _encode_token({"sub": str(user_id), "username": username, "role": role, "kind": "refresh", "jti": token_id}, timedelta(days=settings.refresh_token_days))
+    return _encode_token({"sub": str(user_id), "username": username, "role": role, "kind": "refresh", "jti": token_id}, timedelta(days=14))
+
+def issue_service_access_token(service_account_id: int, name: str, scopes: list[str]) -> str:
+    return _encode_token({"sub": str(service_account_id), "service_account_name": name, "kind": "service", "scopes": scopes}, timedelta(hours=8))
 
 def decode_token(token: str) -> dict | None:
     try:
@@ -32,4 +35,7 @@ def decode_token(token: str) -> dict | None:
         return None
 
 def new_token_id() -> str:
+    return secrets.token_urlsafe(24)
+
+def new_secret() -> str:
     return secrets.token_urlsafe(24)

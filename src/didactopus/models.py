@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 from typing import Literal
 
 EvidenceKind = Literal["checkpoint", "project", "exercise", "review"]
+PolicyLane = Literal["personal", "community"]
 
 class TokenPair(BaseModel):
     access_token: str
@@ -11,12 +12,56 @@ class TokenPair(BaseModel):
     username: str
     role: str
 
+class ServiceToken(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    service_account_name: str
+    scopes: list[str]
+
 class LoginRequest(BaseModel):
     username: str
     password: str
 
+class ServiceAccountLoginRequest(BaseModel):
+    name: str
+    secret: str
+
+class ServiceAccountCreateRequest(BaseModel):
+    name: str
+    description: str = ""
+    scopes: list[str] = Field(default_factory=list)
+
+class ServiceAccountRotateRequest(BaseModel):
+    name: str
+
+class ServiceAccountStateRequest(BaseModel):
+    is_active: bool
+
 class RefreshRequest(BaseModel):
     refresh_token: str
+
+class DeploymentPolicyProfile(BaseModel):
+    profile_name: str
+    default_personal_lane_enabled: bool = True
+    default_community_lane_enabled: bool = True
+    community_publish_requires_approval: bool = True
+    personal_publish_direct: bool = True
+    reviewer_assignment_required: bool = False
+    description: str = ""
+
+class AgentCapabilityManifest(BaseModel):
+    supports_pack_listing: bool = True
+    supports_pack_write_personal: bool = True
+    supports_pack_submit_community: bool = True
+    supports_recommendations: bool = True
+    supports_learner_state_read: bool = True
+    supports_learner_state_write: bool = True
+    supports_evaluator_jobs: bool = True
+    supports_governance_endpoints: bool = True
+    supports_review_queue: bool = True
+    supports_service_accounts: bool = True
+    supports_agent_audit_logs: bool = True
+    supports_service_account_rotation: bool = True
 
 class PackConcept(BaseModel):
     id: str
@@ -41,6 +86,16 @@ class PackData(BaseModel):
     onboarding: dict = Field(default_factory=dict)
     compliance: PackCompliance = Field(default_factory=PackCompliance)
 
+class CreatePackRequest(BaseModel):
+    pack: PackData
+    policy_lane: PolicyLane = "personal"
+    is_published: bool = False
+    change_summary: str = ""
+
+class CreateLearnerRequest(BaseModel):
+    learner_id: str
+    display_name: str = ""
+
 class MasteryRecord(BaseModel):
     concept_id: str
     dimension: str
@@ -63,10 +118,6 @@ class LearnerState(BaseModel):
     records: list[MasteryRecord] = Field(default_factory=list)
     history: list[EvidenceEvent] = Field(default_factory=list)
 
-class CreateLearnerRequest(BaseModel):
-    learner_id: str
-    display_name: str = ""
-
 class EvaluatorSubmission(BaseModel):
     pack_id: str
     concept_id: str
@@ -80,6 +131,12 @@ class EvaluatorJobStatus(BaseModel):
     result_confidence_hint: float | None = None
     result_notes: str = ""
 
-class CreatePackRequest(BaseModel):
-    pack: PackData
-    is_published: bool = True
+class AgentLearnerPlanRequest(BaseModel):
+    learner_id: str
+    pack_id: str
+
+class AgentLearnerPlanResponse(BaseModel):
+    learner_id: str
+    pack_id: str
+    next_cards: list[dict] = Field(default_factory=list)
+    suggested_actions: list[str] = Field(default_factory=list)
