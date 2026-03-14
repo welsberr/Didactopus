@@ -1,59 +1,110 @@
 from __future__ import annotations
-from .models import LearnerState, EvidenceEvent, MasteryRecord, PackData
+from collections import defaultdict
+from .models import LearnerState, PackData
 
-def get_record(state: LearnerState, concept_id: str, dimension: str = "mastery") -> MasteryRecord | None:
-    for rec in state.records:
-        if rec.concept_id == concept_id and rec.dimension == dimension:
-            return rec
-    return None
+def concept_depths(pack: PackData) -> dict[str, int]:
+    concept_map = {c.id: c for c in pack.concepts}
+    memo = {}
+    def depth(cid: str) -> int:
+        if cid in memo:
+            return memo[cid]
+        c = concept_map[cid]
+        if not c.prerequisites:
+            memo[cid] = 0
+        else:
+            memo[cid] = 1 + max(depth(pid) for pid in c.prerequisites if pid in concept_map)
+        return memo[cid]
+    for cid in concept_map:
+        depth(cid)
+    return memo
 
-def apply_evidence(state: LearnerState, event: EvidenceEvent, decay: float = 0.05, reinforcement: float = 0.25) -> LearnerState:
-    rec = get_record(state, event.concept_id, event.dimension)
-    if rec is None:
-        rec = MasteryRecord(concept_id=event.concept_id, dimension=event.dimension, score=0.0, confidence=0.0, evidence_count=0, last_updated=event.timestamp)
-        state.records.append(rec)
-    weight = max(0.05, min(1.0, event.confidence_hint))
-    rec.score = ((rec.score * rec.evidence_count) + (event.score * weight)) / max(1, rec.evidence_count + 1)
-    rec.confidence = min(1.0, max(0.0, rec.confidence * (1.0 - decay) + reinforcement * weight + 0.10 * max(0.0, min(1.0, event.score))))
-    rec.evidence_count += 1
-    rec.last_updated = event.timestamp
-    state.history.append(event)
-    return state
+def stable_layout(pack: PackData, width: int = 900, height: int = 520):
+    depths = concept_depths(pack)
+    layers = defaultdict(list)
+    for c in pack.concepts:
+        layers[depths.get(c.id, 0)].append(c)
+    positions = {}
+    max_depth = max(layers.keys()) if layers else 0
+    for d in sorted(layers):
+        nodes = sorted(layers[d], key=lambda c: c.id)
+        y = 90 + d * ((height - 160) / max(1, max_depth))
+        for idx, node in enumerate(nodes):
+            if node.position is not None:
+                positions[node.id] = {"x": node.position.x, "y": node.position.y, "source": "pack_authored"}
+            else:
+                spacing = width / (len(nodes) + 1)
+                x = spacing * (idx + 1)
+                positions[node.id] = {"x": x, "y": y, "source": "auto_layered"}
+    return positions
 
-def prereqs_satisfied(state: LearnerState, concept, min_score: float = 0.65, min_confidence: float = 0.45) -> bool:
+def prereqs_satisfied(scores: dict[str, float], concept, min_score: float = 0.65) -> bool:
     for pid in concept.prerequisites:
-        rec = get_record(state, pid, concept.masteryDimension)
-        if rec is None or rec.score < min_score or rec.confidence < min_confidence:
+        if scores.get(pid, 0.0) < min_score:
             return False
     return True
 
-def concept_status(state: LearnerState, concept, min_score: float = 0.65, min_confidence: float = 0.45) -> str:
-    rec = get_record(state, concept.id, concept.masteryDimension)
-    if rec and rec.score >= min_score and rec.confidence >= min_confidence:
+def concept_status(scores: dict[str, float], concept, min_score: float = 0.65) -> str:
+    score = scores.get(concept.id, 0.0)
+    if score >= min_score:
         return "mastered"
-    if prereqs_satisfied(state, concept, min_score, min_confidence):
-        return "active" if rec else "available"
+    if prereqs_satisfied(scores, concept, min_score):
+        return "active" if score > 0 else "available"
     return "locked"
 
-def recommend_next(state: LearnerState, pack: PackData) -> list[dict]:
-    cards = []
-    for concept in pack.concepts:
-        status = concept_status(state, concept)
-        rec = get_record(state, concept.id, concept.masteryDimension)
-        if status in {"available", "active"}:
-            cards.append({
-                "id": concept.id,
-                "title": f"Work on {concept.title}",
-                "minutes": 15 if status == "available" else 10,
-                "reason": "Prerequisites are satisfied, so this is the best next unlock." if status == "available" else "You have started this concept, but mastery is not yet secure.",
-                "why": [
-                    "Prerequisite check passed",
-                    f"Current score: {rec.score:.2f}" if rec else "No evidence recorded yet",
-                    f"Current confidence: {rec.confidence:.2f}" if rec else "Confidence starts after your first exercise",
-                ],
-                "reward": concept.exerciseReward or f"{concept.title} progress recorded",
-                "conceptId": concept.id,
-                "scoreHint": 0.82 if status == "available" else 0.76,
-                "confidenceHint": 0.72 if status == "available" else 0.55,
+def build_graph_frames(state: LearnerState, pack: PackData):
+    concepts = {c.id: c for c in pack.concepts}
+    layout = stable_layout(pack)
+    scores = {c.id: 0.0 for c in pack.concepts}
+    frames = []
+    history = sorted(state.history, key=lambda x: x.timestamp)
+    static_edges = [{"source": pre, "target": c.id, "kind": "prerequisite"} for c in pack.concepts for pre in c.prerequisites]
+    static_cross = [{
+        "source": c.id,
+        "target_pack_id": link.target_pack_id,
+        "target_concept_id": link.target_concept_id,
+        "relationship": link.relationship,
+        "kind": "cross_pack"
+    } for c in pack.concepts for link in c.cross_pack_links]
+    for idx, ev in enumerate(history):
+        if ev.concept_id in scores:
+            scores[ev.concept_id] = ev.score
+        nodes = []
+        for cid, concept in concepts.items():
+            score = scores.get(cid, 0.0)
+            status = concept_status(scores, concept)
+            pos = layout[cid]
+            nodes.append({
+                "id": cid,
+                "title": concept.title,
+                "score": score,
+                "status": status,
+                "size": 20 + int(score * 30),
+                "x": pos["x"],
+                "y": pos["y"],
+                "layout_source": pos["source"],
             })
-    return cards[:4]
+        frames.append({
+            "index": idx,
+            "timestamp": ev.timestamp,
+            "event_kind": ev.kind,
+            "focus_concept_id": ev.concept_id,
+            "nodes": nodes,
+            "edges": static_edges,
+            "cross_pack_links": static_cross,
+        })
+    if not frames:
+        nodes = []
+        for c in pack.concepts:
+            pos = layout[c.id]
+            nodes.append({
+                "id": c.id,
+                "title": c.title,
+                "score": 0.0,
+                "status": "available" if not c.prerequisites else "locked",
+                "size": 20,
+                "x": pos["x"],
+                "y": pos["y"],
+                "layout_source": pos["source"],
+            })
+        frames.append({"index": 0, "timestamp": "", "event_kind": "empty", "focus_concept_id": "", "nodes": nodes, "edges": static_edges, "cross_pack_links": static_cross})
+    return frames

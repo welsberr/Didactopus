@@ -1,24 +1,13 @@
 from __future__ import annotations
-import json
-from fastapi import FastAPI, HTTPException, Header, Depends, BackgroundTasks
+from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from .config import load_settings
 from .db import Base, engine
-from .models import LoginRequest, RefreshRequest, TokenPair, CreateLearnerRequest, LearnerState, EvidenceEvent, EvaluatorSubmission, EvaluatorJobStatus, CreatePackRequest, GovernanceAction, ReviewCommentCreate, ContributionSubmissionCreate
-from .repository import (
-    authenticate_user, get_user_by_id, store_refresh_token, refresh_token_active, revoke_refresh_token,
-    list_packs_for_user, list_pack_admin_rows, get_pack, get_pack_row, get_pack_validation, get_pack_provenance,
-    upsert_pack, create_submission, list_submissions, get_submission_diff, get_submission_gates, list_review_tasks,
-    set_pack_publication, can_publish_pack, set_governance_state, list_pack_versions, add_review_comment, list_review_comments,
-    create_learner, list_learners_for_user, learner_owned_by_user, load_learner_state,
-    save_learner_state, create_evaluator_job, get_evaluator_job, list_evaluator_jobs_for_learner
-)
-from .engine import apply_evidence, recommend_next
+from .models import LoginRequest, RefreshRequest, TokenPair, CreateLearnerRequest, LearnerState
+from .repository import authenticate_user, get_user_by_id, store_refresh_token, refresh_token_active, revoke_refresh_token, list_packs_for_user, get_pack, get_pack_row, create_learner, learner_owned_by_user, load_learner_state, save_learner_state
 from .auth import issue_access_token, issue_refresh_token, decode_token, new_token_id
-from .worker import process_job
+from .engine import build_graph_frames, stable_layout
 
-settings = load_settings()
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Didactopus API Prototype")
@@ -32,11 +21,6 @@ def current_user(authorization: str = Header(default="")):
     user = get_user_by_id(int(payload["sub"]))
     if user is None or not user.is_active:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    return user
-
-def require_admin(user = Depends(current_user)):
-    if user.role != "admin":
-        raise HTTPException(status_code=403, detail="Admin role required")
     return user
 
 def ensure_learner_access(user, learner_id: str):
@@ -86,92 +70,10 @@ def refresh(payload: RefreshRequest):
 def api_list_packs(user = Depends(current_user)):
     return [p.model_dump() for p in list_packs_for_user(user.id, include_unpublished=(user.role == "admin"))]
 
-@app.post("/api/packs")
-def api_upsert_personal_pack(payload: CreatePackRequest, user = Depends(current_user)):
-    lane = payload.policy_lane
-    if lane == "community" and user.role != "admin":
-        raise HTTPException(status_code=403, detail="Community lane direct upsert is admin-only; use contribution submission")
-    upsert_pack(payload.pack, submitted_by_user_id=user.id, policy_lane=lane, is_published=payload.is_published if lane == "personal" else False, change_summary=payload.change_summary)
-    return {"ok": True, "pack_id": payload.pack.id, "policy_lane": lane}
-
-@app.post("/api/contributions")
-def api_create_contribution(payload: ContributionSubmissionCreate, user = Depends(current_user)):
-    submission_id = create_submission(payload.pack, user.id, payload.submission_summary)
-    return {"ok": True, "submission_id": submission_id}
-
-@app.get("/api/admin/submissions")
-def api_admin_submissions(user = Depends(require_admin)):
-    return list_submissions()
-
-@app.get("/api/admin/submissions/{submission_id}/diff")
-def api_admin_submission_diff(submission_id: int, user = Depends(require_admin)):
-    return get_submission_diff(submission_id)
-
-@app.get("/api/admin/submissions/{submission_id}/gates")
-def api_admin_submission_gates(submission_id: int, user = Depends(require_admin)):
-    return get_submission_gates(submission_id)
-
-@app.get("/api/admin/review-tasks")
-def api_admin_review_tasks(user = Depends(require_admin)):
-    return list_review_tasks()
-
-@app.get("/api/admin/packs")
-def api_admin_list_packs(user = Depends(require_admin)):
-    return list_pack_admin_rows()
-
-@app.get("/api/admin/packs/{pack_id}/validation")
-def api_admin_pack_validation(pack_id: str, user = Depends(require_admin)):
-    return get_pack_validation(pack_id)
-
-@app.get("/api/admin/packs/{pack_id}/provenance")
-def api_admin_pack_provenance(pack_id: str, user = Depends(require_admin)):
-    return get_pack_provenance(pack_id)
-
-@app.get("/api/admin/packs/{pack_id}/versions")
-def api_admin_pack_versions(pack_id: str, user = Depends(require_admin)):
-    return list_pack_versions(pack_id)
-
-@app.get("/api/admin/packs/{pack_id}/comments")
-def api_admin_pack_comments(pack_id: str, user = Depends(require_admin)):
-    return list_review_comments(pack_id)
-
-@app.get("/api/admin/packs/{pack_id}/publishability")
-def api_pack_publishability(pack_id: str, user = Depends(require_admin)):
-    ok, reason = can_publish_pack(pack_id)
-    return {"ok": ok, "reason": reason}
-
-@app.post("/api/admin/packs")
-def api_upsert_pack(payload: CreatePackRequest, user = Depends(require_admin)):
-    upsert_pack(payload.pack, submitted_by_user_id=user.id, policy_lane=payload.policy_lane, is_published=payload.is_published if payload.policy_lane == "personal" else False, change_summary=payload.change_summary)
-    return {"ok": True, "pack_id": payload.pack.id}
-
-@app.post("/api/admin/packs/{pack_id}/publish")
-def api_publish_pack(pack_id: str, is_published: bool, user = Depends(require_admin)):
-    ok, reason = set_pack_publication(pack_id, is_published)
-    if not ok:
-        raise HTTPException(status_code=400, detail=reason)
-    return {"ok": True, "pack_id": pack_id, "is_published": is_published, "reason": reason}
-
-@app.post("/api/admin/packs/{pack_id}/governance")
-def api_governance_action(pack_id: str, payload: GovernanceAction, user = Depends(require_admin)):
-    ok = set_governance_state(pack_id, payload.status, payload.review_summary)
-    if not ok:
-        raise HTTPException(status_code=400, detail="Governance transition blocked")
-    return {"ok": True, "pack_id": pack_id, "status": payload.status}
-
-@app.post("/api/admin/packs/{pack_id}/comments")
-def api_add_review_comment(pack_id: str, version_number: int, payload: ReviewCommentCreate, user = Depends(require_admin)):
-    add_review_comment(pack_id, version_number, user.id, payload.comment_text, payload.disposition)
-    return {"ok": True}
-
 @app.post("/api/learners")
 def api_create_learner(payload: CreateLearnerRequest, user = Depends(current_user)):
     create_learner(user.id, payload.learner_id, payload.display_name)
     return {"ok": True, "learner_id": payload.learner_id}
-
-@app.get("/api/learners")
-def api_list_learners(user = Depends(current_user)):
-    return list_learners_for_user(user.id, is_admin=(user.role == "admin"))
 
 @app.get("/api/learners/{learner_id}/state")
 def api_get_learner_state(learner_id: str, user = Depends(current_user)):
@@ -185,51 +87,26 @@ def api_put_learner_state(learner_id: str, state: LearnerState, user = Depends(c
         raise HTTPException(status_code=400, detail="Learner ID mismatch")
     return save_learner_state(state).model_dump()
 
-@app.post("/api/learners/{learner_id}/evidence")
-def api_post_evidence(learner_id: str, event: EvidenceEvent, user = Depends(current_user)):
-    ensure_learner_access(user, learner_id)
-    state = load_learner_state(learner_id)
-    state = apply_evidence(state, event)
-    save_learner_state(state)
-    return state.model_dump()
+@app.get("/api/packs/{pack_id}/layout")
+def api_pack_layout(pack_id: str, user = Depends(current_user)):
+    ensure_pack_access(user, pack_id)
+    pack = get_pack(pack_id)
+    return {"pack_id": pack_id, "layout": stable_layout(pack)} if pack else {"pack_id": pack_id, "layout": {}}
 
-@app.get("/api/learners/{learner_id}/recommendations/{pack_id}")
-def api_get_recommendations(learner_id: str, pack_id: str, user = Depends(current_user)):
+@app.get("/api/learners/{learner_id}/graph-animation/{pack_id}")
+def api_graph_animation(learner_id: str, pack_id: str, user = Depends(current_user)):
     ensure_learner_access(user, learner_id)
     ensure_pack_access(user, pack_id)
-    state = load_learner_state(learner_id)
     pack = get_pack(pack_id)
-    if pack is None:
-        raise HTTPException(status_code=404, detail="Pack not found")
-    return {"cards": recommend_next(state, pack)}
-
-@app.post("/api/learners/{learner_id}/evaluator-jobs", response_model=EvaluatorJobStatus)
-def api_submit_evaluator_job(learner_id: str, payload: EvaluatorSubmission, background_tasks: BackgroundTasks, user = Depends(current_user)):
-    ensure_learner_access(user, learner_id)
-    ensure_pack_access(user, payload.pack_id)
-    job_id = create_evaluator_job(learner_id, payload.pack_id, payload.concept_id, payload.submitted_text)
-    background_tasks.add_task(process_job, job_id)
-    return EvaluatorJobStatus(job_id=job_id, status="queued")
-
-@app.get("/api/evaluator-jobs/{job_id}", response_model=EvaluatorJobStatus)
-def api_get_evaluator_job(job_id: int, user = Depends(current_user)):
-    job = get_evaluator_job(job_id)
-    if job is None:
-        raise HTTPException(status_code=404, detail="Job not found")
-    return EvaluatorJobStatus(job_id=job.id, status=job.status, result_score=job.result_score, result_confidence_hint=job.result_confidence_hint, result_notes=job.result_notes)
-
-@app.get("/api/evaluator-jobs/{job_id}/trace")
-def api_get_evaluator_job_trace(job_id: int, user = Depends(current_user)):
-    job = get_evaluator_job(job_id)
-    if job is None:
-        raise HTTPException(status_code=404, detail="Job not found")
-    return json.loads(job.trace_json or "{}")
-
-@app.get("/api/learners/{learner_id}/evaluator-history")
-def api_get_evaluator_history(learner_id: str, user = Depends(current_user)):
-    ensure_learner_access(user, learner_id)
-    jobs = list_evaluator_jobs_for_learner(learner_id)
-    return [{"job_id": j.id, "status": j.status, "concept_id": j.concept_id, "result_score": j.result_score, "result_confidence_hint": j.result_confidence_hint, "result_notes": j.result_notes} for j in jobs]
+    state = load_learner_state(learner_id)
+    frames = build_graph_frames(state, pack)
+    return {
+        "learner_id": learner_id,
+        "pack_id": pack_id,
+        "pack_title": pack.title if pack else "",
+        "frames": frames,
+        "concepts": [{"id": c.id, "title": c.title, "prerequisites": c.prerequisites, "cross_pack_links": [l.model_dump() for l in c.cross_pack_links]} for c in pack.concepts] if pack else [],
+    }
 
 def main():
-    uvicorn.run(app, host=settings.host, port=settings.port)
+    uvicorn.run(app, host="127.0.0.1", port=8011)
