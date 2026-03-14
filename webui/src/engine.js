@@ -73,19 +73,21 @@ export function recommendNext(state, domain) {
         minutes: status === "available" ? 15 : 10,
         reason: status === "available"
           ? "Prerequisites are satisfied, so this is the best next unlock."
-          : "You have started this concept, but mastery is not yet secure.",
+          : "You have started this concept, but the system does not yet consider mastery secure.",
         why: [
           "Prerequisite check passed",
           rec ? `Current score: ${rec.score.toFixed(2)}` : "No evidence recorded yet",
-          rec ? `Current confidence: ${rec.confidence.toFixed(2)}` : "Confidence starts after your first exercise"
+          rec ? `Current confidence: ${rec.confidence.toFixed(2)}` : "Confidence will start growing after your first exercise"
         ],
-        reward: concept.exerciseReward || `${concept.title} progress recorded`,
+        reward: concept.exerciseReward,
         conceptId: concept.id,
         scoreHint: status === "available" ? 0.82 : 0.76,
         confidenceHint: status === "available" ? 0.72 : 0.55
       });
     }
   }
+
+  // reinforcement targets
   for (const rec of state.records) {
     if (rec.dimension === "mastery" && rec.confidence < 0.40) {
       const concept = domain.concepts.find((c) => c.id === rec.concept_id);
@@ -97,7 +99,7 @@ export function recommendNext(state, domain) {
           reason: "Your score is promising, but confidence is still thin.",
           why: [
             `Confidence ${rec.confidence.toFixed(2)} is below reinforcement threshold`,
-            "A small fresh exercise can stabilize recall"
+            "A small fresh exercise can stabilize recall and raise readiness"
           ],
           reward: "Confidence ring grows",
           conceptId: concept.id,
@@ -107,6 +109,7 @@ export function recommendNext(state, domain) {
       }
     }
   }
+
   return cards.slice(0, 4);
 }
 
@@ -126,7 +129,10 @@ export function claimReadiness(state, domain, minScore = 0.75, minConfidence = 0
     return rec && rec.score >= minScore && rec.confidence >= minConfidence;
   }).length;
 
-  const records = domain.concepts.map((c) => getRecord(state, c.id, c.masteryDimension || "mastery")).filter(Boolean);
+  const records = domain.concepts
+    .map((c) => getRecord(state, c.id, c.masteryDimension || "mastery"))
+    .filter(Boolean);
+
   const avgScore = records.length ? records.reduce((a, r) => a + r.score, 0) / records.length : 0;
   const avgConfidence = records.length ? records.reduce((a, r) => a + r.confidence, 0) / records.length : 0;
 
@@ -135,5 +141,13 @@ export function claimReadiness(state, domain, minScore = 0.75, minConfidence = 0
     mastered,
     avgScore,
     avgConfidence
+  };
+}
+
+export function starterLearnerState(learnerId) {
+  return {
+    learner_id: learnerId,
+    records: [],
+    history: []
   };
 }

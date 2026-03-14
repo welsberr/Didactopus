@@ -1,184 +1,236 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { login, refresh, fetchPacks, fetchLearnerState, putLearnerState, createLearnerRun, addWorkflowEvent, fetchAnimation } from "./api";
-import { loadAuth, saveAuth, clearAuth } from "./authStore";
+import React, { useMemo, useState } from "react";
+import { domains } from "./domainData";
+import {
+  applyEvidence,
+  buildMasteryMap,
+  claimReadiness,
+  milestoneMessages,
+  progressPercent,
+  recommendNext,
+  starterLearnerState
+} from "./engine";
 
-function LoginView({ onAuth }) {
-  const [username, setUsername] = useState("wesley");
-  const [password, setPassword] = useState("demo-pass");
-  const [error, setError] = useState("");
-  async function doLogin() {
-    try {
-      const result = await login(username, password);
-      saveAuth(result);
-      onAuth(result);
-    } catch { setError("Login failed"); }
-  }
+function DomainCard({ domain, selected, onSelect }) {
   return (
-    <div className="page narrow-page">
-      <section className="card narrow">
-        <h1>Didactopus login</h1>
-        <label>Username<input value={username} onChange={(e) => setUsername(e.target.value)} /></label>
-        <label>Password<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /></label>
-        <button className="primary" onClick={doLogin}>Login</button>
-        {error ? <div className="error">{error}</div> : null}
-      </section>
+    <button className={`domain-card ${selected ? "selected" : ""}`} onClick={() => onSelect(domain.id)}>
+      <div className="domain-title">{domain.title}</div>
+      <div className="domain-subtitle">{domain.subtitle}</div>
+      <div className="domain-meta">
+        <span>{domain.level}</span>
+        <span>{domain.concepts.length} concepts</span>
+      </div>
+    </button>
+  );
+}
+
+function OnboardingPanel({ domain, learnerName }) {
+  return (
+    <section className="card">
+      <h2>First-session onboarding</h2>
+      <h3>{domain.onboarding.headline}</h3>
+      <p>{domain.onboarding.body}</p>
+      <p className="muted">Learner: {learnerName || "Unnamed learner"}</p>
+      <ul>
+        {domain.onboarding.checklist.map((item, idx) => <li key={idx}>{item}</li>)}
+      </ul>
+    </section>
+  );
+}
+
+function NextStepCard({ step, onSimulate }) {
+  return (
+    <div className="step-card">
+      <div className="step-header">
+        <div>
+          <h3>{step.title}</h3>
+          <div className="muted">{step.minutes} minutes</div>
+        </div>
+        <div className="reward-pill">{step.reward}</div>
+      </div>
+      <p>{step.reason}</p>
+      <details>
+        <summary>Why this is recommended</summary>
+        <ul>
+          {step.why.map((item, idx) => <li key={idx}>{item}</li>)}
+        </ul>
+      </details>
+      <button className="primary" onClick={() => onSimulate(step)}>Simulate completing this step</button>
     </div>
   );
 }
 
-function AnimationBars({ frame, concepts }) {
-  if (!frame) return null;
+function MasteryMap({ nodes }) {
   return (
-    <div className="bars">
-      {concepts.map((concept) => {
-        const value = frame.scores?.[concept] ?? 0;
-        return (
-          <div className="bar-row" key={concept}>
-            <div className="bar-label">{concept}</div>
-            <div className="bar-track">
-              <div className="bar-fill" style={{ width: `${Math.max(0, Math.min(100, value * 100))}%` }} />
-            </div>
-            <div className="bar-value">{value.toFixed(2)}</div>
+    <section className="card">
+      <h2>Visible mastery map</h2>
+      <div className="map-grid">
+        {nodes.map((node) => (
+          <div key={node.id} className={`map-node ${node.status}`}>
+            <div className="node-label">{node.label}</div>
+            <div className="node-status">{node.status}</div>
           </div>
-        );
-      })}
-    </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ProgressPanel({ progress, readiness }) {
+  return (
+    <section className="card">
+      <h2>Progress</h2>
+      <div className="progress-wrap">
+        <div className="progress-label">Mastery progress</div>
+        <div className="progress-bar"><div className="progress-fill" style={{ width: `${progress}%` }} /></div>
+        <div className="muted">{progress}%</div>
+      </div>
+      <div className={`readiness-box ${readiness.ready ? "ready" : ""}`}>
+        <strong>{readiness.ready ? "Usable expertise threshold met" : "Still building toward usable expertise"}</strong>
+        <div className="muted">Mastered concepts: {readiness.mastered}</div>
+        <div className="muted">Average score: {readiness.avgScore.toFixed(2)}</div>
+        <div className="muted">Average confidence: {readiness.avgConfidence.toFixed(2)}</div>
+      </div>
+    </section>
+  );
+}
+
+function MilestonePanel({ milestones, lastReward }) {
+  return (
+    <section className="card">
+      <h2>Milestones and rewards</h2>
+      {lastReward ? <div className="reward-banner">{lastReward}</div> : null}
+      <ul>
+        {milestones.map((m, idx) => <li key={idx}>{m}</li>)}
+      </ul>
+    </section>
+  );
+}
+
+function CompliancePanel({ compliance }) {
+  return (
+    <section className="card">
+      <h2>Source attribution and compliance</h2>
+      <div className="compliance-grid">
+        <div><strong>Sources</strong><br />{compliance.sources}</div>
+        <div><strong>Attribution</strong><br />{compliance.attributionRequired ? "required" : "not required"}</div>
+        <div><strong>Share-alike</strong><br />{compliance.shareAlikeRequired ? "yes" : "no"}</div>
+        <div><strong>Noncommercial</strong><br />{compliance.noncommercialOnly ? "yes" : "no"}</div>
+      </div>
+      <div className="flag-row">
+        {compliance.flags.length ? compliance.flags.map((f) => <span className="flag" key={f}>{f}</span>) : <span className="muted">No extra flags</span>}
+      </div>
+      <p className="muted">
+        Provenance-sensitive packs should remain inspectable so that learners and maintainers do not have to guess at reuse constraints.
+      </p>
+    </section>
+  );
+}
+
+function EvidenceLog({ history }) {
+  return (
+    <section className="card">
+      <h2>Evidence log</h2>
+      {history.length === 0 ? (
+        <div className="muted">No evidence recorded yet.</div>
+      ) : (
+        <ul>
+          {history.slice().reverse().map((item, idx) => (
+            <li key={idx}>
+              {item.concept_id} · score {item.score.toFixed(2)} · confidence hint {item.confidence_hint.toFixed(2)}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
 
 export default function App() {
-  const [auth, setAuth] = useState(loadAuth());
-  const [packs, setPacks] = useState([]);
-  const [learnerId] = useState("wesley-learner");
-  const [packId, setPackId] = useState("");
-  const [animation, setAnimation] = useState(null);
-  const [frameIndex, setFrameIndex] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const [message, setMessage] = useState("");
+  const [learnerName, setLearnerName] = useState("Wesley");
+  const [selectedDomainId, setSelectedDomainId] = useState(domains[0].id);
+  const [domainStates, setDomainStates] = useState(() =>
+    Object.fromEntries(domains.map((d) => [d.id, starterLearnerState(`learner-${d.id}`)]))
+  );
+  const [lastReward, setLastReward] = useState("");
 
-  async function refreshAuthToken() {
-    if (!auth?.refresh_token) return null;
-    try {
-      const result = await refresh(auth.refresh_token);
-      saveAuth(result);
-      setAuth(result);
-      return result;
-    } catch {
-      clearAuth();
-      setAuth(null);
-      return null;
-    }
+  const domain = useMemo(() => domains.find((d) => d.id === selectedDomainId) || domains[0], [selectedDomainId]);
+  const learnerState = domainStates[selectedDomainId];
+
+  const masteryMap = useMemo(() => buildMasteryMap(learnerState, domain), [learnerState, domain]);
+  const progress = useMemo(() => progressPercent(learnerState, domain), [learnerState, domain]);
+  const recs = useMemo(() => recommendNext(learnerState, domain), [learnerState, domain]);
+  const milestones = useMemo(() => milestoneMessages(learnerState, domain), [learnerState, domain]);
+  const readiness = useMemo(() => claimReadiness(learnerState, domain), [learnerState, domain]);
+
+  function simulateStep(step) {
+    const timestamp = new Date().toISOString();
+    const updated = applyEvidence(learnerState, {
+      concept_id: step.conceptId,
+      dimension: "mastery",
+      score: step.scoreHint,
+      confidence_hint: step.confidenceHint,
+      timestamp,
+      kind: "checkpoint",
+      source_id: `ui-${step.id}`
+    });
+    setDomainStates((prev) => ({ ...prev, [selectedDomainId]: updated }));
+    setLastReward(step.reward);
   }
 
-  async function guarded(fn) {
-    try { return await fn(auth.access_token); }
-    catch {
-      const next = await refreshAuthToken();
-      if (!next) throw new Error("auth failed");
-      return await fn(next.access_token);
-    }
+  function resetDomain() {
+    setDomainStates((prev) => ({ ...prev, [selectedDomainId]: starterLearnerState(`learner-${selectedDomainId}`) }));
+    setLastReward("");
   }
-
-  async function reloadAnimation(pid) {
-    const data = await guarded((token) => fetchAnimation(token, learnerId, pid));
-    setAnimation(data);
-    setFrameIndex(0);
-  }
-
-  useEffect(() => {
-    if (!auth) return;
-    async function load() {
-      const p = await guarded((token) => fetchPacks(token));
-      setPacks(p);
-      const pid = p[0]?.id || "";
-      setPackId(pid);
-      if (pid) await reloadAnimation(pid);
-    }
-    load();
-  }, [auth]);
-
-  useEffect(() => {
-    if (!playing || !animation?.frames?.length) return;
-    const t = setInterval(() => {
-      setFrameIndex((idx) => {
-        if (idx >= animation.frames.length - 1) {
-          return 0;
-        }
-        return idx + 1;
-      });
-    }, 900);
-    return () => clearInterval(t);
-  }, [playing, animation]);
-
-  const currentFrame = animation?.frames?.[frameIndex];
-  const concepts = useMemo(() => animation?.concepts || [], [animation]);
-
-  async function simulateLearning() {
-    const run = await guarded((token) => createLearnerRun(token, { learner_id: learnerId, pack_id: packId, title: "Demo animation run", actor_kind: "human" }));
-    let state = await guarded((token) => fetchLearnerState(token, learnerId));
-    const now1 = new Date().toISOString();
-    state.history.push({ concept_id: "intro", dimension: "mastery", score: 0.35, confidence_hint: 0.5, timestamp: now1, kind: "exercise", source_id: "demo-1" });
-    state.records = [{ concept_id: "intro", dimension: "mastery", score: 0.35, confidence: 0.35, evidence_count: 1, last_updated: now1 }];
-    await guarded((token) => putLearnerState(token, learnerId, state));
-    await guarded((token) => addWorkflowEvent(token, { run_id: run.run_id, learner_id: learnerId, event_type: "exercise_completed", concept_id: "intro", timestamp: now1, detail: { score: 0.35 } }));
-
-    const now2 = new Date(Date.now() + 1000).toISOString();
-    state.history.push({ concept_id: "intro", dimension: "mastery", score: 0.75, confidence_hint: 0.7, timestamp: now2, kind: "review", source_id: "demo-2" });
-    state.records = [{ concept_id: "intro", dimension: "mastery", score: 0.75, confidence: 0.68, evidence_count: 2, last_updated: now2 }];
-    await guarded((token) => putLearnerState(token, learnerId, state));
-    await guarded((token) => addWorkflowEvent(token, { run_id: run.run_id, learner_id: learnerId, event_type: "review_completed", concept_id: "intro", timestamp: now2, detail: { score: 0.75 } }));
-
-    const now3 = new Date(Date.now() + 2000).toISOString();
-    state.history.push({ concept_id: "second", dimension: "mastery", score: 0.45, confidence_hint: 0.5, timestamp: now3, kind: "exercise", source_id: "demo-3" });
-    state.records = [
-      { concept_id: "intro", dimension: "mastery", score: 0.75, confidence: 0.68, evidence_count: 2, last_updated: now2 },
-      { concept_id: "second", dimension: "mastery", score: 0.45, confidence: 0.40, evidence_count: 1, last_updated: now3 },
-    ];
-    await guarded((token) => putLearnerState(token, learnerId, state));
-    await guarded((token) => addWorkflowEvent(token, { run_id: run.run_id, learner_id: learnerId, event_type: "unlock_progress", concept_id: "second", timestamp: now3, detail: { score: 0.45 } }));
-
-    await reloadAnimation(packId);
-    setMessage(`Demo run ${run.run_id} generated animation frames.`);
-  }
-
-  if (!auth) return <LoginView onAuth={setAuth} />;
 
   return (
     <div className="page">
       <header className="hero">
         <div>
-          <h1>Didactopus learning animation</h1>
-          <p>Replay mastery changes for human or AI learners over time.</p>
-          <div className="muted">{message}</div>
+          <h1>Didactopus learner prototype</h1>
+          <p>
+            Pick a topic, get a clear onboarding path, see live progress, and inspect exactly why the system recommends each next step.
+          </p>
         </div>
-        <div className="controls">
-          <label>Pack
-            <select value={packId} onChange={async (e) => { setPackId(e.target.value); await reloadAnimation(e.target.value); }}>
-              {packs.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
-            </select>
+        <div className="hero-controls">
+          <label>
+            Learner name
+            <input value={learnerName} onChange={(e) => setLearnerName(e.target.value)} />
           </label>
-          <button onClick={() => setPlaying((x) => !x)}>{playing ? "Pause" : "Play"}</button>
-          <button onClick={simulateLearning}>Generate demo run</button>
-          <button onClick={() => { clearAuth(); setAuth(null); }}>Logout</button>
+          <button onClick={resetDomain}>Reset selected domain</button>
         </div>
       </header>
 
-      <main className="layout twocol">
-        <section className="card">
-          <h2>Current frame</h2>
-          <div className="frame-meta">
-            <div><strong>Frame:</strong> {frameIndex + 1} / {animation?.frames?.length || 0}</div>
-            <div><strong>Event:</strong> {currentFrame?.event_kind || "-"}</div>
-            <div><strong>Concept:</strong> {currentFrame?.concept_id || "-"}</div>
-            <div><strong>Timestamp:</strong> {currentFrame?.timestamp || "-"}</div>
-          </div>
-          <AnimationBars frame={currentFrame} concepts={concepts} />
-        </section>
+      <section className="domain-grid">
+        {domains.map((d) => (
+          <DomainCard key={d.id} domain={d} selected={d.id === domain.id} onSelect={setSelectedDomainId} />
+        ))}
+      </section>
 
-        <section className="card">
-          <h2>Animation data</h2>
-          <pre className="prebox">{JSON.stringify(animation, null, 2)}</pre>
-        </section>
+      <main className="layout">
+        <div className="left-col">
+          <OnboardingPanel domain={domain} learnerName={learnerName} />
+          <MasteryMap nodes={masteryMap} />
+          <EvidenceLog history={learnerState.history} />
+        </div>
+
+        <div className="center-col">
+          <section className="card">
+            <h2>What should I do next?</h2>
+            {recs.length === 0 ? (
+              <div className="muted">No immediate recommendation available. You may have completed the current progression or need a new pack.</div>
+            ) : (
+              <div className="steps-stack">
+                {recs.map((step) => <NextStepCard key={step.id} step={step} onSimulate={simulateStep} />)}
+              </div>
+            )}
+          </section>
+        </div>
+
+        <div className="right-col">
+          <ProgressPanel progress={progress} readiness={readiness} />
+          <MilestonePanel milestones={milestones} lastReward={lastReward} />
+          <CompliancePanel compliance={domain.compliance} />
+        </div>
       </main>
     </div>
   );
