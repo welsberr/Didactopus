@@ -16,7 +16,7 @@ export async function refresh(refreshToken) {
   if (!res.ok) throw new Error("refresh failed");
   return await res.json();
 }
-export async function fetchDeploymentPolicy(token) { const res = await fetch(`${API}/deployment-policy`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchDeploymentPolicy failed"); return await res.json(); }
-export async function fetchAgentCapabilities(token) { const res = await fetch(`${API}/agent/capabilities`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchAgentCapabilities failed"); return await res.json(); }
-export async function listServiceAccounts(token) { const res = await fetch(`${API}/admin/service-accounts`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("listServiceAccounts failed"); return await res.json(); }
-export async function createServiceAccount(token, payload) { const res = await fetch(`${API}/admin/service-accounts`, { method: "POST", headers: authHeaders(token), body: JSON.stringify(payload) }); if (!res.ok) throw new Error("createServiceAccount failed"); return await res.json(); }
+export async function fetchPacks(token) { const res = await fetch(`${API}/packs`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchPacks failed"); return await res.json(); }
+export async function fetchLearnerState(token, learnerId) { const res = await fetch(`${API}/learners/${learnerId}/state`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchLearnerState failed"); return await res.json(); }
+export async function putLearnerState(token, learnerId, state) { const res = await fetch(`${API}/learners/${learnerId}/state`, { method: "PUT", headers: authHeaders(token), body: JSON.stringify(state) }); if (!res.ok) throw new Error("putLearnerState failed"); return await res.json(); }
+export async function fetchGraphAnimation(token, learnerId, packId) { const res = await fetch(`${API}/learners/${learnerId}/graph-animation/${packId}`, { headers: authHeaders(token, false) }); if (!res.ok) throw new Error("fetchGraphAnimation failed"); return await res.json(); }

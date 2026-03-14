@@ -10,16 +10,6 @@ class UserORM(Base):
     role: Mapped[str] = mapped_column(String(50), default="learner")
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
-class ServiceAccountORM(Base):
-    __tablename__ = "service_accounts"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(String(120), unique=True, index=True)
-    owner_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    description: Mapped[str] = mapped_column(Text, default="")
-    scopes_json: Mapped[str] = mapped_column(Text, default="[]")
-    secret_hash: Mapped[str] = mapped_column(String(255))
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-
 class RefreshTokenORM(Base):
     __tablename__ = "refresh_tokens"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -36,10 +26,6 @@ class PackORM(Base):
     subtitle: Mapped[str] = mapped_column(Text, default="")
     level: Mapped[str] = mapped_column(String(100), default="novice-friendly")
     data_json: Mapped[str] = mapped_column(Text)
-    validation_json: Mapped[str] = mapped_column(Text, default="{}")
-    provenance_json: Mapped[str] = mapped_column(Text, default="{}")
-    governance_state: Mapped[str] = mapped_column(String(50), default="draft")
-    current_version: Mapped[int] = mapped_column(Integer, default=1)
     is_published: Mapped[bool] = mapped_column(Boolean, default=False)
 
 class LearnerORM(Base):
@@ -70,16 +56,3 @@ class EvidenceEventORM(Base):
     timestamp: Mapped[str] = mapped_column(String(100), default="")
     kind: Mapped[str] = mapped_column(String(50), default="exercise")
     source_id: Mapped[str] = mapped_column(String(255), default="")
-
-class EvaluatorJobORM(Base):
-    __tablename__ = "evaluator_jobs"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    learner_id: Mapped[str] = mapped_column(ForeignKey("learners.id"), index=True)
-    pack_id: Mapped[str] = mapped_column(ForeignKey("packs.id"), index=True)
-    concept_id: Mapped[str] = mapped_column(String(100), index=True)
-    submitted_text: Mapped[str] = mapped_column(Text, default="")
-    status: Mapped[str] = mapped_column(String(50), default="queued")
-    result_score: Mapped[float | None] = mapped_column(Float, nullable=True)
-    result_confidence_hint: Mapped[float | None] = mapped_column(Float, nullable=True)
-    result_notes: Mapped[str] = mapped_column(Text, default="")
-    trace_json: Mapped[str] = mapped_column(Text, default="{}")

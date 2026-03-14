@@ -1,28 +1,10 @@
 from __future__ import annotations
 import json
-from datetime import datetime, timezone
 from sqlalchemy import select
 from .db import SessionLocal
-from .orm import UserORM, ServiceAccountORM, RefreshTokenORM, PackORM, LearnerORM, MasteryRecordORM, EvidenceEventORM, EvaluatorJobORM
-from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent, DeploymentPolicyProfile
-from .auth import verify_password, hash_password
-from .config import load_settings
-
-settings = load_settings()
-
-def now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
-
-def deployment_policy_profile() -> DeploymentPolicyProfile:
-    return DeploymentPolicyProfile(
-        profile_name=settings.deployment_policy_profile,
-        default_personal_lane_enabled=True,
-        default_community_lane_enabled=True,
-        community_publish_requires_approval=True,
-        personal_publish_direct=True,
-        reviewer_assignment_required=False,
-        description="Deployment policy scaffold."
-    )
+from .orm import UserORM, RefreshTokenORM, PackORM, LearnerORM, MasteryRecordORM, EvidenceEventORM
+from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent
+from .auth import verify_password
 
 def get_user_by_username(username: str):
     with SessionLocal() as db:
@@ -37,33 +19,6 @@ def authenticate_user(username: str, password: str):
     if user is None or not verify_password(password, user.password_hash) or not user.is_active:
         return None
     return user
-
-def create_service_account(name: str, owner_user_id: int | None, description: str, scopes: list[str], secret: str):
-    with SessionLocal() as db:
-        sa = ServiceAccountORM(
-            name=name,
-            owner_user_id=owner_user_id,
-            description=description,
-            scopes_json=json.dumps(scopes),
-            secret_hash=hash_password(secret),
-            is_active=True,
-        )
-        db.add(sa)
-        db.commit()
-        db.refresh(sa)
-        return sa
-
-def list_service_accounts():
-    with SessionLocal() as db:
-        rows = db.execute(select(ServiceAccountORM).order_by(ServiceAccountORM.id)).scalars().all()
-        return [{"id": r.id, "name": r.name, "owner_user_id": r.owner_user_id, "description": r.description, "scopes": json.loads(r.scopes_json or "[]"), "is_active": r.is_active} for r in rows]
-
-def authenticate_service_account(name: str, secret: str):
-    with SessionLocal() as db:
-        sa = db.execute(select(ServiceAccountORM).where(ServiceAccountORM.name == name)).scalar_one_or_none()
-        if sa is None or not sa.is_active or not verify_password(secret, sa.secret_hash):
-            return None
-        return sa
 
 def store_refresh_token(user_id: int, token_id: str):
     with SessionLocal() as db:
@@ -105,9 +60,7 @@ def get_pack_row(pack_id: str):
     with SessionLocal() as db:
         return db.get(PackORM, pack_id)
 
-def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "personal", is_published: bool = False, change_summary: str = ""):
-    validation = {"ok": len(pack.concepts) > 0, "warnings": [] if len(pack.concepts) > 0 else ["Pack has no concepts."], "errors": []}
-    provenance = {"source_count": pack.compliance.sources, "restrictive_flags": list(pack.compliance.flags)}
+def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "personal", is_published: bool = False):
     with SessionLocal() as db:
         row = db.get(PackORM, pack.id)
         payload = json.dumps(pack.model_dump())
@@ -120,10 +73,6 @@ def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "p
                 subtitle=pack.subtitle,
                 level=pack.level,
                 data_json=payload,
-                validation_json=json.dumps(validation),
-                provenance_json=json.dumps(provenance),
-                governance_state="personal_ready" if policy_lane == "personal" else "draft",
-                current_version=1,
                 is_published=is_published if policy_lane == "personal" else False,
             )
             db.add(row)
@@ -134,9 +83,6 @@ def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "p
             row.subtitle = pack.subtitle
             row.level = pack.level
             row.data_json = payload
-            row.validation_json = json.dumps(validation)
-            row.provenance_json = json.dumps(provenance)
-            row.current_version += 1
             if policy_lane == "personal":
                 row.is_published = is_published
         db.commit()
@@ -146,14 +92,6 @@ def create_learner(owner_user_id: int, learner_id: str, display_name: str = ""):
         if db.get(LearnerORM, learner_id) is None:
             db.add(LearnerORM(id=learner_id, owner_user_id=owner_user_id, display_name=display_name))
             db.commit()
-
-def list_learners_for_user(user_id: int, is_admin: bool = False):
-    with SessionLocal() as db:
-        stmt = select(LearnerORM).order_by(LearnerORM.id)
-        if not is_admin:
-            stmt = stmt.where(LearnerORM.owner_user_id == user_id)
-        rows = db.execute(stmt).scalars().all()
-        return [{"learner_id": r.id, "display_name": r.display_name, "owner_user_id": r.owner_user_id} for r in rows]
 
 def learner_owned_by_user(user_id: int, learner_id: str) -> bool:
     with SessionLocal() as db:
@@ -180,32 +118,3 @@ def save_learner_state(state: LearnerState):
             db.add(EvidenceEventORM(learner_id=state.learner_id, concept_id=h.concept_id, dimension=h.dimension, score=h.score, confidence_hint=h.confidence_hint, timestamp=h.timestamp, kind=h.kind, source_id=h.source_id))
         db.commit()
     return state
-
-def create_evaluator_job(learner_id: str, pack_id: str, concept_id: str, submitted_text: str):
-    with SessionLocal() as db:
-        job = EvaluatorJobORM(learner_id=learner_id, pack_id=pack_id, concept_id=concept_id, submitted_text=submitted_text, status="queued", trace_json=json.dumps({"notes": ["Job queued"]}))
-        db.add(job)
-        db.commit()
-        db.refresh(job)
-        return job.id
-
-def list_evaluator_jobs_for_learner(learner_id: str):
-    with SessionLocal() as db:
-        return db.execute(select(EvaluatorJobORM).where(EvaluatorJobORM.learner_id == learner_id).order_by(EvaluatorJobORM.id.desc())).scalars().all()
-
-def get_evaluator_job(job_id: int):
-    with SessionLocal() as db:
-        return db.get(EvaluatorJobORM, job_id)
-
-def update_evaluator_job(job_id: int, status: str, score: float | None = None, confidence_hint: float | None = None, notes: str = "", trace: dict | None = None):
-    with SessionLocal() as db:
-        job = db.get(EvaluatorJobORM, job_id)
-        if job is None:
-            return
-        job.status = status
-        job.result_score = score
-        job.result_confidence_hint = confidence_hint
-        job.result_notes = notes
-        if trace is not None:
-            job.trace_json = json.dumps(trace)
-        db.commit()
