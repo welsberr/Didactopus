@@ -3,5 +3,5 @@ projects:
     title: Final Bayesian Comparison
     prerequisites: [bayes-prior, bayes-posterior]
     deliverables:
-      - explanation of prior and posterior updates
-      - critique report
+      - explanation
+      - comparison report

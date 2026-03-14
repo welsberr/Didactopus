@@ -1,11 +1,11 @@
 concepts:
   - id: c1
     title: Foundations
-    description: Broad foundations topic with many ideas.
+    description: Broad foundations topic.
     mastery_signals:
-      - Explain core foundations.
+      - Explain core foundations clearly.
   - id: c2
     title: Methods
-    description: Methods concept with sparse explicit assessment.
+    description: Methods topic.
     mastery_signals:
       - Use methods appropriately.

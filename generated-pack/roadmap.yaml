@@ -3,9 +3,9 @@ stages:
     title: Prior Beliefs
     concepts: [bayes-prior]
     checkpoint:
-      - Explain a prior distribution.
+      - explanation exercise on prior distribution
   - id: stage-2
     title: Posterior Updating
     concepts: [bayes-posterior]
     checkpoint:
-      - Compare prior and posterior beliefs.
+      - comparison exercise on prior and posterior beliefs

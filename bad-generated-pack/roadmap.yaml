@@ -2,4 +2,5 @@ stages:
   - id: stage-1
     title: Start
     concepts: [c1, c2]
-    checkpoint: []
+    checkpoint:
+      - oral discussion
