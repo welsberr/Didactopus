@@ -18,6 +18,10 @@ def frame_to_svg(frame: dict, width: int = 960, height: int = 560) -> str:
         dst = next((n for n in frame["nodes"] if n["id"] == edge["target"]), None)
         if src and dst:
             parts.append(f'<line x1="{src["x"]}" y1="{src["y"]}" x2="{dst["x"]}" y2="{dst["y"]}" stroke="#b8c2cf" stroke-width="3"/>')
+    for edge in frame.get("cross_pack_links", []):
+        src = next((n for n in frame["nodes"] if n["id"] == edge["source"]), None)
+        if src:
+            parts.append(f'<line x1="{src["x"]}" y1="{src["y"]}" x2="{src["x"]+120}" y2="{src["y"]-60}" stroke="#cc4bc2" stroke-width="2" stroke-dasharray="8 6"/>')
     for node in frame.get("nodes", []):
         fill = color_for_status(node["status"])
         parts.append(f'<circle cx="{node["x"]}" cy="{node["y"]}" r="{node["size"]}" fill="{fill}" />')
@@ -33,12 +37,3 @@ def export_svg_frames(payload_path: str, out_dir: str):
     for frame in payload.get("frames", []):
         svg = frame_to_svg(frame)
         (out / f'frame_{frame["index"]:04d}.svg').write_text(svg, encoding="utf-8")
-
-def main():
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("payload_json")
-    parser.add_argument("out_dir")
-    args = parser.parse_args()
-    export_svg_frames(args.payload_json, args.out_dir)
-    print(f"Exported SVG frames to {args.out_dir}")

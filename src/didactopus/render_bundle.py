@@ -23,3 +23,14 @@ def make_render_bundle(payload_json: str, out_dir: str, fps: int = 2, fmt: str =
         f"ffmpeg -framerate {fps} -pattern_type glob -i '{frames_dir}/*.svg' '{out / ('animation.' + fmt)}'",
     ])
     (out / "render.sh").write_text(script, encoding="utf-8")
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("payload_json")
+    parser.add_argument("out_dir")
+    parser.add_argument("--fps", type=int, default=2)
+    parser.add_argument("--format", default="gif", choices=["gif", "mp4"])
+    args = parser.parse_args()
+    make_render_bundle(args.payload_json, args.out_dir, fps=args.fps, fmt=args.format)
+    print(f"Render bundle written to {args.out_dir}")
