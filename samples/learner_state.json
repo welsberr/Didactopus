@@ -1,0 +1,14 @@
+{
+  "learner_id": "demo-learner",
+  "records": [
+    {
+      "concept_id": "bayes-prior",
+      "dimension": "mastery",
+      "score": 0.81,
+      "confidence": 0.72,
+      "evidence_count": 3,
+      "last_updated": "2026-03-13T12:00:00+00:00"
+    }
+  ],
+  "history": []
+}

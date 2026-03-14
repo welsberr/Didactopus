@@ -1,21 +1,37 @@
+version: "3.9"
+
 services:
-  didactopus:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: didactopus
+      POSTGRES_USER: didactopus
+      POSTGRES_PASSWORD: didactopus-dev-password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./ops/postgres-data:/var/lib/postgresql/data
+
+  api:
     build: .
-    image: didactopus:dev
+    command: didactopus-api
+    environment:
+      DIDACTOPUS_DATABASE_URL: postgresql+psycopg://didactopus:didactopus-dev-password@postgres:5432/didactopus
+      DIDACTOPUS_JWT_SECRET: change-me
+    ports:
+      - "8011:8011"
+    depends_on:
+      - postgres
     volumes:
       - ./:/app
-    working_dir: /app
-    command: python -m didactopus.main --domain "statistics" --goal "practical mastery"
+
+  worker:
+    build: .
+    command: didactopus-worker
     environment:
-      DIDACTOPUS_CONFIG: /app/configs/config.yaml
-
-  ollama:
-    image: ollama/ollama:latest
-    profiles: ["local-llm"]
-    ports:
-      - "11434:11434"
+      DIDACTOPUS_DATABASE_URL: postgresql+psycopg://didactopus:didactopus-dev-password@postgres:5432/didactopus
+      DIDACTOPUS_JWT_SECRET: change-me
+    depends_on:
+      - postgres
     volumes:
-      - ollama-data:/root/.ollama
-
-volumes:
-  ollama-data:
+      - ./:/app

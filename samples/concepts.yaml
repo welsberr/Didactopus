@@ -1,0 +1,10 @@
+concepts:
+  - id: bayes-prior
+    title: Bayes Prior
+    prerequisites: []
+  - id: bayes-posterior
+    title: Bayes Posterior
+    prerequisites: [bayes-prior]
+  - id: model-checking
+    title: Model Checking
+    prerequisites: [bayes-posterior]

@@ -1,0 +1,19 @@
+{
+  "new_workstreams": [
+    "review_and_promotion_workflow",
+    "synthesis_engine"
+  ],
+  "promotion_targets": [
+    "accepted_pack_improvements",
+    "curriculum_drafts",
+    "reusable_skill_bundles",
+    "archived_unadopted_suggestions"
+  ],
+  "synthesis_signals": [
+    "semantic_similarity",
+    "structural_similarity",
+    "learner_trajectory",
+    "review_history",
+    "novelty"
+  ]
+}

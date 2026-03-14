@@ -1,0 +1,8 @@
+projects:
+  - id: compare-beliefs
+    title: Compare Prior and Posterior
+    prerequisites:
+      - bayes-prior
+      - bayes-posterior
+    deliverables:
+      - short report

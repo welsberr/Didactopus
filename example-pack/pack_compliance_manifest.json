@@ -1,0 +1,20 @@
+{
+  "pack_id": "bayes-pack",
+  "display_name": "Bayesian Reasoning",
+  "derived_from_sources": [
+    "mit-ocw-bayes",
+    "excluded-figure"
+  ],
+  "attribution_required": true,
+  "share_alike_required": true,
+  "noncommercial_only": true,
+  "restrictive_flags": [
+    "share-alike",
+    "noncommercial",
+    "excluded-third-party-content"
+  ],
+  "redistribution_notes": [
+    "Derived redistributable material may need to remain under the same license family.",
+    "Derived redistributable material may be limited to noncommercial use."
+  ]
+}

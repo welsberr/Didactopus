@@ -1,0 +1,9 @@
+stages:
+  - id: stage-1
+    title: Foundations
+    concepts:
+      - statistics-and-probability
+  - id: stage-2
+    title: Advanced Inference
+    concepts:
+      - posterior-analysis

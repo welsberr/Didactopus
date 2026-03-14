@@ -1,0 +1,13 @@
+stages:
+  - id: stage-1
+    title: Prior Beliefs
+    concepts:
+      - bayes-prior
+  - id: stage-2
+    title: Posterior Updating
+    concepts:
+      - bayes-posterior
+  - id: stage-3
+    title: Model Checking
+    concepts:
+      - model-checking

@@ -1,254 +1,203 @@
-import React, { useMemo, useState } from "react";
-import reviewData from "../sample/review_data.json";
+import React, { useEffect, useMemo, useState } from "react";
 
+const API = "http://127.0.0.1:8765";
 const statuses = ["needs_review", "trusted", "provisional", "rejected"];
 
-function downloadJson(filename, data) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function promotedPackFromState(state) {
-  return {
-    pack: {
-      ...state.pack,
-      version: String(state.pack.version || "0.1.0-draft").replace("-draft", "-reviewed"),
-      curation: {
-        reviewer: state.reviewer,
-        ledger_entries: state.ledger.length
-      }
-    },
-    concepts: state.concepts
-      .filter((c) => c.status !== "rejected")
-      .map((c) => ({
-        id: c.concept_id,
-        title: c.title,
-        description: c.description,
-        prerequisites: c.prerequisites,
-        mastery_signals: c.mastery_signals,
-        status: c.status,
-        notes: c.notes,
-        mastery_profile: {}
-      })),
-    conflicts: state.conflicts,
-    review_flags: state.review_flags
-  };
-}
-
 export default function App() {
-  const [state, setState] = useState(reviewData);
-  const [selectedId, setSelectedId] = useState(reviewData.concepts[0]?.concept_id || "");
-  const selected = useMemo(
-    () => state.concepts.find((c) => c.concept_id === selectedId) || null,
-    [state, selectedId]
-  );
+  const [registry, setRegistry] = useState({ workspaces: [], recent_workspace_ids: [] });
+  const [workspaceId, setWorkspaceId] = useState("");
+  const [workspaceTitle, setWorkspaceTitle] = useState("");
+  const [session, setSession] = useState(null);
+  const [selectedId, setSelectedId] = useState("");
+  const [pendingActions, setPendingActions] = useState([]);
+  const [message, setMessage] = useState("Connecting to local Didactopus bridge...");
 
-  function updateConcept(conceptId, patch, rationale) {
-    setState((prev) => {
-      const concepts = prev.concepts.map((c) =>
-        c.concept_id === conceptId ? { ...c, ...patch } : c
-      );
-      const ledger = [
-        ...prev.ledger,
-        {
-          reviewer: prev.reviewer,
-          action: {
-            action_type: "note",
-            target: conceptId,
-            payload: patch,
-            rationale: rationale || "UI edit"
-          }
-        }
-      ];
-      return { ...prev, concepts, ledger };
+  async function loadRegistry() {
+    const res = await fetch(`${API}/api/workspaces`);
+    const data = await res.json();
+    setRegistry(data);
+    if (data.recent_workspace_ids?.length && !session) {
+      setMessage("Choose or reopen a workspace.");
+    }
+  }
+
+  useEffect(() => {
+    loadRegistry().catch(() => setMessage("Could not connect to local review bridge. Start the Python bridge service first."));
+  }, []);
+
+  async function createWorkspace() {
+    if (!workspaceId || !workspaceTitle) return;
+    await fetch(`${API}/api/workspaces/create`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ workspace_id: workspaceId, title: workspaceTitle })
     });
+    await loadRegistry();
+    await openWorkspace(workspaceId);
+  }
+
+  async function openWorkspace(id) {
+    const res = await fetch(`${API}/api/workspaces/open`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ workspace_id: id })
+    });
+    const opened = await res.json();
+    if (!opened.ok) {
+      setMessage("Could not open workspace.");
+      return;
+    }
+    const sessionRes = await fetch(`${API}/api/load`);
+    const sessionData = await sessionRes.json();
+    setSession(sessionData.session);
+    setSelectedId(sessionData.session?.draft_pack?.concepts?.[0]?.concept_id || "");
+    setPendingActions([]);
+    setMessage(`Opened workspace ${id}.`);
+    await loadRegistry();
+  }
+
+  const selected = useMemo(() => {
+    if (!session) return null;
+    return session.draft_pack.concepts.find((c) => c.concept_id === selectedId) || null;
+  }, [session, selectedId]);
+
+  function queueAction(action) {
+    setPendingActions((prev) => [...prev, action]);
+  }
+
+  function patchConcept(conceptId, patch, rationale) {
+    if (!session) return;
+    const concepts = session.draft_pack.concepts.map((c) =>
+      c.concept_id === conceptId ? { ...c, ...patch } : c
+    );
+    setSession({ ...session, draft_pack: { ...session.draft_pack, concepts } });
+
+    if (patch.status !== undefined) queueAction({ action_type: "set_status", target: conceptId, payload: { status: patch.status }, rationale });
+    if (patch.title !== undefined) queueAction({ action_type: "edit_title", target: conceptId, payload: { title: patch.title }, rationale });
+    if (patch.description !== undefined) queueAction({ action_type: "edit_description", target: conceptId, payload: { description: patch.description }, rationale });
+    if (patch.prerequisites !== undefined) queueAction({ action_type: "edit_prerequisites", target: conceptId, payload: { prerequisites: patch.prerequisites }, rationale });
+    if (patch.notes !== undefined) queueAction({ action_type: "edit_notes", target: conceptId, payload: { notes: patch.notes }, rationale });
   }
 
   function resolveConflict(conflict) {
-    setState((prev) => ({
-      ...prev,
-      conflicts: prev.conflicts.filter((c) => c !== conflict),
-      ledger: [
-        ...prev.ledger,
-        {
-          reviewer: prev.reviewer,
-          action: {
-            action_type: "resolve_conflict",
-            target: "",
-            payload: { conflict },
-            rationale: "Resolved in UI"
-          }
-        }
-      ]
-    }));
+    if (!session) return;
+    setSession({
+      ...session,
+      draft_pack: { ...session.draft_pack, conflicts: session.draft_pack.conflicts.filter((c) => c !== conflict) }
+    });
+    queueAction({ action_type: "resolve_conflict", target: "", payload: { conflict }, rationale: "Resolved in UI" });
   }
 
-  const promoted = promotedPackFromState(state);
+  async function saveChanges() {
+    if (!pendingActions.length) {
+      setMessage("No pending changes to save.");
+      return;
+    }
+    const res = await fetch(`${API}/api/save`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ actions: pendingActions })
+    });
+    const data = await res.json();
+    setSession(data.session);
+    setPendingActions([]);
+    setMessage("Saved review state.");
+  }
+
+  async function exportPromoted() {
+    const res = await fetch(`${API}/api/export`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({})
+    });
+    const data = await res.json();
+    setMessage(`Exported promoted pack to ${data.promoted_pack_dir}`);
+  }
 
   return (
     <div className="page">
       <header className="hero">
         <div>
-          <h1>Didactopus Review UI</h1>
+          <h1>Didactopus Workspace Manager</h1>
           <p>
-            Reduce the activation-energy hump: move from raw course-derived draft pack
-            to curated reviewed domain pack with less friction.
+            Reduce the activation-energy hump from raw course material to reviewed domain pack
+            by organizing draft-pack curation as a manageable local workflow.
           </p>
+          <div className="small">{message}</div>
         </div>
         <div className="hero-actions">
-          <button onClick={() => downloadJson("review_data.edited.json", state)}>Export Review State</button>
-          <button onClick={() => downloadJson("promoted_pack.json", promoted)}>Export Promoted Pack</button>
+          <button onClick={saveChanges}>Save Review State</button>
+          <button onClick={exportPromoted} disabled={!session}>Export Promoted Pack</button>
         </div>
       </header>
 
       <section className="summary-grid">
         <div className="card">
-          <h2>Pack</h2>
-          <div className="small">{state.pack.display_name || state.pack.name}</div>
-          <div className="small">Reviewer: {state.reviewer}</div>
-          <div className="small">Concepts: {state.concepts.length}</div>
+          <h2>Create Workspace</h2>
+          <label>Workspace ID<input value={workspaceId} onChange={(e) => setWorkspaceId(e.target.value)} /></label>
+          <label>Title<input value={workspaceTitle} onChange={(e) => setWorkspaceTitle(e.target.value)} /></label>
+          <button onClick={createWorkspace}>Create</button>
         </div>
         <div className="card">
-          <h2>Conflicts</h2>
-          <div className="big">{state.conflicts.length}</div>
+          <h2>Recent</h2>
+          <ul>{registry.recent_workspace_ids.map((id) => <li key={id}><button onClick={() => openWorkspace(id)}>{id}</button></li>)}</ul>
         </div>
         <div className="card">
-          <h2>Flags</h2>
-          <div className="big">{state.review_flags.length}</div>
+          <h2>All Workspaces</h2>
+          <ul>{registry.workspaces.map((ws) => <li key={ws.workspace_id}><button onClick={() => openWorkspace(ws.workspace_id)}>{ws.title} ({ws.workspace_id})</button></li>)}</ul>
         </div>
         <div className="card">
-          <h2>Ledger</h2>
-          <div className="big">{state.ledger.length}</div>
+          <h2>Pending Actions</h2>
+          <div className="big">{pendingActions.length}</div>
         </div>
       </section>
 
-      <main className="layout">
-        <aside className="sidebar">
-          <h2>Concepts</h2>
-          {state.concepts.map((c) => (
-            <button
-              key={c.concept_id}
-              className={`concept-btn ${c.concept_id === selectedId ? "active" : ""}`}
-              onClick={() => setSelectedId(c.concept_id)}
-            >
-              <span>{c.title}</span>
-              <span className={`status-pill status-${c.status}`}>{c.status}</span>
-            </button>
-          ))}
-        </aside>
+      {session && (
+        <main className="layout">
+          <aside className="sidebar">
+            <h2>Concepts</h2>
+            {session.draft_pack.concepts.map((c) => (
+              <button key={c.concept_id} className={`concept-btn ${c.concept_id === selectedId ? "active" : ""}`} onClick={() => setSelectedId(c.concept_id)}>
+                <span>{c.title}</span>
+                <span className={`status-pill status-${c.status}`}>{c.status}</span>
+              </button>
+            ))}
+          </aside>
 
-        <section className="content">
-          {selected ? (
-            <>
+          <section className="content">
+            {selected && (
               <div className="card">
                 <h2>Concept Editor</h2>
-                <label>
-                  Title
-                  <input
-                    value={selected.title}
-                    onChange={(e) => updateConcept(selected.concept_id, { title: e.target.value }, "Edited title")}
-                  />
-                </label>
-                <label>
-                  Status
-                  <select
-                    value={selected.status}
-                    onChange={(e) => updateConcept(selected.concept_id, { status: e.target.value }, "Changed trust status")}
-                  >
-                    {statuses.map((s) => (
-                      <option value={s} key={s}>{s}</option>
-                    ))}
+                <label>Title<input value={selected.title} onChange={(e) => patchConcept(selected.concept_id, { title: e.target.value }, "Edited title")} /></label>
+                <label>Status
+                  <select value={selected.status} onChange={(e) => patchConcept(selected.concept_id, { status: e.target.value }, "Changed trust status")}>
+                    {statuses.map((s) => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </label>
-                <label>
-                  Description
-                  <textarea
-                    rows="6"
-                    value={selected.description}
-                    onChange={(e) => updateConcept(selected.concept_id, { description: e.target.value }, "Edited description")}
-                  />
-                </label>
-                <label>
-                  Prerequisites (comma-separated ids)
-                  <input
-                    value={(selected.prerequisites || []).join(", ")}
-                    onChange={(e) =>
-                      updateConcept(
-                        selected.concept_id,
-                        {
-                          prerequisites: e.target.value
-                            .split(",")
-                            .map((x) => x.trim())
-                            .filter(Boolean)
-                        },
-                        "Edited prerequisites"
-                      )
-                    }
-                  />
-                </label>
-                <label>
-                  Notes
-                  <textarea
-                    rows="4"
-                    value={(selected.notes || []).join("\n")}
-                    onChange={(e) =>
-                      updateConcept(
-                        selected.concept_id,
-                        { notes: e.target.value.split("\n").filter(Boolean) },
-                        "Edited notes"
-                      )
-                    }
-                  />
-                </label>
+                <label>Description<textarea rows="6" value={selected.description} onChange={(e) => patchConcept(selected.concept_id, { description: e.target.value }, "Edited description")} /></label>
+                <label>Prerequisites (comma-separated ids)<input value={(selected.prerequisites || []).join(", ")} onChange={(e) => patchConcept(selected.concept_id, { prerequisites: e.target.value.split(",").map((x) => x.trim()).filter(Boolean) }, "Edited prerequisites")} /></label>
+                <label>Notes (one per line)<textarea rows="4" value={(selected.notes || []).join("\n")} onChange={(e) => patchConcept(selected.concept_id, { notes: e.target.value.split("\n").filter(Boolean) }, "Edited notes")} /></label>
               </div>
+            )}
+          </section>
 
-              <div className="card">
-                <h2>Mastery Signals</h2>
-                <ul>
-                  {(selected.mastery_signals || []).map((signal, idx) => (
-                    <li key={idx}>{signal}</li>
-                  ))}
-                </ul>
-              </div>
-            </>
-          ) : (
-            <div className="card">No concept selected.</div>
-          )}
-        </section>
-
-        <section className="rightbar">
-          <div className="card">
-            <h2>Conflicts</h2>
-            {state.conflicts.length ? state.conflicts.map((conflict, idx) => (
-              <div key={idx} className="conflict">
-                <div>{conflict}</div>
-                <button onClick={() => resolveConflict(conflict)}>Resolve</button>
-              </div>
-            )) : <div className="small">No remaining conflicts.</div>}
-          </div>
-
-          <div className="card">
-            <h2>Review Flags</h2>
-            <ul>
-              {state.review_flags.map((flag, idx) => <li key={idx}>{flag}</li>)}
-            </ul>
-          </div>
-
-          <div className="card">
-            <h2>Why this exists</h2>
-            <p className="small">
-              Online course material can be excellent and still be hard to activate.
-              Didactopus aims to reduce the setup burden from “useful but messy course content”
-              to “usable reviewed learning domain.”
-            </p>
-          </div>
-        </section>
-      </main>
+          <section className="rightbar">
+            <div className="card">
+              <h2>Conflicts</h2>
+              {session.draft_pack.conflicts.length ? session.draft_pack.conflicts.map((conflict, idx) => (
+                <div key={idx} className="conflict">
+                  <div>{conflict}</div>
+                  <button onClick={() => resolveConflict(conflict)}>Resolve</button>
+                </div>
+              )) : <div className="small">No remaining conflicts.</div>}
+            </div>
+            <div className="card">
+              <h2>Review Flags</h2>
+              <ul>{session.draft_pack.review_flags.map((flag, idx) => <li key={idx}>{flag}</li>)}</ul>
+            </div>
+          </section>
+        </main>
+      )}
     </div>
   );
 }

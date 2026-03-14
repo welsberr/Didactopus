@@ -1,0 +1,5 @@
+entry_schema:
+  concept_id: str
+  score: float
+dimension_mappings: {}
+evidence_type_mappings: {}

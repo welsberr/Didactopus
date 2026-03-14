@@ -1,0 +1,49 @@
+{
+  "id": "stats-pack",
+  "title": "Introductory Statistics",
+  "subtitle": "Descriptive statistics, sampling, and inference.",
+  "level": "novice-friendly",
+  "concepts": [
+    {
+      "id": "descriptive",
+      "title": "Descriptive Statistics",
+      "prerequisites": [],
+      "masteryDimension": "mastery",
+      "exerciseReward": "Descriptive tools unlocked"
+    },
+    {
+      "id": "sampling",
+      "title": "Sampling",
+      "prerequisites": [
+        "descriptive"
+      ],
+      "masteryDimension": "mastery",
+      "exerciseReward": "Sampling pathway opened"
+    },
+    {
+      "id": "inference",
+      "title": "Inference",
+      "prerequisites": [
+        "sampling"
+      ],
+      "masteryDimension": "mastery",
+      "exerciseReward": "Inference challenge unlocked"
+    }
+  ],
+  "onboarding": {
+    "headline": "Build your first useful data skill",
+    "body": "You will learn one concept that immediately helps you summarize real data.",
+    "checklist": [
+      "See one worked example",
+      "Compute one short example yourself",
+      "Explain what the result means"
+    ]
+  },
+  "compliance": {
+    "sources": 1,
+    "attributionRequired": true,
+    "shareAlikeRequired": false,
+    "noncommercialOnly": false,
+    "flags": []
+  }
+}

@@ -1,0 +1,10 @@
+name: bayes-pack
+display_name: Bayesian Reasoning
+description: Probability, evidence, updating, and model criticism.
+audience_level: novice-friendly
+first_session_headline: Start with a fast visible win
+first_session_body: Read one short orientation, answer one guided question, and leave with your first mastery marker.
+first_session_checklist:
+  - Read the one-screen topic orientation
+  - Answer one guided exercise
+  - Write one explanation in your own words

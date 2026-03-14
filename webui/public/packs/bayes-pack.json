@@ -1,0 +1,53 @@
+{
+  "id": "bayes-pack",
+  "title": "Bayesian Reasoning",
+  "subtitle": "Probability, evidence, updating, and model criticism.",
+  "level": "novice-friendly",
+  "concepts": [
+    {
+      "id": "prior",
+      "title": "Prior",
+      "prerequisites": [],
+      "masteryDimension": "mastery",
+      "exerciseReward": "Prior badge earned"
+    },
+    {
+      "id": "posterior",
+      "title": "Posterior",
+      "prerequisites": [
+        "prior"
+      ],
+      "masteryDimension": "mastery",
+      "exerciseReward": "Posterior path opened"
+    },
+    {
+      "id": "model-checking",
+      "title": "Model Checking",
+      "prerequisites": [
+        "posterior"
+      ],
+      "masteryDimension": "mastery",
+      "exerciseReward": "Model-checking unlocked"
+    }
+  ],
+  "onboarding": {
+    "headline": "Start with a fast visible win",
+    "body": "Read one short orientation, answer one guided question, and leave with your first mastery marker.",
+    "checklist": [
+      "Read the one-screen topic orientation",
+      "Answer one guided exercise",
+      "Write one explanation in your own words"
+    ]
+  },
+  "compliance": {
+    "sources": 2,
+    "attributionRequired": true,
+    "shareAlikeRequired": true,
+    "noncommercialOnly": true,
+    "flags": [
+      "share-alike",
+      "noncommercial",
+      "excluded-third-party-content"
+    ]
+  }
+}

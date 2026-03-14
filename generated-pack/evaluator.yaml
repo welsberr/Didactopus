@@ -1,0 +1,8 @@
+dimensions:
+  - name: explanation
+    description: quality of explanation
+  - name: comparison
+    description: quality of comparison
+evidence_types:
+  - explanation
+  - comparison report

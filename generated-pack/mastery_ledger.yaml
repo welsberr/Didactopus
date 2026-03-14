@@ -1,0 +1,15 @@
+entry_schema:
+  concept_id: str
+  dimension: str
+  score: float
+  confidence: float
+  last_updated: datetime
+dimension_mappings:
+  explanation: explanation
+  comparison: comparison
+evidence_type_mappings:
+  explanation: text_artifact
+  comparison report: project_artifact
+confidence_update:
+  method: weighted_average
+  decay: 0.05

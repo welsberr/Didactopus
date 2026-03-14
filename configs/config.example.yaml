@@ -1,5 +1,8 @@
 review:
   default_reviewer: "Wesley R. Elsberry"
-  allow_provisional_concepts: true
   write_promoted_pack: true
-  write_review_ledger: true
+bridge:
+  host: "127.0.0.1"
+  port: 8765
+  registry_path: "workspace_registry.json"
+  default_workspace_root: "workspaces"

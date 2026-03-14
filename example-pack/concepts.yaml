@@ -1,0 +1,10 @@
+concepts:
+  - id: prior
+    title: Prior
+    prerequisites: []
+  - id: posterior
+    title: Posterior
+    prerequisites: [prior]
+  - id: model-checking
+    title: Model Checking
+    prerequisites: [posterior]

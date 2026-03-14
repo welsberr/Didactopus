@@ -1,0 +1,26 @@
+sources:
+  - source_id: mit-ocw-bayes
+    title: Example MIT OpenCourseWare Bayesian Materials
+    url: https://ocw.mit.edu/courses/example-course/
+    publisher: Massachusetts Institute of Technology
+    creator: MIT OpenCourseWare
+    license_id: CC BY-NC-SA 4.0
+    license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+    retrieved_at: 2026-03-13
+    adapted: true
+    attribution_text: Derived in part from MIT OpenCourseWare material used under CC BY-NC-SA 4.0.
+    excluded_from_upstream_license: false
+    exclusion_notes: ""
+
+  - source_id: excluded-figure
+    title: Example Third-Party Figure
+    url: https://ocw.mit.edu/courses/example-course/pages/lecture-videos/
+    publisher: Massachusetts Institute of Technology
+    creator: Third-party rights holder
+    license_id: third-party-excluded
+    license_url: ""
+    retrieved_at: 2026-03-13
+    adapted: false
+    attribution_text: Tracked for exclusion; not reused in redistributed pack content.
+    excluded_from_upstream_license: true
+    exclusion_notes: Figure flagged as excluded from the course-level Creative Commons license.
