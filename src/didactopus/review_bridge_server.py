@@ -73,6 +73,21 @@ class ReviewBridgeHandler(BaseHTTPRequestHandler):
             json_response(self, 200, {"ok": True, "workspace_id": self.active_workspace_id})
             return
 
+        if self.path == "/api/workspaces/import":
+            try:
+                meta = self.workspace_manager.import_draft_pack(
+                    source_dir=payload["source_dir"],
+                    workspace_id=payload["workspace_id"],
+                    title=payload.get("title"),
+                    notes=payload.get("notes", "")
+                )
+            except FileNotFoundError as exc:
+                json_response(self, 404, {"error": str(exc)})
+                return
+            self.set_active_workspace(meta.workspace_id)
+            json_response(self, 200, {"ok": True, "workspace": meta.model_dump()})
+            return
+
         if self.active_bridge is None:
             json_response(self, 400, {"error": "no active workspace"})
             return

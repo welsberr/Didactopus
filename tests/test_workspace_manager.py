@@ -9,9 +9,12 @@ def test_create_and_get_workspace(tmp_path: Path) -> None:
     assert got is not None
     assert got.title == "Workspace One"
 
-def test_recent_tracking(tmp_path: Path) -> None:
+def test_import_draft_pack(tmp_path: Path) -> None:
+    src = tmp_path / "srcpack"
+    src.mkdir()
+    (src / "pack.yaml").write_text("name: x\n", encoding="utf-8")
+    (src / "concepts.yaml").write_text("concepts: []\n", encoding="utf-8")
     mgr = WorkspaceManager(tmp_path / "registry.json", tmp_path / "roots")
-    mgr.create_workspace("ws1", "Workspace One")
-    mgr.touch_recent("ws1")
-    reg = mgr.list_workspaces()
-    assert reg.recent_workspace_ids[0] == "ws1"
+    meta = mgr.import_draft_pack(src, "ws2", title="Workspace Two")
+    assert meta.workspace_id == "ws2"
+    assert (tmp_path / "roots" / "ws2" / "draft_pack" / "pack.yaml").exists()

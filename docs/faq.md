@@ -1,19 +1,24 @@
 # FAQ
 
-## Why add a workspace manager?
+## Why add a draft-pack import feature?
 
-Because the activation-energy problem is not just parsing content. It is also
-staying organized once several candidate domains and draft packs exist.
+Because the transition from generated draft pack to curated workspace is one of the
+places where users can lose momentum.
 
-## What problem does this solve?
+## How does this relate to the activation-energy goal?
 
-It reduces the friction of:
-- tracking multiple projects
-- reopening previous review sessions
-- switching among draft packs
-- treating Didactopus like an actual working environment
+Even when online course contents can be ingested, people may still stall if the next
+steps are awkward. Importing a draft pack into a workspace should feel like one
+smooth continuation, not a separate manual task.
 
-## Does this help with online course ingestion?
+## What does import do?
 
-Yes. One of the barriers to using online course contents is that the setup work
-quickly becomes messy. A workspace manager helps turn that mess into a manageable process.
+In this scaffold it:
+- creates or updates a workspace
+- copies a source draft-pack directory into that workspace
+- makes it ready to open in the review UI
+
+## Is the import workflow validated?
+
+Only lightly in this scaffold. A future revision should add stronger schema checks,
+collision handling, and overwrite safeguards.

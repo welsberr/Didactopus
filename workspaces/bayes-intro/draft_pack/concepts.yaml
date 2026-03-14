@@ -5,10 +5,3 @@ concepts:
     prerequisites: []
     mastery_signals:
       - Explain mean, median, and variance.
-  - id: probability-basics
-    title: Probability Basics
-    description: Basic event probability and conditional probability.
-    prerequisites:
-      - descriptive-statistics
-    mastery_signals:
-      - Compute a simple conditional probability.

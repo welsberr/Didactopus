@@ -28,7 +28,6 @@ button:hover { border-color: var(--accent); }
 label { display: block; font-weight: 600; margin-bottom: 12px; }
 input, textarea, select { width: 100%; margin-top: 6px; border: 1px solid var(--border); border-radius: 10px; padding: 10px; font: inherit; background: white; }
 .small { color: var(--muted); }
-.big { font-size: 34px; font-weight: 700; }
 .conflict { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 12px; }
 ul { padding-left: 18px; }
 @media (max-width: 1100px) {

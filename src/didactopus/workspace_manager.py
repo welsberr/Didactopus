@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 from datetime import datetime, UTC
-import json
+import json, shutil
 from .review_schema import WorkspaceMeta, WorkspaceRegistry
 
 def utc_now() -> str:
@@ -70,3 +70,34 @@ class WorkspaceManager:
             if ws.workspace_id == workspace_id:
                 return ws
         return None
+
+    def import_draft_pack(self, source_dir: str | Path, workspace_id: str, title: str | None = None, notes: str = "") -> WorkspaceMeta:
+        source_dir = Path(source_dir)
+        if not source_dir.exists():
+            raise FileNotFoundError(f"Draft pack source does not exist: {source_dir}")
+
+        meta = self.get_workspace(workspace_id)
+        if meta is None:
+            meta = self.create_workspace(workspace_id, title or workspace_id, notes=notes)
+        else:
+            self.touch_recent(workspace_id)
+
+        workspace_dir = Path(meta.path)
+        target_draft = workspace_dir / "draft_pack"
+        if target_draft.exists():
+            shutil.rmtree(target_draft)
+        shutil.copytree(source_dir, target_draft)
+
+        registry = self.load_registry()
+        for ws in registry.workspaces:
+            if ws.workspace_id == workspace_id:
+                ws.last_opened_at = utc_now()
+                if title:
+                    ws.title = title
+                if notes:
+                    ws.notes = notes
+                meta = ws
+                break
+        registry.recent_workspace_ids = [workspace_id] + [w for w in registry.recent_workspace_ids if w != workspace_id]
+        self.save_registry(registry)
+        return meta

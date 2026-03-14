@@ -7,6 +7,7 @@ export default function App() {
   const [registry, setRegistry] = useState({ workspaces: [], recent_workspace_ids: [] });
   const [workspaceId, setWorkspaceId] = useState("");
   const [workspaceTitle, setWorkspaceTitle] = useState("");
+  const [importSource, setImportSource] = useState("");
   const [session, setSession] = useState(null);
   const [selectedId, setSelectedId] = useState("");
   const [pendingActions, setPendingActions] = useState([]);
@@ -16,9 +17,7 @@ export default function App() {
     const res = await fetch(`${API}/api/workspaces`);
     const data = await res.json();
     setRegistry(data);
-    if (data.recent_workspace_ids?.length && !session) {
-      setMessage("Choose or reopen a workspace.");
-    }
+    if (!session) setMessage("Choose, create, or import a workspace.");
   }
 
   useEffect(() => {
@@ -34,6 +33,27 @@ export default function App() {
     });
     await loadRegistry();
     await openWorkspace(workspaceId);
+  }
+
+  async function importWorkspace() {
+    if (!workspaceId || !importSource) return;
+    const res = await fetch(`${API}/api/workspaces/import`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        workspace_id: workspaceId,
+        title: workspaceTitle || workspaceId,
+        source_dir: importSource
+      })
+    });
+    const data = await res.json();
+    if (!data.ok) {
+      setMessage(data.error || "Import failed.");
+      return;
+    }
+    await loadRegistry();
+    await openWorkspace(workspaceId);
+    setMessage(`Imported draft pack from ${importSource} into workspace ${workspaceId}.`);
   }
 
   async function openWorkspace(id) {
@@ -139,16 +159,18 @@ export default function App() {
           <button onClick={createWorkspace}>Create</button>
         </div>
         <div className="card">
+          <h2>Import Draft Pack</h2>
+          <label>Workspace ID<input value={workspaceId} onChange={(e) => setWorkspaceId(e.target.value)} /></label>
+          <label>Draft Pack Source Directory<input value={importSource} onChange={(e) => setImportSource(e.target.value)} placeholder="e.g. generated-pack" /></label>
+          <button onClick={importWorkspace}>Import into Workspace</button>
+        </div>
+        <div className="card">
           <h2>Recent</h2>
           <ul>{registry.recent_workspace_ids.map((id) => <li key={id}><button onClick={() => openWorkspace(id)}>{id}</button></li>)}</ul>
         </div>
         <div className="card">
           <h2>All Workspaces</h2>
           <ul>{registry.workspaces.map((ws) => <li key={ws.workspace_id}><button onClick={() => openWorkspace(ws.workspace_id)}>{ws.title} ({ws.workspace_id})</button></li>)}</ul>
-        </div>
-        <div className="card">
-          <h2>Pending Actions</h2>
-          <div className="big">{pendingActions.length}</div>
         </div>
       </section>
 
