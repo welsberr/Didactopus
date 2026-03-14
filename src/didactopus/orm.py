@@ -21,6 +21,23 @@ class PackORM(Base):
     data_json: Mapped[str] = mapped_column(Text)
     is_published: Mapped[bool] = mapped_column(Boolean, default=False)
 
+class LearnerORM(Base):
+    __tablename__ = "learners"
+    id: Mapped[str] = mapped_column(String(100), primary_key=True)
+    owner_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    display_name: Mapped[str] = mapped_column(String(255), default="")
+
+class MasteryRecordORM(Base):
+    __tablename__ = "mastery_records"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    learner_id: Mapped[str] = mapped_column(ForeignKey("learners.id"), index=True)
+    concept_id: Mapped[str] = mapped_column(String(100), index=True)
+    dimension: Mapped[str] = mapped_column(String(100), default="mastery")
+    score: Mapped[float] = mapped_column(Float, default=0.0)
+    confidence: Mapped[float] = mapped_column(Float, default=0.0)
+    evidence_count: Mapped[int] = mapped_column(Integer, default=0)
+    last_updated: Mapped[str] = mapped_column(String(100), default="")
+
 class KnowledgeCandidateORM(Base):
     __tablename__ = "knowledge_candidates"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -77,44 +94,4 @@ class SynthesisCandidateORM(Base):
     explanation: Mapped[str] = mapped_column(Text, default="")
     evidence_json: Mapped[str] = mapped_column(Text, default="{}")
     current_status: Mapped[str] = mapped_column(String(50), default="proposed")
-    created_at: Mapped[str] = mapped_column(String(100), default="")
-
-class PackPatchProposalORM(Base):
-    __tablename__ = "pack_patch_proposals"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    candidate_id: Mapped[int] = mapped_column(ForeignKey("knowledge_candidates.id"), index=True)
-    pack_id: Mapped[str] = mapped_column(String(100), index=True)
-    patch_type: Mapped[str] = mapped_column(String(100), default="content_revision")
-    title: Mapped[str] = mapped_column(String(255))
-    proposed_change_json: Mapped[str] = mapped_column(Text, default="{}")
-    evidence_summary: Mapped[str] = mapped_column(Text, default="")
-    reviewer_notes: Mapped[str] = mapped_column(Text, default="")
-    status: Mapped[str] = mapped_column(String(50), default="proposed")
-    created_at: Mapped[str] = mapped_column(String(100), default="")
-
-class CurriculumDraftORM(Base):
-    __tablename__ = "curriculum_drafts"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    candidate_id: Mapped[int] = mapped_column(ForeignKey("knowledge_candidates.id"), index=True)
-    topic_focus: Mapped[str] = mapped_column(String(255), default="")
-    product_type: Mapped[str] = mapped_column(String(100), default="lesson_outline")
-    audience: Mapped[str] = mapped_column(String(100), default="general")
-    source_concepts_json: Mapped[str] = mapped_column(Text, default="[]")
-    content_markdown: Mapped[str] = mapped_column(Text, default="")
-    editorial_notes: Mapped[str] = mapped_column(Text, default="")
-    status: Mapped[str] = mapped_column(String(50), default="draft")
-    created_at: Mapped[str] = mapped_column(String(100), default="")
-
-class SkillBundleORM(Base):
-    __tablename__ = "skill_bundles"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    candidate_id: Mapped[int] = mapped_column(ForeignKey("knowledge_candidates.id"), index=True)
-    skill_name: Mapped[str] = mapped_column(String(255))
-    domain: Mapped[str] = mapped_column(String(100), default="")
-    prerequisites_json: Mapped[str] = mapped_column(Text, default="[]")
-    expected_inputs_json: Mapped[str] = mapped_column(Text, default="[]")
-    failure_modes_json: Mapped[str] = mapped_column(Text, default="[]")
-    validation_checks_json: Mapped[str] = mapped_column(Text, default="[]")
-    canonical_examples_json: Mapped[str] = mapped_column(Text, default="[]")
-    status: Mapped[str] = mapped_column(String(50), default="draft")
     created_at: Mapped[str] = mapped_column(String(100), default="")

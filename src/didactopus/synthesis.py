@@ -32,6 +32,7 @@ def generate_synthesis_candidates(source_pack_id: str | None = None, target_pack
     by_id = {p.id: p for p in packs}
     source_packs = [by_id[source_pack_id]] if source_pack_id and source_pack_id in by_id else packs
     target_packs = [by_id[target_pack_id]] if target_pack_id and target_pack_id in by_id else packs
+
     created = []
     seen = set()
     for sp in source_packs:
@@ -48,6 +49,7 @@ def generate_synthesis_candidates(source_pack_id: str | None = None, target_pack
                     total = 0.35 * sem + 0.25 * struct + 0.20 * traj + 0.10 * review_prior + 0.10 * novelty
                     if total < 0.45:
                         continue
+                    explanation = f"Possible cross-pack overlap between '{ca.get('title')}' and '{cb.get('title')}'."
                     sid = create_synthesis_candidate(
                         source_concept_id=ca.get("id", ""),
                         target_concept_id=cb.get("id", ""),
@@ -58,7 +60,7 @@ def generate_synthesis_candidates(source_pack_id: str | None = None, target_pack
                         score_structural=struct,
                         score_trajectory=traj,
                         score_review_history=review_prior,
-                        explanation=f"Possible cross-pack overlap between '{ca.get('title')}' and '{cb.get('title')}'.",
+                        explanation=explanation,
                         evidence={"novelty": novelty, "source_title": ca.get("title"), "target_title": cb.get("title")},
                     )
                     seen.add((ca.get("id"), cb.get("id")))

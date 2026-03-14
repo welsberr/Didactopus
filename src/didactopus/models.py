@@ -27,6 +27,10 @@ class KnowledgeCandidateCreate(BaseModel):
     synthesis_score: float = 0.0
     triage_lane: str = "archive"
 
+class KnowledgeCandidateUpdate(BaseModel):
+    triage_lane: str | None = None
+    current_status: str | None = None
+
 class ReviewCreate(BaseModel):
     review_kind: str = "human_review"
     verdict: str
@@ -49,3 +53,15 @@ class SynthesisPromoteRequest(BaseModel):
 class CreateLearnerRequest(BaseModel):
     learner_id: str
     display_name: str = ""
+
+class MasteryRecord(BaseModel):
+    concept_id: str
+    dimension: str
+    score: float = 0.0
+    confidence: float = 0.0
+    evidence_count: int = 0
+    last_updated: str = ""
+
+class LearnerState(BaseModel):
+    learner_id: str
+    records: list[MasteryRecord] = Field(default_factory=list)

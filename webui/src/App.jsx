@@ -1,37 +1,56 @@
 import React, { useEffect, useState } from "react";
-import { login, listCandidates, createCandidate, promoteCandidate, runSynthesis, listSynthesisCandidates, promoteSynthesis, listPackPatches, listCurriculumDrafts, listSkillBundles } from "./api";
+import { login, listCandidates, createCandidate, createReview, promoteCandidate, runSynthesis, listSynthesisCandidates, promoteSynthesis } from "./api";
 
 function LoginView({ onAuth }) {
   const [username, setUsername] = useState("reviewer");
   const [password, setPassword] = useState("demo-pass");
   const [error, setError] = useState("");
   async function doLogin() {
-    try { onAuth(await login(username, password)); }
-    catch { setError("Login failed"); }
+    try {
+      const result = await login(username, password);
+      onAuth(result);
+    } catch {
+      setError("Login failed");
+    }
   }
   return (
-    <div className="page narrow"><section className="card">
-      <h1>Didactopus promotion targets</h1>
-      <label>Username<input value={username} onChange={(e)=>setUsername(e.target.value)} /></label>
-      <label>Password<input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} /></label>
-      <button className="primary" onClick={doLogin}>Login</button>
-      {error ? <div className="error">{error}</div> : null}
-    </section></div>
+    <div className="page narrow">
+      <section className="card">
+        <h1>Didactopus review workbench</h1>
+        <label>Username<input value={username} onChange={(e) => setUsername(e.target.value)} /></label>
+        <label>Password<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /></label>
+        <button className="primary" onClick={doLogin}>Login</button>
+        {error ? <div className="error">{error}</div> : null}
+      </section>
+    </div>
   );
 }
 
-function CandidateCard({ candidate, onPromote }) {
+function CandidateCard({ candidate, onReview, onPromote }) {
   return (
     <div className="card small">
       <h3>{candidate.title}</h3>
-      <div className="muted">{candidate.candidate_kind} · {candidate.triage_lane}</div>
+      <div className="muted">{candidate.candidate_kind} · lane: {candidate.triage_lane} · status: {candidate.current_status}</div>
       <p>{candidate.summary}</p>
+      <div className="tiny">confidence {candidate.confidence_hint.toFixed(2)} · novelty {candidate.novelty_score.toFixed(2)} · synthesis {candidate.synthesis_score.toFixed(2)}</div>
       <div className="actions">
-        <button onClick={() => onPromote(candidate.candidate_id, "pack_improvement")}>Make patch proposal</button>
-        <button onClick={() => onPromote(candidate.candidate_id, "curriculum_draft")}>Make curriculum draft</button>
-        <button onClick={() => onPromote(candidate.candidate_id, "reusable_skill_bundle")}>Make skill bundle</button>
+        <button onClick={() => onReview(candidate.candidate_id, "accept_pack_improvement")}>Accept as pack improvement</button>
+        <button onClick={() => onPromote(candidate.candidate_id, "curriculum_draft")}>Promote to curriculum draft</button>
+        <button onClick={() => onPromote(candidate.candidate_id, "reusable_skill_bundle")}>Promote to skill bundle</button>
         <button onClick={() => onPromote(candidate.candidate_id, "archive")}>Archive</button>
       </div>
+    </div>
+  );
+}
+
+function SynthesisCard({ item, onPromote }) {
+  return (
+    <div className="card small">
+      <h3>{item.source_concept_id} ↔ {item.target_concept_id}</h3>
+      <div className="muted">{item.source_pack_id} → {item.target_pack_id}</div>
+      <p>{item.explanation}</p>
+      <div className="tiny">total {item.score_total.toFixed(2)} · semantic {item.score_semantic.toFixed(2)} · structural {item.score_structural.toFixed(2)}</div>
+      <button onClick={() => onPromote(item.synthesis_id)}>Promote into workflow</button>
     </div>
   );
 }
@@ -40,72 +59,72 @@ export default function App() {
   const [auth, setAuth] = useState(null);
   const [candidates, setCandidates] = useState([]);
   const [synthesis, setSynthesis] = useState([]);
-  const [patches, setPatches] = useState([]);
-  const [curriculum, setCurriculum] = useState([]);
-  const [skills, setSkills] = useState([]);
   const [message, setMessage] = useState("");
 
   async function reload(token = auth?.access_token) {
     if (!token) return;
-    const [c, s, p, d, k] = await Promise.all([
-      listCandidates(token),
-      listSynthesisCandidates(token),
-      listPackPatches(token),
-      listCurriculumDrafts(token),
-      listSkillBundles(token),
-    ]);
-    setCandidates(c);
-    setSynthesis(s);
-    setPatches(p);
-    setCurriculum(d);
-    setSkills(k);
+    setCandidates(await listCandidates(token));
+    setSynthesis(await listSynthesisCandidates(token));
   }
 
-  useEffect(() => { if (auth?.access_token) reload(auth.access_token); }, [auth]);
+  useEffect(() => {
+    if (auth?.access_token) {
+      reload(auth.access_token);
+    }
+  }, [auth]);
 
   async function seedCandidate() {
-    await createCandidate(auth.access_token, {
+    const payload = {
       source_type: "learner_export",
+      source_artifact_id: null,
       learner_id: "wesley-learner",
       pack_id: "biology-pack",
       candidate_kind: "hidden_prerequisite",
-      title: "Probability intuition before drift",
-      summary: "Learner evidence suggests drift is easier after explicit random-process intuition.",
-      structured_payload: {
-        affected_concept: "drift",
-        prerequisites: ["variation", "random_walk"],
-        source_concepts: ["drift", "variation"],
-        expected_inputs: ["short explanation", "worked example"],
-        failure_modes: ["treating drift as directional"],
-        validation_checks: ["explains stochastic change"],
-        canonical_examples: ["coin flip population drift example"]
-      },
-      evidence_summary: "Repeated learner confusion with stochastic interpretation.",
-      confidence_hint: 0.78,
-      novelty_score: 0.69,
-      synthesis_score: 0.55,
+      title: "Possible hidden prerequisite for drift",
+      summary: "Learner evidence suggests probability intuition should be explicit before drift.",
+      structured_payload: { affected_concept: "drift", suggested_prereq: "variation" },
+      evidence_summary: "Repeated confusion on stochastic interpretation.",
+      confidence_hint: 0.73,
+      novelty_score: 0.66,
+      synthesis_score: 0.42,
       triage_lane: "pack_improvement"
-    });
+    };
+    await createCandidate(auth.access_token, payload);
     await reload();
     setMessage("Seed candidate created.");
   }
 
-  async function doPromote(candidateId, target) {
-    await promoteCandidate(auth.access_token, candidateId, { promotion_target: target, target_object_id: "", promotion_status: "approved" });
+  async function handleReview(candidateId, verdict) {
+    await createReview(auth.access_token, candidateId, {
+      review_kind: "human_review",
+      verdict,
+      rationale: "Accepted in reviewer workbench demo.",
+      requested_changes: ""
+    });
+    await reload();
+    setMessage(`Review added to candidate ${candidateId}.`);
+  }
+
+  async function handlePromote(candidateId, target) {
+    await promoteCandidate(auth.access_token, candidateId, {
+      promotion_target: target,
+      target_object_id: "",
+      promotion_status: "approved"
+    });
     await reload();
     setMessage(`Candidate ${candidateId} promoted to ${target}.`);
   }
 
-  async function doSynthesis() {
-    await runSynthesis(auth.access_token, { source_pack_id: "biology-pack", target_pack_id: "math-pack", limit: 10 });
+  async function handleRunSynthesis() {
+    await runSynthesis(auth.access_token, { source_pack_id: "biology-pack", target_pack_id: "math-pack", limit: 12 });
     await reload();
     setMessage("Synthesis run completed.");
   }
 
-  async function doPromoteSynthesis(synthesisId) {
+  async function handlePromoteSynthesis(synthesisId) {
     await promoteSynthesis(auth.access_token, synthesisId, { promotion_target: "pack_improvement" });
     await reload();
-    setMessage(`Synthesis ${synthesisId} promoted.`);
+    setMessage(`Synthesis candidate ${synthesisId} promoted into workflow.`);
   }
 
   if (!auth) return <LoginView onAuth={setAuth} />;
@@ -114,43 +133,32 @@ export default function App() {
     <div className="page">
       <header className="hero">
         <div>
-          <h1>Promotion target objects</h1>
-          <p>Materialize promotions into patch proposals, curriculum drafts, and reusable skill bundles.</p>
+          <h1>Review workbench + synthesis engine</h1>
+          <p>Triages learner-derived knowledge into pack improvements, curriculum drafts, skill bundles, or archive, while surfacing cross-pack synthesis proposals.</p>
           <div className="muted">{message}</div>
         </div>
         <div className="toolbar">
           <button onClick={seedCandidate}>Seed candidate</button>
-          <button onClick={doSynthesis}>Run synthesis</button>
+          <button onClick={handleRunSynthesis}>Run synthesis</button>
           <button onClick={() => reload()}>Refresh</button>
         </div>
       </header>
 
-      <main className="grid3">
+      <main className="grid">
         <section>
-          <h2>Candidates</h2>
+          <h2>Knowledge candidates</h2>
           <div className="stack">
-            {candidates.map(c => <CandidateCard key={c.candidate_id} candidate={c} onPromote={doPromote} />)}
-          </div>
-        </section>
-        <section>
-          <h2>Synthesis</h2>
-          <div className="stack">
-            {synthesis.map(s => (
-              <div className="card small" key={s.synthesis_id}>
-                <h3>{s.source_concept_id} ↔ {s.target_concept_id}</h3>
-                <div className="muted">{s.source_pack_id} → {s.target_pack_id}</div>
-                <p>{s.explanation}</p>
-                <button onClick={() => doPromoteSynthesis(s.synthesis_id)}>Promote synthesis</button>
-              </div>
+            {candidates.map((c) => (
+              <CandidateCard key={c.candidate_id} candidate={c} onReview={handleReview} onPromote={handlePromote} />
             ))}
           </div>
         </section>
         <section>
-          <h2>Materialized outputs</h2>
+          <h2>Synthesis candidates</h2>
           <div className="stack">
-            <div className="card small"><h3>Pack patches</h3><pre>{JSON.stringify(patches, null, 2)}</pre></div>
-            <div className="card small"><h3>Curriculum drafts</h3><pre>{JSON.stringify(curriculum, null, 2)}</pre></div>
-            <div className="card small"><h3>Skill bundles</h3><pre>{JSON.stringify(skills, null, 2)}</pre></div>
+            {synthesis.map((s) => (
+              <SynthesisCard key={s.synthesis_id} item={s} onPromote={handlePromoteSynthesis} />
+            ))}
           </div>
         </section>
       </main>

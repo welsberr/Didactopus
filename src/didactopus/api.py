@@ -4,23 +4,22 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from .db import Base, engine
 from .models import (
-    LoginRequest, TokenPair, KnowledgeCandidateCreate,
+    LoginRequest, TokenPair, KnowledgeCandidateCreate, KnowledgeCandidateUpdate,
     ReviewCreate, PromoteRequest, SynthesisRunRequest, SynthesisPromoteRequest,
     CreateLearnerRequest
 )
 from .repository import (
-    authenticate_user, get_user_by_id, create_learner,
-    create_candidate, list_candidates, get_candidate,
+    authenticate_user, get_user_by_id, create_learner, learner_owned_by_user,
+    create_candidate, list_candidates, get_candidate, update_candidate,
     create_review, list_reviews, create_promotion, list_promotions,
-    list_synthesis_candidates, get_synthesis_candidate,
-    list_pack_patches, list_curriculum_drafts, list_skill_bundles
+    list_synthesis_candidates, get_synthesis_candidate
 )
 from .auth import issue_access_token, issue_refresh_token, decode_token, new_token_id
 from .synthesis import generate_synthesis_candidates
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Didactopus Promotion Target Objects API")
+app = FastAPI(title="Didactopus Review Workbench API")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 _refresh_tokens = {}
@@ -75,6 +74,13 @@ def api_get_candidate(candidate_id: int, reviewer = Depends(require_reviewer)):
         raise HTTPException(status_code=404, detail="Candidate not found")
     return row
 
+@app.post("/api/knowledge-candidates/{candidate_id}/update")
+def api_update_candidate(candidate_id: int, payload: KnowledgeCandidateUpdate, reviewer = Depends(require_reviewer)):
+    row = update_candidate(candidate_id, triage_lane=payload.triage_lane, current_status=payload.current_status)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Candidate not found")
+    return {"candidate_id": row.id, "triage_lane": row.triage_lane, "current_status": row.current_status}
+
 @app.post("/api/knowledge-candidates/{candidate_id}/reviews")
 def api_create_review(candidate_id: int, payload: ReviewCreate, reviewer = Depends(require_reviewer)):
     if get_candidate(candidate_id) is None:
@@ -96,18 +102,6 @@ def api_promote_candidate(candidate_id: int, payload: PromoteRequest, reviewer =
 @app.get("/api/promotions")
 def api_list_promotions(reviewer = Depends(require_reviewer)):
     return list_promotions()
-
-@app.get("/api/pack-patches")
-def api_list_pack_patches(reviewer = Depends(require_reviewer)):
-    return list_pack_patches()
-
-@app.get("/api/curriculum-drafts")
-def api_list_curriculum_drafts(reviewer = Depends(require_reviewer)):
-    return list_curriculum_drafts()
-
-@app.get("/api/skill-bundles")
-def api_list_skill_bundles(reviewer = Depends(require_reviewer)):
-    return list_skill_bundles()
 
 @app.post("/api/synthesis/run")
 def api_run_synthesis(payload: SynthesisRunRequest, reviewer = Depends(require_reviewer)):
