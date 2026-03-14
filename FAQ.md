@@ -1,88 +1,66 @@
-# Didactopus FAQ
+# Didactopus FAQ: Artifact Lifecycle and Knowledge Reuse
 
-## What is Didactopus for?
+## Why keep artifacts after rendering?
 
-Didactopus helps represent learning as a knowledge graph with evidence, mastery,
-artifacts, and reusable outputs. It supports both learners and the systems that
-author, review, and improve learning materials.
+Artifacts are evidence of learning trajectories, pack structure, and interpretation.
+They support:
+- learner reflection
+- mentor review
+- debugging AI learners
+- presentation and publication
 
-## Is it only for AI learners?
+## Why do retention policies matter?
 
-No. It is built for:
+Not every artifact should be stored forever. Some are transient debugging outputs;
+others are durable portfolio items or research artifacts.
 
-- human learners
-- AI learners
-- hybrid workflows where AI and humans both contribute
+Retention policy support lets deployments distinguish:
+- short-lived temporary outputs
+- retained educational outputs
+- archival artifacts worth preserving
 
-## Why emphasize synthesis?
+## How can learner knowledge be used outside Didactopus?
 
-Because understanding often improves when learners recognize structural overlap
-between different domains. Transfer, analogy, and conceptual reuse are central to
-real intellectual progress.
+A learner's activity can be exported into structured forms that support:
+- revised or expanded domain packs
+- lesson plans and conventional curriculum products
+- AI skill definitions or prompts
+- mentor-facing notes about misconceptions and discoveries
 
-Examples include:
+## Can learners improve domain packs?
 
-- entropy in thermodynamics and information theory
-- drift in population genetics and random walks
-- feedback in engineering, biology, and machine learning
+Yes. Learners sometimes notice:
+- confusing sequence order
+- hidden prerequisites
+- missing examples
+- better analogies
+- edge cases mentors overlooked
 
-Didactopus tries to surface these overlaps rather than treating subjects as sealed
-containers.
+Didactopus should capture these as improvement suggestions rather than losing them.
 
-## Why not automatically trust learner-derived knowledge?
+## How could this support agentic AI skills?
 
-Learner-derived knowledge can be valuable, but it still needs review,
-validation, and provenance. A learner may discover something surprising and
-useful, but the system should preserve both usefulness and caution.
-
-## What can learner-derived knowledge become?
-
-Depending on review outcome, it can be promoted into:
-
-- accepted pack improvements
-- curriculum drafts
-- reusable skill bundles
-- archived but unadopted suggestions
-
-## What is the review-and-promotion workflow?
-
-It is the process by which exported learner observations are triaged, reviewed,
-validated, and either promoted or archived.
-
-## What is the synthesis engine?
-
-The synthesis engine analyzes concept graphs and learner evidence to identify
-candidate conceptual overlaps, analogies, and transferable structures across
-packs.
-
-## Can Didactopus produce traditional educational outputs?
-
-Yes. Knowledge exports can seed:
-
-- lesson outlines
-- study guides
-- exercise sets
-- instructor notes
-- curriculum maps
-
-## Can Didactopus produce AI skill-like outputs?
-
-Yes. Structured exports can support:
-
-- skill manifests
-- evaluation checklists
-- failure-mode notes
+A learner knowledge export can be mapped into:
+- scope and goals
+- prerequisite structure
 - canonical examples
-- prerequisite maps
+- failure modes
+- evaluation checks
+- recommended actions
 
-## What happens to artifacts over time?
+That makes it a plausible source for building agent skills or skill-like bundles.
 
-Artifacts can be:
+## How could this support traditional curriculum products?
 
-- retained
-- archived
-- expired
-- soft-deleted
+Knowledge export can seed:
+- lesson outlines
+- exercise sets
+- study guides
+- formative assessment prompts
+- instructor notes
+- capstone project ideas
 
-Retention policy support is included so temporary debugging products and durable
-portfolio artifacts can be treated differently.
+## Is exported learner knowledge treated as automatically correct?
+
+No. Exported learner knowledge should be treated as candidate structured knowledge.
+It is useful, but it still needs review, validation, and provenance tracking.

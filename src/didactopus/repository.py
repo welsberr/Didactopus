@@ -1,28 +1,10 @@
 from __future__ import annotations
 import json
-from datetime import datetime, timezone
 from sqlalchemy import select
 from .db import SessionLocal
-from .orm import UserORM, ServiceAccountORM, AgentAuditLogORM, RefreshTokenORM, PackORM, LearnerORM, MasteryRecordORM, EvidenceEventORM, EvaluatorJobORM
-from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent, DeploymentPolicyProfile
-from .auth import verify_password, hash_password
-from .config import load_settings
-
-settings = load_settings()
-
-def now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
-
-def deployment_policy_profile() -> DeploymentPolicyProfile:
-    return DeploymentPolicyProfile(
-        profile_name=settings.deployment_policy_profile,
-        default_personal_lane_enabled=True,
-        default_community_lane_enabled=True,
-        community_publish_requires_approval=True,
-        personal_publish_direct=True,
-        reviewer_assignment_required=False,
-        description="Deployment policy scaffold."
-    )
+from .orm import UserORM, RefreshTokenORM, PackORM, LearnerORM, MasteryRecordORM, EvidenceEventORM, RenderJobORM, ArtifactORM
+from .models import PackData, LearnerState, MasteryRecord, EvidenceEvent
+from .auth import verify_password
 
 def get_user_by_username(username: str):
     with SessionLocal() as db:
@@ -37,83 +19,6 @@ def authenticate_user(username: str, password: str):
     if user is None or not verify_password(password, user.password_hash) or not user.is_active:
         return None
     return user
-
-def create_service_account(name: str, owner_user_id: int | None, description: str, scopes: list[str], secret: str):
-    with SessionLocal() as db:
-        sa = ServiceAccountORM(
-            name=name,
-            owner_user_id=owner_user_id,
-            description=description,
-            scopes_json=json.dumps(scopes),
-            secret_hash=hash_password(secret),
-            is_active=True,
-        )
-        db.add(sa)
-        db.commit()
-        db.refresh(sa)
-        return sa
-
-def list_service_accounts():
-    with SessionLocal() as db:
-        rows = db.execute(select(ServiceAccountORM).order_by(ServiceAccountORM.id)).scalars().all()
-        return [{"id": r.id, "name": r.name, "owner_user_id": r.owner_user_id, "description": r.description, "scopes": json.loads(r.scopes_json or "[]"), "is_active": r.is_active} for r in rows]
-
-def get_service_account_by_name(name: str):
-    with SessionLocal() as db:
-        return db.execute(select(ServiceAccountORM).where(ServiceAccountORM.name == name)).scalar_one_or_none()
-
-def authenticate_service_account(name: str, secret: str):
-    sa = get_service_account_by_name(name)
-    if sa is None or not sa.is_active or not verify_password(secret, sa.secret_hash):
-        return None
-    return sa
-
-def rotate_service_account_secret(name: str, new_secret: str):
-    with SessionLocal() as db:
-        sa = db.execute(select(ServiceAccountORM).where(ServiceAccountORM.name == name)).scalar_one_or_none()
-        if sa is None:
-            return None
-        sa.secret_hash = hash_password(new_secret)
-        db.commit()
-        db.refresh(sa)
-        return sa
-
-def set_service_account_active(name: str, is_active: bool):
-    with SessionLocal() as db:
-        sa = db.execute(select(ServiceAccountORM).where(ServiceAccountORM.name == name)).scalar_one_or_none()
-        if sa is None:
-            return None
-        sa.is_active = is_active
-        db.commit()
-        db.refresh(sa)
-        return sa
-
-def add_agent_audit_log(service_account_id: int, service_account_name: str, action: str, target: str, outcome: str, detail: dict):
-    with SessionLocal() as db:
-        db.add(AgentAuditLogORM(
-            service_account_id=service_account_id,
-            service_account_name=service_account_name,
-            action=action,
-            target=target,
-            outcome=outcome,
-            detail_json=json.dumps(detail),
-            created_at=now_iso(),
-        ))
-        db.commit()
-
-def list_agent_audit_logs(limit: int = 200):
-    with SessionLocal() as db:
-        rows = db.execute(select(AgentAuditLogORM).order_by(AgentAuditLogORM.id.desc())).scalars().all()[:limit]
-        return [{
-            "id": r.id,
-            "service_account_id": r.service_account_id,
-            "service_account_name": r.service_account_name,
-            "action": r.action,
-            "target": r.target,
-            "outcome": r.outcome,
-            "detail": json.loads(r.detail_json or "{}"),
-            "created_at": r.created_at,
-        } for r in rows]
 
 def store_refresh_token(user_id: int, token_id: str):
     with SessionLocal() as db:
@@ -155,9 +60,7 @@ def get_pack_row(pack_id: str):
     with SessionLocal() as db:
         return db.get(PackORM, pack_id)
 
-def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "personal", is_published: bool = False, change_summary: str = ""):
-    validation = {"ok": len(pack.concepts) > 0, "warnings": [] if len(pack.concepts) > 0 else ["Pack has no concepts."], "errors": []}
-    provenance = {"source_count": pack.compliance.sources, "restrictive_flags": list(pack.compliance.flags)}
+def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "personal", is_published: bool = False):
     with SessionLocal() as db:
         row = db.get(PackORM, pack.id)
         payload = json.dumps(pack.model_dump())
@@ -170,10 +73,6 @@ def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "p
                 subtitle=pack.subtitle,
                 level=pack.level,
                 data_json=payload,
-                validation_json=json.dumps(validation),
-                provenance_json=json.dumps(provenance),
-                governance_state="personal_ready" if policy_lane == "personal" else "draft",
-                current_version=1,
                 is_published=is_published if policy_lane == "personal" else False,
             )
             db.add(row)
@@ -184,9 +83,6 @@ def upsert_pack(pack: PackData, submitted_by_user_id: int, policy_lane: str = "p
             row.subtitle = pack.subtitle
             row.level = pack.level
             row.data_json = payload
-            row.validation_json = json.dumps(validation)
-            row.provenance_json = json.dumps(provenance)
-            row.current_version += 1
             if policy_lane == "personal":
                 row.is_published = is_published
         db.commit()
@@ -223,31 +119,117 @@ def save_learner_state(state: LearnerState):
         db.commit()
     return state
 
-def create_evaluator_job(learner_id: str, pack_id: str, concept_id: str, submitted_text: str):
+def create_render_job(learner_id: str, pack_id: str, requested_format: str, fps: int, theme: str):
     with SessionLocal() as db:
-        job = EvaluatorJobORM(learner_id=learner_id, pack_id=pack_id, concept_id=concept_id, submitted_text=submitted_text, status="queued", trace_json=json.dumps({"notes": ["Job queued"]}))
-        db.add(job)
+        row = RenderJobORM(
+            learner_id=learner_id,
+            pack_id=pack_id,
+            requested_format=requested_format,
+            fps=fps,
+            theme=theme,
+            status="queued",
+        )
+        db.add(row)
         db.commit()
-        db.refresh(job)
-        return job.id
+        db.refresh(row)
+        return row.id
 
-def list_evaluator_jobs_for_learner(learner_id: str):
+def update_render_job(job_id: int, **fields):
     with SessionLocal() as db:
-        return db.execute(select(EvaluatorJobORM).where(EvaluatorJobORM.learner_id == learner_id).order_by(EvaluatorJobORM.id.desc())).scalars().all()
-
-def get_evaluator_job(job_id: int):
-    with SessionLocal() as db:
-        return db.get(EvaluatorJobORM, job_id)
-
-def update_evaluator_job(job_id: int, status: str, score: float | None = None, confidence_hint: float | None = None, notes: str = "", trace: dict | None = None):
-    with SessionLocal() as db:
-        job = db.get(EvaluatorJobORM, job_id)
-        if job is None:
-            return
-        job.status = status
-        job.result_score = score
-        job.result_confidence_hint = confidence_hint
-        job.result_notes = notes
-        if trace is not None:
-            job.trace_json = json.dumps(trace)
+        row = db.get(RenderJobORM, job_id)
+        if row is None:
+            return None
+        for k, v in fields.items():
+            setattr(row, k, v)
         db.commit()
+        db.refresh(row)
+        return row
+
+def list_render_jobs(learner_id: str | None = None):
+    with SessionLocal() as db:
+        stmt = select(RenderJobORM).order_by(RenderJobORM.id.desc())
+        if learner_id:
+            stmt = stmt.where(RenderJobORM.learner_id == learner_id)
+        rows = db.execute(stmt).scalars().all()
+        return [{
+            "job_id": r.id,
+            "learner_id": r.learner_id,
+            "pack_id": r.pack_id,
+            "requested_format": r.requested_format,
+            "fps": r.fps,
+            "theme": r.theme,
+            "status": r.status,
+            "bundle_dir": r.bundle_dir,
+            "payload_json": r.payload_json,
+            "manifest_path": r.manifest_path,
+            "script_path": r.script_path,
+            "error_text": r.error_text,
+        } for r in rows]
+
+def register_artifact(render_job_id: int, learner_id: str, pack_id: str, artifact_type: str, fmt: str, title: str, path: str, metadata: dict, retention_class: str = "standard", expires_at: str = ""):
+    with SessionLocal() as db:
+        row = ArtifactORM(
+            render_job_id=render_job_id,
+            learner_id=learner_id,
+            pack_id=pack_id,
+            artifact_type=artifact_type,
+            format=fmt,
+            title=title,
+            path=path,
+            metadata_json=json.dumps(metadata),
+            retention_class=retention_class,
+            expires_at=expires_at,
+            is_deleted=False,
+        )
+        db.add(row)
+        db.commit()
+        db.refresh(row)
+        return row.id
+
+def list_artifacts(learner_id: str | None = None, include_deleted: bool = False):
+    with SessionLocal() as db:
+        stmt = select(ArtifactORM).order_by(ArtifactORM.id.desc())
+        if learner_id:
+            stmt = stmt.where(ArtifactORM.learner_id == learner_id)
+        if not include_deleted:
+            stmt = stmt.where(ArtifactORM.is_deleted == False)
+        rows = db.execute(stmt).scalars().all()
+        return [{
+            "artifact_id": r.id,
+            "render_job_id": r.render_job_id,
+            "learner_id": r.learner_id,
+            "pack_id": r.pack_id,
+            "artifact_type": r.artifact_type,
+            "format": r.format,
+            "title": r.title,
+            "path": r.path,
+            "retention_class": r.retention_class,
+            "expires_at": r.expires_at,
+            "is_deleted": r.is_deleted,
+            "metadata": json.loads(r.metadata_json or "{}"),
+        } for r in rows]
+
+def get_artifact(artifact_id: int):
+    with SessionLocal() as db:
+        return db.get(ArtifactORM, artifact_id)
+
+def update_artifact_retention(artifact_id: int, retention_class: str, expires_at: str):
+    with SessionLocal() as db:
+        row = db.get(ArtifactORM, artifact_id)
+        if row is None:
+            return None
+        row.retention_class = retention_class
+        row.expires_at = expires_at
+        db.commit()
+        db.refresh(row)
+        return row
+
+def soft_delete_artifact(artifact_id: int):
+    with SessionLocal() as db:
+        row = db.get(ArtifactORM, artifact_id)
+        if row is None:
+            return None
+        row.is_deleted = True
+        db.commit()
+        db.refresh(row)
+        return row

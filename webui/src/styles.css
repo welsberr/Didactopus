@@ -3,22 +3,21 @@
 }
 * { box-sizing:border-box; }
 body { margin:0; font-family:Arial, Helvetica, sans-serif; background:var(--bg); color:var(--text); }
-.page { max-width:1400px; margin:0 auto; padding:24px; }
+.page { max-width:1600px; margin:0 auto; padding:24px; }
 .narrow-page { max-width:520px; }
-.hero { background:var(--card); border:1px solid var(--border); border-radius:22px; padding:24px; display:flex; justify-content:space-between; gap:16px; }
-label { display:block; font-weight:600; margin-bottom:10px; }
-input { width:100%; margin-top:6px; border:1px solid var(--border); border-radius:10px; padding:10px; font:inherit; background:white; }
-button { border:1px solid var(--border); background:white; border-radius:12px; padding:8px 12px; cursor:pointer; margin-right:8px; }
-.primary { background:var(--accent); color:white; border-color:var(--accent); }
+.hero { background:var(--card); border:1px solid var(--border); border-radius:22px; padding:24px; display:flex; justify-content:space-between; gap:16px; align-items:flex-start; }
+.controls { display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
+label { display:block; font-weight:600; }
+input, select { width:100%; margin-top:6px; border:1px solid var(--border); border-radius:10px; padding:10px; font:inherit; background:white; }
+button { border:1px solid var(--border); background:white; border-radius:12px; padding:10px 14px; cursor:pointer; }
 .card { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:18px; }
 .narrow { margin-top:60px; }
 .layout { display:grid; gap:16px; }
-.twocol { grid-template-columns:1fr 1fr; }
-.full { grid-column:1 / -1; }
-.prebox { background:#f7f8fa; border:1px solid var(--border); border-radius:12px; padding:12px; overflow:auto; max-height:280px; }
-.prebox.tall { max-height:420px; }
+.threecol { grid-template-columns:1fr 1fr 1fr; }
+.prebox { background:#f7f8fa; border:1px solid var(--border); border-radius:12px; padding:12px; overflow:auto; max-height:460px; }
 .muted { color:var(--muted); }
 .error { color:#b42318; margin-top:10px; }
-.table { width:100%; border-collapse:collapse; }
-.table th, .table td { border-bottom:1px solid var(--border); text-align:left; padding:8px; vertical-align:top; }
-@media (max-width:1100px) { .twocol { grid-template-columns:1fr; } .hero { flex-direction:column; } .full { grid-column:auto; } }
+@media (max-width:1200px) {
+  .hero { flex-direction:column; }
+  .threecol { grid-template-columns:1fr; }
+}
