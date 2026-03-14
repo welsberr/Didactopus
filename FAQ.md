@@ -1,116 +1,88 @@
-
 # Didactopus FAQ
 
-## What problem does Didactopus solve?
+## What is Didactopus for?
 
-Most learning systems record only test scores or completion status.  
-Didactopus records the **structure of knowledge and the trajectory of learning**, allowing deeper analysis of how understanding develops.
+Didactopus helps represent learning as a knowledge graph with evidence, mastery,
+artifacts, and reusable outputs. It supports both learners and the systems that
+author, review, and improve learning materials.
 
----
+## Is it only for AI learners?
 
-## Is Didactopus only for AI learners?
-
-No.
-
-It is designed for:
+No. It is built for:
 
 - human learners
 - AI learners
-- mixed human‑AI learning systems
+- hybrid workflows where AI and humans both contribute
 
-The architecture intentionally treats both types of learners similarly so their progress can be compared and analyzed.
+## Why emphasize synthesis?
 
----
+Because understanding often improves when learners recognize structural overlap
+between different domains. Transfer, analogy, and conceptual reuse are central to
+real intellectual progress.
 
-## Why represent knowledge as graphs?
+Examples include:
 
-Knowledge graphs make relationships explicit:
+- entropy in thermodynamics and information theory
+- drift in population genetics and random walks
+- feedback in engineering, biology, and machine learning
 
-- prerequisites
-- conceptual similarity
-- cross‑domain analogies
+Didactopus tries to surface these overlaps rather than treating subjects as sealed
+containers.
 
-Graph representations make it easier to visualize and analyze the structure of understanding.
+## Why not automatically trust learner-derived knowledge?
 
----
+Learner-derived knowledge can be valuable, but it still needs review,
+validation, and provenance. A learner may discover something surprising and
+useful, but the system should preserve both usefulness and caution.
 
-## What is synthesis?
+## What can learner-derived knowledge become?
 
-Synthesis is the process of **connecting ideas across different domains**.
+Depending on review outcome, it can be promoted into:
 
-Many major intellectual advances come from recognizing structural similarities between fields.
+- accepted pack improvements
+- curriculum drafts
+- reusable skill bundles
+- archived but unadopted suggestions
 
-Didactopus supports synthesis by:
+## What is the review-and-promotion workflow?
 
-- allowing cross‑pack concept links
-- visualizing conceptual overlap
-- encouraging learners to explore related domains
+It is the process by which exported learner observations are triaged, reviewed,
+validated, and either promoted or archived.
 
----
+## What is the synthesis engine?
 
-## Can learners modify domain packs?
+The synthesis engine analyzes concept graphs and learner evidence to identify
+candidate conceptual overlaps, analogies, and transferable structures across
+packs.
 
-Learners can propose improvements through knowledge export artifacts.
+## Can Didactopus produce traditional educational outputs?
 
-These proposals may then be reviewed by:
+Yes. Knowledge exports can seed:
 
-- mentors
-- domain pack maintainers
-- automated validation systems
+- lesson outlines
+- study guides
+- exercise sets
+- instructor notes
+- curriculum maps
 
-Accepted improvements can be incorporated into future pack versions.
+## Can Didactopus produce AI skill-like outputs?
 
----
+Yes. Structured exports can support:
 
-## What are artifacts?
+- skill manifests
+- evaluation checklists
+- failure-mode notes
+- canonical examples
+- prerequisite maps
 
-Artifacts are outputs produced by Didactopus that capture aspects of learning.
+## What happens to artifacts over time?
 
-Examples:
+Artifacts can be:
 
-- concept graph animations
-- mastery snapshots
-- knowledge export bundles
-- research datasets
+- retained
+- archived
+- expired
+- soft-deleted
 
-Artifacts allow learning to be inspected, shared, and reused.
-
----
-
-## Why have artifact retention policies?
-
-Learning systems can produce large numbers of artifacts.
-
-Retention policies allow systems to:
-
-- automatically remove temporary artifacts
-- preserve historically important outputs
-- archive discoveries or milestones
-
----
-
-## Can Didactopus help build curricula?
-
-Yes.
-
-Knowledge exports and learner artifacts can be used to produce:
-
-- textbooks
-- course modules
-- visual learning materials
-- interactive exercises
-
----
-
-## How does Didactopus help AI systems?
-
-AI agents can use domain packs as structured skill maps.
-
-Learner state tracking allows researchers to observe:
-
-- reasoning development
-- concept acquisition
-- cross‑domain transfer
-
-This makes Didactopus useful for studying AI learning as well as human learning.
-
+Retention policy support is included so temporary debugging products and durable
+portfolio artifacts can be treated differently.
