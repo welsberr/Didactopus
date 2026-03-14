@@ -1,145 +1,206 @@
-import React, { useEffect, useState } from "react";
-import { login, refresh, fetchPacks, fetchLearnerState, putLearnerState, fetchGraphAnimation, createRenderBundle } from "./api";
-import { loadAuth, saveAuth, clearAuth } from "./authStore";
+import React, { useEffect, useMemo, useState } from "react";
+import { applyEvidence, buildMasteryMap, claimReadiness, milestoneMessages, progressPercent, recommendNext } from "./engine";
+import { loadLearnerState, saveLearnerState, resetLearnerState } from "./storage";
 
-function LoginView({ onAuth }) {
-  const [username, setUsername] = useState("wesley");
-  const [password, setPassword] = useState("demo-pass");
-  const [error, setError] = useState("");
-  async function doLogin() {
-    try {
-      const result = await login(username, password);
-      saveAuth(result);
-      onAuth(result);
-    } catch { setError("Login failed"); }
-  }
+const PACKS = ["/packs/bayes-pack.json", "/packs/stats-pack.json"];
+
+function DomainCard({ domain, selected, onSelect }) {
   return (
-    <div className="page narrow-page">
-      <section className="card narrow">
-        <h1>Didactopus login</h1>
-        <label>Username<input value={username} onChange={(e) => setUsername(e.target.value)} /></label>
-        <label>Password<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /></label>
-        <button className="primary" onClick={doLogin}>Login</button>
-        {error ? <div className="error">{error}</div> : null}
-      </section>
+    <button className={`domain-card ${selected ? "selected" : ""}`} onClick={() => onSelect(domain.id)}>
+      <div className="domain-title">{domain.title}</div>
+      <div className="domain-subtitle">{domain.subtitle}</div>
+      <div className="domain-meta">
+        <span>{domain.level}</span>
+        <span>{domain.concepts.length} concepts</span>
+      </div>
+    </button>
+  );
+}
+
+function NextStepCard({ step, onSimulate }) {
+  return (
+    <div className="step-card">
+      <div className="step-header">
+        <div>
+          <h3>{step.title}</h3>
+          <div className="muted">{step.minutes} minutes</div>
+        </div>
+        <div className="reward-pill">{step.reward}</div>
+      </div>
+      <p>{step.reason}</p>
+      <details>
+        <summary>Why this is recommended</summary>
+        <ul>
+          {step.why.map((item, idx) => <li key={idx}>{item}</li>)}
+        </ul>
+      </details>
+      <button className="primary" onClick={() => onSimulate(step)}>Simulate completing this step</button>
     </div>
   );
 }
 
 export default function App() {
-  const [auth, setAuth] = useState(loadAuth());
   const [packs, setPacks] = useState([]);
-  const [learnerId] = useState("wesley-learner");
-  const [packId, setPackId] = useState("");
-  const [bundle, setBundle] = useState(null);
-  const [format, setFormat] = useState("gif");
-  const [fps, setFps] = useState(2);
-  const [message, setMessage] = useState("");
-
-  async function refreshAuthToken() {
-    if (!auth?.refresh_token) return null;
-    try {
-      const result = await refresh(auth.refresh_token);
-      saveAuth(result);
-      setAuth(result);
-      return result;
-    } catch {
-      clearAuth();
-      setAuth(null);
-      return null;
-    }
-  }
-
-  async function guarded(fn) {
-    try { return await fn(auth.access_token); }
-    catch {
-      const next = await refreshAuthToken();
-      if (!next) throw new Error("auth failed");
-      return await fn(next.access_token);
-    }
-  }
+  const [selectedDomainId, setSelectedDomainId] = useState("");
+  const [learnerName, setLearnerName] = useState("Wesley");
+  const [domainStates, setDomainStates] = useState({});
+  const [lastReward, setLastReward] = useState("");
 
   useEffect(() => {
-    if (!auth) return;
-    async function load() {
-      const p = await guarded((token) => fetchPacks(token));
-      setPacks(p);
-      setPackId(p[0]?.id || "");
-    }
-    load();
-  }, [auth]);
+    Promise.all(PACKS.map((u) => fetch(u).then((r) => r.json()))).then((loaded) => {
+      setPacks(loaded);
+      setSelectedDomainId(loaded[0]?.id || "");
+      const states = {};
+      for (const pack of loaded) {
+        states[pack.id] = loadLearnerState(pack.id);
+      }
+      setDomainStates(states);
+    });
+  }, []);
 
-  async function generateDemo() {
-    let state = await guarded((token) => fetchLearnerState(token, learnerId));
-    const base = Date.now();
-    const events = [
-      ["intro", 0.30, "exercise", 0],
-      ["intro", 0.78, "review", 1000],
-      ["second", 0.42, "exercise", 2000],
-      ["second", 0.72, "review", 3000],
-      ["third", 0.25, "exercise", 4000],
-      ["branch", 0.60, "exercise", 5000],
-    ];
-    const latest = {}
-    for (const [cid, score, kind, offset] of events) {
-      const ts = new Date(base + offset).toISOString();
-      state.history.push({ concept_id: cid, dimension: "mastery", score, confidence_hint: 0.6, timestamp: ts, kind, source_id: `demo-${cid}-${offset}` });
-      latest[cid] = { concept_id: cid, dimension: "mastery", score, confidence: Math.min(0.9, score), evidence_count: (latest[cid]?.evidence_count || 0) + 1, last_updated: ts };
-    }
-    state.records = Object.values(latest);
-    await guarded((token) => putLearnerState(token, learnerId, state));
-    setMessage("Demo state generated.");
+  const domain = useMemo(() => packs.find((d) => d.id === selectedDomainId) || null, [packs, selectedDomainId]);
+  const learnerState = domain ? (domainStates[domain.id] || loadLearnerState(domain.id)) : null;
+
+  const masteryMap = useMemo(() => domain && learnerState ? buildMasteryMap(learnerState, domain) : [], [learnerState, domain]);
+  const progress = useMemo(() => domain && learnerState ? progressPercent(learnerState, domain) : 0, [learnerState, domain]);
+  const recs = useMemo(() => domain && learnerState ? recommendNext(learnerState, domain) : [], [learnerState, domain]);
+  const milestones = useMemo(() => domain && learnerState ? milestoneMessages(learnerState, domain) : [], [learnerState, domain]);
+  const readiness = useMemo(() => domain && learnerState ? claimReadiness(learnerState, domain) : {ready:false, mastered:0, avgScore:0, avgConfidence:0}, [learnerState, domain]);
+
+  function updateState(domainId, nextState) {
+    saveLearnerState(domainId, nextState);
+    setDomainStates((prev) => ({ ...prev, [domainId]: nextState }));
   }
 
-  async function renderNow() {
-    const result = await guarded((token) => createRenderBundle(token, learnerId, packId, { learner_id: learnerId, pack_id: packId, format, fps, theme: "default" }));
-    setBundle(result);
-    setMessage("Render bundle created.");
+  function simulateStep(step) {
+    if (!domain || !learnerState) return;
+    const timestamp = new Date().toISOString();
+    const updated = applyEvidence(learnerState, {
+      concept_id: step.conceptId,
+      dimension: "mastery",
+      score: step.scoreHint,
+      confidence_hint: step.confidenceHint,
+      timestamp,
+      kind: "checkpoint",
+      source_id: `ui-${step.id}`
+    });
+    updateState(domain.id, updated);
+    setLastReward(step.reward);
   }
 
-  if (!auth) return <LoginView onAuth={setAuth} />;
+  function resetSelectedDomain() {
+    if (!domain) return;
+    resetLearnerState(domain.id);
+    updateState(domain.id, loadLearnerState(domain.id));
+    setLastReward("");
+  }
+
+  if (!domain || !learnerState) {
+    return <div className="page"><div className="card">Loading packs...</div></div>;
+  }
 
   return (
     <div className="page">
       <header className="hero">
         <div>
-          <h1>Didactopus media rendering pipeline</h1>
-          <p>Create GIF/MP4-ready render bundles from animated learning graphs.</p>
-          <div className="muted">{message}</div>
+          <h1>Didactopus learner prototype</h1>
+          <p>Real pack files, persistent learner state, and live recommendation updates.</p>
         </div>
-        <div className="controls">
-          <label>Pack
-            <select value={packId} onChange={(e) => setPackId(e.target.value)}>
-              {packs.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
-            </select>
+        <div className="hero-controls">
+          <label>
+            Learner name
+            <input value={learnerName} onChange={(e) => setLearnerName(e.target.value)} />
           </label>
-          <label>Format
-            <select value={format} onChange={(e) => setFormat(e.target.value)}>
-              <option value="gif">GIF</option>
-              <option value="mp4">MP4</option>
-            </select>
-          </label>
-          <label>FPS
-            <input type="number" value={fps} onChange={(e) => setFps(Number(e.target.value || 2))} />
-          </label>
-          <button onClick={generateDemo}>Generate demo state</button>
-          <button onClick={renderNow}>Create render bundle</button>
-          <button onClick={() => { clearAuth(); setAuth(null); }}>Logout</button>
+          <button onClick={resetSelectedDomain}>Reset selected domain</button>
         </div>
       </header>
 
-      <main className="layout twocol">
-        <section className="card">
-          <h2>Bundle output</h2>
-          <pre className="prebox">{JSON.stringify(bundle, null, 2)}</pre>
-        </section>
-        <section className="card">
-          <h2>What this bundle contains</h2>
-          <div className="explain">
-            <p>Each bundle includes SVG frames, a JSON manifest, and a render shell script suitable for FFmpeg-based conversion.</p>
-            <p>This keeps artifact generation decoupled from the API server while still making render production straightforward.</p>
-          </div>
-        </section>
+      <section className="domain-grid">
+        {packs.map((d) => <DomainCard key={d.id} domain={d} selected={d.id === domain.id} onSelect={setSelectedDomainId} />)}
+      </section>
+
+      <main className="layout">
+        <div className="left-col">
+          <section className="card">
+            <h2>First-session onboarding</h2>
+            <h3>{domain.onboarding.headline}</h3>
+            <p>{domain.onboarding.body}</p>
+            <p className="muted">Learner: {learnerName || "Unnamed learner"}</p>
+            <ul>{domain.onboarding.checklist.map((item, idx) => <li key={idx}>{item}</li>)}</ul>
+          </section>
+
+          <section className="card">
+            <h2>Visible mastery map</h2>
+            <div className="map-grid">
+              {masteryMap.map((node) => (
+                <div key={node.id} className={`map-node ${node.status}`}>
+                  <div className="node-label">{node.label}</div>
+                  <div className="node-status">{node.status}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="card">
+            <h2>Evidence log</h2>
+            {learnerState.history.length === 0 ? <div className="muted">No evidence recorded yet.</div> : (
+              <ul>
+                {learnerState.history.slice().reverse().map((item, idx) => (
+                  <li key={idx}>{item.concept_id} · score {item.score.toFixed(2)} · confidence hint {item.confidence_hint.toFixed(2)}</li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
+
+        <div className="center-col">
+          <section className="card">
+            <h2>What should I do next?</h2>
+            {recs.length === 0 ? (
+              <div className="muted">No immediate recommendation available.</div>
+            ) : (
+              <div className="steps-stack">
+                {recs.map((step) => <NextStepCard key={step.id} step={step} onSimulate={simulateStep} />)}
+              </div>
+            )}
+          </section>
+        </div>
+
+        <div className="right-col">
+          <section className="card">
+            <h2>Progress</h2>
+            <div className="progress-wrap">
+              <div className="progress-label">Mastery progress</div>
+              <div className="progress-bar"><div className="progress-fill" style={{ width: `${progress}%` }} /></div>
+              <div className="muted">{progress}%</div>
+            </div>
+            <div className={`readiness-box ${readiness.ready ? "ready" : ""}`}>
+              <strong>{readiness.ready ? "Usable expertise threshold met" : "Still building toward usable expertise"}</strong>
+              <div className="muted">Mastered concepts: {readiness.mastered}</div>
+              <div className="muted">Average score: {readiness.avgScore.toFixed(2)}</div>
+              <div className="muted">Average confidence: {readiness.avgConfidence.toFixed(2)}</div>
+            </div>
+          </section>
+
+          <section className="card">
+            <h2>Milestones and rewards</h2>
+            {lastReward ? <div className="reward-banner">{lastReward}</div> : null}
+            <ul>{milestones.map((m, idx) => <li key={idx}>{m}</li>)}</ul>
+          </section>
+
+          <section className="card">
+            <h2>Source attribution and compliance</h2>
+            <div className="compliance-grid">
+              <div><strong>Sources</strong><br />{domain.compliance.sources}</div>
+              <div><strong>Attribution</strong><br />{domain.compliance.attributionRequired ? "required" : "not required"}</div>
+              <div><strong>Share-alike</strong><br />{domain.compliance.shareAlikeRequired ? "yes" : "no"}</div>
+              <div><strong>Noncommercial</strong><br />{domain.compliance.noncommercialOnly ? "yes" : "no"}</div>
+            </div>
+            <div className="flag-row">
+              {domain.compliance.flags.length ? domain.compliance.flags.map((f) => <span className="flag" key={f}>{f}</span>) : <span className="muted">No extra flags</span>}
+            </div>
+          </section>
+        </div>
       </main>
     </div>
   );
