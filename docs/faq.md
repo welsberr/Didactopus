@@ -208,3 +208,14 @@ Start with:
 - `docs/mastery-ledger.md`
 - `docs/workspace-manager.md`
 - `docs/interactive-review-ui.md`
+
+## How is Didactopus made?
+
+Didactopus started with an idea from Wesley R. Elsberry, and has been
+generated through prompting and refinement via OpenAI's ChatGPT 5.4
+and OpenAI Codex with GPT 5.4. It uses tests and demonstration runs
+via Codex to confirm functionality, fix bugs, and update
+documentation. Elsberry provided goals, direction, operational
+principles, and orchestration, and generative AI has provided pretty
+much the rest.
+
