@@ -28,4 +28,4 @@ def test_dependency_resolution() -> None:
     results = discover_domain_packs(["domain-packs"])
     errors = check_pack_dependencies(results)
     assert any("depends on missing pack 'nonexistent-pack'" in err for err in errors)
-    assert not any("bayes-extension" in err for err in errors and "foundations-statistics" in err)
+    assert not any("bayes-extension" in err and "foundations-statistics" in err for err in errors)

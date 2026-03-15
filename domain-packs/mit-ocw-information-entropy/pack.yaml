@@ -1,0 +1,14 @@
+name: mit-ocw-information-and-entropy
+display_name: MIT OCW Information and Entropy
+version: 0.1.0-draft
+schema_version: '1'
+didactopus_min_version: 0.1.0
+didactopus_max_version: 0.9.99
+description: Draft topic pack generated from multi-course inputs for 'MIT OCW Information
+  and Entropy'.
+author: MIT OCW derived demo
+license: CC BY-NC-SA 4.0
+dependencies: []
+overrides: []
+profile_templates: {}
+cross_pack_links: []

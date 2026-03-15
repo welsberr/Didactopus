@@ -1,0 +1,17 @@
+stages:
+- id: stage-1
+  title: Imported from MARKDOWN
+  concepts:
+  - mit-ocw-6-050j-information-and-entropy
+  - counting-and-probability
+  - shannon-entropy
+  - mutual-information
+  - data-compression
+  - huffman-coding
+  - channel-capacity
+  - channel-coding
+  - error-correcting-codes
+  - cryptography-and-information-hiding
+  - thermodynamics-and-entropy
+  - course-synthesis
+  checkpoint: []

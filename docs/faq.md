@@ -163,6 +163,7 @@ generates:
 - learner outputs in `examples/ocw-information-entropy-run/`
 - a repo-local skill bundle in `skills/ocw-information-entropy-agent/`
 - an agentic skill-usage demo in `examples/ocw-information-entropy-skill-demo/`
+- compliance artifacts including `pack_compliance_manifest.json` and `source_inventory.yaml`
 
 ## What visualizations exist today?
 
@@ -218,4 +219,3 @@ via Codex to confirm functionality, fix bugs, and update
 documentation. Elsberry provided goals, direction, operational
 principles, and orchestration, and generative AI has provided pretty
 much the rest.
-

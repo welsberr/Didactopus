@@ -2,6 +2,7 @@
   "course_source": "/home/netuser/dev/Didactopustry1/examples/ocw-information-entropy/6-050j-information-and-entropy.md",
   "pack_dir": "/home/netuser/dev/Didactopustry1/domain-packs/mit-ocw-information-entropy",
   "skill_dir": "/home/netuser/dev/Didactopustry1/skills/ocw-information-entropy-agent",
+  "source_inventory": "/home/netuser/dev/Didactopustry1/examples/ocw-information-entropy/sources.yaml",
   "review_flags": [
     "Module 'Imported from MARKDOWN' has no explicit exercises; mastery signals may be weak.",
     "Concept 'MIT OCW 6.050J Information and Entropy' has no extracted mastery signals; review manually.",
@@ -89,5 +90,26 @@
     "mit-ocw-information-and-entropy::shannon-entropy",
     "mit-ocw-information-and-entropy::thermodynamics-and-entropy"
   ],
-  "artifact_count": 11
+  "artifact_count": 11,
+  "compliance_manifest": "/home/netuser/dev/Didactopustry1/domain-packs/mit-ocw-information-entropy/pack_compliance_manifest.json",
+  "compliance": {
+    "pack_id": "mit-ocw-information-and-entropy",
+    "display_name": "MIT OCW Information and Entropy",
+    "derived_from_sources": [
+      "mit-ocw-6-050j-course-home",
+      "mit-ocw-6-050j-unit-8-textbook",
+      "mit-ocw-6-050j-unit-13-textbook"
+    ],
+    "attribution_required": true,
+    "share_alike_required": true,
+    "noncommercial_only": true,
+    "restrictive_flags": [
+      "share-alike",
+      "noncommercial"
+    ],
+    "redistribution_notes": [
+      "Derived redistributable material may need to remain under the same license family.",
+      "Derived redistributable material may be limited to noncommercial use."
+    ]
+  }
 }

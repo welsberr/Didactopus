@@ -1,0 +1,20 @@
+{
+  "pack_id": "mit-ocw-information-and-entropy",
+  "display_name": "MIT OCW Information and Entropy",
+  "derived_from_sources": [
+    "mit-ocw-6-050j-course-home",
+    "mit-ocw-6-050j-unit-8-textbook",
+    "mit-ocw-6-050j-unit-13-textbook"
+  ],
+  "attribution_required": true,
+  "share_alike_required": true,
+  "noncommercial_only": true,
+  "restrictive_flags": [
+    "share-alike",
+    "noncommercial"
+  ],
+  "redistribution_notes": [
+    "Derived redistributable material may need to remain under the same license family.",
+    "Derived redistributable material may be limited to noncommercial use."
+  ]
+}

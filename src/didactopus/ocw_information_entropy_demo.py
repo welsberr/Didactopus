@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .agentic_loop import AgenticStudentState, integrate_attempt
 from .artifact_registry import validate_pack
+from .course_ingestion_compliance import build_pack_compliance_manifest, load_sources, write_manifest
 from .document_adapters import adapt_document
 from .evaluator_pipeline import LearnerAttempt
 from .graph_builder import build_concept_graph
@@ -123,11 +124,13 @@ def _write_skill_bundle(
 
 def run_ocw_information_entropy_demo(
     course_source: str | Path,
+    source_inventory: str | Path,
     pack_dir: str | Path,
     run_dir: str | Path,
     skill_dir: str | Path,
 ) -> dict:
     course_source = Path(course_source)
+    source_inventory = Path(source_inventory)
     pack_dir = Path(pack_dir)
     run_dir = Path(run_dir)
     skill_dir = Path(skill_dir)
@@ -150,6 +153,11 @@ def run_ocw_information_entropy_demo(
         conflicts=[],
     )
     write_draft_pack(draft, pack_dir)
+    if source_inventory.exists():
+        inventory = load_sources(source_inventory)
+        compliance_manifest = build_pack_compliance_manifest(draft.pack["name"], draft.pack["display_name"], inventory)
+        write_manifest(compliance_manifest, pack_dir / "pack_compliance_manifest.json")
+        (pack_dir / "source_inventory.yaml").write_text(source_inventory.read_text(encoding="utf-8"), encoding="utf-8")
 
     validation = validate_pack(pack_dir)
     if not validation.is_valid:
@@ -183,6 +191,7 @@ def run_ocw_information_entropy_demo(
         "course_source": str(course_source),
         "pack_dir": str(pack_dir),
         "skill_dir": str(skill_dir),
+        "source_inventory": str(source_inventory),
         "review_flags": list(ctx.review_flags),
         "concept_count": len(ctx.concepts),
         "target_concept": target_key,
@@ -190,6 +199,10 @@ def run_ocw_information_entropy_demo(
         "mastered_concepts": sorted(state.mastered_concepts),
         "artifact_count": len(state.artifacts),
     }
+    compliance_path = pack_dir / "pack_compliance_manifest.json"
+    if compliance_path.exists():
+        summary["compliance_manifest"] = str(compliance_path)
+        summary["compliance"] = json.loads(compliance_path.read_text(encoding="utf-8"))
     (run_dir / "run_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
     _write_skill_bundle(skill_dir, pack_dir, run_dir, concept_path, summary["mastered_concepts"])
@@ -204,6 +217,10 @@ def main() -> None:
     parser.add_argument(
         "--course-source",
         default=str(root / "examples" / "ocw-information-entropy" / "6-050j-information-and-entropy.md"),
+    )
+    parser.add_argument(
+        "--source-inventory",
+        default=str(root / "examples" / "ocw-information-entropy" / "sources.yaml"),
     )
     parser.add_argument(
         "--pack-dir",
@@ -221,6 +238,7 @@ def main() -> None:
 
     summary = run_ocw_information_entropy_demo(
         course_source=args.course_source,
+        source_inventory=args.source_inventory,
         pack_dir=args.pack_dir,
         run_dir=args.run_dir,
         skill_dir=args.skill_dir,

@@ -1,0 +1,39 @@
+sources:
+  - source_id: mit-ocw-6-050j-course-home
+    title: MIT OpenCourseWare 6.050J Information and Entropy course home
+    url: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/
+    publisher: Massachusetts Institute of Technology
+    creator: MIT OpenCourseWare
+    license_id: CC BY-NC-SA 4.0
+    license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+    retrieved_at: "2026-03-14"
+    adapted: true
+    attribution_text: Derived in part from MIT OpenCourseWare 6.050J Information and Entropy course materials used under CC BY-NC-SA 4.0.
+    excluded_from_upstream_license: false
+    exclusion_notes: ""
+
+  - source_id: mit-ocw-6-050j-unit-8-textbook
+    title: MIT OpenCourseWare 6.050J Information and Entropy Unit 8 textbook/resource page
+    url: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/resources/mit6_050js08_textbook_1/
+    publisher: Massachusetts Institute of Technology
+    creator: MIT OpenCourseWare
+    license_id: CC BY-NC-SA 4.0
+    license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+    retrieved_at: "2026-03-14"
+    adapted: true
+    attribution_text: Derived in part from MIT OpenCourseWare 6.050J Information and Entropy course materials used under CC BY-NC-SA 4.0.
+    excluded_from_upstream_license: false
+    exclusion_notes: ""
+
+  - source_id: mit-ocw-6-050j-unit-13-textbook
+    title: MIT OpenCourseWare 6.050J Information and Entropy Unit 13 textbook/resource page
+    url: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/resources/mit6_050js08_textbook_2/
+    publisher: Massachusetts Institute of Technology
+    creator: MIT OpenCourseWare
+    license_id: CC BY-NC-SA 4.0
+    license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+    retrieved_at: "2026-03-14"
+    adapted: true
+    attribution_text: Derived in part from MIT OpenCourseWare 6.050J Information and Entropy course materials used under CC BY-NC-SA 4.0.
+    excluded_from_upstream_license: false
+    exclusion_notes: ""

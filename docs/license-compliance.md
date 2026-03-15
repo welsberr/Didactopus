@@ -36,6 +36,12 @@ A derived pack should carry:
 - share_alike_required
 - noncommercial_only
 
+The recommended route in this repository is:
+
+1. maintain a `sources.yaml` inventory for the source set
+2. generate `pack_compliance_manifest.json`
+3. keep `license_attribution.json` for human-facing attribution details
+
 ## MIT OCW-specific pattern
 
 For MIT OpenCourseWare-derived packs, treat the course material as licensed content while separately recording:
@@ -43,3 +49,5 @@ For MIT OpenCourseWare-derived packs, treat the course material as licensed cont
 - image/video exceptions
 - linked-content exceptions
 - any asset not safely covered by the course-level reuse assumption
+
+The MIT OCW Information and Entropy demo in this repository follows that pattern and can be used as the reference implementation.
