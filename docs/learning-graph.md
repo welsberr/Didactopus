@@ -1,33 +1,61 @@
 # Merged Learning Graph
 
-## Purpose
+The merged learning graph is the pack-composition layer that connects validated domain packs into one learner-facing prerequisite model.
 
-The merged learning graph is the first learner-facing composite model built from multiple domain packs.
+## What the code builds today
 
-## Features in this revision
+`didactopus.learning_graph.build_merged_learning_graph(...)` produces a `MergedLearningGraph` containing:
 
-- namespaced concept keys: `pack-name::concept-id`
-- merged prerequisite DAG
-- stage catalog across packs
-- project catalog across packs
-- optional overrides for previously defined concepts
+- `concept_data`
+- `stage_catalog`
+- `project_catalog`
+- `load_order`
+- `graph`
 
-## Override model
+Concept keys are namespaced as:
 
-A pack manifest may include:
+```text
+pack-name::concept-id
+```
+
+## Inputs
+
+The merged graph is built from validated `PackValidationResult` objects, typically discovered through `didactopus.artifact_registry.discover_domain_packs(...)`.
+
+## Overrides
+
+Pack manifests can explicitly replace a previously defined concept through:
 
 ```yaml
 overrides:
   - foundations-statistics::descriptive-statistics
 ```
 
-If a pack defines concept `descriptive-statistics` and lists the namespaced target above, it may replace that concept in the merged graph.
+If the overriding pack defines `descriptive-statistics`, the merged graph will store that concept under the overridden namespaced key.
 
-That is intentionally explicit and conservative.
+## Current exported behaviors
 
-## Future work
+The learning-graph and graph-builder layers currently support:
 
-- merged rubric graph
-- stage dependency inference
-- learner-specific subgraph extraction
-- adaptive sequencing from the merged DAG
+- merged prerequisite DAG construction
+- namespaced prerequisite edges
+- stage catalog aggregation
+- project catalog aggregation
+- concept-graph export through `didactopus.graph_builder`
+- learner roadmap generation through `generate_learner_roadmap(...)`
+
+## Relationship to the concept graph
+
+`didactopus.graph_builder.build_concept_graph(...)` takes the merged graph inputs and produces the learner-facing `ConceptGraph`, which powers:
+
+- curriculum path extraction
+- ready concept detection
+- semantic-link suggestions
+- planner scoring
+
+## Known limitations
+
+- stage dependencies are still implicit rather than separately modeled
+- cross-pack links are supported but still lightweight
+- roadmap generation is pack-derived rather than learner-personalized
+- richer graph export/visualization is still evolving

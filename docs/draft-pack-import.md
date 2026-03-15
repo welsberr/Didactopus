@@ -1,36 +1,32 @@
 # Draft-Pack Import Workflow
 
-The draft-pack import workflow bridges ingestion output and review workspace setup.
+Draft-pack import connects ingestion output to the review workspace flow.
 
-## Why it exists
+## Current behavior
 
-Without import support, users still have to manually:
-- locate a generated draft pack
-- create a workspace
-- copy files into the right directory
-- reopen the review tool
+The import path currently supports:
 
-That is exactly the kind of startup friction Didactopus is supposed to reduce.
+- import preview through `preview_draft_pack_import(...)`
+- overwrite detection before import
+- workspace creation when the target workspace does not exist yet
+- copying the source pack into `workspace/draft_pack/`
+- workspace-recency updates after import
 
-## Current scaffold
+## Main modules
 
-This revision adds:
-- import API endpoint
-- workspace-manager copy/import operation
-- UI controls for creating a workspace and importing a draft pack path
+- `didactopus.import_validator`
+- `didactopus.workspace_manager`
+- `didactopus.review_bridge_server`
 
-## Import behavior
+## Bridge endpoints
 
-The current scaffold:
-- creates the target workspace if needed
-- copies the source draft-pack directory into `workspace/draft_pack/`
-- updates workspace metadata
-- allows the workspace to be opened immediately afterward
+The bridge server exposes:
 
-## Future work
+- `/api/workspaces/import-preview`
+- `/api/workspaces/import`
 
-- file picker integration
-- import validation
-- overwrite protection / confirmation
-- pack schema validation before import
-- duplicate import detection
+These endpoints return structured success/error payloads for missing source directories, invalid source packs, or overwrite conflicts.
+
+## Why it matters
+
+The import flow removes a manual step between "I generated a draft pack" and "I can now review it in a managed workspace."

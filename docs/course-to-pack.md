@@ -1,35 +1,80 @@
-# Course-to-Pack Ingestion Pipeline
+# Course-to-Pack Pipeline
 
-The course-to-pack pipeline transforms educational material into Didactopus-native artifacts.
+The course-to-pack pipeline turns source material into a Didactopus draft domain pack.
 
-## Inputs
+## Current code path
 
-Typical sources:
-- syllabus text
-- lesson outlines
-- markdown notes
-- HTML course pages
-- assignment sheets
-- quiz prompts
-- lecture transcripts
+The main building blocks are:
 
-## Normalized intermediate structure
+- `didactopus.document_adapters`
+  Normalize source files into `NormalizedDocument`.
+- `didactopus.topic_ingest` and `didactopus.course_ingest`
+  Build `NormalizedCourse` data and extract concept candidates.
+- `didactopus.rule_policy`
+  Apply deterministic cleanup and heuristic rules.
+- `didactopus.pack_emitter`
+  Emit pack files and review/conflict artifacts.
 
-The pipeline builds a `NormalizedCourse` object containing:
-- title
-- source metadata
-- modules
-- lessons
-- learning objectives
-- exercises
-- key terms
-- project prompts
+## Supported source types
 
-## Rule-policy adapter
+The repository currently accepts:
 
-The pipeline includes a small rule layer for stable policy transforms such as:
-- suggest prerequisites from ordering
-- merge repeated key-term candidates
-- flag modules with no exercises
-- flag concepts with weak evidence of distinctness
-- suggest project concepts from capstone markers
+- Markdown
+- plain text
+- HTML
+- PDF-ish text
+- DOCX-ish text
+- PPTX-ish text
+
+Binary-format adapters are interface-stable but still intentionally simple.
+
+## Intermediate structures
+
+The ingestion path works through these data shapes:
+
+- `NormalizedDocument`
+- `NormalizedCourse`
+- `TopicBundle`
+- `ConceptCandidate`
+- `DraftPack`
+
+## Current emitted artifacts
+
+The pack emitter writes:
+
+- `pack.yaml`
+- `concepts.yaml`
+- `roadmap.yaml`
+- `projects.yaml`
+- `rubrics.yaml`
+- `review_report.md`
+- `conflict_report.md`
+- `license_attribution.json`
+
+## Rule layer
+
+The current default rules:
+
+- infer prerequisites from content order
+- merge duplicate concept candidates by title
+- flag modules that look project-like
+- flag modules or concepts with weak extracted assessment signals
+
+These rules are intentionally small and deterministic. They are meant to be easy to inspect and patch.
+
+## Known limitations
+
+- title-cased phrases can still become noisy concept candidates
+- extracted mastery signals remain weak for many source styles
+- project extraction is conservative
+- document parsing for PDF/DOCX/PPTX is still lightweight
+
+## Reference demo
+
+The end-to-end reference flow in this repository is:
+
+```bash
+python -m didactopus.ocw_information_entropy_demo
+```
+
+That command ingests the MIT OCW Information and Entropy source file in `examples/ocw-information-entropy/`, emits a draft pack into `domain-packs/mit-ocw-information-entropy/`, runs a deterministic agentic learner over the generated path, and writes downstream skill/visualization artifacts.

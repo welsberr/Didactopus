@@ -1,33 +1,50 @@
-# UI Visualization Notes
+# Visualization Notes
 
-## Review workbench
-Main panes:
+This repository now has two concrete visualization paths and a broader set of future UI ideas.
 
-1. Candidate queue
-2. Candidate detail
-3. Evidence/provenance panel
-4. Promotion actions
-5. Related synthesis suggestions
+## Current implemented visualization
 
-## Synthesis map
-Features:
-- zoomable concept supergraph
-- accepted vs proposed links
-- cross-pack color coding
-- cluster highlighting
-- filter by score, pack, theme
+The MIT OCW Information and Entropy demo produces:
 
-## Promotion dashboard
-Views:
-- pack improvement queue
-- curriculum draft queue
-- skill bundle queue
-- archive browser
+- `examples/ocw-information-entropy-run/learner_progress.svg`
+- `examples/ocw-information-entropy-run/learner_progress.html`
+- `examples/ocw-information-entropy-run/learner_progress_full_map.svg`
+- `examples/ocw-information-entropy-run/learner_progress_full_map.html`
 
-## Learner-facing synthesis hints
-The learner view should be selective and helpful, not noisy.
+These are rendered by `didactopus.ocw_progress_viz`.
 
-Good uses:
-- “This concept may connect to another pack you know.”
-- “An analogy from another topic may help here.”
-- “Learners like you often benefit from this bridge concept.”
+### Path-focused view
+
+Shows:
+
+- guided curriculum path
+- mastered versus in-progress state
+- per-concept mean evaluator score
+- produced artifact name
+
+### Full concept map
+
+Shows:
+
+- the same guided path in the center column
+- side concepts grouped around their anchor lesson or prerequisite
+- extractor spillover as informative context instead of hiding it
+
+## Existing SVG/render helpers
+
+The repository also includes generic SVG frame helpers in:
+
+- `didactopus.export_svg`
+- `didactopus.render_bundle`
+
+Those are useful for frame-based graph rendering pipelines, but the OCW learner-progress visualizations are currently rendered directly as standalone SVG/HTML artifacts.
+
+## Future UI directions
+
+Useful next steps would be:
+
+- pack DAG views with filtering by mastered/weak/noisy state
+- review-workbench graph overlays
+- stage-aware roadmap views
+- side-by-side before/after review diffs
+- animation or frame exports for learner progression over time
