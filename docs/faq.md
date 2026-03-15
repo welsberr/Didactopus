@@ -4,6 +4,26 @@
 
 Didactopus turns educational material into structured learning packs, then uses graphs, evidence, and review workflows to support human or AI learning against those packs.
 
+## Is this meant to help me learn, or to do the work for me?
+
+It is meant to help you learn.
+
+The intended role is:
+
+- clarify topic structure
+- surface prerequisites
+- suggest study order
+- provide explanations, comparisons, and self-checks
+- help you see where your understanding is weak
+
+The intended role is not:
+
+- silently complete coursework for you
+- replace the need to explain ideas in your own words
+- turn learning into answer copying
+
+In other words, Didactopus is supposed to reduce confusion and friction without encouraging the offloading effect of unstructured GenAI use.
+
 ## Is this a packaged application or a research/workbench repository?
 
 It is a workbench-style repository with runnable code, tests, example packs, generated outputs, and local-first review/demo flows.
@@ -92,6 +112,18 @@ Right now the value is in:
 - generating reusable skill context for future tutoring or evaluation
 
 The current demos show the shape of a mentor workflow even though the agent itself is not yet a live external model integration.
+
+## How should I use it if I am taking a course and do not want to hire a tutor?
+
+Use it as a structured study companion:
+
+1. Build or load a topic pack.
+2. Use the path and prerequisite structure to see what to study next.
+3. Ask for hints, comparisons, and explanation prompts.
+4. Use progress artifacts to identify gaps.
+5. Do the actual solving and writing yourself.
+
+That keeps the system on the "guided practice" side of the line instead of the "outsourced thinking" side.
 
 ## What is the current evidence model?
 

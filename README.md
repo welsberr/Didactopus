@@ -4,6 +4,8 @@
 
 Didactopus is a local-first Python codebase for turning educational source material into structured learning domains, evaluating learner progress against those domains, and exporting review, mastery, and skill artifacts.
 
+Its intended use is closer to a structured mentor or self-study workbench than a "do my assignment for me" engine. The project should help learners get guidance, sequencing, feedback, and explanation without encouraging the offloading effect that comes from unstructured GenAI use.
+
 At a high level, the repository does five things:
 
 1. Ingest source material such as Markdown, text, HTML, PDF-ish text, DOCX-ish text, and PPTX-ish text into normalized course/topic structures.
@@ -35,6 +37,8 @@ That gives you:
 - a visible learning path
 - progress artifacts
 - a reusable skill grounded in the exported knowledge
+
+The point is not to replace your effort. The point is to give your effort structure, feedback, and momentum.
 
 If that is your use case, read the next section, `Fast Start For Impatient Autodidacts`, and skip the deeper architecture sections until you need them.
 
@@ -116,6 +120,17 @@ Treat Didactopus as a loop:
 
 The important idea is not "perfect ingestion first." It is "usable learning structure fast enough that you keep going."
 
+### If you are using it alongside coursework
+
+The intended pattern is:
+
+1. Use Didactopus to clarify the topic map and prerequisites.
+2. Ask it for hints, sequencing, comparisons, and self-check prompts.
+3. Use its outputs to diagnose where you are weak.
+4. Still do the actual writing, solving, and explaining yourself.
+
+That is the difference between assisted learning and offloading. Didactopus should help you think better, not quietly substitute for your thinking.
+
 ### Current friction honestly stated
 
 The lowest-friction path is the included demo. The custom path still asks you to be comfortable with:
@@ -138,6 +153,8 @@ Instead of only reading notes, you can get:
 - explicit prerequisites
 - evidence-aware progress artifacts
 - reusable skill outputs for future tutoring or evaluation
+
+In the best case, that makes learning feel more like active skill-building and less like either passive consumption or answer outsourcing.
 
 ## What Is In This Repository
 
