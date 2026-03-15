@@ -1,0 +1,420 @@
+concepts:
+- id: mit-ocw-6-050j-information-and-entropy
+  title: MIT OCW 6.050J Information and Entropy
+  description: 'Source: MIT OpenCourseWare 6.050J Information and Entropy, Spring
+    2008.
+
+    Attribution: adapted from the OCW course overview, unit sequence, and assigned
+    textbook references.'
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: information
+  title: Information
+  description: Candidate concept extracted from lesson 'MIT OCW 6.050J Information
+    and Entropy'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: entropy
+  title: Entropy
+  description: Candidate concept extracted from lesson 'MIT OCW 6.050J Information
+    and Entropy'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: source
+  title: Source
+  description: Candidate concept extracted from lesson 'MIT OCW 6.050J Information
+    and Entropy'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: opencourseware
+  title: OpenCourseWare
+  description: Candidate concept extracted from lesson 'MIT OCW 6.050J Information
+    and Entropy'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: spring
+  title: Spring
+  description: Candidate concept extracted from lesson 'MIT OCW 6.050J Information
+    and Entropy'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: attribution
+  title: Attribution
+  description: Candidate concept extracted from lesson 'MIT OCW 6.050J Information
+    and Entropy'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: counting-and-probability
+  title: Counting and Probability
+  description: '- Objective: Explain how counting arguments, probability spaces, and
+    random variables support later information-theory results.
+
+    - Exercise: Derive a simple counting argument for binary strings and compute an
+    event probability.
+
+    This lesson i'
+  prerequisites:
+  - mit-ocw-6-050j-information-and-entropy
+  mastery_signals: []
+  mastery_profile: {}
+- id: counting
+  title: Counting
+  description: Candidate concept extracted from lesson 'Counting and Probability'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: probability
+  title: Probability
+  description: Candidate concept extracted from lesson 'Counting and Probability'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: objective
+  title: Objective
+  description: Candidate concept extracted from lesson 'Counting and Probability'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: explain
+  title: Explain
+  description: Candidate concept extracted from lesson 'Counting and Probability'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: exercise
+  title: Exercise
+  description: Candidate concept extracted from lesson 'Counting and Probability'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: derive
+  title: Derive
+  description: Candidate concept extracted from lesson 'Counting and Probability'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: this
+  title: This
+  description: Candidate concept extracted from lesson 'Counting and Probability'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: random
+  title: Random
+  description: Candidate concept extracted from lesson 'Counting and Probability'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: shannon-entropy
+  title: Shannon Entropy
+  description: '- Objective: Explain Shannon Entropy as a measure of uncertainty and
+    compare high-entropy and low-entropy sources.
+
+    - Exercise: Compute the entropy of a Bernoulli source and interpret the result.
+
+    This lesson centers Shannon Entropy, Surprise'
+  prerequisites:
+  - counting-and-probability
+  mastery_signals: []
+  mastery_profile: {}
+- id: shannon
+  title: Shannon
+  description: Candidate concept extracted from lesson 'Shannon Entropy'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: compute
+  title: Compute
+  description: Candidate concept extracted from lesson 'Shannon Entropy'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: bernoulli
+  title: Bernoulli
+  description: Candidate concept extracted from lesson 'Shannon Entropy'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: mutual-information
+  title: Mutual Information
+  description: '- Objective: Explain Mutual Information and relate it to dependence
+    between signals.
+
+    - Exercise: Compare independent variables with dependent variables using mutual-information
+    reasoning.
+
+    This lesson introduces Mutual Information, Dependenc'
+  prerequisites:
+  - shannon-entropy
+  mastery_signals: []
+  mastery_profile: {}
+- id: mutual
+  title: Mutual
+  description: Candidate concept extracted from lesson 'Mutual Information'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: compare
+  title: Compare
+  description: Candidate concept extracted from lesson 'Mutual Information'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: dependence
+  title: Dependence
+  description: Candidate concept extracted from lesson 'Mutual Information'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: data-compression
+  title: Data Compression
+  description: '- Objective: Explain lossless compression in terms of entropy and
+    typical structure.
+
+    - Exercise: Describe when compression succeeds and when it fails on already-random
+    data.
+
+    This lesson covers Data Compression, Redundancy, and Efficient Rep'
+  prerequisites:
+  - mutual-information
+  mastery_signals: []
+  mastery_profile: {}
+- id: data
+  title: Data
+  description: Candidate concept extracted from lesson 'Data Compression'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: compression
+  title: Compression
+  description: Candidate concept extracted from lesson 'Data Compression'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: describe
+  title: Describe
+  description: Candidate concept extracted from lesson 'Data Compression'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: redundancy
+  title: Redundancy
+  description: Candidate concept extracted from lesson 'Data Compression'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: huffman-coding
+  title: Huffman Coding
+  description: '- Objective: Explain Huffman Coding and justify why shorter codewords
+    should track more likely symbols.
+
+    - Exercise: Build a Huffman code for a small source alphabet.
+
+    This lesson focuses on Huffman Coding, Prefix Codes, and Expected Length.'
+  prerequisites:
+  - data-compression
+  mastery_signals: []
+  mastery_profile: {}
+- id: huffman
+  title: Huffman
+  description: Candidate concept extracted from lesson 'Huffman Coding'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: coding
+  title: Coding
+  description: Candidate concept extracted from lesson 'Huffman Coding'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: build
+  title: Build
+  description: Candidate concept extracted from lesson 'Huffman Coding'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: prefix
+  title: Prefix
+  description: Candidate concept extracted from lesson 'Huffman Coding'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: channel-capacity
+  title: Channel Capacity
+  description: '- Objective: Explain Channel Capacity as a limit on reliable communication
+    over noisy channels.
+
+    - Exercise: State why reliable transmission above capacity is impossible in the
+    long run.
+
+    This lesson develops Channel Capacity, Reliable Commun'
+  prerequisites:
+  - huffman-coding
+  mastery_signals: []
+  mastery_profile: {}
+- id: channel
+  title: Channel
+  description: Candidate concept extracted from lesson 'Channel Capacity'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: capacity
+  title: Capacity
+  description: Candidate concept extracted from lesson 'Channel Capacity'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: state
+  title: State
+  description: Candidate concept extracted from lesson 'Channel Capacity'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: reliable
+  title: Reliable
+  description: Candidate concept extracted from lesson 'Channel Capacity'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: channel-coding
+  title: Channel Coding
+  description: '- Objective: Explain how Channel Coding adds structure that protects
+    messages against noise.
+
+    - Exercise: Contrast uncoded transmission with coded transmission on a noisy channel.
+
+    This lesson connects Channel Coding, Decoding, and Reliabilit'
+  prerequisites:
+  - channel-capacity
+  mastery_signals: []
+  mastery_profile: {}
+- id: contrast
+  title: Contrast
+  description: Candidate concept extracted from lesson 'Channel Coding'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: decoding
+  title: Decoding
+  description: Candidate concept extracted from lesson 'Channel Coding'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: error-correcting-codes
+  title: Error Correcting Codes
+  description: '- Objective: Explain how Error Correcting Codes detect or correct
+    symbol corruption.
+
+    - Exercise: Describe a simple parity-style code and its limits.
+
+    This lesson covers Error Correcting Codes, Parity, and Syndrome-style reasoning.
+    The learne'
+  prerequisites:
+  - channel-coding
+  mastery_signals: []
+  mastery_profile: {}
+- id: error
+  title: Error
+  description: Candidate concept extracted from lesson 'Error Correcting Codes'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: correcting
+  title: Correcting
+  description: Candidate concept extracted from lesson 'Error Correcting Codes'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: codes
+  title: Codes
+  description: Candidate concept extracted from lesson 'Error Correcting Codes'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: cryptography-and-information-hiding
+  title: Cryptography and Information Hiding
+  description: '- Objective: Explain the relationship between secrecy, information
+    leakage, and coded communication.
+
+    - Exercise: Compare a secure scheme with a weak one in terms of revealed information.
+
+    This lesson combines Cryptography, Information Leakag'
+  prerequisites:
+  - error-correcting-codes
+  mastery_signals: []
+  mastery_profile: {}
+- id: cryptography
+  title: Cryptography
+  description: Candidate concept extracted from lesson 'Cryptography and Information
+    Hiding'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: hiding
+  title: Hiding
+  description: Candidate concept extracted from lesson 'Cryptography and Information
+    Hiding'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: thermodynamics-and-entropy
+  title: Thermodynamics and Entropy
+  description: '- Objective: Explain how thermodynamic entropy relates to, and differs
+    from, Shannon entropy.
+
+    - Exercise: Compare the two entropy notions and identify what is preserved across
+    the analogy.
+
+    This lesson connects Thermodynamics, Entropy, and P'
+  prerequisites:
+  - cryptography-and-information-hiding
+  mastery_signals: []
+  mastery_profile: {}
+- id: thermodynamics
+  title: Thermodynamics
+  description: Candidate concept extracted from lesson 'Thermodynamics and Entropy'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: course-synthesis
+  title: Course Synthesis
+  description: '- Objective: Synthesize the course by connecting entropy, coding,
+    reliability, and physical interpretation in one coherent narrative.
+
+    - Exercise: Produce a final study guide that links source coding, channel coding,
+    secrecy, and thermodynam'
+  prerequisites:
+  - thermodynamics-and-entropy
+  mastery_signals: []
+  mastery_profile: {}
+- id: course
+  title: Course
+  description: Candidate concept extracted from lesson 'Course Synthesis'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: synthesis
+  title: Synthesis
+  description: Candidate concept extracted from lesson 'Course Synthesis'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: synthesize
+  title: Synthesize
+  description: Candidate concept extracted from lesson 'Course Synthesis'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}
+- id: produce
+  title: Produce
+  description: Candidate concept extracted from lesson 'Course Synthesis'.
+  prerequisites: []
+  mastery_signals: []
+  mastery_profile: {}

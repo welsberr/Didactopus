@@ -1,0 +1,97 @@
+{
+  "skill": {
+    "name": "ocw-information-entropy-agent",
+    "description": "Use the generated MIT OCW Information and Entropy pack, concept ordering, and learner artifacts to mentor or evaluate information-theory work."
+  },
+  "study_plan": {
+    "skill": "ocw-information-entropy-agent",
+    "task": "Help a learner connect Shannon entropy, channel capacity, and thermodynamic entropy.",
+    "steps": [
+      {
+        "concept_key": "mit-ocw-information-and-entropy::thermodynamics-and-entropy",
+        "title": "Thermodynamics and Entropy",
+        "status": "mastered",
+        "prerequisites": [
+          "mit-ocw-information-and-entropy::cryptography-and-information-hiding"
+        ],
+        "recommended_action": "Use Thermodynamics and Entropy as the primary teaching anchor."
+      },
+      {
+        "concept_key": "mit-ocw-information-and-entropy::course-synthesis",
+        "title": "Course Synthesis",
+        "status": "review-needed",
+        "prerequisites": [
+          "mit-ocw-information-and-entropy::thermodynamics-and-entropy"
+        ],
+        "recommended_action": "Review prerequisites before teaching Course Synthesis."
+      },
+      {
+        "concept_key": "mit-ocw-information-and-entropy::shannon-entropy",
+        "title": "Shannon Entropy",
+        "status": "mastered",
+        "prerequisites": [
+          "mit-ocw-information-and-entropy::counting-and-probability"
+        ],
+        "recommended_action": "Use Shannon Entropy as the primary teaching anchor."
+      }
+    ],
+    "guided_path_reference": [
+      "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy",
+      "mit-ocw-information-and-entropy::counting-and-probability",
+      "mit-ocw-information-and-entropy::shannon-entropy",
+      "mit-ocw-information-and-entropy::mutual-information",
+      "mit-ocw-information-and-entropy::data-compression",
+      "mit-ocw-information-and-entropy::huffman-coding",
+      "mit-ocw-information-and-entropy::channel-capacity",
+      "mit-ocw-information-and-entropy::channel-coding",
+      "mit-ocw-information-and-entropy::error-correcting-codes",
+      "mit-ocw-information-and-entropy::cryptography-and-information-hiding",
+      "mit-ocw-information-and-entropy::thermodynamics-and-entropy"
+    ]
+  },
+  "explanation": {
+    "concept_key": "mit-ocw-information-and-entropy::channel-capacity",
+    "title": "Channel Capacity",
+    "explanation": "Channel Capacity is represented in the Information and Entropy skill as part of a progression from foundational probability ideas toward communication limits and physical interpretation. It depends on huffman-coding. The current demo learner already mastered this concept, with evaluator means {'correctness': 0.8400000000000001, 'explanation': 0.85, 'critique': 0.7999999999999999}, so the skill can use it as a stable explanation anchor.",
+    "source_description": "- Objective: Explain Channel Capacity as a limit on reliable communication over noisy channels.\n- Exercise: State why reliable transmission above capacity is impossible in the long run.\nThis lesson develops Channel Capacity, Reliable Commun"
+  },
+  "evaluation": {
+    "concept_key": "mit-ocw-information-and-entropy::thermodynamics-and-entropy",
+    "submission": "Therefore entropy = uncertainty in a message model, but one limitation is that thermodynamic entropy and Shannon entropy are not identical without careful interpretation.",
+    "verdict": "acceptable",
+    "aggregated": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.6499999999999999
+    },
+    "evaluators": [
+      {
+        "name": "rubric",
+        "dimensions": {
+          "correctness": 0.8,
+          "explanation": 0.85
+        },
+        "notes": "Heuristic scaffold rubric score."
+      },
+      {
+        "name": "symbolic_rule",
+        "dimensions": {
+          "correctness": 0.88
+        },
+        "notes": "Stub symbolic evaluator."
+      },
+      {
+        "name": "critique",
+        "dimensions": {
+          "critique": 0.6499999999999999
+        },
+        "notes": "Stub critique evaluator."
+      }
+    ],
+    "skill_reference": {
+      "skill_name": "ocw-information-entropy-agent",
+      "mastered_by_demo_agent": true
+    },
+    "follow_up": "Extend the answer with an explicit limitation or assumption."
+  }
+}

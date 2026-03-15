@@ -8,6 +8,43 @@ Didactopus turns educational material into structured learning packs, then uses 
 
 It is a workbench-style repository with runnable code, tests, example packs, generated outputs, and local-first review/demo flows.
 
+## I am one person trying to learn a topic. What is the fastest useful way to use this?
+
+Use the included MIT OCW Information and Entropy demo first.
+
+Run:
+
+```bash
+pip install -e .
+python -m didactopus.ocw_information_entropy_demo
+python -m didactopus.ocw_progress_viz
+python -m didactopus.ocw_skill_agent_demo
+```
+
+That gives you, with minimal setup:
+
+- a generated topic pack
+- a guided curriculum path
+- a learner progress view
+- a capability export
+- a reusable skill bundle
+- a demo of an agentic system using that skill
+
+If you only want to see whether Didactopus feels useful as a personal mentor scaffold, this is the right place to start.
+
+## What is the fastest custom route for a single learner?
+
+Start from one Markdown or text file for a topic you care about.
+
+The lightest custom pattern is:
+
+1. Prepare a single source file with lesson headings, short descriptions, objectives, and exercises.
+2. Use the OCW demo source in `examples/ocw-information-entropy/` as the model.
+3. Adapt the same pipeline shape used by `didactopus.ocw_information_entropy_demo`.
+4. Review the resulting draft pack just enough to remove obvious noise.
+
+The current system is best when used as "generate a usable map quickly, then refine only what matters."
+
 ## What is a domain pack?
 
 A domain pack is the unit Didactopus uses to represent a learning domain. In practice it is a directory containing:
@@ -42,6 +79,19 @@ Yes, but conservatively. Those adapters currently normalize text in a simplified
 ## Does the agentic learner call an external LLM?
 
 No. The current agentic learner paths are deterministic and synthetic. They are meant to exercise the orchestration pattern, evaluator pipeline, mastery updates, capability export, and visualization flow without requiring an external model service.
+
+## Can I still use it as a personal mentor even though the learner is synthetic?
+
+Yes, if you think of the current repo as a structured learning workbench rather than a chat product.
+
+Right now the value is in:
+
+- turning source material into a concept/path structure
+- making prerequisites explicit
+- exporting progress and capability artifacts
+- generating reusable skill context for future tutoring or evaluation
+
+The current demos show the shape of a mentor workflow even though the agent itself is not yet a live external model integration.
 
 ## What is the current evidence model?
 
@@ -80,6 +130,7 @@ generates:
 - a new pack in `domain-packs/mit-ocw-information-entropy/`
 - learner outputs in `examples/ocw-information-entropy-run/`
 - a repo-local skill bundle in `skills/ocw-information-entropy-agent/`
+- an agentic skill-usage demo in `examples/ocw-information-entropy-skill-demo/`
 
 ## What visualizations exist today?
 
@@ -94,6 +145,16 @@ You can render them with:
 python -m didactopus.ocw_progress_viz
 python -m didactopus.ocw_progress_viz --full-map
 ```
+
+## What should I expect to review manually?
+
+Today, usually:
+
+- noisy concept candidates from extraction
+- weak or missing mastery signals
+- any prerequisite ordering that feels too thin or too rigid
+
+The fastest productive workflow is not to perfect everything. It is to prune obvious noise and keep moving.
 
 ## Is the generated content free of extractor noise?
 

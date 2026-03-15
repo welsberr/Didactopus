@@ -1,0 +1,145 @@
+{
+  "learner_id": "ocw-information-entropy-agent",
+  "display_name": "OCW Information Entropy Agent",
+  "domain": "MIT OCW Information and Entropy",
+  "mastered_concepts": [
+    "mit-ocw-information-and-entropy::channel-capacity",
+    "mit-ocw-information-and-entropy::channel-coding",
+    "mit-ocw-information-and-entropy::counting-and-probability",
+    "mit-ocw-information-and-entropy::cryptography-and-information-hiding",
+    "mit-ocw-information-and-entropy::data-compression",
+    "mit-ocw-information-and-entropy::error-correcting-codes",
+    "mit-ocw-information-and-entropy::huffman-coding",
+    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy",
+    "mit-ocw-information-and-entropy::mutual-information",
+    "mit-ocw-information-and-entropy::shannon-entropy",
+    "mit-ocw-information-and-entropy::thermodynamics-and-entropy"
+  ],
+  "weak_dimensions_by_concept": {
+    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy": [],
+    "mit-ocw-information-and-entropy::counting-and-probability": [],
+    "mit-ocw-information-and-entropy::shannon-entropy": [],
+    "mit-ocw-information-and-entropy::mutual-information": [],
+    "mit-ocw-information-and-entropy::data-compression": [],
+    "mit-ocw-information-and-entropy::huffman-coding": [],
+    "mit-ocw-information-and-entropy::channel-capacity": [],
+    "mit-ocw-information-and-entropy::channel-coding": [],
+    "mit-ocw-information-and-entropy::error-correcting-codes": [],
+    "mit-ocw-information-and-entropy::cryptography-and-information-hiding": [],
+    "mit-ocw-information-and-entropy::thermodynamics-and-entropy": []
+  },
+  "evaluator_summary_by_concept": {
+    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::counting-and-probability": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::shannon-entropy": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::mutual-information": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::data-compression": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::huffman-coding": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::channel-capacity": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::channel-coding": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::error-correcting-codes": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::cryptography-and-information-hiding": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::thermodynamics-and-entropy": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    }
+  },
+  "artifacts": [
+    {
+      "concept": "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy",
+      "artifact_type": "symbolic",
+      "artifact_name": "mit-ocw-6-050j-information-and-entropy.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::counting-and-probability",
+      "artifact_type": "symbolic",
+      "artifact_name": "counting-and-probability.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::shannon-entropy",
+      "artifact_type": "symbolic",
+      "artifact_name": "shannon-entropy.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::mutual-information",
+      "artifact_type": "symbolic",
+      "artifact_name": "mutual-information.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::data-compression",
+      "artifact_type": "symbolic",
+      "artifact_name": "data-compression.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::huffman-coding",
+      "artifact_type": "symbolic",
+      "artifact_name": "huffman-coding.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::channel-capacity",
+      "artifact_type": "symbolic",
+      "artifact_name": "channel-capacity.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::channel-coding",
+      "artifact_type": "symbolic",
+      "artifact_name": "channel-coding.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::error-correcting-codes",
+      "artifact_type": "symbolic",
+      "artifact_name": "error-correcting-codes.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::cryptography-and-information-hiding",
+      "artifact_type": "symbolic",
+      "artifact_name": "cryptography-and-information-hiding.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::thermodynamics-and-entropy",
+      "artifact_type": "symbolic",
+      "artifact_name": "thermodynamics-and-entropy.md"
+    }
+  ]
+}

@@ -12,6 +12,133 @@ At a high level, the repository does five things:
 4. Build merged learning graphs, rank next concepts, accumulate learner evidence, and export capability profiles.
 5. Demonstrate end-to-end flows, including an MIT OCW Information and Entropy demo that produces a pack, learner outputs, a reusable skill bundle, and progress visualizations.
 
+## Start Here If You Just Want To Learn
+
+If you only want the shortest path to "show me Didactopus helping someone learn," run:
+
+```bash
+pip install -e .
+python -m didactopus.ocw_information_entropy_demo
+python -m didactopus.ocw_progress_viz
+python -m didactopus.ocw_skill_agent_demo
+```
+
+Then open:
+
+- `examples/ocw-information-entropy-run/learner_progress.html`
+- `examples/ocw-information-entropy-skill-demo/skill_demo.md`
+- `skills/ocw-information-entropy-agent/`
+
+That gives you:
+
+- a generated topic pack
+- a visible learning path
+- progress artifacts
+- a reusable skill grounded in the exported knowledge
+
+If that is your use case, read the next section, `Fast Start For Impatient Autodidacts`, and skip the deeper architecture sections until you need them.
+
+## Fast Start For Impatient Autodidacts
+
+If your real question is "How quickly can I get this to help me learn something?", use one of these paths.
+
+### Fastest path: use the included MIT OCW demo
+
+This is the shortest route to seeing the whole system work as a personal mentor scaffold.
+
+1. Install the repo:
+
+```bash
+pip install -e .
+```
+
+2. Generate the demo pack, learner outputs, and reusable skill:
+
+```bash
+python -m didactopus.ocw_information_entropy_demo
+```
+
+3. Render the learner progress views:
+
+```bash
+python -m didactopus.ocw_progress_viz
+python -m didactopus.ocw_progress_viz --full-map
+```
+
+4. Run the "agent uses the learned skill" demo:
+
+```bash
+python -m didactopus.ocw_skill_agent_demo
+```
+
+After that, inspect:
+
+- `examples/ocw-information-entropy-run/`
+- `examples/ocw-information-entropy-skill-demo/`
+- `skills/ocw-information-entropy-agent/`
+
+What you get:
+
+- a domain pack for the topic
+- a guided curriculum path
+- a synthetic learner run over that path
+- a capability export
+- a reusable skill bundle
+- visual progress artifacts
+
+This is the best "show me why this is fun" path in the current repo.
+
+### Fast custom path: turn one markdown file into a draft learning domain
+
+If you already have notes, a syllabus, or a course outline, the lightest custom workflow is:
+
+1. Put the material in a Markdown or text file.
+2. Adapt and ingest it through the course/topic pipeline.
+3. Emit a draft pack.
+4. Review only what matters.
+
+The easiest reference for this flow is the OCW demo source:
+
+- `examples/ocw-information-entropy/6-050j-information-and-entropy.md`
+
+Use it as a template for your own topic, then follow the same pattern implemented in:
+
+- `didactopus.ocw_information_entropy_demo`
+
+### If you want a mentor more than a curation tool
+
+Treat Didactopus as a loop:
+
+1. Start from one topic you genuinely care about.
+2. Generate a draft pack quickly, even if it is imperfect.
+3. Keep only the concepts and progression that feel useful.
+4. Use the resulting pack and skill outputs to drive explanations, study plans, and self-checks.
+
+The important idea is not "perfect ingestion first." It is "usable learning structure fast enough that you keep going."
+
+### Current friction honestly stated
+
+The lowest-friction path is the included demo. The custom path still asks you to be comfortable with:
+
+- running Python commands locally
+- editing or preparing a source file
+- accepting heuristic extraction noise
+- reviewing draft outputs before trusting them
+
+Didactopus is already good at reducing the activation energy from "pile of source material" to "coherent learning structure," but it is not yet a one-click end-user tutor product.
+
+### Why use it anyway?
+
+Because it can make learning feel more like building a visible map of mastery than passively consuming material.
+
+Instead of only reading notes, you can get:
+
+- a concept graph
+- a staged path
+- explicit prerequisites
+- evidence-aware progress artifacts
+- reusable skill outputs for future tutoring or evaluation
+
 ## What Is In This Repository
 
 - `src/didactopus/`

@@ -1,0 +1,3 @@
+display_name: OCW Information Entropy Agent
+short_description: Tutor and assess with the generated MIT OCW information-theory pack.
+default_prompt: Help me use the MIT OCW information-and-entropy pack to study or evaluate work.
