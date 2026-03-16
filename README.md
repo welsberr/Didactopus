@@ -87,10 +87,11 @@ What you get:
 
 - a domain pack for the topic
 - a guided curriculum path
-- a synthetic learner run over that path
+- a deterministic learner run over that path
 - a capability export
 - a reusable skill bundle
 - visual progress artifacts
+- an optional local-LLM learner/mentor transcript path via RoleMesh
 
 This is the best "show me why this is fun" path in the current repo.
 
@@ -103,9 +104,9 @@ If you already have notes, a syllabus, or a course outline, the lightest custom 
 3. Emit a draft pack.
 4. Review only what matters.
 
-The easiest reference for this flow is the OCW demo source:
+The easiest reference for this flow is the OCW demo source tree:
 
-- `examples/ocw-information-entropy/6-050j-information-and-entropy.md`
+- `examples/ocw-information-entropy/course/`
 
 Use it as a template for your own topic, then follow the same pattern implemented in:
 

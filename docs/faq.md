@@ -98,7 +98,12 @@ Yes, but conservatively. Those adapters currently normalize text in a simplified
 
 ## Does the agentic learner call an external LLM?
 
-No. The current agentic learner paths are deterministic and synthetic. They are meant to exercise the orchestration pattern, evaluator pipeline, mastery updates, capability export, and visualization flow without requiring an external model service.
+There are now two learner paths in the repo.
+
+- The main pack/demo learner loop is still deterministic. It exercises orchestration, evaluator flow, mastery updates, capability export, and visualization without requiring an external model service.
+- There is also a local-LLM learner path through the RoleMesh integration and transcript demo. That path is intended to show how mentor, learner, practice, and evaluator roles can run against a local model gateway.
+
+So the deterministic learner is still active, but it is no longer the only learner-style path shown in the repository.
 
 ## Can I still use it as a personal mentor even though the learner is synthetic?
 
@@ -111,7 +116,7 @@ Right now the value is in:
 - exporting progress and capability artifacts
 - generating reusable skill context for future tutoring or evaluation
 
-The current demos show the shape of a mentor workflow even though the agent itself is not yet a live external model integration.
+The deterministic demos show the shape of a mentor workflow, and the RoleMesh transcript path shows the same pattern with a live local-LLM-backed learner role.
 
 ## How should I use it if I am taking a course and do not want to hire a tutor?
 
