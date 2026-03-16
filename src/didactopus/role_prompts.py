@@ -39,3 +39,17 @@ def evaluator_system_prompt() -> str:
         "If the learner stated a caveat, limitation, or nuance, quote or paraphrase that part and evaluate its quality rather than pretending it is absent. "
         "Do not invent omissions that are contradicted by the learner's actual text."
     )
+
+
+def system_prompt_for_role(role: str) -> str:
+    prompt_map = {
+        "mentor": mentor_system_prompt,
+        "learner": learner_system_prompt,
+        "practice": practice_system_prompt,
+        "project_advisor": project_advisor_system_prompt,
+        "evaluator": evaluator_system_prompt,
+    }
+    factory = prompt_map.get(role)
+    if factory is None:
+        raise KeyError(f"Unknown Didactopus role: {role}")
+    return factory()

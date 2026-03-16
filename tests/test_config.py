@@ -1,5 +1,6 @@
 from pathlib import Path
 from didactopus.config import load_config
+from didactopus.roles import role_ids
 
 
 def test_load_example_config() -> None:
@@ -14,3 +15,4 @@ def test_load_rolemesh_config() -> None:
     assert config.model_provider.provider == "rolemesh"
     assert config.model_provider.rolemesh.role_to_model["mentor"] == "planner"
     assert config.model_provider.rolemesh.role_to_model["learner"] == "writer"
+    assert set(config.model_provider.rolemesh.role_to_model) == set(role_ids())

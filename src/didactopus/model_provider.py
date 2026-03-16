@@ -6,6 +6,7 @@ from typing import Callable
 from urllib import request
 
 from .config import ModelProviderConfig
+from .roles import get_role
 
 
 @dataclass
@@ -20,15 +21,8 @@ class ModelProvider:
         self.config = config
 
     def pending_notice(self, role: str | None, model_name: str | None = None) -> str:
-        label = role or "assistant"
-        notices = {
-            "mentor": "Didactopus is reviewing the next learning step before answering.",
-            "learner": "Didactopus is drafting the learner-side reflection now.",
-            "practice": "Didactopus is designing a practice task for you now.",
-            "project_advisor": "Didactopus is sketching a project direction now.",
-            "evaluator": "Didactopus is evaluating the work before replying.",
-        }
-        notice = notices.get(label, "Didactopus is preparing the next response.")
+        spec = get_role(role or "")
+        notice = spec.pending_notice if spec is not None else "Didactopus is preparing the next response."
         if model_name:
             return f"{notice} Model: {model_name}."
         return notice

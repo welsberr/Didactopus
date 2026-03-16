@@ -1,6 +1,6 @@
 from didactopus.config import ModelProviderConfig
 from didactopus.model_provider import ModelProvider
-from didactopus.role_prompts import evaluator_system_prompt, mentor_system_prompt
+from didactopus.role_prompts import evaluator_system_prompt, mentor_system_prompt, system_prompt_for_role
 
 
 def test_stub_provider_includes_role_marker() -> None:
@@ -80,3 +80,8 @@ def test_mentor_prompt_requires_acknowledging_existing_caveats() -> None:
     prompt = mentor_system_prompt().lower()
     assert "acknowledge what the learner already did correctly" in prompt
     assert "do not claim a caveat" in prompt
+
+
+def test_system_prompt_for_role_covers_defined_roles() -> None:
+    assert "mentor mode" in system_prompt_for_role("mentor").lower()
+    assert "practice-design mode" in system_prompt_for_role("practice").lower()

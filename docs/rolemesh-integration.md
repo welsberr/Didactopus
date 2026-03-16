@@ -17,9 +17,10 @@ That means Didactopus can keep a simple provider abstraction while delegating mo
 ## Recommended architecture
 
 1. Run RoleMesh Gateway as the OpenAI-compatible front door.
-2. Point RoleMesh roles at local backends or discovered node agents.
+2. Expose whatever model aliases or upstream routes you want from RoleMesh Gateway.
 3. Configure Didactopus to use the `rolemesh` model provider.
-4. Let Didactopus send mentor/practice/project-advisor/evaluator requests by role.
+4. Map Didactopus roles to RoleMesh model aliases in `role_to_model`.
+5. Let Didactopus send role-specific requests while RoleMesh handles the actual model routing.
 
 ## Didactopus-side config
 
@@ -33,26 +34,86 @@ The important fields are:
 - `model_provider.rolemesh.default_model`
 - `model_provider.rolemesh.role_to_model`
 
-## Suggested role mapping
+## Canonical Didactopus roles
 
-With the sample RoleMesh gateway config, this is a good default mapping:
+Didactopus now defines its own role set in code. RoleMesh is expected to serve those roles by alias mapping rather than by imposing its own role vocabulary.
+
+Current canonical roles:
 
 - `mentor -> planner`
+- `learner -> writer`
 - `practice -> writer`
 - `project_advisor -> planner`
 - `evaluator -> reviewer`
 
-This keeps Didactopus prompts aligned with the role semantics RoleMesh already exposes.
+These are the default RoleMesh alias values in the example config, not required gateway role names.
+
+The Didactopus role meanings are:
+
+- `mentor`: sequencing, hints, conceptual framing, and prerequisite guidance
+- `learner`: learner-side reflection or transcript voice
+- `practice`: exercise generation without answer offloading
+- `project_advisor`: synthesis work and capstone-style guidance
+- `evaluator`: critique, limitation checks, and mastery-oriented feedback
+
+## Default alias mapping
+
+The example config maps those Didactopus roles to these RoleMesh aliases:
+
+- `mentor -> planner`
+- `learner -> writer`
+- `practice -> writer`
+- `project_advisor -> planner`
+- `evaluator -> reviewer`
+
+That mapping is only a starting point. If your RoleMesh deployment uses aliases like `didactopus-mentor`, `study-writer`, or `local-critic`, change only the right-hand side values in `role_to_model`.
+
+## How to customize it
+
+`role_to_model` is the main integration seam.
+
+Example:
+
+```yaml
+model_provider:
+  provider: rolemesh
+  rolemesh:
+    base_url: "http://127.0.0.1:8000"
+    api_key: "change-me-client-key-1"
+    default_model: "didactopus-mentor"
+    role_to_model:
+      mentor: "didactopus-mentor"
+      learner: "didactopus-learner"
+      practice: "didactopus-practice"
+      project_advisor: "didactopus-projects"
+      evaluator: "didactopus-evaluator"
+```
+
+Recommended rules for changes:
+
+- Keep the left-hand side role ids unchanged unless you are also changing Didactopus code.
+- Change the right-hand side values freely to match your local RoleMesh aliases.
+- If two Didactopus roles can share one model, map them to the same alias.
+- If one role needs a stronger or more cautious model, give it a dedicated alias in RoleMesh and map it here.
+
+If you want to add a brand-new Didactopus role, update:
+
+- `src/didactopus/roles.py`
+- `src/didactopus/role_prompts.py`
+- any feature module that calls `provider.generate(..., role=...)`
+- `configs/config.rolemesh.example.yaml`
 
 ## Prompt layer
 
-Didactopus now keeps its default RoleMesh-oriented prompts in:
+Didactopus keeps its role prompts in:
 
 - `didactopus.role_prompts`
+- `didactopus.roles`
 
 These prompts are intentionally anti-offloading:
 
 - mentor mode prefers Socratic questions and hints
+- learner mode preserves an earnest learner voice rather than a solver voice
 - practice mode prefers reasoning-heavy tasks
 - project-advisor mode prefers synthesis work
 - evaluator mode prefers critique and explicit limitations
