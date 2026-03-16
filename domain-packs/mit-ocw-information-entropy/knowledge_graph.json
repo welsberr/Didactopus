@@ -1,0 +1,2917 @@
+{
+  "course_title": "MIT OCW Information and Entropy",
+  "rights_note": "Derived from MIT OpenCourseWare 6.050J Information and Entropy (Spring 2008). Retain MIT OCW attribution and applicable Creative Commons terms before redistribution.",
+  "summary": {
+    "node_count": 98,
+    "edge_count": 178,
+    "concept_count": 34,
+    "source_count": 3
+  },
+  "nodes": [
+    {
+      "id": "source::examples-ocw-information-entropy-course-course-home-md",
+      "type": "source",
+      "title": "Course Home",
+      "source_path": "examples/ocw-information-entropy/course/course-home.md",
+      "source_type": "markdown"
+    },
+    {
+      "id": "source::examples-ocw-information-entropy-course-syllabus-md",
+      "type": "source",
+      "title": "Syllabus",
+      "source_path": "examples/ocw-information-entropy/course/syllabus.md",
+      "source_type": "markdown"
+    },
+    {
+      "id": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "type": "source",
+      "title": "Unit Sequence",
+      "source_path": "examples/ocw-information-entropy/course/unit-sequence.md",
+      "source_type": "markdown"
+    },
+    {
+      "id": "concept::mit-ocw-6-050j-information-and-entropy-course-home",
+      "type": "concept",
+      "title": "MIT OCW 6.050J Information and Entropy: Course Home",
+      "description": "Source: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/\nAttribution: adapted from the MIT OpenCourseWare course home page for 6.050J Information and Entropy.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "MIT OCW 6.050J Information and Entropy: Course Home"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ]
+    },
+    {
+      "id": "concept::information-and-entropy",
+      "type": "concept",
+      "title": "Information and Entropy",
+      "description": "- Objective: Identify the course title, instructors, departments, level, and major topical areas.\n- Exercise: Summarize the course in one paragraph for a prospective learner.\nMIT OpenCourseWare presents 6.050J Information and Entropy as a S",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Information and Entropy"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "mastery_signals": [
+        "Identify the course title, instructors, departments, level, and major topical areas."
+      ]
+    },
+    {
+      "id": "concept::paul",
+      "type": "concept",
+      "title": "Paul",
+      "description": "Candidate concept extracted from lesson 'Information and Entropy'.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Information and Entropy"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "mastery_signals": [
+        "Identify the course title, instructors, departments, level, and major topical areas."
+      ]
+    },
+    {
+      "id": "concept::penfield",
+      "type": "concept",
+      "title": "Penfield",
+      "description": "Candidate concept extracted from lesson 'Information and Entropy'.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Information and Entropy"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "mastery_signals": [
+        "Identify the course title, instructors, departments, level, and major topical areas."
+      ]
+    },
+    {
+      "id": "concept::seth",
+      "type": "concept",
+      "title": "Seth",
+      "description": "Candidate concept extracted from lesson 'Information and Entropy'.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Information and Entropy"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "mastery_signals": [
+        "Identify the course title, instructors, departments, level, and major topical areas."
+      ]
+    },
+    {
+      "id": "concept::lloyd",
+      "type": "concept",
+      "title": "Lloyd",
+      "description": "Candidate concept extracted from lesson 'Information and Entropy'.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Information and Entropy"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "mastery_signals": [
+        "Identify the course title, instructors, departments, level, and major topical areas."
+      ]
+    },
+    {
+      "id": "concept::electrical",
+      "type": "concept",
+      "title": "Electrical",
+      "description": "Candidate concept extracted from lesson 'Information and Entropy'.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Information and Entropy"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "mastery_signals": [
+        "Identify the course title, instructors, departments, level, and major topical areas."
+      ]
+    },
+    {
+      "id": "concept::engineering",
+      "type": "concept",
+      "title": "Engineering",
+      "description": "Candidate concept extracted from lesson 'Information and Entropy'.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Information and Entropy"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "mastery_signals": [
+        "Identify the course title, instructors, departments, level, and major topical areas."
+      ]
+    },
+    {
+      "id": "concept::ultimate-limits-to-communication-and-computation",
+      "type": "concept",
+      "title": "Ultimate Limits to Communication and Computation",
+      "description": "- Objective: Explain the broad intellectual scope of the course.\n- Exercise: List the main topic clusters that connect communication, computation, and entropy.\nThe course examines the ultimate limits to communication and computation with em",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Ultimate Limits to Communication and Computation"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "mastery_signals": [
+        "Explain the broad intellectual scope of the course."
+      ]
+    },
+    {
+      "id": "concept::entropy",
+      "type": "concept",
+      "title": "Entropy",
+      "description": "Candidate concept extracted from lesson 'Ultimate Limits to Communication and Computation'.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Ultimate Limits to Communication and Computation"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "mastery_signals": [
+        "Explain the broad intellectual scope of the course."
+      ]
+    },
+    {
+      "id": "concept::open-textbooks-problem-sets-and-programming-work",
+      "type": "concept",
+      "title": "Open Textbooks, Problem Sets, and Programming Work",
+      "description": "- Objective: Identify the main kinds of learning resources supplied through the course.\n- Exercise: Explain how these resource types support both conceptual study and practice.\nThe course home lists open textbooks, problem sets, problem set",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Open Textbooks, Problem Sets, and Programming Work"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "mastery_signals": [
+        "Identify the main kinds of learning resources supplied through the course."
+      ]
+    },
+    {
+      "id": "concept::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "type": "concept",
+      "title": "MIT OCW 6.050J Information and Entropy: Syllabus",
+      "description": "Source: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/pages/syllabus/\nAttribution: adapted from the MIT OpenCourseWare syllabus page for 6.050J Information and Entropy.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "MIT OCW 6.050J Information and Entropy: Syllabus"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ]
+    },
+    {
+      "id": "concept::prerequisites-and-mathematical-background",
+      "type": "concept",
+      "title": "Prerequisites and Mathematical Background",
+      "description": "- Objective: Explain the mathematical maturity expected by the course.\n- Exercise: Decide whether a learner needs review in probability, linear algebra, or signals before beginning.\nThe syllabus expects a foundation comparable to MIT subjec",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Prerequisites and Mathematical Background"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "mastery_signals": [
+        "Explain the mathematical maturity expected by the course."
+      ]
+    },
+    {
+      "id": "concept::assessment-structure",
+      "type": "concept",
+      "title": "Assessment Structure",
+      "description": "- Objective: Identify the role of problem sets, exams, and programming work in the course.\n- Exercise: Build a study schedule that alternates reading, derivation, and worked exercises.\nThe syllabus emphasizes regular problem solving and qua",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Assessment Structure"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "mastery_signals": [
+        "Identify the role of problem sets, exams, and programming work in the course."
+      ]
+    },
+    {
+      "id": "concept::course-notes-and-reference-texts",
+      "type": "concept",
+      "title": "Course Notes and Reference Texts",
+      "description": "- Objective: Explain how the course notes and textbook references supply the core conceptual sequence.\n- Exercise: Compare when to use course notes versus outside references for clarification.\nMIT OCW links course notes and textbook-style r",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Course Notes and Reference Texts"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "mastery_signals": [
+        "Explain how the course notes and textbook references supply the core conceptual sequence."
+      ]
+    },
+    {
+      "id": "concept::independent-reasoning-and-careful-comparison",
+      "type": "concept",
+      "title": "Independent Reasoning and Careful Comparison",
+      "description": "- Objective: Explain why the course requires precise comparison of related but non-identical concepts.\n- Exercise: Write a short note distinguishing Shannon entropy, channel capacity, and thermodynamic entropy.\nThe syllabus framing implies",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Independent Reasoning and Careful Comparison"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "mastery_signals": [
+        "Explain why the course requires precise comparison of related but non-identical concepts."
+      ]
+    },
+    {
+      "id": "concept::shannon",
+      "type": "concept",
+      "title": "Shannon",
+      "description": "Candidate concept extracted from lesson 'Independent Reasoning and Careful Comparison'.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Independent Reasoning and Careful Comparison"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "mastery_signals": [
+        "Explain why the course requires precise comparison of related but non-identical concepts."
+      ]
+    },
+    {
+      "id": "concept::learners",
+      "type": "concept",
+      "title": "Learners",
+      "description": "Candidate concept extracted from lesson 'Independent Reasoning and Careful Comparison'.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Independent Reasoning and Careful Comparison"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "mastery_signals": [
+        "Explain why the course requires precise comparison of related but non-identical concepts."
+      ]
+    },
+    {
+      "id": "concept::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "type": "concept",
+      "title": "MIT OCW 6.050J Information and Entropy: Unit Sequence",
+      "description": "Source: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/pages/syllabus/\nAttribution: adapted from the MIT OpenCourseWare unit progression and resource organization for 6.050J Information and Entropy.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "MIT OCW 6.050J Information and Entropy: Unit Sequence"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "id": "concept::counting-and-probability",
+      "type": "concept",
+      "title": "Counting and Probability",
+      "description": "- Objective: Explain how counting arguments, probability spaces, and random variables support later information-theory results.\n- Exercise: Derive a simple counting argument for binary strings and compute an event probability.\nEarly units e",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Counting and Probability"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain how counting arguments, probability spaces, and random variables support later information-theory results."
+      ]
+    },
+    {
+      "id": "concept::derive",
+      "type": "concept",
+      "title": "Derive",
+      "description": "Candidate concept extracted from lesson 'Counting and Probability'.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Counting and Probability"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain how counting arguments, probability spaces, and random variables support later information-theory results."
+      ]
+    },
+    {
+      "id": "concept::shannon-entropy",
+      "type": "concept",
+      "title": "Shannon Entropy",
+      "description": "- Objective: Explain Shannon entropy as a measure of uncertainty and compare high-entropy and low-entropy sources.\n- Exercise: Compute the entropy of a Bernoulli source and interpret the result.\nThe course then introduces entropy as a quant",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Shannon Entropy"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain Shannon entropy as a measure of uncertainty and compare high-entropy and low-entropy sources."
+      ]
+    },
+    {
+      "id": "concept::bernoulli",
+      "type": "concept",
+      "title": "Bernoulli",
+      "description": "Candidate concept extracted from lesson 'Shannon Entropy'.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Shannon Entropy"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain Shannon entropy as a measure of uncertainty and compare high-entropy and low-entropy sources."
+      ]
+    },
+    {
+      "id": "concept::mutual-information",
+      "type": "concept",
+      "title": "Mutual Information",
+      "description": "- Objective: Explain mutual information and relate it to dependence between signals or observations.\n- Exercise: Compare independent variables with dependent variables using mutual-information reasoning.\nThese units ask the learner to under",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Mutual Information"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain mutual information and relate it to dependence between signals or observations."
+      ]
+    },
+    {
+      "id": "concept::source-coding-and-compression",
+      "type": "concept",
+      "title": "Source Coding and Compression",
+      "description": "- Objective: Explain lossless compression in terms of entropy, redundancy, and coding choices.\n- Exercise: Describe when compression succeeds and when it fails on already-random data.\nThe course develops the idea that structured sources can",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Source Coding and Compression"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain lossless compression in terms of entropy, redundancy, and coding choices."
+      ]
+    },
+    {
+      "id": "concept::huffman-coding",
+      "type": "concept",
+      "title": "Huffman Coding",
+      "description": "- Objective: Explain Huffman coding and justify why likely symbols receive shorter descriptions.\n- Exercise: Build a Huffman code for a small source alphabet.\nLearners use trees and expected length arguments to connect probability models to",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Huffman Coding"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain Huffman coding and justify why likely symbols receive shorter descriptions."
+      ]
+    },
+    {
+      "id": "concept::channel-capacity",
+      "type": "concept",
+      "title": "Channel Capacity",
+      "description": "- Objective: Explain channel capacity as a limit on reliable communication over a noisy channel.\n- Exercise: State why reliable transmission above capacity is impossible in the long run.\nThe course treats capacity as a fundamental upper bou",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Channel Capacity"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain channel capacity as a limit on reliable communication over a noisy channel."
+      ]
+    },
+    {
+      "id": "concept::channel-coding",
+      "type": "concept",
+      "title": "Channel Coding",
+      "description": "- Objective: Explain how channel coding adds redundancy to protect messages from noise.\n- Exercise: Contrast uncoded transmission with coded transmission on a noisy channel.\nThese units emphasize that redundancy can be wasteful in compressi",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Channel Coding"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain how channel coding adds redundancy to protect messages from noise."
+      ]
+    },
+    {
+      "id": "concept::contrast",
+      "type": "concept",
+      "title": "Contrast",
+      "description": "Candidate concept extracted from lesson 'Channel Coding'.",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Channel Coding"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain how channel coding adds redundancy to protect messages from noise."
+      ]
+    },
+    {
+      "id": "concept::error-correcting-codes",
+      "type": "concept",
+      "title": "Error Correcting Codes",
+      "description": "- Objective: Explain how error-correcting codes detect or repair corrupted symbols.\n- Exercise: Describe a simple parity-style code and its limits.\nThe learner must connect abstract limits to concrete coding mechanisms and understand both s",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Error Correcting Codes"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain how error-correcting codes detect or repair corrupted symbols."
+      ]
+    },
+    {
+      "id": "concept::cryptography-and-information-hiding",
+      "type": "concept",
+      "title": "Cryptography and Information Hiding",
+      "description": "- Objective: Explain the relationship between secrecy, information leakage, and coded communication.\n- Exercise: Compare a secure scheme with a weak one in terms of revealed information.\nThe course extends information-theoretic reasoning to",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Cryptography and Information Hiding"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain the relationship between secrecy, information leakage, and coded communication."
+      ]
+    },
+    {
+      "id": "concept::thermodynamics-and-entropy",
+      "type": "concept",
+      "title": "Thermodynamics and Entropy",
+      "description": "- Objective: Explain how thermodynamic entropy relates to, and differs from, Shannon entropy.\n- Exercise: Compare the two entropy notions and identify what is preserved across the analogy.\nThe course uses entropy as a bridge concept between",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Thermodynamics and Entropy"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain how thermodynamic entropy relates to, and differs from, Shannon entropy."
+      ]
+    },
+    {
+      "id": "concept::reversible-computation-and-quantum-computation",
+      "type": "concept",
+      "title": "Reversible Computation and Quantum Computation",
+      "description": "- Objective: Explain why the physical implementation of computation matters for information processing limits.\n- Exercise: Summarize how reversible computation changes the discussion of dissipation and information loss.\nLater units connect",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Reversible Computation and Quantum Computation"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Explain why the physical implementation of computation matters for information processing limits."
+      ]
+    },
+    {
+      "id": "concept::course-synthesis",
+      "type": "concept",
+      "title": "Course Synthesis",
+      "description": "- Objective: Synthesize the course by connecting entropy, coding, reliability, secrecy, and physical interpretation in one coherent narrative.\n- Exercise: Produce a final study guide that links source coding, channel coding, secrecy, thermo",
+      "source_modules": [
+        "Imported from MARKDOWN"
+      ],
+      "source_lessons": [
+        "Course Synthesis"
+      ],
+      "source_courses": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "mastery_signals": [
+        "Synthesize the course by connecting entropy, coding, reliability, secrecy, and physical interpretation in one coherent narrative."
+      ]
+    },
+    {
+      "id": "module::imported-from-markdown",
+      "type": "module",
+      "title": "Imported from MARKDOWN"
+    },
+    {
+      "id": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-course-home",
+      "type": "lesson",
+      "title": "MIT OCW 6.050J Information and Entropy: Course Home",
+      "module_title": "Imported from MARKDOWN",
+      "body": "Source: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/\nAttribution: adapted from the MIT OpenCourseWare course home page for 6.050J Information and Entropy.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "key_terms": [
+        "Information",
+        "Entropy"
+      ]
+    },
+    {
+      "id": "lesson::imported-from-markdown::information-and-entropy",
+      "type": "lesson",
+      "title": "Information and Entropy",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Identify the course title, instructors, departments, level, and major topical areas.\n- Exercise: Summarize the course in one paragraph for a prospective learner.\nMIT OpenCourseWare presents 6.050J Information and Entropy as a Spring 2008 undergraduate subject taught by Paul Penfield and Seth Lloyd in Electrical Engineering and Computer Science together with Mechanical Engineering. The catalog framing emphasizes theory of computation, signal processing, and mathematical reasoning about information.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "key_terms": [
+        "Information",
+        "Entropy",
+        "Paul",
+        "Penfield",
+        "Seth",
+        "Lloyd",
+        "Electrical",
+        "Engineering"
+      ]
+    },
+    {
+      "id": "objective::information-and-entropy::1",
+      "type": "assessment_signal",
+      "title": "Identify the course title, instructors, departments, level, and major topical areas.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::information-and-entropy::1",
+      "type": "assessment_signal",
+      "title": "Summarize the course in one paragraph for a prospective learner.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::ultimate-limits-to-communication-and-computation",
+      "type": "lesson",
+      "title": "Ultimate Limits to Communication and Computation",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain the broad intellectual scope of the course.\n- Exercise: List the main topic clusters that connect communication, computation, and entropy.\nThe course examines the ultimate limits to communication and computation with emphasis on the physical nature of information processing. The source description highlights information and computation, digital signals, codes and compression, noise, probability, error correction, reversible and irreversible operations, physics of computation, and quantum computation. Entropy is explicitly connected both to channel capacity and to the second law of thermodynamics.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "key_terms": [
+        "Entropy"
+      ]
+    },
+    {
+      "id": "objective::ultimate-limits-to-communication-and-computation::1",
+      "type": "assessment_signal",
+      "title": "Explain the broad intellectual scope of the course.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::ultimate-limits-to-communication-and-computation::1",
+      "type": "assessment_signal",
+      "title": "List the main topic clusters that connect communication, computation, and entropy.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::open-textbooks-problem-sets-and-programming-work",
+      "type": "lesson",
+      "title": "Open Textbooks, Problem Sets, and Programming Work",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Identify the main kinds of learning resources supplied through the course.\n- Exercise: Explain how these resource types support both conceptual study and practice.\nThe course home lists open textbooks, problem sets, problem set solutions, and programming assignments. A learner using Didactopus should treat these as complementary evidence sources rather than relying on one summary alone.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ]
+    },
+    {
+      "id": "objective::open-textbooks-problem-sets-and-programming-work::1",
+      "type": "assessment_signal",
+      "title": "Identify the main kinds of learning resources supplied through the course.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::open-textbooks-problem-sets-and-programming-work::1",
+      "type": "assessment_signal",
+      "title": "Explain how these resource types support both conceptual study and practice.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "type": "lesson",
+      "title": "MIT OCW 6.050J Information and Entropy: Syllabus",
+      "module_title": "Imported from MARKDOWN",
+      "body": "Source: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/pages/syllabus/\nAttribution: adapted from the MIT OpenCourseWare syllabus page for 6.050J Information and Entropy.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "key_terms": [
+        "Information",
+        "Entropy"
+      ]
+    },
+    {
+      "id": "lesson::imported-from-markdown::prerequisites-and-mathematical-background",
+      "type": "lesson",
+      "title": "Prerequisites and Mathematical Background",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain the mathematical maturity expected by the course.\n- Exercise: Decide whether a learner needs review in probability, linear algebra, or signals before beginning.\nThe syllabus expects a foundation comparable to MIT subjects in calculus and linear algebra, together with comfort in probability, signals, and basic programming. Didactopus should therefore surface prerequisite review when those foundations appear weak.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ]
+    },
+    {
+      "id": "objective::prerequisites-and-mathematical-background::1",
+      "type": "assessment_signal",
+      "title": "Explain the mathematical maturity expected by the course.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::prerequisites-and-mathematical-background::1",
+      "type": "assessment_signal",
+      "title": "Decide whether a learner needs review in probability, linear algebra, or signals before beginning.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::assessment-structure",
+      "type": "lesson",
+      "title": "Assessment Structure",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Identify the role of problem sets, exams, and programming work in the course.\n- Exercise: Build a study schedule that alternates reading, derivation, and worked exercises.\nThe syllabus emphasizes regular problem solving and quantitative reasoning. The course is not only a reading list: learners are expected to derive results, solve structured problems, and connect abstract arguments to implementation-oriented tasks.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ]
+    },
+    {
+      "id": "objective::assessment-structure::1",
+      "type": "assessment_signal",
+      "title": "Identify the role of problem sets, exams, and programming work in the course.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::assessment-structure::1",
+      "type": "assessment_signal",
+      "title": "Build a study schedule that alternates reading, derivation, and worked exercises.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::course-notes-and-reference-texts",
+      "type": "lesson",
+      "title": "Course Notes and Reference Texts",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain how the course notes and textbook references supply the core conceptual sequence.\n- Exercise: Compare when to use course notes versus outside references for clarification.\nMIT OCW links course notes and textbook-style resources through the syllabus and resource pages. The intended use is cumulative: earlier notes establish counting, probability, and entropy, while later materials expand into coding, noise, secrecy, thermodynamics, and computation.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ]
+    },
+    {
+      "id": "objective::course-notes-and-reference-texts::1",
+      "type": "assessment_signal",
+      "title": "Explain how the course notes and textbook references supply the core conceptual sequence.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::course-notes-and-reference-texts::1",
+      "type": "assessment_signal",
+      "title": "Compare when to use course notes versus outside references for clarification.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::independent-reasoning-and-careful-comparison",
+      "type": "lesson",
+      "title": "Independent Reasoning and Careful Comparison",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain why the course requires precise comparison of related but non-identical concepts.\n- Exercise: Write a short note distinguishing Shannon entropy, channel capacity, and thermodynamic entropy.\nThe syllabus framing implies a style of work where analogy is useful but dangerous when used loosely. Learners must compare models carefully, state assumptions, and notice where similar mathematics does not imply identical interpretation.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "key_terms": [
+        "Shannon",
+        "Learners"
+      ]
+    },
+    {
+      "id": "objective::independent-reasoning-and-careful-comparison::1",
+      "type": "assessment_signal",
+      "title": "Explain why the course requires precise comparison of related but non-identical concepts.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::independent-reasoning-and-careful-comparison::1",
+      "type": "assessment_signal",
+      "title": "Write a short note distinguishing Shannon entropy, channel capacity, and thermodynamic entropy.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "type": "lesson",
+      "title": "MIT OCW 6.050J Information and Entropy: Unit Sequence",
+      "module_title": "Imported from MARKDOWN",
+      "body": "Source: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/pages/syllabus/\nAttribution: adapted from the MIT OpenCourseWare unit progression and resource organization for 6.050J Information and Entropy.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "key_terms": [
+        "Information",
+        "Entropy"
+      ]
+    },
+    {
+      "id": "lesson::imported-from-markdown::counting-and-probability",
+      "type": "lesson",
+      "title": "Counting and Probability",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain how counting arguments, probability spaces, and random variables support later information-theory results.\n- Exercise: Derive a simple counting argument for binary strings and compute an event probability.\nEarly units establish counting, combinatorics, and probability as the language used to reason about uncertainty, messages, and evidence.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "key_terms": [
+        "Derive"
+      ]
+    },
+    {
+      "id": "objective::counting-and-probability::1",
+      "type": "assessment_signal",
+      "title": "Explain how counting arguments, probability spaces, and random variables support later information-theory results.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::counting-and-probability::1",
+      "type": "assessment_signal",
+      "title": "Derive a simple counting argument for binary strings and compute an event probability.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::shannon-entropy",
+      "type": "lesson",
+      "title": "Shannon Entropy",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain Shannon entropy as a measure of uncertainty and compare high-entropy and low-entropy sources.\n- Exercise: Compute the entropy of a Bernoulli source and interpret the result.\nThe course then introduces entropy as a quantitative measure of uncertainty for a source model and uses it to reason about representation cost and surprise.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "key_terms": [
+        "Shannon",
+        "Bernoulli"
+      ]
+    },
+    {
+      "id": "objective::shannon-entropy::1",
+      "type": "assessment_signal",
+      "title": "Explain Shannon entropy as a measure of uncertainty and compare high-entropy and low-entropy sources.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::shannon-entropy::1",
+      "type": "assessment_signal",
+      "title": "Compute the entropy of a Bernoulli source and interpret the result.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::mutual-information",
+      "type": "lesson",
+      "title": "Mutual Information",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain mutual information and relate it to dependence between signals or observations.\n- Exercise: Compare independent variables with dependent variables using mutual-information reasoning.\nThese units ask the learner to understand how observation changes uncertainty and what it means for one variable to carry information about another.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "id": "objective::mutual-information::1",
+      "type": "assessment_signal",
+      "title": "Explain mutual information and relate it to dependence between signals or observations.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::mutual-information::1",
+      "type": "assessment_signal",
+      "title": "Compare independent variables with dependent variables using mutual-information reasoning.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::source-coding-and-compression",
+      "type": "lesson",
+      "title": "Source Coding and Compression",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain lossless compression in terms of entropy, redundancy, and coding choices.\n- Exercise: Describe when compression succeeds and when it fails on already-random data.\nThe course develops the idea that structured sources can often be described more efficiently, but only up to limits implied by entropy.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "id": "objective::source-coding-and-compression::1",
+      "type": "assessment_signal",
+      "title": "Explain lossless compression in terms of entropy, redundancy, and coding choices.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::source-coding-and-compression::1",
+      "type": "assessment_signal",
+      "title": "Describe when compression succeeds and when it fails on already-random data.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::huffman-coding",
+      "type": "lesson",
+      "title": "Huffman Coding",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain Huffman coding and justify why likely symbols receive shorter descriptions.\n- Exercise: Build a Huffman code for a small source alphabet.\nLearners use trees and expected length arguments to connect probability models to practical code design.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "key_terms": [
+        "Huffman",
+        "Learners"
+      ]
+    },
+    {
+      "id": "objective::huffman-coding::1",
+      "type": "assessment_signal",
+      "title": "Explain Huffman coding and justify why likely symbols receive shorter descriptions.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::huffman-coding::1",
+      "type": "assessment_signal",
+      "title": "Build a Huffman code for a small source alphabet.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::channel-capacity",
+      "type": "lesson",
+      "title": "Channel Capacity",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain channel capacity as a limit on reliable communication over a noisy channel.\n- Exercise: State why reliable transmission above capacity is impossible in the long run.\nThe course treats capacity as a fundamental upper bound and frames noisy communication in terms of rates, inference, and uncertainty reduction.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "id": "objective::channel-capacity::1",
+      "type": "assessment_signal",
+      "title": "Explain channel capacity as a limit on reliable communication over a noisy channel.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::channel-capacity::1",
+      "type": "assessment_signal",
+      "title": "State why reliable transmission above capacity is impossible in the long run.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::channel-coding",
+      "type": "lesson",
+      "title": "Channel Coding",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain how channel coding adds redundancy to protect messages from noise.\n- Exercise: Contrast uncoded transmission with coded transmission on a noisy channel.\nThese units emphasize that redundancy can be wasteful in compression but essential in communication under uncertainty.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "key_terms": [
+        "Contrast"
+      ]
+    },
+    {
+      "id": "objective::channel-coding::1",
+      "type": "assessment_signal",
+      "title": "Explain how channel coding adds redundancy to protect messages from noise.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::channel-coding::1",
+      "type": "assessment_signal",
+      "title": "Contrast uncoded transmission with coded transmission on a noisy channel.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::error-correcting-codes",
+      "type": "lesson",
+      "title": "Error Correcting Codes",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain how error-correcting codes detect or repair corrupted symbols.\n- Exercise: Describe a simple parity-style code and its limits.\nThe learner must connect abstract limits to concrete coding mechanisms and understand both strengths and failure modes.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "id": "objective::error-correcting-codes::1",
+      "type": "assessment_signal",
+      "title": "Explain how error-correcting codes detect or repair corrupted symbols.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::error-correcting-codes::1",
+      "type": "assessment_signal",
+      "title": "Describe a simple parity-style code and its limits.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::cryptography-and-information-hiding",
+      "type": "lesson",
+      "title": "Cryptography and Information Hiding",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain the relationship between secrecy, information leakage, and coded communication.\n- Exercise: Compare a secure scheme with a weak one in terms of revealed information.\nThe course extends information-theoretic reasoning to adversarial settings where controlling what an observer can infer becomes central.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "id": "objective::cryptography-and-information-hiding::1",
+      "type": "assessment_signal",
+      "title": "Explain the relationship between secrecy, information leakage, and coded communication.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::cryptography-and-information-hiding::1",
+      "type": "assessment_signal",
+      "title": "Compare a secure scheme with a weak one in terms of revealed information.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::thermodynamics-and-entropy",
+      "type": "lesson",
+      "title": "Thermodynamics and Entropy",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain how thermodynamic entropy relates to, and differs from, Shannon entropy.\n- Exercise: Compare the two entropy notions and identify what is preserved across the analogy.\nThe course uses entropy as a bridge concept between communication theory and physics while insisting on careful interpretation.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "key_terms": [
+        "Shannon"
+      ]
+    },
+    {
+      "id": "objective::thermodynamics-and-entropy::1",
+      "type": "assessment_signal",
+      "title": "Explain how thermodynamic entropy relates to, and differs from, Shannon entropy.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::thermodynamics-and-entropy::1",
+      "type": "assessment_signal",
+      "title": "Compare the two entropy notions and identify what is preserved across the analogy.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::reversible-computation-and-quantum-computation",
+      "type": "lesson",
+      "title": "Reversible Computation and Quantum Computation",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Explain why the physical implementation of computation matters for information processing limits.\n- Exercise: Summarize how reversible computation changes the discussion of dissipation and information loss.\nLater units connect information, entropy, and computation more directly by considering reversible logic, irreversibility, and quantum information themes.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "id": "objective::reversible-computation-and-quantum-computation::1",
+      "type": "assessment_signal",
+      "title": "Explain why the physical implementation of computation matters for information processing limits.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::reversible-computation-and-quantum-computation::1",
+      "type": "assessment_signal",
+      "title": "Summarize how reversible computation changes the discussion of dissipation and information loss.",
+      "signal_kind": "exercise"
+    },
+    {
+      "id": "lesson::imported-from-markdown::course-synthesis",
+      "type": "lesson",
+      "title": "Course Synthesis",
+      "module_title": "Imported from MARKDOWN",
+      "body": "- Objective: Synthesize the course by connecting entropy, coding, reliability, secrecy, and physical interpretation in one coherent narrative.\n- Exercise: Produce a final study guide that links source coding, channel coding, secrecy, thermodynamic analogies, and computation.\nThe end of the course asks the learner to unify the mathematical and physical perspectives rather than treating the units as disconnected topics.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "id": "objective::course-synthesis::1",
+      "type": "assessment_signal",
+      "title": "Synthesize the course by connecting entropy, coding, reliability, secrecy, and physical interpretation in one coherent narrative.",
+      "signal_kind": "objective"
+    },
+    {
+      "id": "exercise::course-synthesis::1",
+      "type": "assessment_signal",
+      "title": "Produce a final study guide that links source coding, channel coding, secrecy, thermodynamic analogies, and computation.",
+      "signal_kind": "exercise"
+    }
+  ],
+  "edges": [
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-course-home",
+      "type": "contains_lesson",
+      "justification": "Lesson 'MIT OCW 6.050J Information and Entropy: Course Home' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-course-home-md",
+      "target": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-course-home",
+      "type": "derived_lesson",
+      "justification": "Lesson 'MIT OCW 6.050J Information and Entropy: Course Home' was ingested from source 'examples/ocw-information-entropy/course/course-home.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-course-home",
+      "target": "concept::mit-ocw-6-050j-information-and-entropy-course-home",
+      "type": "teaches_concept",
+      "justification": "Lesson 'MIT OCW 6.050J Information and Entropy: Course Home' yields the lesson-level concept 'MIT OCW 6.050J Information and Entropy: Course Home'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-course-home",
+      "target": "concept::entropy",
+      "type": "mentions_concept",
+      "justification": "Key term 'Entropy' was extracted from lesson 'MIT OCW 6.050J Information and Entropy: Course Home'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::information-and-entropy",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Information and Entropy' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-course-home-md",
+      "target": "lesson::imported-from-markdown::information-and-entropy",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Information and Entropy' was ingested from source 'examples/ocw-information-entropy/course/course-home.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "objective::information-and-entropy::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "exercise::information-and-entropy::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::information-and-entropy",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Information and Entropy' yields the lesson-level concept 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::entropy",
+      "type": "mentions_concept",
+      "justification": "Key term 'Entropy' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::paul",
+      "type": "mentions_concept",
+      "justification": "Key term 'Paul' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::penfield",
+      "type": "mentions_concept",
+      "justification": "Key term 'Penfield' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::seth",
+      "type": "mentions_concept",
+      "justification": "Key term 'Seth' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::lloyd",
+      "type": "mentions_concept",
+      "justification": "Key term 'Lloyd' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::electrical",
+      "type": "mentions_concept",
+      "justification": "Key term 'Electrical' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::engineering",
+      "type": "mentions_concept",
+      "justification": "Key term 'Engineering' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::ultimate-limits-to-communication-and-computation",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Ultimate Limits to Communication and Computation' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-course-home-md",
+      "target": "lesson::imported-from-markdown::ultimate-limits-to-communication-and-computation",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Ultimate Limits to Communication and Computation' was ingested from source 'examples/ocw-information-entropy/course/course-home.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::ultimate-limits-to-communication-and-computation",
+      "target": "objective::ultimate-limits-to-communication-and-computation::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Ultimate Limits to Communication and Computation'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::ultimate-limits-to-communication-and-computation",
+      "target": "exercise::ultimate-limits-to-communication-and-computation::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Ultimate Limits to Communication and Computation'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::ultimate-limits-to-communication-and-computation",
+      "target": "concept::ultimate-limits-to-communication-and-computation",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Ultimate Limits to Communication and Computation' yields the lesson-level concept 'Ultimate Limits to Communication and Computation'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::ultimate-limits-to-communication-and-computation",
+      "target": "concept::entropy",
+      "type": "mentions_concept",
+      "justification": "Key term 'Entropy' was extracted from lesson 'Ultimate Limits to Communication and Computation'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::open-textbooks-problem-sets-and-programming-work",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Open Textbooks, Problem Sets, and Programming Work' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-course-home-md",
+      "target": "lesson::imported-from-markdown::open-textbooks-problem-sets-and-programming-work",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Open Textbooks, Problem Sets, and Programming Work' was ingested from source 'examples/ocw-information-entropy/course/course-home.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::open-textbooks-problem-sets-and-programming-work",
+      "target": "objective::open-textbooks-problem-sets-and-programming-work::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Open Textbooks, Problem Sets, and Programming Work'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::open-textbooks-problem-sets-and-programming-work",
+      "target": "exercise::open-textbooks-problem-sets-and-programming-work::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Open Textbooks, Problem Sets, and Programming Work'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::open-textbooks-problem-sets-and-programming-work",
+      "target": "concept::open-textbooks-problem-sets-and-programming-work",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Open Textbooks, Problem Sets, and Programming Work' yields the lesson-level concept 'Open Textbooks, Problem Sets, and Programming Work'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "type": "contains_lesson",
+      "justification": "Lesson 'MIT OCW 6.050J Information and Entropy: Syllabus' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-syllabus-md",
+      "target": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "type": "derived_lesson",
+      "justification": "Lesson 'MIT OCW 6.050J Information and Entropy: Syllabus' was ingested from source 'examples/ocw-information-entropy/course/syllabus.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "target": "concept::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "type": "teaches_concept",
+      "justification": "Lesson 'MIT OCW 6.050J Information and Entropy: Syllabus' yields the lesson-level concept 'MIT OCW 6.050J Information and Entropy: Syllabus'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "target": "concept::entropy",
+      "type": "mentions_concept",
+      "justification": "Key term 'Entropy' was extracted from lesson 'MIT OCW 6.050J Information and Entropy: Syllabus'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::prerequisites-and-mathematical-background",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Prerequisites and Mathematical Background' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-syllabus-md",
+      "target": "lesson::imported-from-markdown::prerequisites-and-mathematical-background",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Prerequisites and Mathematical Background' was ingested from source 'examples/ocw-information-entropy/course/syllabus.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::prerequisites-and-mathematical-background",
+      "target": "objective::prerequisites-and-mathematical-background::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Prerequisites and Mathematical Background'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::prerequisites-and-mathematical-background",
+      "target": "exercise::prerequisites-and-mathematical-background::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Prerequisites and Mathematical Background'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::prerequisites-and-mathematical-background",
+      "target": "concept::prerequisites-and-mathematical-background",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Prerequisites and Mathematical Background' yields the lesson-level concept 'Prerequisites and Mathematical Background'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::assessment-structure",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Assessment Structure' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-syllabus-md",
+      "target": "lesson::imported-from-markdown::assessment-structure",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Assessment Structure' was ingested from source 'examples/ocw-information-entropy/course/syllabus.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::assessment-structure",
+      "target": "objective::assessment-structure::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Assessment Structure'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::assessment-structure",
+      "target": "exercise::assessment-structure::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Assessment Structure'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::assessment-structure",
+      "target": "concept::assessment-structure",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Assessment Structure' yields the lesson-level concept 'Assessment Structure'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::course-notes-and-reference-texts",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Course Notes and Reference Texts' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-syllabus-md",
+      "target": "lesson::imported-from-markdown::course-notes-and-reference-texts",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Course Notes and Reference Texts' was ingested from source 'examples/ocw-information-entropy/course/syllabus.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::course-notes-and-reference-texts",
+      "target": "objective::course-notes-and-reference-texts::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Course Notes and Reference Texts'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::course-notes-and-reference-texts",
+      "target": "exercise::course-notes-and-reference-texts::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Course Notes and Reference Texts'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::course-notes-and-reference-texts",
+      "target": "concept::course-notes-and-reference-texts",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Course Notes and Reference Texts' yields the lesson-level concept 'Course Notes and Reference Texts'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::independent-reasoning-and-careful-comparison",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Independent Reasoning and Careful Comparison' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-syllabus-md",
+      "target": "lesson::imported-from-markdown::independent-reasoning-and-careful-comparison",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Independent Reasoning and Careful Comparison' was ingested from source 'examples/ocw-information-entropy/course/syllabus.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::independent-reasoning-and-careful-comparison",
+      "target": "objective::independent-reasoning-and-careful-comparison::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Independent Reasoning and Careful Comparison'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::independent-reasoning-and-careful-comparison",
+      "target": "exercise::independent-reasoning-and-careful-comparison::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Independent Reasoning and Careful Comparison'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::independent-reasoning-and-careful-comparison",
+      "target": "concept::independent-reasoning-and-careful-comparison",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Independent Reasoning and Careful Comparison' yields the lesson-level concept 'Independent Reasoning and Careful Comparison'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::independent-reasoning-and-careful-comparison",
+      "target": "concept::shannon",
+      "type": "mentions_concept",
+      "justification": "Key term 'Shannon' was extracted from lesson 'Independent Reasoning and Careful Comparison'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::independent-reasoning-and-careful-comparison",
+      "target": "concept::learners",
+      "type": "mentions_concept",
+      "justification": "Key term 'Learners' was extracted from lesson 'Independent Reasoning and Careful Comparison'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "type": "contains_lesson",
+      "justification": "Lesson 'MIT OCW 6.050J Information and Entropy: Unit Sequence' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "type": "derived_lesson",
+      "justification": "Lesson 'MIT OCW 6.050J Information and Entropy: Unit Sequence' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "target": "concept::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "type": "teaches_concept",
+      "justification": "Lesson 'MIT OCW 6.050J Information and Entropy: Unit Sequence' yields the lesson-level concept 'MIT OCW 6.050J Information and Entropy: Unit Sequence'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "target": "concept::entropy",
+      "type": "mentions_concept",
+      "justification": "Key term 'Entropy' was extracted from lesson 'MIT OCW 6.050J Information and Entropy: Unit Sequence'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::counting-and-probability",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Counting and Probability' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::counting-and-probability",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Counting and Probability' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::counting-and-probability",
+      "target": "objective::counting-and-probability::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Counting and Probability'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::counting-and-probability",
+      "target": "exercise::counting-and-probability::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Counting and Probability'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::counting-and-probability",
+      "target": "concept::counting-and-probability",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Counting and Probability' yields the lesson-level concept 'Counting and Probability'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::counting-and-probability",
+      "target": "concept::derive",
+      "type": "mentions_concept",
+      "justification": "Key term 'Derive' was extracted from lesson 'Counting and Probability'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::shannon-entropy",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Shannon Entropy' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::shannon-entropy",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Shannon Entropy' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::shannon-entropy",
+      "target": "objective::shannon-entropy::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Shannon Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::shannon-entropy",
+      "target": "exercise::shannon-entropy::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Shannon Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::shannon-entropy",
+      "target": "concept::shannon-entropy",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Shannon Entropy' yields the lesson-level concept 'Shannon Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::shannon-entropy",
+      "target": "concept::shannon",
+      "type": "mentions_concept",
+      "justification": "Key term 'Shannon' was extracted from lesson 'Shannon Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::shannon-entropy",
+      "target": "concept::bernoulli",
+      "type": "mentions_concept",
+      "justification": "Key term 'Bernoulli' was extracted from lesson 'Shannon Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::mutual-information",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Mutual Information' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::mutual-information",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Mutual Information' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::mutual-information",
+      "target": "objective::mutual-information::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Mutual Information'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::mutual-information",
+      "target": "exercise::mutual-information::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Mutual Information'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::mutual-information",
+      "target": "concept::mutual-information",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Mutual Information' yields the lesson-level concept 'Mutual Information'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::source-coding-and-compression",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Source Coding and Compression' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::source-coding-and-compression",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Source Coding and Compression' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::source-coding-and-compression",
+      "target": "objective::source-coding-and-compression::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Source Coding and Compression'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::source-coding-and-compression",
+      "target": "exercise::source-coding-and-compression::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Source Coding and Compression'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::source-coding-and-compression",
+      "target": "concept::source-coding-and-compression",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Source Coding and Compression' yields the lesson-level concept 'Source Coding and Compression'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::huffman-coding",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Huffman Coding' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::huffman-coding",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Huffman Coding' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::huffman-coding",
+      "target": "objective::huffman-coding::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Huffman Coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::huffman-coding",
+      "target": "exercise::huffman-coding::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Huffman Coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::huffman-coding",
+      "target": "concept::huffman-coding",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Huffman Coding' yields the lesson-level concept 'Huffman Coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::huffman-coding",
+      "target": "concept::learners",
+      "type": "mentions_concept",
+      "justification": "Key term 'Learners' was extracted from lesson 'Huffman Coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::channel-capacity",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Channel Capacity' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::channel-capacity",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Channel Capacity' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::channel-capacity",
+      "target": "objective::channel-capacity::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Channel Capacity'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::channel-capacity",
+      "target": "exercise::channel-capacity::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Channel Capacity'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::channel-capacity",
+      "target": "concept::channel-capacity",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Channel Capacity' yields the lesson-level concept 'Channel Capacity'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::channel-coding",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Channel Coding' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::channel-coding",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Channel Coding' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::channel-coding",
+      "target": "objective::channel-coding::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Channel Coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::channel-coding",
+      "target": "exercise::channel-coding::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Channel Coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::channel-coding",
+      "target": "concept::channel-coding",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Channel Coding' yields the lesson-level concept 'Channel Coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::channel-coding",
+      "target": "concept::contrast",
+      "type": "mentions_concept",
+      "justification": "Key term 'Contrast' was extracted from lesson 'Channel Coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::error-correcting-codes",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Error Correcting Codes' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::error-correcting-codes",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Error Correcting Codes' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::error-correcting-codes",
+      "target": "objective::error-correcting-codes::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Error Correcting Codes'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::error-correcting-codes",
+      "target": "exercise::error-correcting-codes::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Error Correcting Codes'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::error-correcting-codes",
+      "target": "concept::error-correcting-codes",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Error Correcting Codes' yields the lesson-level concept 'Error Correcting Codes'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::cryptography-and-information-hiding",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Cryptography and Information Hiding' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::cryptography-and-information-hiding",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Cryptography and Information Hiding' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::cryptography-and-information-hiding",
+      "target": "objective::cryptography-and-information-hiding::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Cryptography and Information Hiding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::cryptography-and-information-hiding",
+      "target": "exercise::cryptography-and-information-hiding::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Cryptography and Information Hiding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::cryptography-and-information-hiding",
+      "target": "concept::cryptography-and-information-hiding",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Cryptography and Information Hiding' yields the lesson-level concept 'Cryptography and Information Hiding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::thermodynamics-and-entropy",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Thermodynamics and Entropy' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::thermodynamics-and-entropy",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Thermodynamics and Entropy' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::thermodynamics-and-entropy",
+      "target": "objective::thermodynamics-and-entropy::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Thermodynamics and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::thermodynamics-and-entropy",
+      "target": "exercise::thermodynamics-and-entropy::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Thermodynamics and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::thermodynamics-and-entropy",
+      "target": "concept::thermodynamics-and-entropy",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Thermodynamics and Entropy' yields the lesson-level concept 'Thermodynamics and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::thermodynamics-and-entropy",
+      "target": "concept::shannon",
+      "type": "mentions_concept",
+      "justification": "Key term 'Shannon' was extracted from lesson 'Thermodynamics and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::reversible-computation-and-quantum-computation",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Reversible Computation and Quantum Computation' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::reversible-computation-and-quantum-computation",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Reversible Computation and Quantum Computation' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::reversible-computation-and-quantum-computation",
+      "target": "objective::reversible-computation-and-quantum-computation::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Reversible Computation and Quantum Computation'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::reversible-computation-and-quantum-computation",
+      "target": "exercise::reversible-computation-and-quantum-computation::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Reversible Computation and Quantum Computation'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::reversible-computation-and-quantum-computation",
+      "target": "concept::reversible-computation-and-quantum-computation",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Reversible Computation and Quantum Computation' yields the lesson-level concept 'Reversible Computation and Quantum Computation'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "module::imported-from-markdown",
+      "target": "lesson::imported-from-markdown::course-synthesis",
+      "type": "contains_lesson",
+      "justification": "Lesson 'Course Synthesis' appears under module 'Imported from MARKDOWN'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "source::examples-ocw-information-entropy-course-unit-sequence-md",
+      "target": "lesson::imported-from-markdown::course-synthesis",
+      "type": "derived_lesson",
+      "justification": "Lesson 'Course Synthesis' was ingested from source 'examples/ocw-information-entropy/course/unit-sequence.md'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::course-synthesis",
+      "target": "objective::course-synthesis::1",
+      "type": "has_objective",
+      "justification": "Objective 1 was extracted from lesson 'Course Synthesis'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::course-synthesis",
+      "target": "exercise::course-synthesis::1",
+      "type": "has_exercise",
+      "justification": "Exercise 1 was extracted from lesson 'Course Synthesis'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::course-synthesis",
+      "target": "concept::course-synthesis",
+      "type": "teaches_concept",
+      "justification": "Lesson 'Course Synthesis' yields the lesson-level concept 'Course Synthesis'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 1.0
+    },
+    {
+      "source": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-course-home",
+      "target": "concept::mit-ocw-6-050j-information-and-entropy-course-home",
+      "type": "supports_concept",
+      "justification": "Concept 'MIT OCW 6.050J Information and Entropy: Course Home' was extracted from lesson 'MIT OCW 6.050J Information and Entropy: Course Home'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::mit-ocw-6-050j-information-and-entropy-course-home",
+      "target": "concept::information-and-entropy",
+      "type": "prerequisite",
+      "justification": "Concept 'Information and Entropy' depends on prerequisite 'mit-ocw-6-050j-information-and-entropy-course-home'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::information-and-entropy",
+      "type": "supports_concept",
+      "justification": "Concept 'Information and Entropy' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::paul",
+      "type": "supports_concept",
+      "justification": "Concept 'Paul' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::penfield",
+      "type": "supports_concept",
+      "justification": "Concept 'Penfield' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::seth",
+      "type": "supports_concept",
+      "justification": "Concept 'Seth' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::lloyd",
+      "type": "supports_concept",
+      "justification": "Concept 'Lloyd' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::electrical",
+      "type": "supports_concept",
+      "justification": "Concept 'Electrical' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::information-and-entropy",
+      "target": "concept::engineering",
+      "type": "supports_concept",
+      "justification": "Concept 'Engineering' was extracted from lesson 'Information and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "concept::information-and-entropy",
+      "target": "concept::ultimate-limits-to-communication-and-computation",
+      "type": "prerequisite",
+      "justification": "Concept 'Ultimate Limits to Communication and Computation' depends on prerequisite 'information-and-entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::ultimate-limits-to-communication-and-computation",
+      "target": "concept::ultimate-limits-to-communication-and-computation",
+      "type": "supports_concept",
+      "justification": "Concept 'Ultimate Limits to Communication and Computation' was extracted from lesson 'Ultimate Limits to Communication and Computation'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "lesson::imported-from-markdown::ultimate-limits-to-communication-and-computation",
+      "target": "concept::entropy",
+      "type": "supports_concept",
+      "justification": "Concept 'Entropy' was extracted from lesson 'Ultimate Limits to Communication and Computation'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "concept::ultimate-limits-to-communication-and-computation",
+      "target": "concept::open-textbooks-problem-sets-and-programming-work",
+      "type": "prerequisite",
+      "justification": "Concept 'Open Textbooks, Problem Sets, and Programming Work' depends on prerequisite 'ultimate-limits-to-communication-and-computation'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::open-textbooks-problem-sets-and-programming-work",
+      "target": "concept::open-textbooks-problem-sets-and-programming-work",
+      "type": "supports_concept",
+      "justification": "Concept 'Open Textbooks, Problem Sets, and Programming Work' was extracted from lesson 'Open Textbooks, Problem Sets, and Programming Work'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::open-textbooks-problem-sets-and-programming-work",
+      "target": "concept::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "type": "prerequisite",
+      "justification": "Concept 'MIT OCW 6.050J Information and Entropy: Syllabus' depends on prerequisite 'open-textbooks-problem-sets-and-programming-work'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "target": "concept::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "type": "supports_concept",
+      "justification": "Concept 'MIT OCW 6.050J Information and Entropy: Syllabus' was extracted from lesson 'MIT OCW 6.050J Information and Entropy: Syllabus'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "target": "concept::prerequisites-and-mathematical-background",
+      "type": "prerequisite",
+      "justification": "Concept 'Prerequisites and Mathematical Background' depends on prerequisite 'mit-ocw-6-050j-information-and-entropy-syllabus'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::prerequisites-and-mathematical-background",
+      "target": "concept::prerequisites-and-mathematical-background",
+      "type": "supports_concept",
+      "justification": "Concept 'Prerequisites and Mathematical Background' was extracted from lesson 'Prerequisites and Mathematical Background'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::prerequisites-and-mathematical-background",
+      "target": "concept::assessment-structure",
+      "type": "prerequisite",
+      "justification": "Concept 'Assessment Structure' depends on prerequisite 'prerequisites-and-mathematical-background'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::assessment-structure",
+      "target": "concept::assessment-structure",
+      "type": "supports_concept",
+      "justification": "Concept 'Assessment Structure' was extracted from lesson 'Assessment Structure'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::assessment-structure",
+      "target": "concept::course-notes-and-reference-texts",
+      "type": "prerequisite",
+      "justification": "Concept 'Course Notes and Reference Texts' depends on prerequisite 'assessment-structure'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::course-notes-and-reference-texts",
+      "target": "concept::course-notes-and-reference-texts",
+      "type": "supports_concept",
+      "justification": "Concept 'Course Notes and Reference Texts' was extracted from lesson 'Course Notes and Reference Texts'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::course-notes-and-reference-texts",
+      "target": "concept::independent-reasoning-and-careful-comparison",
+      "type": "prerequisite",
+      "justification": "Concept 'Independent Reasoning and Careful Comparison' depends on prerequisite 'course-notes-and-reference-texts'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::independent-reasoning-and-careful-comparison",
+      "target": "concept::independent-reasoning-and-careful-comparison",
+      "type": "supports_concept",
+      "justification": "Concept 'Independent Reasoning and Careful Comparison' was extracted from lesson 'Independent Reasoning and Careful Comparison'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "lesson::imported-from-markdown::independent-reasoning-and-careful-comparison",
+      "target": "concept::shannon",
+      "type": "supports_concept",
+      "justification": "Concept 'Shannon' was extracted from lesson 'Independent Reasoning and Careful Comparison'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "lesson::imported-from-markdown::independent-reasoning-and-careful-comparison",
+      "target": "concept::learners",
+      "type": "supports_concept",
+      "justification": "Concept 'Learners' was extracted from lesson 'Independent Reasoning and Careful Comparison'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "concept::independent-reasoning-and-careful-comparison",
+      "target": "concept::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "type": "prerequisite",
+      "justification": "Concept 'MIT OCW 6.050J Information and Entropy: Unit Sequence' depends on prerequisite 'independent-reasoning-and-careful-comparison'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "target": "concept::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "type": "supports_concept",
+      "justification": "Concept 'MIT OCW 6.050J Information and Entropy: Unit Sequence' was extracted from lesson 'MIT OCW 6.050J Information and Entropy: Unit Sequence'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "target": "concept::counting-and-probability",
+      "type": "prerequisite",
+      "justification": "Concept 'Counting and Probability' depends on prerequisite 'mit-ocw-6-050j-information-and-entropy-unit-sequence'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::counting-and-probability",
+      "target": "concept::counting-and-probability",
+      "type": "supports_concept",
+      "justification": "Concept 'Counting and Probability' was extracted from lesson 'Counting and Probability'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "lesson::imported-from-markdown::counting-and-probability",
+      "target": "concept::derive",
+      "type": "supports_concept",
+      "justification": "Concept 'Derive' was extracted from lesson 'Counting and Probability'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "concept::counting-and-probability",
+      "target": "concept::shannon-entropy",
+      "type": "prerequisite",
+      "justification": "Concept 'Shannon Entropy' depends on prerequisite 'counting-and-probability'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::shannon-entropy",
+      "target": "concept::shannon-entropy",
+      "type": "supports_concept",
+      "justification": "Concept 'Shannon Entropy' was extracted from lesson 'Shannon Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "lesson::imported-from-markdown::shannon-entropy",
+      "target": "concept::bernoulli",
+      "type": "supports_concept",
+      "justification": "Concept 'Bernoulli' was extracted from lesson 'Shannon Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "concept::shannon-entropy",
+      "target": "concept::mutual-information",
+      "type": "prerequisite",
+      "justification": "Concept 'Mutual Information' depends on prerequisite 'shannon-entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::mutual-information",
+      "target": "concept::mutual-information",
+      "type": "supports_concept",
+      "justification": "Concept 'Mutual Information' was extracted from lesson 'Mutual Information'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::mutual-information",
+      "target": "concept::source-coding-and-compression",
+      "type": "prerequisite",
+      "justification": "Concept 'Source Coding and Compression' depends on prerequisite 'mutual-information'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::source-coding-and-compression",
+      "target": "concept::source-coding-and-compression",
+      "type": "supports_concept",
+      "justification": "Concept 'Source Coding and Compression' was extracted from lesson 'Source Coding and Compression'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::source-coding-and-compression",
+      "target": "concept::huffman-coding",
+      "type": "prerequisite",
+      "justification": "Concept 'Huffman Coding' depends on prerequisite 'source-coding-and-compression'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::huffman-coding",
+      "target": "concept::huffman-coding",
+      "type": "supports_concept",
+      "justification": "Concept 'Huffman Coding' was extracted from lesson 'Huffman Coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::huffman-coding",
+      "target": "concept::channel-capacity",
+      "type": "prerequisite",
+      "justification": "Concept 'Channel Capacity' depends on prerequisite 'huffman-coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::channel-capacity",
+      "target": "concept::channel-capacity",
+      "type": "supports_concept",
+      "justification": "Concept 'Channel Capacity' was extracted from lesson 'Channel Capacity'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::channel-capacity",
+      "target": "concept::channel-coding",
+      "type": "prerequisite",
+      "justification": "Concept 'Channel Coding' depends on prerequisite 'channel-capacity'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::channel-coding",
+      "target": "concept::channel-coding",
+      "type": "supports_concept",
+      "justification": "Concept 'Channel Coding' was extracted from lesson 'Channel Coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "lesson::imported-from-markdown::channel-coding",
+      "target": "concept::contrast",
+      "type": "supports_concept",
+      "justification": "Concept 'Contrast' was extracted from lesson 'Channel Coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.7
+    },
+    {
+      "source": "concept::channel-coding",
+      "target": "concept::error-correcting-codes",
+      "type": "prerequisite",
+      "justification": "Concept 'Error Correcting Codes' depends on prerequisite 'channel-coding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::error-correcting-codes",
+      "target": "concept::error-correcting-codes",
+      "type": "supports_concept",
+      "justification": "Concept 'Error Correcting Codes' was extracted from lesson 'Error Correcting Codes'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::error-correcting-codes",
+      "target": "concept::cryptography-and-information-hiding",
+      "type": "prerequisite",
+      "justification": "Concept 'Cryptography and Information Hiding' depends on prerequisite 'error-correcting-codes'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::cryptography-and-information-hiding",
+      "target": "concept::cryptography-and-information-hiding",
+      "type": "supports_concept",
+      "justification": "Concept 'Cryptography and Information Hiding' was extracted from lesson 'Cryptography and Information Hiding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::cryptography-and-information-hiding",
+      "target": "concept::thermodynamics-and-entropy",
+      "type": "prerequisite",
+      "justification": "Concept 'Thermodynamics and Entropy' depends on prerequisite 'cryptography-and-information-hiding'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::thermodynamics-and-entropy",
+      "target": "concept::thermodynamics-and-entropy",
+      "type": "supports_concept",
+      "justification": "Concept 'Thermodynamics and Entropy' was extracted from lesson 'Thermodynamics and Entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::thermodynamics-and-entropy",
+      "target": "concept::reversible-computation-and-quantum-computation",
+      "type": "prerequisite",
+      "justification": "Concept 'Reversible Computation and Quantum Computation' depends on prerequisite 'thermodynamics-and-entropy'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::reversible-computation-and-quantum-computation",
+      "target": "concept::reversible-computation-and-quantum-computation",
+      "type": "supports_concept",
+      "justification": "Concept 'Reversible Computation and Quantum Computation' was extracted from lesson 'Reversible Computation and Quantum Computation'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "source": "concept::reversible-computation-and-quantum-computation",
+      "target": "concept::course-synthesis",
+      "type": "prerequisite",
+      "justification": "Concept 'Course Synthesis' depends on prerequisite 'reversible-computation-and-quantum-computation'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.85
+    },
+    {
+      "source": "lesson::imported-from-markdown::course-synthesis",
+      "target": "concept::course-synthesis",
+      "type": "supports_concept",
+      "justification": "Concept 'Course Synthesis' was extracted from lesson 'Course Synthesis'.",
+      "provenance": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "confidence": 0.9
+    }
+  ]
+}

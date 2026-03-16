@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 
 from .config import load_config
+from .graph_retrieval import lesson_titles_for_concept, prerequisite_titles, source_fragments_for_concept
 from .model_provider import ModelProvider
 from .ocw_skill_agent_demo import load_ocw_skill_context
 from .role_prompts import evaluator_system_prompt, learner_system_prompt, mentor_system_prompt, practice_system_prompt
@@ -153,6 +154,34 @@ def _path_titles(context, limit: int | None = None) -> list[str]:
     return titles[:limit] if limit is not None else titles
 
 
+def _concept_by_title(context, title: str) -> dict | None:
+    lowered = title.strip().lower()
+    for concept in context.concepts:
+        if str(concept.get("title", "")).strip().lower() == lowered:
+            return concept
+    return None
+
+
+def _grounding_text_for_title(context, title: str) -> str:
+    concept = _concept_by_title(context, title)
+    if concept is None:
+        return ""
+    concept_id = concept.get("id", "")
+    prereqs = prerequisite_titles(context.graph_bundle, concept_id)
+    lessons = lesson_titles_for_concept(context.graph_bundle, concept_id)
+    fragments = source_fragments_for_concept(context.graph_bundle, concept_id, limit=2)
+    fragment_lines = [fragment.get("text", "") for fragment in fragments if fragment.get("text")]
+    lines = [
+        f"Concept focus: {title}",
+        f"Prerequisites: {', '.join(prereqs) if prereqs else 'none explicit'}",
+        f"Supporting lessons: {', '.join(lessons) if lessons else title}",
+    ]
+    if fragment_lines:
+        lines.append("Grounding fragments:")
+        lines.extend(f"- {line}" for line in fragment_lines)
+    return "\n".join(lines)
+
+
 def _healthy_rolemesh_models(provider: ModelProvider) -> set[str]:
     config = provider.config
     if config.provider.lower() != "rolemesh":
@@ -240,6 +269,8 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
 
     mentor_guidance = _generate_checked(
         provider,
+        f"{_grounding_text_for_title(context, path_titles[1])}\n\n"
+        f"{_grounding_text_for_title(context, path_titles[2])}\n\n"
         "Given the learner reflection, explain the first two concepts to study from the generated path and why. "
         f"Path reference: {path_titles[:4]}",
         role="mentor",
@@ -254,6 +285,8 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
 
     practice_task = _generate_checked(
         provider,
+        f"{_grounding_text_for_title(context, path_titles[1])}\n\n"
+        f"{_grounding_text_for_title(context, path_titles[2])}\n\n"
         "Generate one short practice task that forces the learner to connect counting/probability with Shannon entropy, "
         "without giving away the full answer.",
         role="practice",
@@ -282,6 +315,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
 
     evaluator_feedback = _generate_checked(
         provider,
+        f"{_grounding_text_for_title(context, path_titles[2])}\n\n"
         "Evaluate this learner attempt for correctness, explanation quality, and limitations. "
         f"Task: {practice_task}\nAttempt: {learner_attempt}",
         role="evaluator",
@@ -296,6 +330,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
 
     mentor_next_step = _generate_checked(
         provider,
+        f"{_grounding_text_for_title(context, 'Channel Capacity')}\n\n"
         "Given the evaluator feedback, tell the learner what to do next before moving on to channel capacity. "
         "Use the course path to show what comes next.",
         role="mentor",
@@ -313,18 +348,21 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
             "topic": "Channel Capacity",
             "path_slice": path_titles[4:7] or path_titles,
             "practice_anchor": "binary symmetric channel",
+            "grounding_title": "Channel Capacity",
             "required_terms": ["channel", "capacity", "entropy", "noise"],
         },
         {
             "topic": "Coding and Compression",
             "path_slice": path_titles[5:9] or path_titles,
             "practice_anchor": "compression and error-correcting code",
+            "grounding_title": "Source Coding and Compression",
             "required_terms": ["coding", "compression", "redundancy", "error"],
         },
         {
             "topic": "Thermodynamic Entropy and Synthesis",
             "path_slice": path_titles[8:] or path_titles,
             "practice_anchor": "thermodynamic entropy",
+            "grounding_title": "Thermodynamics and Entropy",
             "required_terms": ["thermodynamic", "entropy", "information", "physical"],
         },
     ]
@@ -332,6 +370,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
     for stage in stage_specs:
         mentor_stage = _generate_checked(
             provider,
+            f"{_grounding_text_for_title(context, stage['grounding_title'])}\n\n"
             f"The learner is continuing through the MIT OCW Information and Entropy course. "
             f"Bridge from the previous work into {stage['topic']}. "
             f"Reference this path segment: {stage['path_slice']}. "
@@ -362,6 +401,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
 
         practice_stage = _generate_checked(
             provider,
+            f"{_grounding_text_for_title(context, stage['grounding_title'])}\n\n"
             f"Create one short reasoning task about {stage['practice_anchor']} for the learner. "
             "Keep it course-relevant and do not provide the full solution.",
             role="practice",
@@ -376,6 +416,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
 
         evaluator_stage = _generate_checked(
             provider,
+            f"{_grounding_text_for_title(context, stage['grounding_title'])}\n\n"
             f"Give short evaluator feedback on this learner reflection in the context of {stage['topic']}: "
             f"{learner_stage}\nTask context: {practice_stage}",
             role="evaluator",
@@ -393,6 +434,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
         "skill": context.skill_name,
         "course": context.pack.get("display_name", context.pack.get("name", "")),
         "curriculum_path_titles": path_titles,
+        "graph_grounding_summary": context.run_summary.get("knowledge_graph_summary", {}),
         "role_fallbacks": role_fallbacks,
         "status_updates": status_updates,
         "transcript": turns,

@@ -17,6 +17,9 @@ def test_run_ocw_skill_agent_demo(tmp_path: Path) -> None:
     assert (tmp_path / "skill_demo.json").exists()
     assert (tmp_path / "skill_demo.md").exists()
     assert payload["study_plan"]["steps"]
+    assert payload["study_plan"]["steps"][0]["supporting_lessons"]
+    assert "grounding" in payload["explanation"]
+    assert payload["explanation"]["grounding"]["supporting_lessons"]
     assert payload["evaluation"]["verdict"] in {"acceptable", "needs_revision"}
 
 
@@ -30,4 +33,5 @@ def test_skill_demo_flags_weak_submission() -> None:
     )
 
     assert result["verdict"] == "needs_revision"
+    assert result["skill_reference"]["supporting_lessons"]
     assert "Rework the answer" in result["follow_up"]

@@ -87,7 +87,7 @@ def build_draft_pack(
         "overrides": [],
         "profile_templates": {},
         "cross_pack_links": [],
-        "supporting_artifacts": ["source_corpus.json"],
+        "supporting_artifacts": ["source_corpus.json", "knowledge_graph.json"],
     }
     concepts_yaml = {
         "concepts": [

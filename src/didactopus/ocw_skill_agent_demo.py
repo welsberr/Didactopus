@@ -7,6 +7,7 @@ from pathlib import Path
 import yaml
 
 from .evaluator_pipeline import CritiqueEvaluator, LearnerAttempt, RubricEvaluator, SymbolicRuleEvaluator, aggregate, run_pipeline
+from .graph_retrieval import GraphBundle, lesson_titles_for_concept, prerequisite_titles, source_fragments_for_concept
 
 
 @dataclass
@@ -17,6 +18,7 @@ class SkillContext:
     capability_summary: str
     pack: dict
     concepts: list[dict]
+    graph_bundle: GraphBundle
     capability_profile: dict
     run_summary: dict
 
@@ -46,6 +48,10 @@ def load_ocw_skill_context(skill_dir: str | Path) -> SkillContext:
         capability_summary=(skill_dir / "references" / "generated-capability-summary.md").read_text(encoding="utf-8"),
         pack=yaml.safe_load((pack_dir / "pack.yaml").read_text(encoding="utf-8")) or {},
         concepts=(yaml.safe_load((pack_dir / "concepts.yaml").read_text(encoding="utf-8")) or {}).get("concepts", []),
+        graph_bundle=GraphBundle(
+            knowledge_graph=json.loads((pack_dir / "knowledge_graph.json").read_text(encoding="utf-8")),
+            source_corpus=json.loads((pack_dir / "source_corpus.json").read_text(encoding="utf-8")),
+        ),
         capability_profile=json.loads((run_dir / "capability_profile.json").read_text(encoding="utf-8")),
         run_summary=json.loads((run_dir / "run_summary.json").read_text(encoding="utf-8")),
     )
@@ -88,8 +94,16 @@ def build_skill_grounded_study_plan(context: SkillContext, target_task: str) -> 
                 "concept_key": concept_key,
                 "title": concept["title"],
                 "status": "mastered" if concept_key in context.capability_profile.get("mastered_concepts", []) else "review-needed",
-                "prerequisites": [
-                    _concept_key(pack_name, prereq) for prereq in concept.get("prerequisites", [])
+                "prerequisites": [_concept_key(pack_name, prereq) for prereq in concept.get("prerequisites", [])],
+                "prerequisite_titles": prerequisite_titles(context.graph_bundle, concept_id),
+                "supporting_lessons": lesson_titles_for_concept(context.graph_bundle, concept_id),
+                "source_fragments": [
+                    {
+                        "lesson_title": fragment.get("lesson_title", ""),
+                        "kind": fragment.get("kind", ""),
+                        "text": fragment.get("text", ""),
+                    }
+                    for fragment in source_fragments_for_concept(context.graph_bundle, concept_id, limit=2)
                 ],
                 "recommended_action": (
                     f"Use {concept['title']} as the primary teaching anchor."
@@ -115,10 +129,14 @@ def build_skill_grounded_explanation(context: SkillContext, concept_id: str) -> 
 
     concept_key = _concept_key(pack_name, concept_id)
     summary = context.capability_profile.get("evaluator_summary_by_concept", {}).get(concept_key, {})
+    prereqs = prerequisite_titles(context.graph_bundle, concept_id)
+    lessons = lesson_titles_for_concept(context.graph_bundle, concept_id)
+    fragments = source_fragments_for_concept(context.graph_bundle, concept_id, limit=2)
     explanation = (
         f"{concept['title']} is represented in the Information and Entropy skill as part of a progression from "
         f"foundational probability ideas toward communication limits and physical interpretation. "
-        f"It depends on {', '.join(concept.get('prerequisites', []) or ['no explicit prerequisites in the generated pack'])}. "
+        f"It depends on {', '.join(prereqs or concept.get('prerequisites', []) or ['no explicit prerequisites in the generated pack'])}. "
+        f"It is grounded by lessons such as {', '.join(lessons or [concept['title']])}. "
         f"The current demo learner already mastered this concept, with evaluator means {summary}, so the skill can use it as a stable explanation anchor."
     )
     return {
@@ -126,6 +144,17 @@ def build_skill_grounded_explanation(context: SkillContext, concept_id: str) -> 
         "title": concept["title"],
         "explanation": explanation,
         "source_description": concept.get("description", ""),
+        "grounding": {
+            "supporting_lessons": lessons,
+            "source_fragments": [
+                {
+                    "lesson_title": fragment.get("lesson_title", ""),
+                    "kind": fragment.get("kind", ""),
+                    "text": fragment.get("text", ""),
+                }
+                for fragment in fragments
+            ],
+        },
     }
 
 
@@ -154,6 +183,7 @@ def evaluate_submission_with_skill(context: SkillContext, concept_id: str, submi
         "skill_reference": {
             "skill_name": context.skill_name,
             "mastered_by_demo_agent": mastered_reference,
+            "supporting_lessons": lesson_titles_for_concept(context.graph_bundle, concept_id),
         },
         "follow_up": (
             "Extend the answer with an explicit limitation or assumption."
@@ -205,6 +235,7 @@ def run_ocw_skill_agent_demo(skill_dir: str | Path, out_dir: str | Path) -> dict
             "",
             "## Explanation Demo",
             explanation["explanation"],
+            f"- Supporting lessons: {explanation['grounding']['supporting_lessons']}",
             "",
             "## Evaluation Demo",
             f"- Verdict: {evaluation['verdict']}",

@@ -15,6 +15,7 @@ from .mastery_ledger import (
     export_capability_profile_json,
     export_capability_report_markdown,
 )
+from .knowledge_graph import write_knowledge_graph
 from .pack_emitter import build_draft_pack, write_draft_pack, write_source_corpus
 from .rule_policy import RuleContext, build_default_rules, run_rules
 from .topic_ingest import build_topic_bundle, document_to_course, extract_concept_candidates, merge_courses_into_topic_course
@@ -167,6 +168,7 @@ def run_ocw_information_entropy_demo(
     )
     write_draft_pack(draft, pack_dir)
     write_source_corpus(merged, pack_dir)
+    write_knowledge_graph(merged, ctx.concepts, pack_dir)
     if source_inventory.exists():
         inventory = load_sources(source_inventory)
         compliance_manifest = build_pack_compliance_manifest(draft.pack["name"], draft.pack["display_name"], inventory)
@@ -210,6 +212,7 @@ def run_ocw_information_entropy_demo(
         "review_flags": list(ctx.review_flags),
         "concept_count": len(ctx.concepts),
         "source_fragment_count": len(json.loads((pack_dir / "source_corpus.json").read_text(encoding="utf-8")).get("fragments", [])),
+        "knowledge_graph_summary": json.loads((pack_dir / "knowledge_graph.json").read_text(encoding="utf-8")).get("summary", {}),
         "target_concept": target_key,
         "curriculum_path": concept_path,
         "mastered_concepts": sorted(state.mastered_concepts),

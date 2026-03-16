@@ -28,11 +28,13 @@ def test_ocw_rolemesh_transcript_demo_writes_artifacts(tmp_path: Path) -> None:
     assert payload["provider"] == "stub"
     assert len(payload["transcript"]) >= 16
     assert len(payload["curriculum_path_titles"]) >= 8
+    assert payload["graph_grounding_summary"]["node_count"] >= 1
     assert payload["role_fallbacks"] == {}
     assert payload["status_updates"] == []
     assert any(turn["speaker"] == "Didactopus Evaluator" for turn in payload["transcript"])
     assert any("channel" in turn["content"].lower() for turn in payload["transcript"])
     assert any("thermodynamic" in turn["content"].lower() for turn in payload["transcript"])
+    assert any("supporting lessons" in turn["content"].lower() or "grounding fragments" in turn["content"].lower() for turn in payload["transcript"])
     assert all(not _looks_truncated(turn["content"]) for turn in payload["transcript"])
     assert (tmp_path / "rolemesh_transcript.json").exists()
     assert (tmp_path / "rolemesh_transcript.md").exists()

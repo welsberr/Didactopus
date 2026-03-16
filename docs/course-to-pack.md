@@ -51,10 +51,16 @@ The pack emitter writes:
 - `conflict_report.md`
 - `license_attribution.json`
 - `source_corpus.json`
+- `knowledge_graph.json`
 
 `source_corpus.json` is the main grounded-text artifact. It preserves lesson bodies, objectives,
 exercises, and source references from the ingested material so downstream tutoring or evaluation
 can rely on source-derived text instead of only the distilled concept graph.
+
+`knowledge_graph.json` is the graph-first artifact. It preserves typed nodes and justified edges
+for sources, modules, lessons, concepts, assessment signals, and prerequisite/support relations.
+Later Didactopus retrieval and tutoring flows can use this graph to explain why a concept appears,
+what supports it, and which source material grounds it.
 
 ## Rule layer
 
