@@ -45,10 +45,38 @@ class PlatformConfig(BaseModel):
         return self.dimension_thresholds
 
 
+class LocalProviderConfig(BaseModel):
+    backend: str = "stub"
+    model_name: str = "local-demo"
+
+
+class RoleMeshProviderConfig(BaseModel):
+    base_url: str = os.getenv("DIDACTOPUS_ROLEMESH_BASE_URL", "http://127.0.0.1:8000")
+    api_key: str = os.getenv("DIDACTOPUS_ROLEMESH_API_KEY", "")
+    default_model: str = "planner"
+    role_to_model: dict[str, str] = Field(
+        default_factory=lambda: {
+            "mentor": "planner",
+            "learner": "writer",
+            "practice": "writer",
+            "project_advisor": "planner",
+            "evaluator": "reviewer",
+        }
+    )
+    timeout_seconds: float = 30.0
+
+
+class ModelProviderConfig(BaseModel):
+    provider: str = "stub"
+    local: LocalProviderConfig = Field(default_factory=LocalProviderConfig)
+    rolemesh: RoleMeshProviderConfig = Field(default_factory=RoleMeshProviderConfig)
+
+
 class AppConfig(BaseModel):
     review: ReviewConfig = Field(default_factory=ReviewConfig)
     bridge: BridgeConfig = Field(default_factory=BridgeConfig)
     platform: PlatformConfig = Field(default_factory=PlatformConfig)
+    model_provider: ModelProviderConfig = Field(default_factory=ModelProviderConfig)
 
 
 def load_settings() -> Settings:
@@ -64,4 +92,6 @@ def _with_platform_defaults(data: dict[str, Any]) -> dict[str, Any]:
     normalized = dict(data)
     if "platform" not in normalized:
         normalized["platform"] = {}
+    if "model_provider" not in normalized:
+        normalized["model_provider"] = {}
     return normalized

@@ -1,0 +1,803 @@
+{
+  "course_title": "MIT OCW Information and Entropy",
+  "rights_note": "Derived from MIT OpenCourseWare 6.050J Information and Entropy (Spring 2008). Retain MIT OCW attribution and applicable Creative Commons terms before redistribution.",
+  "sources": [
+    {
+      "source_path": "examples/ocw-information-entropy/course/course-home.md",
+      "source_type": "markdown",
+      "title": "Course Home",
+      "metadata": {}
+    },
+    {
+      "source_path": "examples/ocw-information-entropy/course/syllabus.md",
+      "source_type": "markdown",
+      "title": "Syllabus",
+      "metadata": {}
+    },
+    {
+      "source_path": "examples/ocw-information-entropy/course/unit-sequence.md",
+      "source_type": "markdown",
+      "title": "Unit Sequence",
+      "metadata": {}
+    }
+  ],
+  "fragments": [
+    {
+      "fragment_id": "imported-from-markdown::mit-ocw-6.050j-information-and-entropy:-course-home::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "MIT OCW 6.050J Information and Entropy: Course Home",
+      "text": "Source: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/\nAttribution: adapted from the MIT OpenCourseWare course home page for 6.050J Information and Entropy.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "objectives": [],
+      "exercises": [],
+      "key_terms": [
+        "Information",
+        "Entropy"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::information-and-entropy::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Information and Entropy",
+      "text": "- Objective: Identify the course title, instructors, departments, level, and major topical areas.\n- Exercise: Summarize the course in one paragraph for a prospective learner.\nMIT OpenCourseWare presents 6.050J Information and Entropy as a Spring 2008 undergraduate subject taught by Paul Penfield and Seth Lloyd in Electrical Engineering and Computer Science together with Mechanical Engineering. The catalog framing emphasizes theory of computation, signal processing, and mathematical reasoning about information.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "objectives": [
+        "Identify the course title, instructors, departments, level, and major topical areas."
+      ],
+      "exercises": [
+        "Summarize the course in one paragraph for a prospective learner."
+      ],
+      "key_terms": [
+        "Information",
+        "Entropy",
+        "Paul",
+        "Penfield",
+        "Seth",
+        "Lloyd",
+        "Electrical",
+        "Engineering"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::information-and-entropy::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Information and Entropy",
+      "text": "Identify the course title, instructors, departments, level, and major topical areas.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::information-and-entropy::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Information and Entropy",
+      "text": "Summarize the course in one paragraph for a prospective learner.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::ultimate-limits-to-communication-and-computation::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Ultimate Limits to Communication and Computation",
+      "text": "- Objective: Explain the broad intellectual scope of the course.\n- Exercise: List the main topic clusters that connect communication, computation, and entropy.\nThe course examines the ultimate limits to communication and computation with emphasis on the physical nature of information processing. The source description highlights information and computation, digital signals, codes and compression, noise, probability, error correction, reversible and irreversible operations, physics of computation, and quantum computation. Entropy is explicitly connected both to channel capacity and to the second law of thermodynamics.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "objectives": [
+        "Explain the broad intellectual scope of the course."
+      ],
+      "exercises": [
+        "List the main topic clusters that connect communication, computation, and entropy."
+      ],
+      "key_terms": [
+        "Entropy"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::ultimate-limits-to-communication-and-computation::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Ultimate Limits to Communication and Computation",
+      "text": "Explain the broad intellectual scope of the course.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::ultimate-limits-to-communication-and-computation::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Ultimate Limits to Communication and Computation",
+      "text": "List the main topic clusters that connect communication, computation, and entropy.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::open-textbooks,-problem-sets,-and-programming-work::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Open Textbooks, Problem Sets, and Programming Work",
+      "text": "- Objective: Identify the main kinds of learning resources supplied through the course.\n- Exercise: Explain how these resource types support both conceptual study and practice.\nThe course home lists open textbooks, problem sets, problem set solutions, and programming assignments. A learner using Didactopus should treat these as complementary evidence sources rather than relying on one summary alone.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ],
+      "objectives": [
+        "Identify the main kinds of learning resources supplied through the course."
+      ],
+      "exercises": [
+        "Explain how these resource types support both conceptual study and practice."
+      ],
+      "key_terms": []
+    },
+    {
+      "fragment_id": "imported-from-markdown::open-textbooks,-problem-sets,-and-programming-work::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Open Textbooks, Problem Sets, and Programming Work",
+      "text": "Identify the main kinds of learning resources supplied through the course.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::open-textbooks,-problem-sets,-and-programming-work::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Open Textbooks, Problem Sets, and Programming Work",
+      "text": "Explain how these resource types support both conceptual study and practice.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/course-home.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::mit-ocw-6.050j-information-and-entropy:-syllabus::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "MIT OCW 6.050J Information and Entropy: Syllabus",
+      "text": "Source: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/pages/syllabus/\nAttribution: adapted from the MIT OpenCourseWare syllabus page for 6.050J Information and Entropy.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "objectives": [],
+      "exercises": [],
+      "key_terms": [
+        "Information",
+        "Entropy"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::prerequisites-and-mathematical-background::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Prerequisites and Mathematical Background",
+      "text": "- Objective: Explain the mathematical maturity expected by the course.\n- Exercise: Decide whether a learner needs review in probability, linear algebra, or signals before beginning.\nThe syllabus expects a foundation comparable to MIT subjects in calculus and linear algebra, together with comfort in probability, signals, and basic programming. Didactopus should therefore surface prerequisite review when those foundations appear weak.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "objectives": [
+        "Explain the mathematical maturity expected by the course."
+      ],
+      "exercises": [
+        "Decide whether a learner needs review in probability, linear algebra, or signals before beginning."
+      ],
+      "key_terms": []
+    },
+    {
+      "fragment_id": "imported-from-markdown::prerequisites-and-mathematical-background::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Prerequisites and Mathematical Background",
+      "text": "Explain the mathematical maturity expected by the course.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::prerequisites-and-mathematical-background::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Prerequisites and Mathematical Background",
+      "text": "Decide whether a learner needs review in probability, linear algebra, or signals before beginning.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::assessment-structure::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Assessment Structure",
+      "text": "- Objective: Identify the role of problem sets, exams, and programming work in the course.\n- Exercise: Build a study schedule that alternates reading, derivation, and worked exercises.\nThe syllabus emphasizes regular problem solving and quantitative reasoning. The course is not only a reading list: learners are expected to derive results, solve structured problems, and connect abstract arguments to implementation-oriented tasks.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "objectives": [
+        "Identify the role of problem sets, exams, and programming work in the course."
+      ],
+      "exercises": [
+        "Build a study schedule that alternates reading, derivation, and worked exercises."
+      ],
+      "key_terms": []
+    },
+    {
+      "fragment_id": "imported-from-markdown::assessment-structure::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Assessment Structure",
+      "text": "Identify the role of problem sets, exams, and programming work in the course.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::assessment-structure::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Assessment Structure",
+      "text": "Build a study schedule that alternates reading, derivation, and worked exercises.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::course-notes-and-reference-texts::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Course Notes and Reference Texts",
+      "text": "- Objective: Explain how the course notes and textbook references supply the core conceptual sequence.\n- Exercise: Compare when to use course notes versus outside references for clarification.\nMIT OCW links course notes and textbook-style resources through the syllabus and resource pages. The intended use is cumulative: earlier notes establish counting, probability, and entropy, while later materials expand into coding, noise, secrecy, thermodynamics, and computation.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "objectives": [
+        "Explain how the course notes and textbook references supply the core conceptual sequence."
+      ],
+      "exercises": [
+        "Compare when to use course notes versus outside references for clarification."
+      ],
+      "key_terms": []
+    },
+    {
+      "fragment_id": "imported-from-markdown::course-notes-and-reference-texts::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Course Notes and Reference Texts",
+      "text": "Explain how the course notes and textbook references supply the core conceptual sequence.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::course-notes-and-reference-texts::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Course Notes and Reference Texts",
+      "text": "Compare when to use course notes versus outside references for clarification.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::independent-reasoning-and-careful-comparison::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Independent Reasoning and Careful Comparison",
+      "text": "- Objective: Explain why the course requires precise comparison of related but non-identical concepts.\n- Exercise: Write a short note distinguishing Shannon entropy, channel capacity, and thermodynamic entropy.\nThe syllabus framing implies a style of work where analogy is useful but dangerous when used loosely. Learners must compare models carefully, state assumptions, and notice where similar mathematics does not imply identical interpretation.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ],
+      "objectives": [
+        "Explain why the course requires precise comparison of related but non-identical concepts."
+      ],
+      "exercises": [
+        "Write a short note distinguishing Shannon entropy, channel capacity, and thermodynamic entropy."
+      ],
+      "key_terms": [
+        "Shannon",
+        "Learners"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::independent-reasoning-and-careful-comparison::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Independent Reasoning and Careful Comparison",
+      "text": "Explain why the course requires precise comparison of related but non-identical concepts.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::independent-reasoning-and-careful-comparison::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Independent Reasoning and Careful Comparison",
+      "text": "Write a short note distinguishing Shannon entropy, channel capacity, and thermodynamic entropy.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/syllabus.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::mit-ocw-6.050j-information-and-entropy:-unit-sequence::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "MIT OCW 6.050J Information and Entropy: Unit Sequence",
+      "text": "Source: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/pages/syllabus/\nAttribution: adapted from the MIT OpenCourseWare unit progression and resource organization for 6.050J Information and Entropy.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [],
+      "exercises": [],
+      "key_terms": [
+        "Information",
+        "Entropy"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::counting-and-probability::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Counting and Probability",
+      "text": "- Objective: Explain how counting arguments, probability spaces, and random variables support later information-theory results.\n- Exercise: Derive a simple counting argument for binary strings and compute an event probability.\nEarly units establish counting, combinatorics, and probability as the language used to reason about uncertainty, messages, and evidence.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [
+        "Explain how counting arguments, probability spaces, and random variables support later information-theory results."
+      ],
+      "exercises": [
+        "Derive a simple counting argument for binary strings and compute an event probability."
+      ],
+      "key_terms": [
+        "Derive"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::counting-and-probability::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Counting and Probability",
+      "text": "Explain how counting arguments, probability spaces, and random variables support later information-theory results.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::counting-and-probability::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Counting and Probability",
+      "text": "Derive a simple counting argument for binary strings and compute an event probability.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::shannon-entropy::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Shannon Entropy",
+      "text": "- Objective: Explain Shannon entropy as a measure of uncertainty and compare high-entropy and low-entropy sources.\n- Exercise: Compute the entropy of a Bernoulli source and interpret the result.\nThe course then introduces entropy as a quantitative measure of uncertainty for a source model and uses it to reason about representation cost and surprise.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [
+        "Explain Shannon entropy as a measure of uncertainty and compare high-entropy and low-entropy sources."
+      ],
+      "exercises": [
+        "Compute the entropy of a Bernoulli source and interpret the result."
+      ],
+      "key_terms": [
+        "Shannon",
+        "Bernoulli"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::shannon-entropy::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Shannon Entropy",
+      "text": "Explain Shannon entropy as a measure of uncertainty and compare high-entropy and low-entropy sources.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::shannon-entropy::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Shannon Entropy",
+      "text": "Compute the entropy of a Bernoulli source and interpret the result.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::mutual-information::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Mutual Information",
+      "text": "- Objective: Explain mutual information and relate it to dependence between signals or observations.\n- Exercise: Compare independent variables with dependent variables using mutual-information reasoning.\nThese units ask the learner to understand how observation changes uncertainty and what it means for one variable to carry information about another.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [
+        "Explain mutual information and relate it to dependence between signals or observations."
+      ],
+      "exercises": [
+        "Compare independent variables with dependent variables using mutual-information reasoning."
+      ],
+      "key_terms": []
+    },
+    {
+      "fragment_id": "imported-from-markdown::mutual-information::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Mutual Information",
+      "text": "Explain mutual information and relate it to dependence between signals or observations.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::mutual-information::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Mutual Information",
+      "text": "Compare independent variables with dependent variables using mutual-information reasoning.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::source-coding-and-compression::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Source Coding and Compression",
+      "text": "- Objective: Explain lossless compression in terms of entropy, redundancy, and coding choices.\n- Exercise: Describe when compression succeeds and when it fails on already-random data.\nThe course develops the idea that structured sources can often be described more efficiently, but only up to limits implied by entropy.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [
+        "Explain lossless compression in terms of entropy, redundancy, and coding choices."
+      ],
+      "exercises": [
+        "Describe when compression succeeds and when it fails on already-random data."
+      ],
+      "key_terms": []
+    },
+    {
+      "fragment_id": "imported-from-markdown::source-coding-and-compression::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Source Coding and Compression",
+      "text": "Explain lossless compression in terms of entropy, redundancy, and coding choices.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::source-coding-and-compression::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Source Coding and Compression",
+      "text": "Describe when compression succeeds and when it fails on already-random data.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::huffman-coding::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Huffman Coding",
+      "text": "- Objective: Explain Huffman coding and justify why likely symbols receive shorter descriptions.\n- Exercise: Build a Huffman code for a small source alphabet.\nLearners use trees and expected length arguments to connect probability models to practical code design.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [
+        "Explain Huffman coding and justify why likely symbols receive shorter descriptions."
+      ],
+      "exercises": [
+        "Build a Huffman code for a small source alphabet."
+      ],
+      "key_terms": [
+        "Huffman",
+        "Learners"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::huffman-coding::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Huffman Coding",
+      "text": "Explain Huffman coding and justify why likely symbols receive shorter descriptions.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::huffman-coding::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Huffman Coding",
+      "text": "Build a Huffman code for a small source alphabet.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::channel-capacity::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Channel Capacity",
+      "text": "- Objective: Explain channel capacity as a limit on reliable communication over a noisy channel.\n- Exercise: State why reliable transmission above capacity is impossible in the long run.\nThe course treats capacity as a fundamental upper bound and frames noisy communication in terms of rates, inference, and uncertainty reduction.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [
+        "Explain channel capacity as a limit on reliable communication over a noisy channel."
+      ],
+      "exercises": [
+        "State why reliable transmission above capacity is impossible in the long run."
+      ],
+      "key_terms": []
+    },
+    {
+      "fragment_id": "imported-from-markdown::channel-capacity::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Channel Capacity",
+      "text": "Explain channel capacity as a limit on reliable communication over a noisy channel.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::channel-capacity::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Channel Capacity",
+      "text": "State why reliable transmission above capacity is impossible in the long run.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::channel-coding::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Channel Coding",
+      "text": "- Objective: Explain how channel coding adds redundancy to protect messages from noise.\n- Exercise: Contrast uncoded transmission with coded transmission on a noisy channel.\nThese units emphasize that redundancy can be wasteful in compression but essential in communication under uncertainty.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [
+        "Explain how channel coding adds redundancy to protect messages from noise."
+      ],
+      "exercises": [
+        "Contrast uncoded transmission with coded transmission on a noisy channel."
+      ],
+      "key_terms": [
+        "Contrast"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::channel-coding::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Channel Coding",
+      "text": "Explain how channel coding adds redundancy to protect messages from noise.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::channel-coding::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Channel Coding",
+      "text": "Contrast uncoded transmission with coded transmission on a noisy channel.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::error-correcting-codes::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Error Correcting Codes",
+      "text": "- Objective: Explain how error-correcting codes detect or repair corrupted symbols.\n- Exercise: Describe a simple parity-style code and its limits.\nThe learner must connect abstract limits to concrete coding mechanisms and understand both strengths and failure modes.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [
+        "Explain how error-correcting codes detect or repair corrupted symbols."
+      ],
+      "exercises": [
+        "Describe a simple parity-style code and its limits."
+      ],
+      "key_terms": []
+    },
+    {
+      "fragment_id": "imported-from-markdown::error-correcting-codes::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Error Correcting Codes",
+      "text": "Explain how error-correcting codes detect or repair corrupted symbols.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::error-correcting-codes::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Error Correcting Codes",
+      "text": "Describe a simple parity-style code and its limits.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::cryptography-and-information-hiding::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Cryptography and Information Hiding",
+      "text": "- Objective: Explain the relationship between secrecy, information leakage, and coded communication.\n- Exercise: Compare a secure scheme with a weak one in terms of revealed information.\nThe course extends information-theoretic reasoning to adversarial settings where controlling what an observer can infer becomes central.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [
+        "Explain the relationship between secrecy, information leakage, and coded communication."
+      ],
+      "exercises": [
+        "Compare a secure scheme with a weak one in terms of revealed information."
+      ],
+      "key_terms": []
+    },
+    {
+      "fragment_id": "imported-from-markdown::cryptography-and-information-hiding::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Cryptography and Information Hiding",
+      "text": "Explain the relationship between secrecy, information leakage, and coded communication.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::cryptography-and-information-hiding::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Cryptography and Information Hiding",
+      "text": "Compare a secure scheme with a weak one in terms of revealed information.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::thermodynamics-and-entropy::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Thermodynamics and Entropy",
+      "text": "- Objective: Explain how thermodynamic entropy relates to, and differs from, Shannon entropy.\n- Exercise: Compare the two entropy notions and identify what is preserved across the analogy.\nThe course uses entropy as a bridge concept between communication theory and physics while insisting on careful interpretation.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [
+        "Explain how thermodynamic entropy relates to, and differs from, Shannon entropy."
+      ],
+      "exercises": [
+        "Compare the two entropy notions and identify what is preserved across the analogy."
+      ],
+      "key_terms": [
+        "Shannon"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::thermodynamics-and-entropy::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Thermodynamics and Entropy",
+      "text": "Explain how thermodynamic entropy relates to, and differs from, Shannon entropy.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::thermodynamics-and-entropy::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Thermodynamics and Entropy",
+      "text": "Compare the two entropy notions and identify what is preserved across the analogy.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::reversible-computation-and-quantum-computation::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Reversible Computation and Quantum Computation",
+      "text": "- Objective: Explain why the physical implementation of computation matters for information processing limits.\n- Exercise: Summarize how reversible computation changes the discussion of dissipation and information loss.\nLater units connect information, entropy, and computation more directly by considering reversible logic, irreversibility, and quantum information themes.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [
+        "Explain why the physical implementation of computation matters for information processing limits."
+      ],
+      "exercises": [
+        "Summarize how reversible computation changes the discussion of dissipation and information loss."
+      ],
+      "key_terms": []
+    },
+    {
+      "fragment_id": "imported-from-markdown::reversible-computation-and-quantum-computation::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Reversible Computation and Quantum Computation",
+      "text": "Explain why the physical implementation of computation matters for information processing limits.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::reversible-computation-and-quantum-computation::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Reversible Computation and Quantum Computation",
+      "text": "Summarize how reversible computation changes the discussion of dissipation and information loss.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::course-synthesis::body",
+      "kind": "lesson_body",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Course Synthesis",
+      "text": "- Objective: Synthesize the course by connecting entropy, coding, reliability, secrecy, and physical interpretation in one coherent narrative.\n- Exercise: Produce a final study guide that links source coding, channel coding, secrecy, thermodynamic analogies, and computation.\nThe end of the course asks the learner to unify the mathematical and physical perspectives rather than treating the units as disconnected topics.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ],
+      "objectives": [
+        "Synthesize the course by connecting entropy, coding, reliability, secrecy, and physical interpretation in one coherent narrative."
+      ],
+      "exercises": [
+        "Produce a final study guide that links source coding, channel coding, secrecy, thermodynamic analogies, and computation."
+      ],
+      "key_terms": []
+    },
+    {
+      "fragment_id": "imported-from-markdown::course-synthesis::objective-1",
+      "kind": "objective",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Course Synthesis",
+      "text": "Synthesize the course by connecting entropy, coding, reliability, secrecy, and physical interpretation in one coherent narrative.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    },
+    {
+      "fragment_id": "imported-from-markdown::course-synthesis::exercise-1",
+      "kind": "exercise",
+      "module_title": "Imported from MARKDOWN",
+      "lesson_title": "Course Synthesis",
+      "text": "Produce a final study guide that links source coding, channel coding, secrecy, thermodynamic analogies, and computation.",
+      "source_refs": [
+        "examples/ocw-information-entropy/course/unit-sequence.md"
+      ]
+    }
+  ]
+}

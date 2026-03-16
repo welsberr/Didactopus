@@ -1,4 +1,5 @@
 from .model_provider import ModelProvider
+from .role_prompts import practice_system_prompt
 
 
 def generate_practice_task(provider: ModelProvider, concept: str, weak_dimensions: list[str] | None = None) -> str:
@@ -6,5 +7,7 @@ def generate_practice_task(provider: ModelProvider, concept: str, weak_dimension
     if weak_dimensions:
         weak_text = f" Target the weak dimensions: {', '.join(weak_dimensions)}."
     return provider.generate(
-        f"Generate one reasoning-heavy practice task for '{concept}'.{weak_text}"
+        f"Generate one reasoning-heavy practice task for '{concept}'.{weak_text}",
+        role="practice",
+        system_prompt=practice_system_prompt(),
     ).text

@@ -4,6 +4,47 @@ import re
 from collections import defaultdict
 from .course_schema import NormalizedDocument, NormalizedCourse, Module, Lesson, TopicBundle, ConceptCandidate
 
+GENERIC_TERM_STOPWORDS = {
+    "attribution",
+    "build",
+    "careful",
+    "compare",
+    "comparison",
+    "compute",
+    "course",
+    "decide",
+    "describe",
+    "didactopus",
+    "early",
+    "exercise",
+    "explain",
+    "home",
+    "identify",
+    "independent",
+    "later",
+    "list",
+    "notes",
+    "objective",
+    "open",
+    "opencourseware",
+    "produce",
+    "programming",
+    "reference",
+    "source",
+    "spring",
+    "state",
+    "structure",
+    "summarize",
+    "syllabus",
+    "synthesis",
+    "synthesize",
+    "texts",
+    "these",
+    "ultimate",
+    "unit",
+    "work",
+    "write",
+}
 
 def slugify(text: str) -> str:
     cleaned = re.sub(r"[^a-zA-Z0-9]+", "-", text.strip().lower()).strip("-")
@@ -15,6 +56,9 @@ def extract_key_terms(text: str, min_term_length: int = 4, max_terms: int = 8) -
     seen = set()
     out = []
     for term in candidates:
+        lower = term.lower()
+        if lower in GENERIC_TERM_STOPWORDS:
+            continue
         if term not in seen:
             seen.add(term)
             out.append(term)
@@ -23,6 +67,16 @@ def extract_key_terms(text: str, min_term_length: int = 4, max_terms: int = 8) -
     return out
 
 
+def _parse_signal_line(line: str) -> tuple[str | None, str]:
+    stripped = line.strip()
+    if stripped.startswith(("-", "*", "+")):
+        stripped = stripped[1:].strip()
+    lowered = stripped.lower()
+    if lowered.startswith("objective:"):
+        return "objective", stripped.split(":", 1)[1].strip()
+    if lowered.startswith("exercise:"):
+        return "exercise", stripped.split(":", 1)[1].strip()
+    return None, stripped
 def document_to_course(doc: NormalizedDocument, course_title: str) -> NormalizedCourse:
     # Conservative mapping: each section becomes a lesson; all lessons go into one module.
     lessons = []
@@ -34,18 +88,18 @@ def document_to_course(doc: NormalizedDocument, course_title: str) -> Normalized
         objectives = []
         exercises = []
         for line in lines:
-            low = line.lower().strip()
-            if low.startswith("objective:"):
-                objectives.append(line.split(":", 1)[1].strip())
-            if low.startswith("exercise:"):
-                exercises.append(line.split(":", 1)[1].strip())
+            kind, value = _parse_signal_line(line)
+            if kind == "objective":
+                objectives.append(value)
+            if kind == "exercise":
+                exercises.append(value)
         lessons.append(
             Lesson(
                 title=section.heading.strip() or "Untitled Lesson",
                 body=body,
                 objectives=objectives,
                 exercises=exercises,
-                key_terms=extract_key_terms(section.heading + "\n" + body),
+                key_terms=extract_key_terms(body),
                 source_refs=[doc.source_path],
             )
         )
@@ -112,6 +166,8 @@ def extract_concept_candidates(course: NormalizedCourse) -> list[ConceptCandidat
             for term in lesson.key_terms:
                 tid = slugify(term)
                 if tid in seen_ids:
+                    continue
+                if tid in {slugify(part) for part in lesson.title.split()}:
                     continue
                 seen_ids.add(tid)
                 concepts.append(

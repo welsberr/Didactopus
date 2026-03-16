@@ -126,6 +126,19 @@ def detect_adapter(path: str | Path) -> str:
     return "text"
 
 
+def is_supported_document(path: str | Path) -> bool:
+    p = Path(path)
+    return p.is_file() and detect_adapter(p) in {"markdown", "text", "html", "pdf", "docx", "pptx"}
+
+
+def adapt_documents(path: str | Path) -> list[NormalizedDocument]:
+    p = Path(path)
+    if p.is_dir():
+        docs = [adapt_document(child) for child in sorted(p.rglob("*")) if is_supported_document(child)]
+        return docs
+    return [adapt_document(p)]
+
+
 def adapt_document(path: str | Path) -> NormalizedDocument:
     adapter = detect_adapter(path)
     if adapter == "markdown":

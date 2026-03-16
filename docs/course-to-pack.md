@@ -50,6 +50,11 @@ The pack emitter writes:
 - `review_report.md`
 - `conflict_report.md`
 - `license_attribution.json`
+- `source_corpus.json`
+
+`source_corpus.json` is the main grounded-text artifact. It preserves lesson bodies, objectives,
+exercises, and source references from the ingested material so downstream tutoring or evaluation
+can rely on source-derived text instead of only the distilled concept graph.
 
 ## Rule layer
 
@@ -77,4 +82,4 @@ The end-to-end reference flow in this repository is:
 python -m didactopus.ocw_information_entropy_demo
 ```
 
-That command ingests the MIT OCW Information and Entropy source file in `examples/ocw-information-entropy/`, emits a draft pack into `domain-packs/mit-ocw-information-entropy/`, runs a deterministic agentic learner over the generated path, and writes downstream skill/visualization artifacts.
+That command ingests the MIT OCW Information and Entropy source file or directory tree in `examples/ocw-information-entropy/`, emits a draft pack into `domain-packs/mit-ocw-information-entropy/`, writes a grounded `source_corpus.json`, runs a deterministic agentic learner over the generated path, and writes downstream skill/visualization artifacts.

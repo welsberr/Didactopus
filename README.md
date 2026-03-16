@@ -29,6 +29,7 @@ Then open:
 
 - `examples/ocw-information-entropy-run/learner_progress.html`
 - `examples/ocw-information-entropy-skill-demo/skill_demo.md`
+- `examples/ocw-information-entropy-rolemesh-transcript/rolemesh_transcript.md`
 - `skills/ocw-information-entropy-agent/`
 
 That gives you:
@@ -37,6 +38,7 @@ That gives you:
 - a visible learning path
 - progress artifacts
 - a reusable skill grounded in the exported knowledge
+- a transcript showing how a local-LLM-backed learner/mentor interaction can look
 
 The point is not to replace your effort. The point is to give your effort structure, feedback, and momentum.
 
@@ -197,6 +199,7 @@ Primary outputs:
 - `review_report.md`
 - `conflict_report.md`
 - `license_attribution.json`
+- `pack_compliance_manifest.json` when a source inventory is provided
 
 ### 2. Review and workspace management
 
@@ -264,7 +267,24 @@ Key capabilities:
 - markdown capability reports
 - artifact manifests
 
-### 5. Agentic learner demos and visualization
+### 5. Local model integration
+
+Didactopus can now target a RoleMesh Gateway-backed local LLM setup through its `ModelProvider` abstraction.
+
+Main modules:
+
+- `didactopus.model_provider`
+- `didactopus.role_prompts`
+- `didactopus.rolemesh_demo`
+
+What this enables:
+
+- role-based local model routing
+- separate mentor/practice/project-advisor/evaluator prompts
+- local heterogeneous compute usage through an OpenAI-compatible gateway
+- a clean path to keep tutoring assistance structured instead of offloading learner work
+
+### 6. Agentic learner demos and visualization
 
 The repository includes deterministic agentic demos rather than a live external model integration.
 
@@ -305,6 +325,43 @@ This writes:
 - `domain-packs/mit-ocw-information-entropy/`
 - `examples/ocw-information-entropy-run/`
 - `skills/ocw-information-entropy-agent/`
+
+The generated MIT OCW pack also includes:
+
+- `license_attribution.json`
+- `pack_compliance_manifest.json`
+- `source_inventory.yaml`
+
+### Try the local RoleMesh integration path
+
+Stubbed local-provider demo:
+
+```bash
+python -m didactopus.rolemesh_demo --config configs/config.example.yaml
+```
+
+RoleMesh-backed example config:
+
+```bash
+python -m didactopus.rolemesh_demo --config configs/config.rolemesh.example.yaml
+```
+
+MIT OCW learner transcript through the local-LLM path:
+
+```bash
+python -m didactopus.ocw_rolemesh_transcript_demo --config configs/config.rolemesh.example.yaml
+```
+
+If your local models are slow, Didactopus now prints pending-status lines while each mentor, practice, learner, or evaluator turn is being generated. For a long manual run, capture both the transcript payload and those live status messages:
+
+```bash
+python -u -m didactopus.ocw_rolemesh_transcript_demo \
+  --config configs/config.rolemesh.example.yaml \
+  --out-dir examples/ocw-information-entropy-rolemesh-transcript \
+  2>&1 | tee examples/ocw-information-entropy-rolemesh-transcript/manual-run.log
+```
+
+That command leaves the final transcript in `rolemesh_transcript.md` and `rolemesh_transcript.json`, while `manual-run.log` preserves the conversational “working on it” notices during the wait.
 
 ### Render learner progress visualizations
 
@@ -357,6 +414,8 @@ What remains heuristic or lightweight:
 - [docs/mastery-ledger.md](docs/mastery-ledger.md)
 - [docs/workspace-manager.md](docs/workspace-manager.md)
 - [docs/interactive-review-ui.md](docs/interactive-review-ui.md)
+- [docs/mit-ocw-course-guide.md](docs/mit-ocw-course-guide.md)
+- [docs/rolemesh-integration.md](docs/rolemesh-integration.md)
 - [docs/faq.md](docs/faq.md)
 
 ## MIT OCW Demo Notes

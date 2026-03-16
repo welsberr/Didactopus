@@ -6,3 +6,8 @@ bridge:
   port: 8765
   registry_path: "workspace_registry.json"
   default_workspace_root: "workspaces"
+model_provider:
+  provider: "stub"
+  local:
+    backend: "stub"
+    model_name: "local-demo"

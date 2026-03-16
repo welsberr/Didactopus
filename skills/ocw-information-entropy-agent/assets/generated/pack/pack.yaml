@@ -12,3 +12,5 @@ dependencies: []
 overrides: []
 profile_templates: {}
 cross_pack_links: []
+supporting_artifacts:
+- source_corpus.json

@@ -6,6 +6,64 @@ import yaml
 from .course_schema import NormalizedCourse, ConceptCandidate, DraftPack
 
 
+def build_source_corpus(course: NormalizedCourse) -> dict:
+    fragments = []
+    for module in course.modules:
+        for lesson in module.lessons:
+            body = lesson.body.strip()
+            if body:
+                fragments.append(
+                    {
+                        "fragment_id": f"{module.title}::{lesson.title}::body".lower().replace(" ", "-"),
+                        "kind": "lesson_body",
+                        "module_title": module.title,
+                        "lesson_title": lesson.title,
+                        "text": body,
+                        "source_refs": list(lesson.source_refs),
+                        "objectives": list(lesson.objectives),
+                        "exercises": list(lesson.exercises),
+                        "key_terms": list(lesson.key_terms),
+                    }
+                )
+            for idx, objective in enumerate(lesson.objectives, start=1):
+                fragments.append(
+                    {
+                        "fragment_id": f"{module.title}::{lesson.title}::objective-{idx}".lower().replace(" ", "-"),
+                        "kind": "objective",
+                        "module_title": module.title,
+                        "lesson_title": lesson.title,
+                        "text": objective,
+                        "source_refs": list(lesson.source_refs),
+                    }
+                )
+            for idx, exercise in enumerate(lesson.exercises, start=1):
+                fragments.append(
+                    {
+                        "fragment_id": f"{module.title}::{lesson.title}::exercise-{idx}".lower().replace(" ", "-"),
+                        "kind": "exercise",
+                        "module_title": module.title,
+                        "lesson_title": lesson.title,
+                        "text": exercise,
+                        "source_refs": list(lesson.source_refs),
+                    }
+                )
+
+    return {
+        "course_title": course.title,
+        "rights_note": course.rights_note,
+        "sources": [
+            {
+                "source_path": src.source_path,
+                "source_type": src.source_type,
+                "title": src.title,
+                "metadata": getattr(src, "metadata", {}),
+            }
+            for src in course.source_records
+        ],
+        "fragments": fragments,
+    }
+
+
 def build_draft_pack(
     course: NormalizedCourse,
     concepts: list[ConceptCandidate],
@@ -29,6 +87,7 @@ def build_draft_pack(
         "overrides": [],
         "profile_templates": {},
         "cross_pack_links": [],
+        "supporting_artifacts": ["source_corpus.json"],
     }
     concepts_yaml = {
         "concepts": [
@@ -100,3 +159,9 @@ def write_draft_pack(pack: DraftPack, outdir: str | Path) -> None:
     conflict_lines = ["# Conflict Report", ""] + [f"- {flag}" for flag in pack.conflicts] if pack.conflicts else ["# Conflict Report", "", "- none"]
     (out / "conflict_report.md").write_text("\n".join(conflict_lines), encoding="utf-8")
     (out / "license_attribution.json").write_text(json.dumps(pack.attribution, indent=2), encoding="utf-8")
+
+
+def write_source_corpus(course: NormalizedCourse, outdir: str | Path) -> None:
+    out = Path(outdir)
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "source_corpus.json").write_text(json.dumps(build_source_corpus(course), indent=2), encoding="utf-8")

@@ -32,3 +32,31 @@ def test_document_to_course_skips_empty_sections(tmp_path: Path) -> None:
     doc = adapt_document(a)
     course = document_to_course(doc, "Topic")
     assert [lesson.title for lesson in course.modules[0].lessons] == ["Filled"]
+
+
+def test_document_to_course_parses_bulleted_objectives_and_exercises(tmp_path: Path) -> None:
+    a = tmp_path / "a.md"
+    a.write_text(
+        "# T\n\n## M\n### Shannon Entropy\n- Objective: Explain uncertainty.\n- Exercise: Compute entropy.\nBody.",
+        encoding="utf-8",
+    )
+    doc = adapt_document(a)
+    course = document_to_course(doc, "Topic")
+    lesson = course.modules[0].lessons[0]
+    assert lesson.objectives == ["Explain uncertainty."]
+    assert lesson.exercises == ["Compute entropy."]
+
+
+def test_extract_concepts_retains_lessons_but_filters_generic_terms(tmp_path: Path) -> None:
+    a = tmp_path / "a.md"
+    a.write_text(
+        "# T\n\n## M\n### MIT OCW 6.050J Information and Entropy: Syllabus\n- Objective: Explain the course.\nBody.\n\n### Channel Capacity\n- Objective: Explain noisy channels.\n- Exercise: State a capacity limit.\nChannel Capacity links reliable communication to noise and coding.",
+        encoding="utf-8",
+    )
+    doc = adapt_document(a)
+    course = document_to_course(doc, "Topic")
+    concepts = extract_concept_candidates(course)
+    titles = {concept.title for concept in concepts}
+    assert "MIT OCW 6.050J Information and Entropy: Syllabus" in titles
+    assert "Explain" not in titles
+    assert "Channel Capacity" in titles

@@ -12,8 +12,9 @@ Use this skill when the task is about tutoring, evaluating, or planning study in
 1. Read `references/generated-course-summary.md` for the pack structure and target concepts.
 2. Read `references/generated-capability-summary.md` to understand what the demo AI learner already mastered.
 3. Use `assets/generated/pack/` as the source of truth for concept ids, prerequisites, and mastery signals.
-4. When giving guidance, preserve the pack ordering from fundamentals through coding and thermodynamics.
-5. When uncertain, say which concept or prerequisite in the generated pack is underspecified.
+4. Use `assets/generated/pack/source_corpus.json` to ground explanations in the ingested source material before relying on model prior knowledge.
+5. When giving guidance, preserve the pack ordering from fundamentals through coding and thermodynamics.
+6. When uncertain, say which concept or prerequisite in the generated pack is underspecified and which source fragment would need review.
 
 ## Outputs
 

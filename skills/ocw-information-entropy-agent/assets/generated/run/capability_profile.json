@@ -3,24 +3,42 @@
   "display_name": "OCW Information Entropy Agent",
   "domain": "MIT OCW Information and Entropy",
   "mastered_concepts": [
+    "mit-ocw-information-and-entropy::assessment-structure",
     "mit-ocw-information-and-entropy::channel-capacity",
     "mit-ocw-information-and-entropy::channel-coding",
     "mit-ocw-information-and-entropy::counting-and-probability",
+    "mit-ocw-information-and-entropy::course-notes-and-reference-texts",
     "mit-ocw-information-and-entropy::cryptography-and-information-hiding",
-    "mit-ocw-information-and-entropy::data-compression",
     "mit-ocw-information-and-entropy::error-correcting-codes",
     "mit-ocw-information-and-entropy::huffman-coding",
-    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy",
+    "mit-ocw-information-and-entropy::independent-reasoning-and-careful-comparison",
+    "mit-ocw-information-and-entropy::information-and-entropy",
+    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-course-home",
+    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-syllabus",
+    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-unit-sequence",
     "mit-ocw-information-and-entropy::mutual-information",
+    "mit-ocw-information-and-entropy::open-textbooks-problem-sets-and-programming-work",
+    "mit-ocw-information-and-entropy::prerequisites-and-mathematical-background",
     "mit-ocw-information-and-entropy::shannon-entropy",
-    "mit-ocw-information-and-entropy::thermodynamics-and-entropy"
+    "mit-ocw-information-and-entropy::source-coding-and-compression",
+    "mit-ocw-information-and-entropy::thermodynamics-and-entropy",
+    "mit-ocw-information-and-entropy::ultimate-limits-to-communication-and-computation"
   ],
   "weak_dimensions_by_concept": {
-    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy": [],
+    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-course-home": [],
+    "mit-ocw-information-and-entropy::information-and-entropy": [],
+    "mit-ocw-information-and-entropy::ultimate-limits-to-communication-and-computation": [],
+    "mit-ocw-information-and-entropy::open-textbooks-problem-sets-and-programming-work": [],
+    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-syllabus": [],
+    "mit-ocw-information-and-entropy::prerequisites-and-mathematical-background": [],
+    "mit-ocw-information-and-entropy::assessment-structure": [],
+    "mit-ocw-information-and-entropy::course-notes-and-reference-texts": [],
+    "mit-ocw-information-and-entropy::independent-reasoning-and-careful-comparison": [],
+    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-unit-sequence": [],
     "mit-ocw-information-and-entropy::counting-and-probability": [],
     "mit-ocw-information-and-entropy::shannon-entropy": [],
     "mit-ocw-information-and-entropy::mutual-information": [],
-    "mit-ocw-information-and-entropy::data-compression": [],
+    "mit-ocw-information-and-entropy::source-coding-and-compression": [],
     "mit-ocw-information-and-entropy::huffman-coding": [],
     "mit-ocw-information-and-entropy::channel-capacity": [],
     "mit-ocw-information-and-entropy::channel-coding": [],
@@ -29,7 +47,52 @@
     "mit-ocw-information-and-entropy::thermodynamics-and-entropy": []
   },
   "evaluator_summary_by_concept": {
-    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy": {
+    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-course-home": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::information-and-entropy": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::ultimate-limits-to-communication-and-computation": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::open-textbooks-problem-sets-and-programming-work": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-syllabus": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::prerequisites-and-mathematical-background": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::assessment-structure": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::course-notes-and-reference-texts": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::independent-reasoning-and-careful-comparison": {
+      "correctness": 0.8400000000000001,
+      "explanation": 0.85,
+      "critique": 0.7999999999999999
+    },
+    "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-unit-sequence": {
       "correctness": 0.8400000000000001,
       "explanation": 0.85,
       "critique": 0.7999999999999999
@@ -49,7 +112,7 @@
       "explanation": 0.85,
       "critique": 0.7999999999999999
     },
-    "mit-ocw-information-and-entropy::data-compression": {
+    "mit-ocw-information-and-entropy::source-coding-and-compression": {
       "correctness": 0.8400000000000001,
       "explanation": 0.85,
       "critique": 0.7999999999999999
@@ -87,9 +150,54 @@
   },
   "artifacts": [
     {
-      "concept": "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy",
+      "concept": "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-course-home",
       "artifact_type": "symbolic",
-      "artifact_name": "mit-ocw-6-050j-information-and-entropy.md"
+      "artifact_name": "mit-ocw-6-050j-information-and-entropy-course-home.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::information-and-entropy",
+      "artifact_type": "symbolic",
+      "artifact_name": "information-and-entropy.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::ultimate-limits-to-communication-and-computation",
+      "artifact_type": "symbolic",
+      "artifact_name": "ultimate-limits-to-communication-and-computation.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::open-textbooks-problem-sets-and-programming-work",
+      "artifact_type": "symbolic",
+      "artifact_name": "open-textbooks-problem-sets-and-programming-work.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "artifact_type": "symbolic",
+      "artifact_name": "mit-ocw-6-050j-information-and-entropy-syllabus.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::prerequisites-and-mathematical-background",
+      "artifact_type": "symbolic",
+      "artifact_name": "prerequisites-and-mathematical-background.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::assessment-structure",
+      "artifact_type": "symbolic",
+      "artifact_name": "assessment-structure.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::course-notes-and-reference-texts",
+      "artifact_type": "symbolic",
+      "artifact_name": "course-notes-and-reference-texts.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::independent-reasoning-and-careful-comparison",
+      "artifact_type": "symbolic",
+      "artifact_name": "independent-reasoning-and-careful-comparison.md"
+    },
+    {
+      "concept": "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "artifact_type": "symbolic",
+      "artifact_name": "mit-ocw-6-050j-information-and-entropy-unit-sequence.md"
     },
     {
       "concept": "mit-ocw-information-and-entropy::counting-and-probability",
@@ -107,9 +215,9 @@
       "artifact_name": "mutual-information.md"
     },
     {
-      "concept": "mit-ocw-information-and-entropy::data-compression",
+      "concept": "mit-ocw-information-and-entropy::source-coding-and-compression",
       "artifact_type": "symbolic",
-      "artifact_name": "data-compression.md"
+      "artifact_name": "source-coding-and-compression.md"
     },
     {
       "concept": "mit-ocw-information-and-entropy::huffman-coding",

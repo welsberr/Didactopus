@@ -6,7 +6,20 @@ sources:
     creator: MIT OpenCourseWare
     license_id: CC BY-NC-SA 4.0
     license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
-    retrieved_at: "2026-03-14"
+    retrieved_at: "2026-03-16"
+    adapted: true
+    attribution_text: Derived in part from MIT OpenCourseWare 6.050J Information and Entropy course materials used under CC BY-NC-SA 4.0.
+    excluded_from_upstream_license: false
+    exclusion_notes: ""
+
+  - source_id: mit-ocw-6-050j-syllabus
+    title: MIT OpenCourseWare 6.050J Information and Entropy syllabus
+    url: https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/pages/syllabus/
+    publisher: Massachusetts Institute of Technology
+    creator: MIT OpenCourseWare
+    license_id: CC BY-NC-SA 4.0
+    license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+    retrieved_at: "2026-03-16"
     adapted: true
     attribution_text: Derived in part from MIT OpenCourseWare 6.050J Information and Entropy course materials used under CC BY-NC-SA 4.0.
     excluded_from_upstream_license: false
@@ -19,7 +32,7 @@ sources:
     creator: MIT OpenCourseWare
     license_id: CC BY-NC-SA 4.0
     license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
-    retrieved_at: "2026-03-14"
+    retrieved_at: "2026-03-16"
     adapted: true
     attribution_text: Derived in part from MIT OpenCourseWare 6.050J Information and Entropy course materials used under CC BY-NC-SA 4.0.
     excluded_from_upstream_license: false
@@ -32,7 +45,7 @@ sources:
     creator: MIT OpenCourseWare
     license_id: CC BY-NC-SA 4.0
     license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
-    retrieved_at: "2026-03-14"
+    retrieved_at: "2026-03-16"
     adapted: true
     attribution_text: Derived in part from MIT OpenCourseWare 6.050J Information and Entropy course materials used under CC BY-NC-SA 4.0.
     excluded_from_upstream_license: false

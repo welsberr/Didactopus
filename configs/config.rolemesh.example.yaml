@@ -1,0 +1,26 @@
+review:
+  default_reviewer: "Wesley R. Elsberry"
+  write_promoted_pack: true
+
+bridge:
+  host: "127.0.0.1"
+  port: 8765
+  registry_path: "workspace_registry.json"
+  default_workspace_root: "workspaces"
+
+model_provider:
+  provider: "rolemesh"
+  local:
+    backend: "stub"
+    model_name: "unused-when-rolemesh-enabled"
+  rolemesh:
+    base_url: "http://127.0.0.1:8000"
+    api_key: "change-me-client-key-1"
+    default_model: "planner"
+    role_to_model:
+      mentor: "planner"
+      learner: "writer"
+      practice: "writer"
+      project_advisor: "planner"
+      evaluator: "reviewer"
+    timeout_seconds: 30.0

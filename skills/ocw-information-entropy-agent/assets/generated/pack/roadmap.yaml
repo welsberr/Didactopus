@@ -2,16 +2,50 @@ stages:
 - id: stage-1
   title: Imported from MARKDOWN
   concepts:
-  - mit-ocw-6-050j-information-and-entropy
+  - mit-ocw-6-050j-information-and-entropy-course-home
+  - information-and-entropy
+  - ultimate-limits-to-communication-and-computation
+  - open-textbooks-problem-sets-and-programming-work
+  - mit-ocw-6-050j-information-and-entropy-syllabus
+  - prerequisites-and-mathematical-background
+  - assessment-structure
+  - course-notes-and-reference-texts
+  - independent-reasoning-and-careful-comparison
+  - mit-ocw-6-050j-information-and-entropy-unit-sequence
   - counting-and-probability
   - shannon-entropy
   - mutual-information
-  - data-compression
+  - source-coding-and-compression
   - huffman-coding
   - channel-capacity
   - channel-coding
   - error-correcting-codes
   - cryptography-and-information-hiding
   - thermodynamics-and-entropy
+  - reversible-computation-and-quantum-computation
   - course-synthesis
-  checkpoint: []
+  checkpoint:
+  - Summarize the course in one paragraph for a prospective learner.
+  - List the main topic clusters that connect communication, computation, and entropy.
+  - Explain how these resource types support both conceptual study and practice.
+  - Decide whether a learner needs review in probability, linear algebra, or signals
+    before beginning.
+  - Build a study schedule that alternates reading, derivation, and worked exercises.
+  - Compare when to use course notes versus outside references for clarification.
+  - Write a short note distinguishing Shannon entropy, channel capacity, and thermodynamic
+    entropy.
+  - Derive a simple counting argument for binary strings and compute an event probability.
+  - Compute the entropy of a Bernoulli source and interpret the result.
+  - Compare independent variables with dependent variables using mutual-information
+    reasoning.
+  - Describe when compression succeeds and when it fails on already-random data.
+  - Build a Huffman code for a small source alphabet.
+  - State why reliable transmission above capacity is impossible in the long run.
+  - Contrast uncoded transmission with coded transmission on a noisy channel.
+  - Describe a simple parity-style code and its limits.
+  - Compare a secure scheme with a weak one in terms of revealed information.
+  - Compare the two entropy notions and identify what is preserved across the analogy.
+  - Summarize how reversible computation changes the discussion of dissipation and
+    information loss.
+  - Produce a final study guide that links source coding, channel coding, secrecy,
+    thermodynamic analogies, and computation.

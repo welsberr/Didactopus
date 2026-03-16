@@ -6,7 +6,7 @@ from pathlib import Path
 from .agentic_loop import AgenticStudentState, integrate_attempt
 from .artifact_registry import validate_pack
 from .course_ingestion_compliance import build_pack_compliance_manifest, load_sources, write_manifest
-from .document_adapters import adapt_document
+from .document_adapters import adapt_documents
 from .evaluator_pipeline import LearnerAttempt
 from .graph_builder import build_concept_graph
 from .mastery_ledger import (
@@ -15,7 +15,7 @@ from .mastery_ledger import (
     export_capability_profile_json,
     export_capability_report_markdown,
 )
-from .pack_emitter import build_draft_pack, write_draft_pack
+from .pack_emitter import build_draft_pack, write_draft_pack, write_source_corpus
 from .rule_policy import RuleContext, build_default_rules, run_rules
 from .topic_ingest import build_topic_bundle, document_to_course, extract_concept_candidates, merge_courses_into_topic_course
 
@@ -38,8 +38,9 @@ Use this skill when the task is about tutoring, evaluating, or planning study in
 1. Read `references/generated-course-summary.md` for the pack structure and target concepts.
 2. Read `references/generated-capability-summary.md` to understand what the demo AI learner already mastered.
 3. Use `assets/generated/pack/` as the source of truth for concept ids, prerequisites, and mastery signals.
-4. When giving guidance, preserve the pack ordering from fundamentals through coding and thermodynamics.
-5. When uncertain, say which concept or prerequisite in the generated pack is underspecified.
+4. Use `assets/generated/pack/source_corpus.json` to ground explanations in the ingested source material before relying on model prior knowledge.
+5. When giving guidance, preserve the pack ordering from fundamentals through coding and thermodynamics.
+6. When uncertain, say which concept or prerequisite in the generated pack is underspecified and which source fragment would need review.
 
 ## Outputs
 
@@ -122,6 +123,15 @@ def _write_skill_bundle(
             (run_asset_dir / source.name).write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
 
 
+def _select_target_concept(pack_name: str, concepts: list, preferred_id: str = "thermodynamics-and-entropy") -> str:
+    ids = [concept.id for concept in concepts]
+    if preferred_id in ids:
+        return f"{pack_name}::{preferred_id}"
+    if not ids:
+        raise ValueError("No concept candidates available to select as target.")
+    return f"{pack_name}::{ids[-1]}"
+
+
 def run_ocw_information_entropy_demo(
     course_source: str | Path,
     source_inventory: str | Path,
@@ -135,9 +145,11 @@ def run_ocw_information_entropy_demo(
     run_dir = Path(run_dir)
     skill_dir = Path(skill_dir)
 
-    doc = adapt_document(course_source)
-    course = document_to_course(doc, "MIT OCW Information and Entropy")
-    merged = merge_courses_into_topic_course(build_topic_bundle(course.title, [course]))
+    docs = adapt_documents(course_source)
+    if not docs:
+        raise ValueError(f"No supported source documents found under {course_source}")
+    courses = [document_to_course(doc, "MIT OCW Information and Entropy") for doc in docs]
+    merged = merge_courses_into_topic_course(build_topic_bundle("MIT OCW Information and Entropy", courses))
     merged.rights_note = DEFAULT_RIGHTS_NOTE
 
     concepts = extract_concept_candidates(merged)
@@ -153,6 +165,7 @@ def run_ocw_information_entropy_demo(
         conflicts=[],
     )
     write_draft_pack(draft, pack_dir)
+    write_source_corpus(merged, pack_dir)
     if source_inventory.exists():
         inventory = load_sources(source_inventory)
         compliance_manifest = build_pack_compliance_manifest(draft.pack["name"], draft.pack["display_name"], inventory)
@@ -170,7 +183,7 @@ def run_ocw_information_entropy_demo(
         "project_execution": 0.75,
         "critique": 0.7,
     })
-    target_key = f"{draft.pack['name']}::thermodynamics-and-entropy"
+    target_key = _select_target_concept(draft.pack["name"], ctx.concepts)
     concept_path = graph.curriculum_path_to_target(set(), target_key)
 
     state = AgenticStudentState(
@@ -189,11 +202,13 @@ def run_ocw_information_entropy_demo(
 
     summary = {
         "course_source": str(course_source),
+        "source_document_count": len(docs),
         "pack_dir": str(pack_dir),
         "skill_dir": str(skill_dir),
         "source_inventory": str(source_inventory),
         "review_flags": list(ctx.review_flags),
         "concept_count": len(ctx.concepts),
+        "source_fragment_count": len(json.loads((pack_dir / "source_corpus.json").read_text(encoding="utf-8")).get("fragments", [])),
         "target_concept": target_key,
         "curriculum_path": concept_path,
         "mastered_concepts": sorted(state.mastered_concepts),
@@ -216,7 +231,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Generate a domain pack and skill bundle from MIT OCW Information and Entropy.")
     parser.add_argument(
         "--course-source",
-        default=str(root / "examples" / "ocw-information-entropy" / "6-050j-information-and-entropy.md"),
+        default=str(root / "examples" / "ocw-information-entropy" / "course"),
     )
     parser.add_argument(
         "--source-inventory",
