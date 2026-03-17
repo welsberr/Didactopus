@@ -17,6 +17,8 @@ model_provider:
     base_url: "http://127.0.0.1:8000"
     api_key: "change-me-client-key-1"
     default_model: "planner"
+    # Didactopus defines its own canonical role ids. RoleMesh model aliases are mapped to them here.
+    # Change the values on the right to fit your local gateway setup.
     role_to_model:
       mentor: "planner"
       learner: "writer"
