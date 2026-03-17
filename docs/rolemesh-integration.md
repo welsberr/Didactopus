@@ -1,6 +1,14 @@
 # RoleMesh Integration
 
-RoleMesh Gateway is an appropriate dependency for local-LLM-backed Didactopus usage.
+RoleMesh Gateway is an appropriate dependency for local-LLM-backed Didactopus usage, but it should be treated as the advanced path rather than the default path for most users.
+
+If ease of use is your priority, start with:
+
+- `docs/model-provider-setup.md`
+- `configs/config.ollama.example.yaml`
+- `configs/config.openai-compatible.example.yaml`
+
+Use RoleMesh when you need routing flexibility, multiple backends, or shared infrastructure.
 
 ## Why it fits
 

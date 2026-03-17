@@ -69,6 +69,71 @@ def test_rolemesh_provider_emits_pending_notice() -> None:
     assert seen == ["Didactopus is evaluating the work before replying. Model: reviewer."]
 
 
+def test_ollama_provider_uses_role_mapping() -> None:
+    config = ModelProviderConfig.model_validate(
+        {
+            "provider": "ollama",
+            "ollama": {
+                "base_url": "http://127.0.0.1:11434/v1",
+                "api_key": "ollama",
+                "default_model": "llama3.2:3b",
+                "role_to_model": {"mentor": "llama3.2:3b", "practice": "qwen2.5:3b"},
+            },
+        }
+    )
+    provider = ModelProvider(config)
+
+    def fake_chat(*, base_url: str, api_key: str, timeout_seconds: float, payload: dict, auth_scheme: str) -> dict:
+        assert base_url == "http://127.0.0.1:11434/v1"
+        assert api_key == "ollama"
+        assert payload["model"] == "qwen2.5:3b"
+        assert auth_scheme == "bearer"
+        return {"choices": [{"message": {"content": "Ollama practice response"}}]}
+
+    provider._chat_completion_request = fake_chat  # type: ignore[method-assign]
+    response = provider.generate(
+        "Generate a practice task.",
+        role="practice",
+        system_prompt="System prompt",
+    )
+    assert response.provider == "ollama"
+    assert response.model_name == "qwen2.5:3b"
+    assert response.text == "Ollama practice response"
+
+
+def test_openai_compatible_provider_uses_bearer_auth() -> None:
+    config = ModelProviderConfig.model_validate(
+        {
+            "provider": "openai_compatible",
+            "openai_compatible": {
+                "base_url": "https://api.openai.com/v1",
+                "api_key": "demo-key",
+                "default_model": "gpt-4.1-mini",
+                "role_to_model": {"mentor": "gpt-4.1-mini"},
+                "auth_scheme": "bearer",
+            },
+        }
+    )
+    provider = ModelProvider(config)
+
+    def fake_chat(*, base_url: str, api_key: str, timeout_seconds: float, payload: dict, auth_scheme: str) -> dict:
+        assert base_url == "https://api.openai.com/v1"
+        assert api_key == "demo-key"
+        assert payload["model"] == "gpt-4.1-mini"
+        assert auth_scheme == "bearer"
+        return {"choices": [{"message": {"content": "Hosted mentor response"}}]}
+
+    provider._chat_completion_request = fake_chat  # type: ignore[method-assign]
+    response = provider.generate(
+        "Orient the learner.",
+        role="mentor",
+        system_prompt="System prompt",
+    )
+    assert response.provider == "openai_compatible"
+    assert response.model_name == "gpt-4.1-mini"
+    assert response.text == "Hosted mentor response"
+
+
 def test_evaluator_prompt_requires_checking_existing_caveats() -> None:
     prompt = evaluator_system_prompt().lower()
     assert "before saying something is missing" in prompt

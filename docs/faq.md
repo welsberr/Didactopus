@@ -107,6 +107,31 @@ There are now two learner paths in the repo.
 
 So the deterministic learner is still active, but it is no longer the only learner-style path shown in the repository.
 
+## What is the easiest way to use a live LLM with Didactopus?
+
+Start with either:
+
+- `configs/config.ollama.example.yaml` for simple local use
+- `configs/config.openai-compatible.example.yaml` for simple hosted use
+
+RoleMesh is still supported, but it is now the advanced option for users who actually need routing and multiple backends.
+
+The simplest local command shape is:
+
+```bash
+python -m didactopus.learner_session_demo --config configs/config.ollama.example.yaml
+```
+
+The simplest hosted command shape is:
+
+```bash
+python -m didactopus.learner_session_demo --config configs/config.openai-compatible.example.yaml
+```
+
+For the full setup notes, see:
+
+- `docs/model-provider-setup.md`
+
 ## Can I still use it as a personal mentor even though the learner is synthetic?
 
 Yes, if you think of the current repo as a structured learning workbench rather than a chat product.

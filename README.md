@@ -198,6 +198,23 @@ python -m didactopus.model_bench
 
 It evaluates local-model adequacy for the `mentor`, `practice`, and `evaluator` roles using the MIT OCW skill bundle as grounded context.
 
+### Easiest LLM setup paths
+
+If you want live LLM-backed Didactopus behavior without the complexity of RoleMesh, start with one of these:
+
+1. `ollama` for simple local use
+2. `openai_compatible` for simple hosted use
+3. `rolemesh` only if you need routing and multi-model orchestration
+
+The two low-friction starting configs are:
+
+- `configs/config.ollama.example.yaml`
+- `configs/config.openai-compatible.example.yaml`
+
+For setup details, see:
+
+- `docs/model-provider-setup.md`
+
 ## What Is In This Repository
 
 - `src/didactopus/`
@@ -451,6 +468,7 @@ What remains heuristic or lightweight:
 - [docs/roadmap.md](docs/roadmap.md)
 - [docs/learner-accessibility.md](docs/learner-accessibility.md)
 - [docs/local-model-benchmark.md](docs/local-model-benchmark.md)
+- [docs/model-provider-setup.md](docs/model-provider-setup.md)
 - [docs/course-to-pack.md](docs/course-to-pack.md)
 - [docs/learning-graph.md](docs/learning-graph.md)
 - [docs/agentic-learner-loop.md](docs/agentic-learner-loop.md)
