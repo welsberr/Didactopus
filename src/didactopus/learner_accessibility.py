@@ -14,6 +14,8 @@ def build_accessible_session_text(session: dict) -> str:
         "Didactopus Learner Session",
         "",
         f"Learner goal: {session.get('goal', '')}",
+        f"Source language: {session.get('source_language', 'en')}",
+        f"Output language: {session.get('output_language', 'en')}",
         "",
         "Study plan:",
     ]
@@ -88,6 +90,8 @@ def build_accessible_session_html(session: dict) -> str:
         '<h1 id="session-title">Didactopus Learner Session</h1>',
         '<p class="sr-note">This page is structured for keyboard and screen-reader use. It presents the learner goal, study plan, grounded source fragments, and conversation turns in reading order.</p>',
         f"<p><strong>Learner goal:</strong> {_escape(session.get('goal', ''))}</p>",
+        f"<p><strong>Source language:</strong> {_escape(session.get('source_language', 'en'))}</p>",
+        f"<p><strong>Output language:</strong> {_escape(session.get('output_language', 'en'))}</p>",
         "</section>",
         '<section aria-labelledby="study-plan-title">',
         '<h2 id="study-plan-title">Study Plan</h2>',

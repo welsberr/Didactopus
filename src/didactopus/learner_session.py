@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from .language_support import response_language_instruction
 from .model_provider import ModelProvider
 from .ocw_skill_agent_demo import (
     SkillContext,
@@ -31,11 +32,13 @@ def _generate_role_text(
     *,
     role: str,
     prompt: str,
+    language: str = "en",
+    source_language: str = "en",
     temperature: float = 0.2,
     max_tokens: int = 220,
 ) -> str:
     return provider.generate(
-        prompt,
+        f"{prompt}{response_language_instruction(language, source_language)}",
         role=role,
         system_prompt=system_prompt_for_role(role),
         temperature=temperature,
@@ -55,6 +58,8 @@ def build_graph_grounded_session(
     provider: ModelProvider,
     learner_goal: str,
     learner_submission: str,
+    language: str = "en",
+    source_language: str = "en",
 ) -> dict:
     study_plan = build_skill_grounded_study_plan(context, learner_goal)
     steps = study_plan.get("steps", [])
@@ -74,6 +79,8 @@ def build_graph_grounded_session(
         provider,
         role="mentor",
         prompt=mentor_prompt,
+        language=language,
+        source_language=source_language,
         temperature=0.2,
         max_tokens=260,
     )
@@ -87,6 +94,8 @@ def build_graph_grounded_session(
         provider,
         role="practice",
         prompt=practice_prompt,
+        language=language,
+        source_language=source_language,
         temperature=0.3,
         max_tokens=220,
     )
@@ -103,6 +112,8 @@ def build_graph_grounded_session(
         provider,
         role="evaluator",
         prompt=evaluator_prompt,
+        language=language,
+        source_language=source_language,
         temperature=0.2,
         max_tokens=240,
     )
@@ -117,6 +128,8 @@ def build_graph_grounded_session(
         provider,
         role="mentor",
         prompt=next_step_prompt,
+        language=language,
+        source_language=source_language,
         temperature=0.2,
         max_tokens=220,
     )
@@ -132,6 +145,8 @@ def build_graph_grounded_session(
 
     return {
         "goal": learner_goal,
+        "output_language": language,
+        "source_language": source_language,
         "study_plan": study_plan,
         "primary_concept": primary,
         "secondary_concept": secondary,

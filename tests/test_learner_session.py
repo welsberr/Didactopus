@@ -17,12 +17,14 @@ def test_build_graph_grounded_session_uses_grounded_steps() -> None:
         provider=provider,
         learner_goal="Help me connect Shannon entropy and channel capacity.",
         learner_submission="Entropy measures uncertainty because unlikely outcomes carry more information, but one limitation is that idealized source models may not match physical systems.",
+        language="es",
     )
 
     assert payload["study_plan"]["steps"]
     assert payload["primary_concept"]["supporting_lessons"]
     assert payload["evaluation"]["verdict"] in {"acceptable", "needs_revision"}
     assert len(payload["turns"]) == 6
+    assert payload["output_language"] == "es"
     assert any("Grounding fragments" in turn["content"] or "Concept:" in turn["content"] for turn in payload["turns"])
 
 
@@ -39,3 +41,4 @@ def test_run_learner_session_demo_writes_output(tmp_path: Path) -> None:
     assert (tmp_path / "session.txt").exists()
     assert payload["practice_task"]
     assert payload["evaluation"]["aggregated"]
+    assert payload["output_language"] == "en"

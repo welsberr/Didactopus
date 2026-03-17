@@ -21,6 +21,8 @@ def test_run_ocw_skill_agent_demo(tmp_path: Path) -> None:
     assert "grounding" in payload["explanation"]
     assert payload["explanation"]["grounding"]["supporting_lessons"]
     assert payload["evaluation"]["verdict"] in {"acceptable", "needs_revision"}
+    assert payload["output_language"] == "en"
+    assert payload["source_language"] == "en"
 
 
 def test_skill_demo_flags_weak_submission() -> None:

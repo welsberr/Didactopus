@@ -37,6 +37,7 @@ Example commands:
 ```bash
 ollama pull llama3.2:3b
 python -m didactopus.learner_session_demo --config configs/config.ollama.example.yaml
+python -m didactopus.learner_session_demo --config configs/config.ollama.example.yaml --language es
 ```
 
 If you want a different local model, change:
@@ -69,6 +70,7 @@ Example:
 
 ```bash
 python -m didactopus.learner_session_demo --config configs/config.openai-compatible.example.yaml
+python -m didactopus.learner_session_demo --config configs/config.openai-compatible.example.yaml --language fr
 ```
 
 ## Option 3: RoleMesh Gateway

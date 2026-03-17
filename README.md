@@ -173,6 +173,7 @@ The main mentor-style backend now has a dedicated demo entry point:
 
 ```bash
 python -m didactopus.learner_session_demo
+python -m didactopus.learner_session_demo --language es
 ```
 
 That demo builds a graph-grounded session from the MIT OCW skill bundle and emits:
@@ -182,6 +183,8 @@ That demo builds a graph-grounded session from the MIT OCW skill bundle and emit
 - a practice prompt
 - evaluator feedback
 - a recommended next step
+
+The learner-facing CLI now treats language as a first-class parameter, so the same session flow can target another output language while preserving the English source-grounding context.
 
 The point of this module is architectural as much as demonstrational: it is the session core that future accessibility, model-benchmark, and voice-interaction work should build on.
 
@@ -197,6 +200,14 @@ python -m didactopus.model_bench
 ```
 
 It evaluates local-model adequacy for the `mentor`, `practice`, and `evaluator` roles using the MIT OCW skill bundle as grounded context.
+
+There is also now a Didactopus-specific arena for comparing provider/model/prompt combinations:
+
+```bash
+python -m didactopus.arena --arena-spec configs/arena.example.yaml
+```
+
+That produces rankings, a human review queue, and an optional LLM-written comparative summary for reviewer triage.
 
 ### Easiest LLM setup paths
 
@@ -466,6 +477,7 @@ What remains heuristic or lightweight:
 ## Recommended Reading
 
 - [docs/roadmap.md](docs/roadmap.md)
+- [docs/arena.md](docs/arena.md)
 - [docs/learner-accessibility.md](docs/learner-accessibility.md)
 - [docs/local-model-benchmark.md](docs/local-model-benchmark.md)
 - [docs/model-provider-setup.md](docs/model-provider-setup.md)

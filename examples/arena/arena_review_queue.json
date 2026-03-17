@@ -1,0 +1,32 @@
+[
+  {
+    "candidate_name": "stub-baseline",
+    "overall_rating": "borderline",
+    "overall_score": 0.667,
+    "needs_human_review": true,
+    "weak_roles": [
+      "mentor",
+      "evaluator"
+    ]
+  },
+  {
+    "candidate_name": "stub-strict-grounding",
+    "overall_rating": "borderline",
+    "overall_score": 0.667,
+    "needs_human_review": true,
+    "weak_roles": [
+      "mentor",
+      "evaluator"
+    ]
+  },
+  {
+    "candidate_name": "stub-trust-preserving",
+    "overall_rating": "borderline",
+    "overall_score": 0.667,
+    "needs_human_review": true,
+    "weak_roles": [
+      "mentor",
+      "evaluator"
+    ]
+  }
+]

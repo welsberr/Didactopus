@@ -19,6 +19,7 @@ def test_run_model_benchmark_writes_reports(tmp_path) -> None:
     assert len(payload["role_results"]) == 3
     assert {result["role"] for result in payload["role_results"]} == {"mentor", "practice", "evaluator"}
     assert payload["summary"]["overall_adequacy_rating"] in {"adequate", "borderline", "inadequate"}
+    assert payload["context"]["output_language"] == "en"
 
     json_path = tmp_path / "model_benchmark.json"
     md_path = tmp_path / "model_benchmark.md"

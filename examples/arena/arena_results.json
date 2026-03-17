@@ -1,0 +1,202 @@
+{
+  "arena": {
+    "name": "didactopus-behavior-arena",
+    "candidate_count": 3
+  },
+  "ranked_candidates": [
+    {
+      "candidate_name": "stub-baseline",
+      "config": "configs/config.example.yaml",
+      "prompt_variant": "baseline",
+      "language": "en",
+      "provider": "stub",
+      "overall_score": 0.667,
+      "overall_rating": "borderline",
+      "role_results": [
+        {
+          "role": "mentor",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "baseline",
+          "language": "en",
+          "latency_ms": 0.027,
+          "adequacy_score": 0.65,
+          "adequacy_rating": "borderline",
+          "response_preview": "[stubbed-response] [mentor] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Did not ask a focused learner question."
+          ]
+        },
+        {
+          "role": "practice",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "baseline",
+          "language": "en",
+          "latency_ms": 0.006,
+          "adequacy_score": 1.0,
+          "adequacy_rating": "adequate",
+          "response_preview": "[stubbed-response] [practice] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": []
+        },
+        {
+          "role": "evaluator",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "baseline",
+          "language": "en",
+          "latency_ms": 0.005,
+          "adequacy_score": 0.35,
+          "adequacy_rating": "inadequate",
+          "response_preview": "[stubbed-response] [evaluator] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Did not acknowledge learner strengths.",
+            "Did not provide a concrete next step."
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_name": "stub-strict-grounding",
+      "config": "configs/config.example.yaml",
+      "prompt_variant": "strict_grounding",
+      "language": "es",
+      "provider": "stub",
+      "overall_score": 0.667,
+      "overall_rating": "borderline",
+      "role_results": [
+        {
+          "role": "mentor",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "strict_grounding",
+          "language": "es",
+          "latency_ms": 0.019,
+          "adequacy_score": 0.65,
+          "adequacy_rating": "borderline",
+          "response_preview": "[stubbed-response] [mentor] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Did not ask a focused learner question."
+          ]
+        },
+        {
+          "role": "practice",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "strict_grounding",
+          "language": "es",
+          "latency_ms": 0.005,
+          "adequacy_score": 1.0,
+          "adequacy_rating": "adequate",
+          "response_preview": "[stubbed-response] [practice] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": []
+        },
+        {
+          "role": "evaluator",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "strict_grounding",
+          "language": "es",
+          "latency_ms": 0.004,
+          "adequacy_score": 0.35,
+          "adequacy_rating": "inadequate",
+          "response_preview": "[stubbed-response] [evaluator] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Did not acknowledge learner strengths.",
+            "Did not provide a concrete next step."
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_name": "stub-trust-preserving",
+      "config": "configs/config.example.yaml",
+      "prompt_variant": "trust_preserving",
+      "language": "fr",
+      "provider": "stub",
+      "overall_score": 0.667,
+      "overall_rating": "borderline",
+      "role_results": [
+        {
+          "role": "mentor",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "trust_preserving",
+          "language": "fr",
+          "latency_ms": 0.025,
+          "adequacy_score": 0.65,
+          "adequacy_rating": "borderline",
+          "response_preview": "[stubbed-response] [mentor] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Did not ask a focused learner question."
+          ]
+        },
+        {
+          "role": "practice",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "trust_preserving",
+          "language": "fr",
+          "latency_ms": 0.005,
+          "adequacy_score": 1.0,
+          "adequacy_rating": "adequate",
+          "response_preview": "[stubbed-response] [practice] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": []
+        },
+        {
+          "role": "evaluator",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "trust_preserving",
+          "language": "fr",
+          "latency_ms": 0.005,
+          "adequacy_score": 0.35,
+          "adequacy_rating": "inadequate",
+          "response_preview": "[stubbed-response] [evaluator] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Did not acknowledge learner strengths.",
+            "Did not provide a concrete next step."
+          ]
+        }
+      ]
+    }
+  ],
+  "review_queue": [
+    {
+      "candidate_name": "stub-baseline",
+      "overall_rating": "borderline",
+      "overall_score": 0.667,
+      "needs_human_review": true,
+      "weak_roles": [
+        "mentor",
+        "evaluator"
+      ]
+    },
+    {
+      "candidate_name": "stub-strict-grounding",
+      "overall_rating": "borderline",
+      "overall_score": 0.667,
+      "needs_human_review": true,
+      "weak_roles": [
+        "mentor",
+        "evaluator"
+      ]
+    },
+    {
+      "candidate_name": "stub-trust-preserving",
+      "overall_rating": "borderline",
+      "overall_score": 0.667,
+      "needs_human_review": true,
+      "weak_roles": [
+        "mentor",
+        "evaluator"
+      ]
+    }
+  ],
+  "llm_review": {
+    "provider": "stub",
+    "model_name": "local-demo",
+    "role": "mentor",
+    "summary": "[stubbed-response] [mentor] Review these Didactopus arena results for a human reviewer. Rank the strongest candidates, identify likely prompt improv"
+  }
+}

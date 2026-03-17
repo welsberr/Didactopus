@@ -153,6 +153,7 @@ Run:
 
 ```bash
 python -m didactopus.learner_session_demo
+python -m didactopus.learner_session_demo --language es
 ```
 
 That demo loads the MIT OCW skill bundle, retrieves grounded concept neighborhoods and source fragments, and emits a single learner session containing:
@@ -165,6 +166,8 @@ That demo loads the MIT OCW skill bundle, retrieves grounded concept neighborhoo
 - a next-step recommendation
 
 This is the backend shape the repository should now treat as the base for future accessibility, benchmarking, and voice-interaction work.
+
+The learner-facing commands are also starting to expose `--language`, so output language becomes an explicit session parameter rather than an implicit prompt tweak.
 
 ## How should I use it if I am taking a course and do not want to hire a tutor?
 

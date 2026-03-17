@@ -106,3 +106,7 @@ As the learner session backend grows, the benchmark should expand to include:
 - first-token delay and tokens-per-second capture
 - memory and thermal observations on constrained hardware
 - accessibility-specific checks for structure and spoken-output quality
+
+For model-and-prompt comparison across multiple candidates, use:
+
+- `docs/arena.md`

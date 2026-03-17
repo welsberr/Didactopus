@@ -28,6 +28,8 @@ def test_accessible_session_html_has_landmarks() -> None:
 def test_accessible_session_text_is_linearized() -> None:
     text = build_accessible_session_text(_session_payload())
     assert "Learner goal:" in text
+    assert "Source language:" in text
+    assert "Output language:" in text
     assert "Study plan:" in text
     assert "Conversation:" in text
     assert "Evaluation summary:" in text

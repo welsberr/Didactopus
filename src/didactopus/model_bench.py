@@ -5,6 +5,7 @@ from pathlib import Path
 from time import perf_counter
 
 from .config import load_config
+from .language_support import response_language_instruction
 from .learner_session import _grounding_block
 from .model_provider import ModelProvider
 from .ocw_skill_agent_demo import build_skill_grounded_study_plan, evaluate_submission_with_skill, load_ocw_skill_context
@@ -100,6 +101,7 @@ def run_model_benchmark(
     hardware_cpu: str = "unknown",
     hardware_ram_gb: float | None = None,
     hardware_notes: str | None = None,
+    language: str = "en",
 ) -> dict:
     config = load_config(config_path)
     provider = ModelProvider(config.model_provider)
@@ -153,7 +155,7 @@ def run_model_benchmark(
     for role, prompt in prompts.items():
         started = perf_counter()
         response = provider.generate(
-            prompt,
+            f"{prompt}{response_language_instruction(language, 'en')}",
             role=role,
             system_prompt=system_prompt_for_role(role),
             temperature=0.2,
@@ -193,6 +195,8 @@ def run_model_benchmark(
             "study_plan_task": study_plan["task"],
             "primary_concept": primary["title"],
             "secondary_concept": secondary["title"],
+            "source_language": "en",
+            "output_language": language,
         },
         "role_results": role_results,
         "summary": {
@@ -248,6 +252,7 @@ def main() -> None:
     parser.add_argument("--hardware-cpu", default="unknown")
     parser.add_argument("--hardware-ram-gb", type=float, default=None)
     parser.add_argument("--hardware-notes", default="")
+    parser.add_argument("--language", default="en")
     args = parser.parse_args()
     payload = run_model_benchmark(
         config_path=args.config,
@@ -257,6 +262,7 @@ def main() -> None:
         hardware_cpu=args.hardware_cpu,
         hardware_ram_gb=args.hardware_ram_gb,
         hardware_notes=args.hardware_notes,
+        language=args.language,
     )
     print(json.dumps(payload, indent=2))
 

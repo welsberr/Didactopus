@@ -116,6 +116,7 @@ def build_skill_grounded_study_plan(context: SkillContext, target_task: str) -> 
     return {
         "skill": context.skill_name,
         "task": target_task,
+        "source_language": "en",
         "steps": steps,
         "guided_path_reference": list(context.run_summary.get("curriculum_path", [])),
     }
@@ -193,7 +194,7 @@ def evaluate_submission_with_skill(context: SkillContext, concept_id: str, submi
     }
 
 
-def run_ocw_skill_agent_demo(skill_dir: str | Path, out_dir: str | Path) -> dict:
+def run_ocw_skill_agent_demo(skill_dir: str | Path, out_dir: str | Path, language: str = "en") -> dict:
     context = load_ocw_skill_context(skill_dir)
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -214,6 +215,8 @@ def run_ocw_skill_agent_demo(skill_dir: str | Path, out_dir: str | Path) -> dict
             "name": context.skill_name,
             "description": context.skill_description,
         },
+        "source_language": "en",
+        "output_language": language,
         "study_plan": study_plan,
         "explanation": explanation,
         "evaluation": evaluation,
@@ -225,6 +228,8 @@ def run_ocw_skill_agent_demo(skill_dir: str | Path, out_dir: str | Path) -> dict
         "",
         f"- Skill: `{context.skill_name}`",
         f"- Description: {context.skill_description}",
+        f"- Source language: en",
+        f"- Output language: {language}",
         "",
         "## Study Plan",
     ]
@@ -260,8 +265,9 @@ def main() -> None:
         "--out-dir",
         default=str(root / "examples" / "ocw-information-entropy-skill-demo"),
     )
+    parser.add_argument("--language", default="en")
     args = parser.parse_args()
-    payload = run_ocw_skill_agent_demo(args.skill_dir, args.out_dir)
+    payload = run_ocw_skill_agent_demo(args.skill_dir, args.out_dir, args.language)
     print(json.dumps(payload, indent=2))
 
 

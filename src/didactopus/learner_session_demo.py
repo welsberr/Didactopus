@@ -16,6 +16,7 @@ def run_learner_session_demo(
     out_path: str | Path | None = None,
     accessible_html_path: str | Path | None = None,
     accessible_text_path: str | Path | None = None,
+    language: str = "en",
 ) -> dict:
     config = load_config(config_path)
     provider = ModelProvider(config.model_provider)
@@ -25,6 +26,8 @@ def run_learner_session_demo(
         provider=provider,
         learner_goal="Help me understand how Shannon entropy leads into channel capacity and thermodynamic entropy.",
         learner_submission="Entropy measures uncertainty because more possible outcomes require more information to describe, but one limitation is that thermodynamic entropy is not identical to Shannon entropy.",
+        language=language,
+        source_language="en",
     )
     if out_path is not None:
         out_path = Path(out_path)
@@ -45,6 +48,7 @@ def main() -> None:
     parser.add_argument("--out", default=str(root / "examples" / "ocw-information-entropy-session.json"))
     parser.add_argument("--accessible-html", default=None)
     parser.add_argument("--accessible-text", default=None)
+    parser.add_argument("--language", default="en")
     args = parser.parse_args()
     payload = run_learner_session_demo(
         args.config,
@@ -52,6 +56,7 @@ def main() -> None:
         args.out,
         args.accessible_html,
         args.accessible_text,
+        args.language,
     )
     print(json.dumps(payload, indent=2))
 
