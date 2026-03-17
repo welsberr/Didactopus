@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Didactopus Learner Session</title>
+<style>
+:root { color-scheme: light; --bg: #f7f4ed; --panel: #fffdf8; --ink: #1e2b31; --muted: #53656d; --line: #d3c8b7; --accent: #155e63; }
+body { margin: 0; font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--ink); line-height: 1.55; }
+a { color: var(--accent); }
+.skip { position: absolute; left: 12px; top: 12px; background: #fff; padding: 8px 10px; border: 1px solid var(--line); }
+main { max-width: 980px; margin: 0 auto; padding: 24px; }
+section { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin-bottom: 18px; }
+h1, h2, h3 { line-height: 1.2; }
+ol, ul { padding-left: 22px; }
+.meta { color: var(--muted); }
+.turn { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; }
+.turn:first-of-type { border-top: 0; padding-top: 0; margin-top: 0; }
+.fragment { background: #f3efe5; padding: 10px; border-radius: 10px; margin: 8px 0; }
+.sr-note { color: var(--muted); font-size: 0.95rem; }
+</style>
+</head>
+<body>
+<a class="skip" href="#session-main">Skip to learner session</a>
+<main id="session-main" aria-label="Didactopus learner session">
+<section aria-labelledby="session-title">
+<h1 id="session-title">Didactopus Learner Session</h1>
+<p class="sr-note">This page is structured for keyboard and screen-reader use. It presents the learner goal, study plan, grounded source fragments, and conversation turns in reading order.</p>
+<p><strong>Learner goal:</strong> Help me understand how Shannon entropy leads into channel capacity and thermodynamic entropy.</p>
+</section>
+<section aria-labelledby="study-plan-title">
+<h2 id="study-plan-title">Study Plan</h2>
+<ol>
+<li>
+<h3>Independent Reasoning and Careful Comparison</h3>
+<p><strong>Status:</strong> mastered</p>
+<p><strong>Prerequisites:</strong> Course Notes and Reference Texts</p>
+<p><strong>Supporting lessons:</strong> Independent Reasoning and Careful Comparison</p>
+<p><strong>Grounding fragments:</strong></p>
+<ul>
+<li><div class="fragment"><strong>Independent Reasoning and Careful Comparison</strong> (lesson_body)<br>- Objective: Explain why the course requires precise comparison of related but non-identical concepts.
+- Exercise: Write a short note distinguishing Shannon entropy, channel capacity, and thermodynamic entropy.
+The syllabus framing implies a style of work where analogy is useful but dangerous when used loosely. Learners must compare models carefully, state assumptions, and notice where similar mathematics does not imply identical interpretation.</div></li>
+<li><div class="fragment"><strong>Independent Reasoning and Careful Comparison</strong> (objective)<br>Explain why the course requires precise comparison of related but non-identical concepts.</div></li>
+</ul>
+</li>
+<li>
+<h3>Thermodynamics and Entropy</h3>
+<p><strong>Status:</strong> mastered</p>
+<p><strong>Prerequisites:</strong> Cryptography and Information Hiding</p>
+<p><strong>Supporting lessons:</strong> Thermodynamics and Entropy</p>
+<p><strong>Grounding fragments:</strong></p>
+<ul>
+<li><div class="fragment"><strong>Thermodynamics and Entropy</strong> (lesson_body)<br>- Objective: Explain how thermodynamic entropy relates to, and differs from, Shannon entropy.
+- Exercise: Compare the two entropy notions and identify what is preserved across the analogy.
+The course uses entropy as a bridge concept between communication theory and physics while insisting on careful interpretation.</div></li>
+<li><div class="fragment"><strong>Thermodynamics and Entropy</strong> (objective)<br>Explain how thermodynamic entropy relates to, and differs from, Shannon entropy.</div></li>
+</ul>
+</li>
+<li>
+<h3>Shannon Entropy</h3>
+<p><strong>Status:</strong> mastered</p>
+<p><strong>Prerequisites:</strong> Counting and Probability</p>
+<p><strong>Supporting lessons:</strong> Shannon Entropy</p>
+<p><strong>Grounding fragments:</strong></p>
+<ul>
+<li><div class="fragment"><strong>Shannon Entropy</strong> (lesson_body)<br>- Objective: Explain Shannon entropy as a measure of uncertainty and compare high-entropy and low-entropy sources.
+- Exercise: Compute the entropy of a Bernoulli source and interpret the result.
+The course then introduces entropy as a quantitative measure of uncertainty for a source model and uses it to reason about representation cost and surprise.</div></li>
+<li><div class="fragment"><strong>Shannon Entropy</strong> (objective)<br>Explain Shannon entropy as a measure of uncertainty and compare high-entropy and low-entropy sources.</div></li>
+</ul>
+</li>
+</ol>
+</section>
+<section aria-labelledby="conversation-title">
+<h2 id="conversation-title">Conversation</h2>
+<article class="turn" aria-label="Conversation turn">
+<h3>Learner Goal</h3>
+<p class="meta">Role: user</p>
+<p>Help me understand how Shannon entropy leads into channel capacity and thermodynamic entropy.</p>
+</article>
+<article class="turn" aria-label="Conversation turn">
+<h3>Didactopus Mentor</h3>
+<p class="meta">Role: assistant</p>
+<p>[stubbed-response] [mentor] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons</p>
+</article>
+<article class="turn" aria-label="Conversation turn">
+<h3>Didactopus Practice Designer</h3>
+<p class="meta">Role: assistant</p>
+<p>[stubbed-response] [practice] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons</p>
+</article>
+<article class="turn" aria-label="Conversation turn">
+<h3>Learner Submission</h3>
+<p class="meta">Role: user</p>
+<p>Entropy measures uncertainty because more possible outcomes require more information to describe, but one limitation is that thermodynamic entropy is not identical to Shannon entropy.</p>
+</article>
+<article class="turn" aria-label="Conversation turn">
+<h3>Didactopus Evaluator</h3>
+<p class="meta">Role: assistant</p>
+<p>[stubbed-response] [evaluator] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons</p>
+</article>
+<article class="turn" aria-label="Conversation turn">
+<h3>Didactopus Mentor</h3>
+<p class="meta">Role: assistant</p>
+<p>[stubbed-response] [mentor] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons</p>
+</article>
+</section>
+<section aria-labelledby="evaluation-title">
+<h2 id="evaluation-title">Evaluation Summary</h2>
+<p><strong>Verdict:</strong> needs_revision</p>
+<p><strong>Aggregated dimensions:</strong> {&quot;correctness&quot;: 0.6000000000000001, &quot;critique&quot;: 0.6499999999999999, &quot;explanation&quot;: 0.85}</p>
+<p><strong>Follow-up:</strong> Rework the answer so it states the equality/relationship explicitly and explains why it matters.</p>
+</section>
+</main>
+</body>
+</html>

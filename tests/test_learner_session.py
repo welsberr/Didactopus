@@ -35,5 +35,7 @@ def test_run_learner_session_demo_writes_output(tmp_path: Path) -> None:
     )
 
     assert (tmp_path / "session.json").exists()
+    assert (tmp_path / "session.html").exists()
+    assert (tmp_path / "session.txt").exists()
     assert payload["practice_task"]
     assert payload["evaluation"]["aggregated"]

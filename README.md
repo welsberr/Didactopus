@@ -30,6 +30,8 @@ Then open:
 
 - `examples/ocw-information-entropy-run/learner_progress.html`
 - `examples/ocw-information-entropy-session.json`
+- `examples/ocw-information-entropy-session.html`
+- `examples/ocw-information-entropy-session.txt`
 - `examples/ocw-information-entropy-skill-demo/skill_demo.md`
 - `examples/ocw-information-entropy-rolemesh-transcript/rolemesh_transcript.md`
 - `skills/ocw-information-entropy-agent/`
@@ -38,6 +40,7 @@ That gives you:
 
 - a generated topic pack
 - a graph-grounded mentor/practice/evaluator learner session
+- accessible HTML and text-first learner-session outputs
 - a visible learning path
 - progress artifacts
 - a reusable skill grounded in the exported knowledge
@@ -181,6 +184,11 @@ That demo builds a graph-grounded session from the MIT OCW skill bundle and emit
 - a recommended next step
 
 The point of this module is architectural as much as demonstrational: it is the session core that future accessibility, model-benchmark, and voice-interaction work should build on.
+
+The learner-session demo also writes accessible companion outputs:
+
+- `examples/ocw-information-entropy-session.html`
+- `examples/ocw-information-entropy-session.txt`
 
 The first benchmark harness for that session core is now:
 
@@ -441,6 +449,7 @@ What remains heuristic or lightweight:
 ## Recommended Reading
 
 - [docs/roadmap.md](docs/roadmap.md)
+- [docs/learner-accessibility.md](docs/learner-accessibility.md)
 - [docs/local-model-benchmark.md](docs/local-model-benchmark.md)
 - [docs/course-to-pack.md](docs/course-to-pack.md)
 - [docs/learning-graph.md](docs/learning-graph.md)
