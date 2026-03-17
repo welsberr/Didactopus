@@ -26,7 +26,9 @@ For a new MIT OCW-derived example, mirror the existing pattern:
 
 ```text
 examples/<course-slug>/
-  course-source.md
+  didactopus-course.yaml
+  course/
+    ...
   sources.yaml
 ```
 
@@ -88,6 +90,7 @@ Harder candidates:
 
 The MIT OCW Information and Entropy demo is the reference implementation of this pattern:
 
-- source file: `examples/ocw-information-entropy/6-050j-information-and-entropy.md`
+- course manifest: `examples/ocw-information-entropy/didactopus-course.yaml`
+- source tree: `examples/ocw-information-entropy/course/`
 - source inventory: `examples/ocw-information-entropy/sources.yaml`
 - generated pack: `domain-packs/mit-ocw-information-entropy/`

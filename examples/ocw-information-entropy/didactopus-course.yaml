@@ -1,0 +1,8 @@
+course_id: mit-ocw-information-entropy
+display_name: MIT OCW Information and Entropy
+source_dir: course
+source_inventory: sources.yaml
+license_family: CC BY-NC-SA 4.0
+generated_pack_dir: ../../domain-packs/mit-ocw-information-entropy
+generated_run_dir: ../../examples/ocw-information-entropy-run
+generated_skill_dir: ../../skills/ocw-information-entropy-agent

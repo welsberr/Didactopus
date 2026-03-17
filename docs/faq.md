@@ -37,6 +37,7 @@ Run:
 ```bash
 pip install -e .
 python -m didactopus.ocw_information_entropy_demo
+python -m didactopus.learner_session_demo
 python -m didactopus.ocw_progress_viz
 python -m didactopus.ocw_skill_agent_demo
 ```
@@ -44,6 +45,7 @@ python -m didactopus.ocw_skill_agent_demo
 That gives you, with minimal setup:
 
 - a generated topic pack
+- a graph-grounded mentor/practice/evaluator learner session
 - a guided curriculum path
 - a learner progress view
 - a capability export
@@ -117,6 +119,27 @@ Right now the value is in:
 - generating reusable skill context for future tutoring or evaluation
 
 The deterministic demos show the shape of a mentor workflow, and the RoleMesh transcript path shows the same pattern with a live local-LLM-backed learner role.
+
+## What is the new learner-session demo?
+
+It is the current graph-grounded mentor-loop backbone.
+
+Run:
+
+```bash
+python -m didactopus.learner_session_demo
+```
+
+That demo loads the MIT OCW skill bundle, retrieves grounded concept neighborhoods and source fragments, and emits a single learner session containing:
+
+- a learner goal
+- mentor guidance
+- a practice task
+- learner submission
+- evaluator feedback
+- a next-step recommendation
+
+This is the backend shape the repository should now treat as the base for future accessibility, benchmarking, and voice-interaction work.
 
 ## How should I use it if I am taking a course and do not want to hire a tutor?
 
@@ -208,6 +231,7 @@ QA is heuristic: coverage alignment, evaluator alignment, path quality, semantic
 
 Start with:
 
+- `docs/roadmap.md`
 - `README.md`
 - `docs/course-to-pack.md`
 - `docs/learning-graph.md`

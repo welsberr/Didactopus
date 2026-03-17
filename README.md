@@ -21,6 +21,7 @@ If you only want the shortest path to "show me Didactopus helping someone learn,
 ```bash
 pip install -e .
 python -m didactopus.ocw_information_entropy_demo
+python -m didactopus.learner_session_demo
 python -m didactopus.ocw_progress_viz
 python -m didactopus.ocw_skill_agent_demo
 ```
@@ -28,6 +29,7 @@ python -m didactopus.ocw_skill_agent_demo
 Then open:
 
 - `examples/ocw-information-entropy-run/learner_progress.html`
+- `examples/ocw-information-entropy-session.json`
 - `examples/ocw-information-entropy-skill-demo/skill_demo.md`
 - `examples/ocw-information-entropy-rolemesh-transcript/rolemesh_transcript.md`
 - `skills/ocw-information-entropy-agent/`
@@ -35,6 +37,7 @@ Then open:
 That gives you:
 
 - a generated topic pack
+- a graph-grounded mentor/practice/evaluator learner session
 - a visible learning path
 - progress artifacts
 - a reusable skill grounded in the exported knowledge
@@ -67,6 +70,7 @@ python -m didactopus.ocw_information_entropy_demo
 3. Render the learner progress views:
 
 ```bash
+python -m didactopus.learner_session_demo
 python -m didactopus.ocw_progress_viz
 python -m didactopus.ocw_progress_viz --full-map
 ```
@@ -88,6 +92,7 @@ What you get:
 - a domain pack for the topic
 - a guided curriculum path
 - a deterministic learner run over that path
+- a graph-grounded learner session with mentor, practice, evaluation, and next-step turns
 - a capability export
 - a reusable skill bundle
 - visual progress artifacts
@@ -158,6 +163,24 @@ Instead of only reading notes, you can get:
 - reusable skill outputs for future tutoring or evaluation
 
 In the best case, that makes learning feel more like active skill-building and less like either passive consumption or answer outsourcing.
+
+### Current learner-session backbone
+
+The main mentor-style backend now has a dedicated demo entry point:
+
+```bash
+python -m didactopus.learner_session_demo
+```
+
+That demo builds a graph-grounded session from the MIT OCW skill bundle and emits:
+
+- a learner goal
+- a grounded mentor response
+- a practice prompt
+- evaluator feedback
+- a recommended next step
+
+The point of this module is architectural as much as demonstrational: it is the session core that future accessibility, model-benchmark, and voice-interaction work should build on.
 
 ## What Is In This Repository
 
@@ -409,6 +432,7 @@ What remains heuristic or lightweight:
 
 ## Recommended Reading
 
+- [docs/roadmap.md](docs/roadmap.md)
 - [docs/course-to-pack.md](docs/course-to-pack.md)
 - [docs/learning-graph.md](docs/learning-graph.md)
 - [docs/agentic-learner-loop.md](docs/agentic-learner-loop.md)

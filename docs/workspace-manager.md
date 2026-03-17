@@ -13,6 +13,8 @@ Without a workspace layer, users have to manually track:
 
 The current code reduces that friction by giving review work a registry and import lifecycle.
 
+For course-repository workflows, review export can also target a checked-out course repo's generated pack directory, so the reviewed pack lands back inside the course repository rather than in an unrelated ad hoc folder.
+
 ## Current implementation
 
 `didactopus.workspace_manager.WorkspaceManager` currently supports:
@@ -49,3 +51,11 @@ The review bridge server exposes workspace operations through local HTTP endpoin
 - import draft pack
 
 These endpoints are used to connect ingestion outputs to the review workflow without manual file shuffling.
+
+## Course-repo targeting
+
+If a course is managed as its own repository with `didactopus-course.yaml`, promoted-pack export can target that repository directly. The current review export layer exposes a helper for this pattern:
+
+- `export_promoted_pack_to_course_repo(...)`
+
+That helper resolves the repo manifest and writes the promoted pack into the repo's configured generated pack directory.

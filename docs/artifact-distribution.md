@@ -25,10 +25,13 @@ Simple packs stored under `domain-packs/` for development, examples, and curated
 ### 2. External Git repositories
 A contributor can publish a domain pack as its own Git repository and users can clone or vendor it.
 
+Didactopus can also use an external Git repository as a source-material repository rather than only as a finished pack repository. The recommended pattern is one repository per course, with a root `didactopus-course.yaml` manifest plus a local source tree and `sources.yaml`.
+
 Example patterns:
 - `didactopus-pack-statistics`
 - `didactopus-pack-electronics`
 - `didactopus-pack-evolutionary-biology`
+- `didactopus-mit-ocw-6-050j`
 
 ### 3. Package index model
 Eventually, packs could be distributed through a registry or package index. A manifest should identify:

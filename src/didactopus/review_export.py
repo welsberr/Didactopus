@@ -1,6 +1,7 @@
 from __future__ import annotations
 from pathlib import Path
 import json, yaml
+from .course_repo import resolve_course_repo
 from .review_schema import ReviewSession
 
 def export_review_state_json(session: ReviewSession, path: str | Path) -> None:
@@ -32,6 +33,13 @@ def export_promoted_pack(session: ReviewSession, outdir: str | Path) -> None:
     (outdir / "concepts.yaml").write_text(yaml.safe_dump({"concepts": concepts}, sort_keys=False), encoding="utf-8")
     (outdir / "review_ledger.json").write_text(json.dumps(session.model_dump(), indent=2), encoding="utf-8")
     (outdir / "license_attribution.json").write_text(json.dumps(session.draft_pack.attribution, indent=2), encoding="utf-8")
+
+
+def export_promoted_pack_to_course_repo(session: ReviewSession, course_repo: str | Path, outdir: str | Path | None = None) -> Path:
+    resolved = resolve_course_repo(course_repo)
+    target = Path(outdir) if outdir is not None else Path(resolved.generated_pack_dir or (Path(resolved.repo_root) / "generated" / "pack"))
+    export_promoted_pack(session, target)
+    return target
 
 
 def export_review_ui_data(session: ReviewSession, outdir: str | Path) -> None:

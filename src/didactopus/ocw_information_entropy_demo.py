@@ -6,6 +6,7 @@ from pathlib import Path
 from .agentic_loop import AgenticStudentState, integrate_attempt
 from .artifact_registry import validate_pack
 from .course_ingestion_compliance import build_pack_compliance_manifest, load_sources, write_manifest
+from .course_repo import bootstrap_course_repo, resolve_course_repo
 from .document_adapters import adapt_documents
 from .evaluator_pipeline import LearnerAttempt
 from .graph_builder import build_concept_graph
@@ -134,6 +135,58 @@ def _select_target_concept(pack_name: str, concepts: list, preferred_id: str = "
     return f"{pack_name}::{ids[-1]}"
 
 
+def resolve_ocw_demo_paths(
+    root: Path,
+    course_repo: str | Path | None = None,
+    course_source: str | Path | None = None,
+    source_inventory: str | Path | None = None,
+    pack_dir: str | Path | None = None,
+    run_dir: str | Path | None = None,
+    skill_dir: str | Path | None = None,
+) -> dict[str, str]:
+    if course_repo is not None:
+        repo = resolve_course_repo(course_repo)
+        return {
+            "course_source": str(Path(course_source) if course_source is not None else Path(repo.source_dir)),
+            "source_inventory": str(Path(source_inventory) if source_inventory is not None else Path(repo.source_inventory)),
+            "pack_dir": str(Path(pack_dir) if pack_dir is not None else Path(repo.generated_pack_dir or (root / "domain-packs" / repo.course_id))),
+            "run_dir": str(Path(run_dir) if run_dir is not None else Path(repo.generated_run_dir or (root / "examples" / f"{repo.course_id}-run"))),
+            "skill_dir": str(Path(skill_dir) if skill_dir is not None else Path(repo.generated_skill_dir or (root / "skills" / f"{repo.course_id}-agent"))),
+        }
+    return {
+        "course_source": str(Path(course_source) if course_source is not None else root / "examples" / "ocw-information-entropy" / "course"),
+        "source_inventory": str(Path(source_inventory) if source_inventory is not None else root / "examples" / "ocw-information-entropy" / "sources.yaml"),
+        "pack_dir": str(Path(pack_dir) if pack_dir is not None else root / "domain-packs" / "mit-ocw-information-entropy"),
+        "run_dir": str(Path(run_dir) if run_dir is not None else root / "examples" / "ocw-information-entropy-run"),
+        "skill_dir": str(Path(skill_dir) if skill_dir is not None else root / "skills" / "ocw-information-entropy-agent"),
+    }
+
+
+def bootstrap_ocw_course_repo_target(
+    target_dir: str | Path,
+    root: Path,
+    course_source: str | Path | None = None,
+    source_inventory: str | Path | None = None,
+) -> dict[str, str]:
+    source_path = Path(course_source) if course_source is not None else root / "examples" / "ocw-information-entropy" / "course"
+    inventory_path = Path(source_inventory) if source_inventory is not None else root / "examples" / "ocw-information-entropy" / "sources.yaml"
+    resolved = bootstrap_course_repo(
+        target_dir=target_dir,
+        course_id="mit-ocw-information-entropy",
+        display_name="MIT OCW Information and Entropy",
+        course_source=source_path,
+        source_inventory=inventory_path,
+        license_family="CC BY-NC-SA 4.0",
+    )
+    return {
+        "course_source": resolved.source_dir,
+        "source_inventory": resolved.source_inventory,
+        "pack_dir": resolved.generated_pack_dir or str(Path(resolved.repo_root) / "generated" / "pack"),
+        "run_dir": resolved.generated_run_dir or str(Path(resolved.repo_root) / "generated" / "run"),
+        "skill_dir": resolved.generated_skill_dir or str(Path(resolved.repo_root) / "generated" / "skill"),
+    }
+
+
 def run_ocw_information_entropy_demo(
     course_source: str | Path,
     source_inventory: str | Path,
@@ -233,34 +286,39 @@ def main() -> None:
 
     root = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description="Generate a domain pack and skill bundle from MIT OCW Information and Entropy.")
-    parser.add_argument(
-        "--course-source",
-        default=str(root / "examples" / "ocw-information-entropy" / "course"),
-    )
-    parser.add_argument(
-        "--source-inventory",
-        default=str(root / "examples" / "ocw-information-entropy" / "sources.yaml"),
-    )
-    parser.add_argument(
-        "--pack-dir",
-        default=str(root / "domain-packs" / "mit-ocw-information-entropy"),
-    )
-    parser.add_argument(
-        "--run-dir",
-        default=str(root / "examples" / "ocw-information-entropy-run"),
-    )
-    parser.add_argument(
-        "--skill-dir",
-        default=str(root / "skills" / "ocw-information-entropy-agent"),
-    )
+    parser.add_argument("--course-repo")
+    parser.add_argument("--course-repo-target")
+    parser.add_argument("--course-source")
+    parser.add_argument("--source-inventory")
+    parser.add_argument("--pack-dir")
+    parser.add_argument("--run-dir")
+    parser.add_argument("--skill-dir")
     args = parser.parse_args()
 
+    if args.course_repo_target:
+        resolved = bootstrap_ocw_course_repo_target(
+            target_dir=args.course_repo_target,
+            root=root,
+            course_source=args.course_source,
+            source_inventory=args.source_inventory,
+        )
+    else:
+        resolved = resolve_ocw_demo_paths(
+            root,
+            course_repo=args.course_repo,
+            course_source=args.course_source,
+            source_inventory=args.source_inventory,
+            pack_dir=args.pack_dir,
+            run_dir=args.run_dir,
+            skill_dir=args.skill_dir,
+        )
+
     summary = run_ocw_information_entropy_demo(
-        course_source=args.course_source,
-        source_inventory=args.source_inventory,
-        pack_dir=args.pack_dir,
-        run_dir=args.run_dir,
-        skill_dir=args.skill_dir,
+        course_source=resolved["course_source"],
+        source_inventory=resolved["source_inventory"],
+        pack_dir=resolved["pack_dir"],
+        run_dir=resolved["run_dir"],
+        skill_dir=resolved["skill_dir"],
     )
     print(json.dumps(summary, indent=2))
 

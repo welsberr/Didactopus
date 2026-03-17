@@ -8,11 +8,56 @@
     "task": "Help a learner connect Shannon entropy, channel capacity, and thermodynamic entropy.",
     "steps": [
       {
+        "concept_key": "mit-ocw-information-and-entropy::independent-reasoning-and-careful-comparison",
+        "title": "Independent Reasoning and Careful Comparison",
+        "status": "mastered",
+        "prerequisites": [
+          "mit-ocw-information-and-entropy::course-notes-and-reference-texts"
+        ],
+        "prerequisite_titles": [
+          "Course Notes and Reference Texts"
+        ],
+        "supporting_lessons": [
+          "Independent Reasoning and Careful Comparison"
+        ],
+        "source_fragments": [
+          {
+            "lesson_title": "Independent Reasoning and Careful Comparison",
+            "kind": "lesson_body",
+            "text": "- Objective: Explain why the course requires precise comparison of related but non-identical concepts.\n- Exercise: Write a short note distinguishing Shannon entropy, channel capacity, and thermodynamic entropy.\nThe syllabus framing implies a style of work where analogy is useful but dangerous when used loosely. Learners must compare models carefully, state assumptions, and notice where similar mathematics does not imply identical interpretation."
+          },
+          {
+            "lesson_title": "Independent Reasoning and Careful Comparison",
+            "kind": "objective",
+            "text": "Explain why the course requires precise comparison of related but non-identical concepts."
+          }
+        ],
+        "recommended_action": "Use Independent Reasoning and Careful Comparison as the primary teaching anchor."
+      },
+      {
         "concept_key": "mit-ocw-information-and-entropy::thermodynamics-and-entropy",
         "title": "Thermodynamics and Entropy",
         "status": "mastered",
         "prerequisites": [
           "mit-ocw-information-and-entropy::cryptography-and-information-hiding"
+        ],
+        "prerequisite_titles": [
+          "Cryptography and Information Hiding"
+        ],
+        "supporting_lessons": [
+          "Thermodynamics and Entropy"
+        ],
+        "source_fragments": [
+          {
+            "lesson_title": "Thermodynamics and Entropy",
+            "kind": "lesson_body",
+            "text": "- Objective: Explain how thermodynamic entropy relates to, and differs from, Shannon entropy.\n- Exercise: Compare the two entropy notions and identify what is preserved across the analogy.\nThe course uses entropy as a bridge concept between communication theory and physics while insisting on careful interpretation."
+          },
+          {
+            "lesson_title": "Thermodynamics and Entropy",
+            "kind": "objective",
+            "text": "Explain how thermodynamic entropy relates to, and differs from, Shannon entropy."
+          }
         ],
         "recommended_action": "Use Thermodynamics and Entropy as the primary teaching anchor."
       },
@@ -21,26 +66,44 @@
         "title": "Course Synthesis",
         "status": "review-needed",
         "prerequisites": [
-          "mit-ocw-information-and-entropy::thermodynamics-and-entropy"
+          "mit-ocw-information-and-entropy::reversible-computation-and-quantum-computation"
+        ],
+        "prerequisite_titles": [
+          "Reversible Computation and Quantum Computation"
+        ],
+        "supporting_lessons": [
+          "Course Synthesis"
+        ],
+        "source_fragments": [
+          {
+            "lesson_title": "Course Synthesis",
+            "kind": "lesson_body",
+            "text": "- Objective: Synthesize the course by connecting entropy, coding, reliability, secrecy, and physical interpretation in one coherent narrative.\n- Exercise: Produce a final study guide that links source coding, channel coding, secrecy, thermodynamic analogies, and computation.\nThe end of the course asks the learner to unify the mathematical and physical perspectives rather than treating the units as disconnected topics."
+          },
+          {
+            "lesson_title": "Course Synthesis",
+            "kind": "objective",
+            "text": "Synthesize the course by connecting entropy, coding, reliability, secrecy, and physical interpretation in one coherent narrative."
+          }
         ],
         "recommended_action": "Review prerequisites before teaching Course Synthesis."
-      },
-      {
-        "concept_key": "mit-ocw-information-and-entropy::shannon-entropy",
-        "title": "Shannon Entropy",
-        "status": "mastered",
-        "prerequisites": [
-          "mit-ocw-information-and-entropy::counting-and-probability"
-        ],
-        "recommended_action": "Use Shannon Entropy as the primary teaching anchor."
       }
     ],
     "guided_path_reference": [
-      "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy",
+      "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-course-home",
+      "mit-ocw-information-and-entropy::information-and-entropy",
+      "mit-ocw-information-and-entropy::ultimate-limits-to-communication-and-computation",
+      "mit-ocw-information-and-entropy::open-textbooks-problem-sets-and-programming-work",
+      "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "mit-ocw-information-and-entropy::prerequisites-and-mathematical-background",
+      "mit-ocw-information-and-entropy::assessment-structure",
+      "mit-ocw-information-and-entropy::course-notes-and-reference-texts",
+      "mit-ocw-information-and-entropy::independent-reasoning-and-careful-comparison",
+      "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-unit-sequence",
       "mit-ocw-information-and-entropy::counting-and-probability",
       "mit-ocw-information-and-entropy::shannon-entropy",
       "mit-ocw-information-and-entropy::mutual-information",
-      "mit-ocw-information-and-entropy::data-compression",
+      "mit-ocw-information-and-entropy::source-coding-and-compression",
       "mit-ocw-information-and-entropy::huffman-coding",
       "mit-ocw-information-and-entropy::channel-capacity",
       "mit-ocw-information-and-entropy::channel-coding",
@@ -52,8 +115,25 @@
   "explanation": {
     "concept_key": "mit-ocw-information-and-entropy::channel-capacity",
     "title": "Channel Capacity",
-    "explanation": "Channel Capacity is represented in the Information and Entropy skill as part of a progression from foundational probability ideas toward communication limits and physical interpretation. It depends on huffman-coding. The current demo learner already mastered this concept, with evaluator means {'correctness': 0.8400000000000001, 'explanation': 0.85, 'critique': 0.7999999999999999}, so the skill can use it as a stable explanation anchor.",
-    "source_description": "- Objective: Explain Channel Capacity as a limit on reliable communication over noisy channels.\n- Exercise: State why reliable transmission above capacity is impossible in the long run.\nThis lesson develops Channel Capacity, Reliable Commun"
+    "explanation": "Channel Capacity is represented in the Information and Entropy skill as part of a progression from foundational probability ideas toward communication limits and physical interpretation. It depends on Huffman Coding. It is grounded by lessons such as Channel Capacity. The current demo learner already mastered this concept, with evaluator means {'correctness': 0.8400000000000001, 'explanation': 0.85, 'critique': 0.7999999999999999}, so the skill can use it as a stable explanation anchor.",
+    "source_description": "- Objective: Explain channel capacity as a limit on reliable communication over a noisy channel.\n- Exercise: State why reliable transmission above capacity is impossible in the long run.\nThe course treats capacity as a fundamental upper bou",
+    "grounding": {
+      "supporting_lessons": [
+        "Channel Capacity"
+      ],
+      "source_fragments": [
+        {
+          "lesson_title": "Channel Capacity",
+          "kind": "lesson_body",
+          "text": "- Objective: Explain channel capacity as a limit on reliable communication over a noisy channel.\n- Exercise: State why reliable transmission above capacity is impossible in the long run.\nThe course treats capacity as a fundamental upper bound and frames noisy communication in terms of rates, inference, and uncertainty reduction."
+        },
+        {
+          "lesson_title": "Channel Capacity",
+          "kind": "objective",
+          "text": "Explain channel capacity as a limit on reliable communication over a noisy channel."
+        }
+      ]
+    }
   },
   "evaluation": {
     "concept_key": "mit-ocw-information-and-entropy::thermodynamics-and-entropy",
@@ -90,7 +170,10 @@
     ],
     "skill_reference": {
       "skill_name": "ocw-information-entropy-agent",
-      "mastered_by_demo_agent": true
+      "mastered_by_demo_agent": true,
+      "supporting_lessons": [
+        "Thermodynamics and Entropy"
+      ]
     },
     "follow_up": "Extend the answer with an explicit limitation or assumption."
   }
