@@ -182,6 +182,14 @@ That demo builds a graph-grounded session from the MIT OCW skill bundle and emit
 
 The point of this module is architectural as much as demonstrational: it is the session core that future accessibility, model-benchmark, and voice-interaction work should build on.
 
+The first benchmark harness for that session core is now:
+
+```bash
+python -m didactopus.model_bench
+```
+
+It evaluates local-model adequacy for the `mentor`, `practice`, and `evaluator` roles using the MIT OCW skill bundle as grounded context.
+
 ## What Is In This Repository
 
 - `src/didactopus/`
@@ -433,6 +441,7 @@ What remains heuristic or lightweight:
 ## Recommended Reading
 
 - [docs/roadmap.md](docs/roadmap.md)
+- [docs/local-model-benchmark.md](docs/local-model-benchmark.md)
 - [docs/course-to-pack.md](docs/course-to-pack.md)
 - [docs/learning-graph.md](docs/learning-graph.md)
 - [docs/agentic-learner-loop.md](docs/agentic-learner-loop.md)

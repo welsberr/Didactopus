@@ -1,0 +1,61 @@
+{
+  "benchmark": {
+    "name": "didactopus-local-model-adequacy",
+    "task_family": "graph-grounded-mentor-loop",
+    "provider": "stub",
+    "hardware_profile": {
+      "profile_name": "pi-minimal",
+      "cpu": "cortex-a76",
+      "ram_gb": 8.0,
+      "notes": "stub benchmark structure run"
+    }
+  },
+  "context": {
+    "skill_name": "ocw-information-entropy-agent",
+    "study_plan_task": "Help a learner connect Shannon entropy, channel capacity, and thermodynamic entropy.",
+    "primary_concept": "Independent Reasoning and Careful Comparison",
+    "secondary_concept": "Thermodynamics and Entropy"
+  },
+  "role_results": [
+    {
+      "role": "mentor",
+      "provider": "stub",
+      "model_name": "local-demo",
+      "latency_ms": 0.027,
+      "response_preview": "[stubbed-response] [mentor] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+      "adequacy_score": 0.65,
+      "adequacy_rating": "borderline",
+      "notes": [
+        "Did not ask a focused learner question."
+      ]
+    },
+    {
+      "role": "practice",
+      "provider": "stub",
+      "model_name": "local-demo",
+      "latency_ms": 0.004,
+      "response_preview": "[stubbed-response] [practice] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+      "adequacy_score": 1.0,
+      "adequacy_rating": "adequate",
+      "notes": []
+    },
+    {
+      "role": "evaluator",
+      "provider": "stub",
+      "model_name": "local-demo",
+      "latency_ms": 0.003,
+      "response_preview": "[stubbed-response] [evaluator] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+      "adequacy_score": 0.35,
+      "adequacy_rating": "inadequate",
+      "notes": [
+        "Did not acknowledge learner strengths.",
+        "Did not provide a concrete next step."
+      ]
+    }
+  ],
+  "summary": {
+    "overall_adequacy_score": 0.667,
+    "overall_adequacy_rating": "borderline",
+    "recommended_use": "Use with caution; responses should stay in review."
+  }
+}
