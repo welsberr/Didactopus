@@ -2,21 +2,82 @@
 
 ![Didactopus mascot](artwork/didactopus-mascot.png)
 
-Didactopus is a local-first Python codebase for turning educational source material into structured learning domains, evaluating learner progress against those domains, and exporting review, mastery, and skill artifacts.
+Didactopus is a local-first educational workbench for turning source material into structured learning domains, grounding tutoring and evaluation in those domains, and exporting knowledge products that other AI systems can use as a skill.
 
-Its intended use is closer to a structured mentor or self-study workbench than a "do my assignment for me" engine. The project should help learners get guidance, sequencing, feedback, and explanation without encouraging the offloading effect that comes from unstructured GenAI use.
+The short version is:
 
-At a high level, the repository does five things:
+- ingest a course, topic outline, or notes
+- build a concept graph and learning path
+- review and improve that structure
+- use it to support guided human learning
+- export grounded knowledge products for AI use
+
+## Project Description
+
+Didactopus sits between raw educational material and both human and AI learning activity.
+
+It is not meant to be a "do the assignment for me" system. Its intended role is closer to a structured mentor, pedagogy workbench, and knowledge-grounding layer. The aim is to reduce confusion, improve sequencing, and make learning more visible without encouraging answer offloading.
+
+At a high level, the repository does six things:
 
 1. Ingest source material such as Markdown, text, HTML, PDF-ish text, DOCX-ish text, and PPTX-ish text into normalized course/topic structures.
 2. Distill those structures into draft domain packs with concepts, prerequisites, roadmaps, projects, attribution, and review flags.
-3. Validate, review, and promote those draft packs through a workspace-backed review flow.
-4. Build merged learning graphs, rank next concepts, accumulate learner evidence, and export capability profiles.
-5. Demonstrate end-to-end flows, including an MIT OCW Information and Entropy demo that produces a pack, learner outputs, a reusable skill bundle, and progress visualizations.
+3. Validate, review, and promote those packs through a workspace-backed review flow.
+4. Build learning graphs, learner sessions, evidence summaries, and capability exports.
+5. Support grounded LLM-backed mentor, practice, and evaluator behavior.
+6. Export reusable knowledge products and skills from grounded learning artifacts.
+
+## Design And Teaching Philosophy
+
+Didactopus is built around a few core ideas:
+
+- learning should stay effortful for the learner
+- guidance should be structured, grounded, and inspectable
+- source material should matter more than model prior knowledge
+- explanations, critique, and next-step advice should preserve learner trust
+- local and low-cost deployment matter for access
+
+In practice, that means Didactopus tries to help with:
+
+- topic structure
+- prerequisite visibility
+- study sequencing
+- grounded explanation
+- practice design
+- evaluator feedback
+- capability and progress artifacts
+
+It explicitly tries not to become a silent answer surrogate.
+
+## Who It Is For
+
+Didactopus has several real audiences:
+
+- autodidacts who want a structured mentor scaffold for a topic
+- students who want help understanding coursework without outsourcing the work
+- instructors, tutors, and curriculum designers who want reviewable concept structures
+- technically oriented users who want local, grounded LLM support
+- libraries, labs, and other shared-resource settings that may want a more advanced local inference stack
+
+The repo currently serves the technically comfortable user best, but the design direction is broader: grounded, accessible educational support that can work for a single learner or in a shared institutional setting.
+
+## Brief Roadmap
+
+Current priorities are:
+
+1. graph-grounded learner sessions
+2. local-model adequacy benchmarking
+3. multilingual grounded learner support
+4. accessibility-first learner outputs
+5. arena-based comparison of model, prompt, and language choices
+
+The live detailed roadmap is in:
+
+- `docs/roadmap.md`
 
 ## Start Here If You Just Want To Learn
 
-If you only want the shortest path to "show me Didactopus helping someone learn," run:
+If your main question is "how quickly can this help me learn something?", start here:
 
 ```bash
 pip install -e .
@@ -33,183 +94,76 @@ Then open:
 - `examples/ocw-information-entropy-session.html`
 - `examples/ocw-information-entropy-session.txt`
 - `examples/ocw-information-entropy-skill-demo/skill_demo.md`
-- `examples/ocw-information-entropy-rolemesh-transcript/rolemesh_transcript.md`
 - `skills/ocw-information-entropy-agent/`
 
-That gives you:
+That path gives you:
 
-- a generated topic pack
-- a graph-grounded mentor/practice/evaluator learner session
-- accessible HTML and text-first learner-session outputs
-- a visible learning path
-- progress artifacts
-- a reusable skill grounded in the exported knowledge
-- a transcript showing how a local-LLM-backed learner/mentor interaction can look
+- a generated domain pack
+- a graph-grounded learner session
+- accessible HTML and text outputs
+- a visible mastery path
+- a capability export
+- a reusable grounded skill
 
 The point is not to replace your effort. The point is to give your effort structure, feedback, and momentum.
 
-If that is your use case, read the next section, `Fast Start For Impatient Autodidacts`, and skip the deeper architecture sections until you need them.
+## Basic Learner Use Case
 
-## Fast Start For Impatient Autodidacts
+The simplest Didactopus pattern for a human learner is:
 
-If your real question is "How quickly can I get this to help me learn something?", use one of these paths.
+1. Start from a topic or course source.
+2. Generate a draft pack and path quickly.
+3. Use the learner session to get explanation, practice, and feedback.
+4. Review only the obvious extraction noise.
+5. Keep learning with the grounded structure instead of starting every time from a blank prompt.
 
-### Fastest path: use the included MIT OCW demo
+For the fastest included example, use the MIT OCW Information and Entropy demo. It is the current end-to-end reference flow for:
 
-This is the shortest route to seeing the whole system work as a personal mentor scaffold.
+- course ingestion
+- graph construction
+- learner session generation
+- progress visualization
+- skill export
 
-1. Install the repo:
+## Didactopus As Pedagogy Support
 
-```bash
-pip install -e .
-```
+Didactopus is broader than a learner chat loop.
 
-2. Generate the demo pack, learner outputs, and reusable skill:
+It is also meant to support the pedagogy around learning:
+
+- building and reviewing concept structures
+- checking prerequisite logic
+- generating and comparing practice tasks
+- evaluating explanations with trust-preserving critique
+- exporting evidence and capability artifacts
+- supporting multilingual and accessible outputs
+
+This is why the repository contains review workspaces, validation flows, knowledge graphs, and capability export machinery rather than only a chat interface.
+
+## Grounded AI Learner And Skill Production
+
+Didactopus can also produce grounded knowledge products that other AI systems can use.
+
+The current repo demonstrates:
+
+- generating a grounded domain pack from MIT OCW-derived material
+- running deterministic and LLM-backed learner-style flows over that pack
+- exporting capability and artifact summaries
+- packaging those artifacts into a reusable skill bundle
+
+The key idea is that the AI skill should come from the reviewed knowledge product, not from an ungrounded prompt alone.
+
+The main demo commands are:
 
 ```bash
 python -m didactopus.ocw_information_entropy_demo
-```
-
-3. Render the learner progress views:
-
-```bash
-python -m didactopus.learner_session_demo
-python -m didactopus.ocw_progress_viz
-python -m didactopus.ocw_progress_viz --full-map
-```
-
-4. Run the "agent uses the learned skill" demo:
-
-```bash
-python -m didactopus.ocw_skill_agent_demo
-```
-
-After that, inspect:
-
-- `examples/ocw-information-entropy-run/`
-- `examples/ocw-information-entropy-skill-demo/`
-- `skills/ocw-information-entropy-agent/`
-
-What you get:
-
-- a domain pack for the topic
-- a guided curriculum path
-- a deterministic learner run over that path
-- a graph-grounded learner session with mentor, practice, evaluation, and next-step turns
-- a capability export
-- a reusable skill bundle
-- visual progress artifacts
-- an optional local-LLM learner/mentor transcript path via RoleMesh
-
-This is the best "show me why this is fun" path in the current repo.
-
-### Fast custom path: turn one markdown file into a draft learning domain
-
-If you already have notes, a syllabus, or a course outline, the lightest custom workflow is:
-
-1. Put the material in a Markdown or text file.
-2. Adapt and ingest it through the course/topic pipeline.
-3. Emit a draft pack.
-4. Review only what matters.
-
-The easiest reference for this flow is the OCW demo source tree:
-
-- `examples/ocw-information-entropy/course/`
-
-Use it as a template for your own topic, then follow the same pattern implemented in:
-
-- `didactopus.ocw_information_entropy_demo`
-
-### If you want a mentor more than a curation tool
-
-Treat Didactopus as a loop:
-
-1. Start from one topic you genuinely care about.
-2. Generate a draft pack quickly, even if it is imperfect.
-3. Keep only the concepts and progression that feel useful.
-4. Use the resulting pack and skill outputs to drive explanations, study plans, and self-checks.
-
-The important idea is not "perfect ingestion first." It is "usable learning structure fast enough that you keep going."
-
-### If you are using it alongside coursework
-
-The intended pattern is:
-
-1. Use Didactopus to clarify the topic map and prerequisites.
-2. Ask it for hints, sequencing, comparisons, and self-check prompts.
-3. Use its outputs to diagnose where you are weak.
-4. Still do the actual writing, solving, and explaining yourself.
-
-That is the difference between assisted learning and offloading. Didactopus should help you think better, not quietly substitute for your thinking.
-
-### Current friction honestly stated
-
-The lowest-friction path is the included demo. The custom path still asks you to be comfortable with:
-
-- running Python commands locally
-- editing or preparing a source file
-- accepting heuristic extraction noise
-- reviewing draft outputs before trusting them
-
-Didactopus is already good at reducing the activation energy from "pile of source material" to "coherent learning structure," but it is not yet a one-click end-user tutor product.
-
-### Why use it anyway?
-
-Because it can make learning feel more like building a visible map of mastery than passively consuming material.
-
-Instead of only reading notes, you can get:
-
-- a concept graph
-- a staged path
-- explicit prerequisites
-- evidence-aware progress artifacts
-- reusable skill outputs for future tutoring or evaluation
-
-In the best case, that makes learning feel more like active skill-building and less like either passive consumption or answer outsourcing.
-
-### Current learner-session backbone
-
-The main mentor-style backend now has a dedicated demo entry point:
-
-```bash
-python -m didactopus.learner_session_demo
 python -m didactopus.learner_session_demo --language es
-```
-
-That demo builds a graph-grounded session from the MIT OCW skill bundle and emits:
-
-- a learner goal
-- a grounded mentor response
-- a practice prompt
-- evaluator feedback
-- a recommended next step
-
-The learner-facing CLI now treats language as a first-class parameter, so the same session flow can target another output language while preserving the English source-grounding context.
-
-The point of this module is architectural as much as demonstrational: it is the session core that future accessibility, model-benchmark, and voice-interaction work should build on.
-
-The learner-session demo also writes accessible companion outputs:
-
-- `examples/ocw-information-entropy-session.html`
-- `examples/ocw-information-entropy-session.txt`
-
-The first benchmark harness for that session core is now:
-
-```bash
+python -m didactopus.ocw_skill_agent_demo
 python -m didactopus.model_bench
-```
-
-It evaluates local-model adequacy for the `mentor`, `practice`, and `evaluator` roles using the MIT OCW skill bundle as grounded context.
-
-There is also now a Didactopus-specific arena for comparing provider/model/prompt combinations:
-
-```bash
 python -m didactopus.arena --arena-spec configs/arena.example.yaml
 ```
 
-That produces rankings, a human review queue, and an optional LLM-written comparative summary for reviewer triage.
-
-### Easiest LLM setup paths
+## LLM Setup Paths
 
 If you want live LLM-backed Didactopus behavior without the complexity of RoleMesh, start with one of these:
 
@@ -217,12 +171,12 @@ If you want live LLM-backed Didactopus behavior without the complexity of RoleMe
 2. `openai_compatible` for simple hosted use
 3. `rolemesh` only if you need routing and multi-model orchestration
 
-The two low-friction starting configs are:
+Low-friction starting configs:
 
 - `configs/config.ollama.example.yaml`
 - `configs/config.openai-compatible.example.yaml`
 
-For setup details, see:
+Setup docs:
 
 - `docs/model-provider-setup.md`
 
