@@ -1,0 +1,152 @@
+{
+  "benchmark": {
+    "name": "didactopus-local-model-adequacy",
+    "task_family": "graph-grounded-mentor-loop",
+    "provider": "stub",
+    "hardware_profile": {
+      "profile_name": "unspecified-local",
+      "cpu": "unknown",
+      "ram_gb": null,
+      "notes": ""
+    }
+  },
+  "context": {
+    "skill_name": "ocw-information-entropy-agent",
+    "study_plan_task": "Help a learner connect Shannon entropy, channel capacity, and thermodynamic entropy.",
+    "primary_concept": "Independent Reasoning and Careful Comparison",
+    "secondary_concept": "Thermodynamics and Entropy",
+    "source_language": "en",
+    "output_language": "es"
+  },
+  "role_results": [
+    {
+      "role": "mentor",
+      "provider": "stub",
+      "model_name": "local-demo",
+      "latency_ms": 0.025,
+      "response_preview": "[stubbed-response] [mentor] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+      "adequacy_score": 0.52,
+      "adequacy_rating": "inadequate",
+      "grounded_score": 0.65,
+      "multilingual_score": 0.0,
+      "round_trip": {
+        "warnings": [
+          "Round-trip translation did not preserve source phrase 'entropia'.",
+          "Round-trip translation did not preserve source phrase 'capacidad del canal'.",
+          "Round-trip translation did not preserve source phrase 'entropia termodinamica'.",
+          "Round-trip translation did not preserve source phrase 'no es identica'."
+        ],
+        "summary": {
+          "source_phrase_count": 4,
+          "round_trip_warning_count": 4,
+          "drifted_phrases": [
+            "entropia",
+            "capacidad del canal",
+            "entropia termodinamica",
+            "no es identica"
+          ]
+        }
+      },
+      "notes": [
+        "Did not ask a focused learner question.",
+        "Response does not appear to be in Spanish.",
+        "Missing required multilingual term 'shannon-entropy' for language 'es'.",
+        "Missing required multilingual term 'channel-capacity' for language 'es'.",
+        "Missing required multilingual term 'thermodynamic-entropy' for language 'es'.",
+        "Missing required multilingual caveat 'shannon-vs-thermo-not-identical' for language 'es'.",
+        "Did not visibly preserve a key grounded concept term in multilingual output.",
+        "Round-trip translation did not preserve source phrase 'entropia'.",
+        "Round-trip translation did not preserve source phrase 'capacidad del canal'.",
+        "Round-trip translation did not preserve source phrase 'entropia termodinamica'.",
+        "Round-trip translation did not preserve source phrase 'no es identica'."
+      ]
+    },
+    {
+      "role": "practice",
+      "provider": "stub",
+      "model_name": "local-demo",
+      "latency_ms": 0.004,
+      "response_preview": "[stubbed-response] [practice] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+      "adequacy_score": 0.82,
+      "adequacy_rating": "adequate",
+      "grounded_score": 1.0,
+      "multilingual_score": 0.1,
+      "round_trip": {
+        "warnings": [
+          "Round-trip translation did not preserve source phrase 'entropia'.",
+          "Round-trip translation did not preserve source phrase 'capacidad del canal'.",
+          "Round-trip translation did not preserve source phrase 'entropia termodinamica'.",
+          "Round-trip translation did not preserve source phrase 'no es identica'."
+        ],
+        "summary": {
+          "source_phrase_count": 4,
+          "round_trip_warning_count": 4,
+          "drifted_phrases": [
+            "entropia",
+            "capacidad del canal",
+            "entropia termodinamica",
+            "no es identica"
+          ]
+        }
+      },
+      "notes": [
+        "Response does not appear to be in Spanish.",
+        "Missing required multilingual term 'shannon-entropy' for language 'es'.",
+        "Missing required multilingual term 'channel-capacity' for language 'es'.",
+        "Missing required multilingual term 'thermodynamic-entropy' for language 'es'.",
+        "Missing required multilingual caveat 'shannon-vs-thermo-not-identical' for language 'es'.",
+        "Round-trip translation did not preserve source phrase 'entropia'.",
+        "Round-trip translation did not preserve source phrase 'capacidad del canal'.",
+        "Round-trip translation did not preserve source phrase 'entropia termodinamica'.",
+        "Round-trip translation did not preserve source phrase 'no es identica'."
+      ]
+    },
+    {
+      "role": "evaluator",
+      "provider": "stub",
+      "model_name": "local-demo",
+      "latency_ms": 0.004,
+      "response_preview": "[stubbed-response] [evaluator] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+      "adequacy_score": 0.3,
+      "adequacy_rating": "inadequate",
+      "grounded_score": 0.35,
+      "multilingual_score": 0.1,
+      "round_trip": {
+        "warnings": [
+          "Round-trip translation did not preserve source phrase 'entropia'.",
+          "Round-trip translation did not preserve source phrase 'capacidad del canal'.",
+          "Round-trip translation did not preserve source phrase 'entropia termodinamica'.",
+          "Round-trip translation did not preserve source phrase 'no es identica'."
+        ],
+        "summary": {
+          "source_phrase_count": 4,
+          "round_trip_warning_count": 4,
+          "drifted_phrases": [
+            "entropia",
+            "capacidad del canal",
+            "entropia termodinamica",
+            "no es identica"
+          ]
+        }
+      },
+      "notes": [
+        "Did not acknowledge learner strengths.",
+        "Did not provide a concrete next step.",
+        "Response does not appear to be in Spanish.",
+        "Missing required multilingual term 'shannon-entropy' for language 'es'.",
+        "Missing required multilingual term 'channel-capacity' for language 'es'.",
+        "Missing required multilingual term 'thermodynamic-entropy' for language 'es'.",
+        "Missing required multilingual caveat 'shannon-vs-thermo-not-identical' for language 'es'.",
+        "Round-trip translation did not preserve source phrase 'entropia'.",
+        "Round-trip translation did not preserve source phrase 'capacidad del canal'.",
+        "Round-trip translation did not preserve source phrase 'entropia termodinamica'.",
+        "Round-trip translation did not preserve source phrase 'no es identica'."
+      ]
+    }
+  ],
+  "summary": {
+    "overall_adequacy_score": 0.547,
+    "overall_adequacy_rating": "inadequate",
+    "recommended_use": "Not recommended for learner-facing local deployment."
+  }
+}

@@ -8,6 +8,7 @@ import yaml
 
 from .evaluator_pipeline import CritiqueEvaluator, LearnerAttempt, RubricEvaluator, SymbolicRuleEvaluator, aggregate, run_pipeline
 from .graph_retrieval import GraphBundle, lesson_titles_for_concept, prerequisite_titles, source_fragments_for_concept
+from .multilingual_qa import load_multilingual_qa_spec
 
 
 @dataclass
@@ -21,6 +22,7 @@ class SkillContext:
     graph_bundle: GraphBundle
     capability_profile: dict
     run_summary: dict
+    multilingual_qa: dict
 
 
 def load_ocw_skill_context(skill_dir: str | Path) -> SkillContext:
@@ -54,6 +56,7 @@ def load_ocw_skill_context(skill_dir: str | Path) -> SkillContext:
         ),
         capability_profile=json.loads((run_dir / "capability_profile.json").read_text(encoding="utf-8")),
         run_summary=json.loads((run_dir / "run_summary.json").read_text(encoding="utf-8")),
+        multilingual_qa=load_multilingual_qa_spec(pack_dir),
     )
 
 

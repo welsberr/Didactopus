@@ -9,8 +9,16 @@ import yaml
 from .config import load_config
 from .language_support import response_language_instruction
 from .learner_session import _grounding_block
-from .model_bench import _adequacy_rating, _score_evaluator_response, _score_mentor_response, _score_practice_response
+from .model_bench import (
+    _adequacy_rating,
+    _multilingual_score,
+    _round_trip_phrases,
+    _score_evaluator_response,
+    _score_mentor_response,
+    _score_practice_response,
+)
 from .model_provider import ModelProvider
+from .multilingual_qa import round_trip_warning_for_phrases
 from .ocw_skill_agent_demo import build_skill_grounded_study_plan, evaluate_submission_with_skill, load_ocw_skill_context
 from .role_prompts import system_prompt_for_role_variant
 
@@ -110,7 +118,24 @@ def _run_candidate(candidate: dict, skill_dir: str | Path) -> dict:
         )
         elapsed_ms = round((perf_counter() - started) * 1000.0, 3)
         score, notes = _scorer_for_role(role)(response.text)
-        overall += score
+        multilingual_score, multilingual_notes = _multilingual_score(role, response.text, language, context.multilingual_qa)
+        combined_score = (score * 0.8) + (multilingual_score * 0.2)
+        round_trip = {"warnings": [], "summary": {"source_phrase_count": 0, "round_trip_warning_count": 0, "drifted_phrases": []}}
+        if language != "en":
+            source_phrases = _round_trip_phrases(context.multilingual_qa, language)
+            if source_phrases:
+                back_translation = provider.generate(
+                    (
+                        "Translate the following text into English as faithfully as possible, preserving technical meaning and caveats.\n\n"
+                        f"{response.text}"
+                    ),
+                    role=role,
+                    system_prompt=system_prompt_for_role_variant(role, variant),
+                    temperature=0.0,
+                    max_tokens=220,
+                ).text
+                round_trip = round_trip_warning_for_phrases(source_phrases, back_translation)
+        overall += combined_score
         role_results.append(
             {
                 "role": role,
@@ -119,10 +144,13 @@ def _run_candidate(candidate: dict, skill_dir: str | Path) -> dict:
                 "prompt_variant": variant,
                 "language": language,
                 "latency_ms": elapsed_ms,
-                "adequacy_score": round(score, 3),
-                "adequacy_rating": _adequacy_rating(score),
+                "adequacy_score": round(combined_score, 3),
+                "adequacy_rating": _adequacy_rating(combined_score),
+                "grounded_score": round(score, 3),
+                "multilingual_score": round(multilingual_score, 3),
+                "round_trip": round_trip,
                 "response_preview": response.text[:280],
-                "notes": notes,
+                "notes": [*notes, *multilingual_notes, *round_trip["warnings"]],
             }
         )
 

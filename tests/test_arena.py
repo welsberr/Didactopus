@@ -35,4 +35,6 @@ def test_run_didactopus_arena_writes_outputs(tmp_path: Path) -> None:
     queue = json.loads((tmp_path / "arena_review_queue.json").read_text(encoding="utf-8"))
     assert queue
     assert payload["ranked_candidates"][0]["language"] in {"en", "es", "fr"}
+    assert "multilingual_score" in payload["ranked_candidates"][0]["role_results"][0]
+    assert "round_trip" in payload["ranked_candidates"][0]["role_results"][0]
     assert "LLM Review Summary" in (tmp_path / "arena_report.md").read_text(encoding="utf-8")

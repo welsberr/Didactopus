@@ -5,9 +5,10 @@ from pathlib import Path
 from time import perf_counter
 
 from .config import load_config
-from .language_support import response_language_instruction
+from .language_support import language_alignment_score, response_language_instruction
 from .learner_session import _grounding_block
 from .model_provider import ModelProvider
+from .multilingual_qa import multilingual_qa_for_text, round_trip_warning_for_phrases
 from .ocw_skill_agent_demo import build_skill_grounded_study_plan, evaluate_submission_with_skill, load_ocw_skill_context
 from .role_prompts import system_prompt_for_role
 
@@ -75,6 +76,47 @@ def _adequacy_rating(score: float) -> str:
     if score >= 0.6:
         return "borderline"
     return "inadequate"
+
+
+def _multilingual_score(role: str, text: str, language: str, qa_spec: dict | None = None) -> tuple[float, list[str]]:
+    score, notes = language_alignment_score(text, language)
+    if language == "en":
+        return score, notes
+    qa_score = 1.0
+    qa_notes: list[str] = []
+    if qa_spec:
+        qa_result = multilingual_qa_for_text(qa_spec, language=language, text=text)
+        qa_notes = list(qa_result["warnings"])
+        summary = qa_result["summary"]
+        denominator = summary["required_term_count"] + summary["required_caveat_count"] + summary["forbidden_confusion_count"]
+        numerator = summary["matched_term_count"] + summary["matched_caveat_count"] + (
+            summary["forbidden_confusion_count"] - summary["confusion_hit_count"]
+        )
+        if denominator > 0:
+            qa_score = max(0.0, min(1.0, numerator / denominator))
+    role_lower = role.lower()
+    if role_lower == "mentor" and "entropy" not in text.lower():
+        qa_notes = list(qa_notes)
+        qa_notes.append("Did not visibly preserve a key grounded concept term in multilingual output.")
+        qa_score = max(0.0, qa_score - 0.2)
+    combined = (score * 0.5) + (qa_score * 0.5)
+    return combined, [*notes, *qa_notes]
+
+
+def _round_trip_phrases(qa_spec: dict | None, language: str) -> list[str]:
+    if not qa_spec or language == "en":
+        return []
+    target = (qa_spec.get("targets", {}) or {}).get(language, {}) or {}
+    phrases: list[str] = []
+    for entry in target.get("required_terms", []) or []:
+        accepted = entry.get("accepted", []) or []
+        if accepted:
+            phrases.append(str(accepted[0]))
+    for entry in target.get("required_caveats", []) or []:
+        accepted = entry.get("accepted", []) or []
+        if accepted:
+            phrases.append(str(accepted[0]))
+    return phrases[:6]
 
 
 def _hardware_profile(
@@ -163,7 +205,24 @@ def run_model_benchmark(
         )
         elapsed_ms = round((perf_counter() - started) * 1000.0, 3)
         score, notes = scorers[role](response.text)
-        adequacy_scores.append(score)
+        multilingual_score, multilingual_notes = _multilingual_score(role, response.text, language, context.multilingual_qa)
+        combined_score = (score * 0.8) + (multilingual_score * 0.2)
+        round_trip = {"warnings": [], "summary": {"source_phrase_count": 0, "round_trip_warning_count": 0, "drifted_phrases": []}}
+        if language != "en":
+            source_phrases = _round_trip_phrases(context.multilingual_qa, language)
+            if source_phrases:
+                back_translation = provider.generate(
+                    (
+                        "Translate the following text into English as faithfully as possible, preserving technical meaning and caveats.\n\n"
+                        f"{response.text}"
+                    ),
+                    role=role,
+                    system_prompt=system_prompt_for_role(role),
+                    temperature=0.0,
+                    max_tokens=220,
+                ).text
+                round_trip = round_trip_warning_for_phrases(source_phrases, back_translation)
+        adequacy_scores.append(combined_score)
         role_results.append(
             {
                 "role": role,
@@ -171,9 +230,12 @@ def run_model_benchmark(
                 "model_name": response.model_name,
                 "latency_ms": elapsed_ms,
                 "response_preview": response.text[:280],
-                "adequacy_score": round(score, 3),
-                "adequacy_rating": _adequacy_rating(score),
-                "notes": notes,
+                "adequacy_score": round(combined_score, 3),
+                "adequacy_rating": _adequacy_rating(combined_score),
+                "grounded_score": round(score, 3),
+                "multilingual_score": round(multilingual_score, 3),
+                "round_trip": round_trip,
+                "notes": [*notes, *multilingual_notes, *round_trip["warnings"]],
             }
         )
 

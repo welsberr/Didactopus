@@ -190,6 +190,7 @@ Examples:
 - Prefer role-adequate local models over chasing a single best model.
 - Keep accessibility and low-cost deployment in scope from the start, not as cleanup work.
 - Preserve provenance and license compliance as first-class constraints.
+- Advance the current roadmap without assuming abundant compute, fluent English, expert supervision, or mature learners.
 
 ## Suggested Implementation Sequence
 

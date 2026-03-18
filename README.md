@@ -49,6 +49,8 @@ In practice, that means Didactopus tries to help with:
 
 It explicitly tries not to become a silent answer surrogate.
 
+The project is also being advanced with a future-compatibility constraint: avoid choices that assume abundant compute, fluent English, expert supervision, or only mature learners. That keeps the current roadmap moving while preserving eventual usefulness for more constrained and equity-sensitive educational settings.
+
 ## Who It Is For
 
 Didactopus has several real audiences:
@@ -74,6 +76,13 @@ Current priorities are:
 The live detailed roadmap is in:
 
 - `docs/roadmap.md`
+- `docs/multilingual-qa.md`
+
+Didactopus can also generate a starter multilingual QA draft from a pack:
+
+```bash
+python -m didactopus.multilingual_qa_seed domain-packs/mit-ocw-information-entropy
+```
 
 ## Start Here If You Just Want To Learn
 

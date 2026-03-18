@@ -43,3 +43,15 @@ def test_model_benchmark_captures_response_preview_and_latency(tmp_path) -> None
         assert result["latency_ms"] >= 0.0
         assert result["response_preview"]
         assert "adequacy_score" in result
+        assert "round_trip" in result
+
+
+def test_model_benchmark_penalizes_stub_for_non_english_output(tmp_path) -> None:
+    payload = run_model_benchmark(
+        config_path="configs/config.example.yaml",
+        skill_dir="skills/ocw-information-entropy-agent",
+        out_dir=tmp_path,
+        language="es",
+    )
+    assert payload["context"]["output_language"] == "es"
+    assert any(result["multilingual_score"] < 1.0 for result in payload["role_results"])

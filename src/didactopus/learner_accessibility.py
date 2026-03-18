@@ -4,36 +4,38 @@ import html
 import json
 from pathlib import Path
 
+from .language_support import ui_text
 
 def _escape(value: object) -> str:
     return html.escape(str(value))
 
 
 def build_accessible_session_text(session: dict) -> str:
+    language = str(session.get("output_language", "en"))
     lines = [
-        "Didactopus Learner Session",
+        ui_text("didactopus_learner_session", language),
         "",
-        f"Learner goal: {session.get('goal', '')}",
-        f"Source language: {session.get('source_language', 'en')}",
-        f"Output language: {session.get('output_language', 'en')}",
+        f"{ui_text('learner_goal', language)}: {session.get('goal', '')}",
+        f"{ui_text('source_language', language)}: {session.get('source_language', 'en')}",
+        f"{ui_text('output_language', language)}: {session.get('output_language', 'en')}",
         "",
-        "Study plan:",
+        f"{ui_text('study_plan', language)}:",
     ]
     for index, step in enumerate(session.get("study_plan", {}).get("steps", []), start=1):
         lines.extend(
             [
                 f"{index}. {step.get('title', '')}",
-                f"   Status: {step.get('status', '')}",
-                f"   Prerequisites: {', '.join(step.get('prerequisite_titles', []) or ['none explicit'])}",
-                f"   Supporting lessons: {', '.join(step.get('supporting_lessons', []) or ['none listed'])}",
+                f"   {ui_text('status', language)}: {step.get('status', '')}",
+                f"   {ui_text('prerequisites', language)}: {', '.join(step.get('prerequisite_titles', []) or ['none explicit'])}",
+                f"   {ui_text('supporting_lessons', language)}: {', '.join(step.get('supporting_lessons', []) or ['none listed'])}",
             ]
         )
         for fragment in step.get("source_fragments", [])[:2]:
-            lines.append(f"   Source fragment ({fragment.get('kind', 'fragment')}): {fragment.get('text', '')}")
+            lines.append(f"   {ui_text('source_fragment', language)} ({fragment.get('kind', 'fragment')}): {fragment.get('text', '')}")
     lines.extend(
         [
             "",
-            "Conversation:",
+            f"{ui_text('conversation', language)}:",
         ]
     )
     for turn in session.get("turns", []):
@@ -47,26 +49,27 @@ def build_accessible_session_text(session: dict) -> str:
     evaluation = session.get("evaluation", {})
     lines.extend(
         [
-            "Evaluation summary:",
-            f"Verdict: {evaluation.get('verdict', '')}",
-            f"Aggregated dimensions: {json.dumps(evaluation.get('aggregated', {}), sort_keys=True)}",
-            f"Follow-up: {evaluation.get('follow_up', '')}",
+            f"{ui_text('evaluation_summary', language)}:",
+            f"{ui_text('verdict', language)}: {evaluation.get('verdict', '')}",
+            f"{ui_text('aggregated_dimensions', language)}: {json.dumps(evaluation.get('aggregated', {}), sort_keys=True)}",
+            f"{ui_text('follow_up', language)}: {evaluation.get('follow_up', '')}",
         ]
     )
     return "\n".join(lines).strip() + "\n"
 
 
 def build_accessible_session_html(session: dict) -> str:
+    language = str(session.get("output_language", "en"))
     steps = session.get("study_plan", {}).get("steps", [])
     turns = session.get("turns", [])
     evaluation = session.get("evaluation", {})
     body = [
         "<!doctype html>",
-        '<html lang="en">',
+        f'<html lang="{_escape(language)}">',
         "<head>",
         '<meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width, initial-scale=1">',
-        "<title>Didactopus Learner Session</title>",
+        f"<title>{_escape(ui_text('didactopus_learner_session', language))}</title>",
         "<style>",
         ":root { color-scheme: light; --bg: #f7f4ed; --panel: #fffdf8; --ink: #1e2b31; --muted: #53656d; --line: #d3c8b7; --accent: #155e63; }",
         "body { margin: 0; font-family: Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--ink); line-height: 1.55; }",
@@ -84,32 +87,32 @@ def build_accessible_session_html(session: dict) -> str:
         "</style>",
         "</head>",
         "<body>",
-        '<a class="skip" href="#session-main">Skip to learner session</a>',
+        f'<a class="skip" href="#session-main">{_escape(ui_text("skip_to_session", language))}</a>',
         '<main id="session-main" aria-label="Didactopus learner session">',
         '<section aria-labelledby="session-title">',
-        '<h1 id="session-title">Didactopus Learner Session</h1>',
-        '<p class="sr-note">This page is structured for keyboard and screen-reader use. It presents the learner goal, study plan, grounded source fragments, and conversation turns in reading order.</p>',
-        f"<p><strong>Learner goal:</strong> {_escape(session.get('goal', ''))}</p>",
-        f"<p><strong>Source language:</strong> {_escape(session.get('source_language', 'en'))}</p>",
-        f"<p><strong>Output language:</strong> {_escape(session.get('output_language', 'en'))}</p>",
+        f'<h1 id="session-title">{_escape(ui_text("didactopus_learner_session", language))}</h1>',
+        f'<p class="sr-note">{_escape(ui_text("screen_reader_note", language))}</p>',
+        f"<p><strong>{_escape(ui_text('learner_goal', language))}:</strong> {_escape(session.get('goal', ''))}</p>",
+        f"<p><strong>{_escape(ui_text('source_language', language))}:</strong> {_escape(session.get('source_language', 'en'))}</p>",
+        f"<p><strong>{_escape(ui_text('output_language', language))}:</strong> {_escape(session.get('output_language', 'en'))}</p>",
         "</section>",
         '<section aria-labelledby="study-plan-title">',
-        '<h2 id="study-plan-title">Study Plan</h2>',
+        f'<h2 id="study-plan-title">{_escape(ui_text("study_plan", language))}</h2>',
         '<ol>',
     ]
     for step in steps:
         body.append("<li>")
         body.append(f"<h3>{_escape(step.get('title', ''))}</h3>")
-        body.append(f"<p><strong>Status:</strong> {_escape(step.get('status', ''))}</p>")
+        body.append(f"<p><strong>{_escape(ui_text('status', language))}:</strong> {_escape(step.get('status', ''))}</p>")
         body.append(
-            f"<p><strong>Prerequisites:</strong> {_escape(', '.join(step.get('prerequisite_titles', []) or ['none explicit']))}</p>"
+            f"<p><strong>{_escape(ui_text('prerequisites', language))}:</strong> {_escape(', '.join(step.get('prerequisite_titles', []) or ['none explicit']))}</p>"
         )
         body.append(
-            f"<p><strong>Supporting lessons:</strong> {_escape(', '.join(step.get('supporting_lessons', []) or ['none listed']))}</p>"
+            f"<p><strong>{_escape(ui_text('supporting_lessons', language))}:</strong> {_escape(', '.join(step.get('supporting_lessons', []) or ['none listed']))}</p>"
         )
         fragments = step.get("source_fragments", [])[:2]
         if fragments:
-            body.append("<p><strong>Grounding fragments:</strong></p>")
+            body.append(f"<p><strong>{_escape(ui_text('grounding_fragments', language))}:</strong></p>")
             body.append("<ul>")
             for fragment in fragments:
                 body.append(
@@ -123,7 +126,7 @@ def build_accessible_session_html(session: dict) -> str:
             "</ol>",
             "</section>",
             '<section aria-labelledby="conversation-title">',
-            '<h2 id="conversation-title">Conversation</h2>',
+            f'<h2 id="conversation-title">{_escape(ui_text("conversation", language))}</h2>',
         ]
     )
     for turn in turns:
@@ -136,10 +139,10 @@ def build_accessible_session_html(session: dict) -> str:
         [
             "</section>",
             '<section aria-labelledby="evaluation-title">',
-            '<h2 id="evaluation-title">Evaluation Summary</h2>',
-            f"<p><strong>Verdict:</strong> {_escape(evaluation.get('verdict', ''))}</p>",
-            f"<p><strong>Aggregated dimensions:</strong> {_escape(json.dumps(evaluation.get('aggregated', {}), sort_keys=True))}</p>",
-            f"<p><strong>Follow-up:</strong> {_escape(evaluation.get('follow_up', ''))}</p>",
+            f'<h2 id="evaluation-title">{_escape(ui_text("evaluation_summary", language))}</h2>',
+            f"<p><strong>{_escape(ui_text('verdict', language))}:</strong> {_escape(evaluation.get('verdict', ''))}</p>",
+            f"<p><strong>{_escape(ui_text('aggregated_dimensions', language))}:</strong> {_escape(json.dumps(evaluation.get('aggregated', {}), sort_keys=True))}</p>",
+            f"<p><strong>{_escape(ui_text('follow_up', language))}:</strong> {_escape(evaluation.get('follow_up', ''))}</p>",
             "</section>",
             "</main>",
             "</body>",

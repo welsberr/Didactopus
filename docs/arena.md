@@ -84,6 +84,12 @@ The arena currently writes:
 - `arena_review_queue.json`
 - `arena_report.md`
 
+When a candidate sets a non-English `language`, the arena now also tracks a heuristic `multilingual_score` alongside the grounded behavior score. This is meant to catch obvious failures where a model ignores the requested output language or drops key grounded terms.
+
+If the pack provides `multilingual_qa.yaml`, the arena also uses that spec to check required terms, required caveats, and forbidden confusions for the target language.
+
+For non-English candidates, the arena now also records round-trip warnings by back-translating outputs into English and checking whether required source phrases remain recoverable.
+
 ## Human Review Position
 
 The LLM review summary should be treated as initial triage support only.

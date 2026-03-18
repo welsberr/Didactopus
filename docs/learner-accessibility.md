@@ -26,6 +26,7 @@ The HTML output is meant to be screen-reader-friendly and keyboard-friendly:
 - semantic headings
 - reading-order sections for study plan, conversation, and evaluation
 - grounded source fragments rendered as ordinary text instead of only visual diagrams
+- deterministic learner-facing labels localized for supported output languages
 
 The plain-text output is a linearized learner-session transcript that is suitable for:
 

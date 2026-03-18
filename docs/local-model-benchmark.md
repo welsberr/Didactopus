@@ -89,6 +89,15 @@ The current heuristic scoring asks whether each role does the right kind of work
 
 This is deliberately narrower than a general-purpose benchmark. Didactopus cares about trustworthy learner guidance, not maximal generic fluency.
 
+When `--language` is set to a non-English value, the benchmark now also applies a heuristic multilingual check:
+
+- does the response appear to actually be in the target language?
+- does it still preserve key grounded concept terms and caveats?
+
+If the pack provides `multilingual_qa.yaml`, the benchmark also applies per-pack preservation checks from that spec.
+
+For non-English runs, the benchmark now also records a round-trip warning layer by back-translating role outputs into English and checking whether required source phrases are still recoverable. This is a warning-oriented signal, not a proof of correctness.
+
 ## Interpreting Ratings
 
 - `adequate`

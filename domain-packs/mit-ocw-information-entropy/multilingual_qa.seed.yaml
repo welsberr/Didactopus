@@ -1,0 +1,60 @@
+source_language: en
+generated_by: didactopus.multilingual_qa_seed
+review_status: draft-seed
+targets:
+  es:
+    required_terms: &id001
+    - id: mit-ocw-6-050j-information-and-entropy-course-home
+      accepted:
+      - MIT OCW 6.050J Information and Entropy Course Home
+    - id: information-and-entropy
+      accepted:
+      - Information and Entropy
+    - id: ultimate-limits-to-communication-and-computation
+      accepted:
+      - Ultimate Limits to Communication and Computation
+    - id: open-textbooks-problem-sets-and-programming-work
+      accepted:
+      - Open Textbooks, Problem Sets, and Programming Work
+    - id: mit-ocw-6-050j-information-and-entropy-syllabus
+      accepted:
+      - MIT OCW 6.050J Information and Entropy Syllabus
+    - id: prerequisites-and-mathematical-background
+      accepted:
+      - Prerequisites and Mathematical Background
+    - id: assessment-structure
+      accepted:
+      - Assessment Structure
+    - id: course-notes-and-reference-texts
+      accepted:
+      - Course Notes and Reference Texts
+    - id: independent-reasoning-and-careful-comparison
+      accepted:
+      - Independent Reasoning and Careful Comparison
+    - id: mit-ocw-6-050j-information-and-entropy-unit-sequence
+      accepted:
+      - MIT OCW 6.050J Information and Entropy Unit Sequence
+    - id: counting-and-probability
+      accepted:
+      - Counting and Probability
+    - id: shannon-entropy
+      accepted:
+      - Shannon Entropy
+    required_caveats: &id002
+    - id: thermodynamics-and-entropy
+      accepted:
+      - Objective Explain how thermodynamic entropy relates to, and differs from,
+        Shannon entropy. Exercise Compare the two entropy notions and identify what
+        is preserved across the analogy. The course uses entropy as a bridge concept
+        between communication theory and physics while insisting on careful interpretation.
+    forbidden_confusions: &id003
+    - id: thermodynamics-and-entropy-confusion
+      patterns:
+      - Objective Explain how thermodynamic entropy relates to, and is identical to,
+        Shannon entropy. Exercise Compare the two entropy notions and identify what
+        is preserved across the analogy. The course uses entropy as a bridge concept
+        between communication theory and physics while insisting on careful interpretation.
+  fr:
+    required_terms: *id001
+    required_caveats: *id002
+    forbidden_confusions: *id003

@@ -30,9 +30,23 @@ def test_accessible_session_text_is_linearized() -> None:
     assert "Learner goal:" in text
     assert "Source language:" in text
     assert "Output language:" in text
-    assert "Study plan:" in text
+    assert "Study Plan:" in text
     assert "Conversation:" in text
-    assert "Evaluation summary:" in text
+    assert "Evaluation Summary:" in text
+
+
+def test_accessible_session_outputs_localize_fixed_labels() -> None:
+    root = Path(__file__).resolve().parents[1]
+    payload = run_learner_session_demo(
+        root / "configs" / "config.example.yaml",
+        root / "skills" / "ocw-information-entropy-agent",
+        language="es",
+    )
+    html = build_accessible_session_html(payload)
+    text = build_accessible_session_text(payload)
+    assert "Sesion de aprendizaje de Didactopus" in html
+    assert "Plan de estudio" in html
+    assert "Objetivo del aprendiz:" in text
 
 
 def test_render_accessible_session_outputs_writes_files(tmp_path: Path) -> None:
