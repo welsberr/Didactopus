@@ -20,10 +20,14 @@ targets:
   es:
     required_terms:
       - id: shannon-entropy
+        round_trip_required: true
+        round_trip_source: "Shannon entropy"
         accepted:
           - "entropía de shannon"
     required_caveats:
       - id: shannon-vs-thermo-not-identical
+        round_trip_required: true
+        round_trip_source: "Shannon entropy is not identical to thermodynamic entropy"
         accepted:
           - "no es idéntica"
     forbidden_confusions:
@@ -31,6 +35,8 @@ targets:
         patterns:
           - "es idéntica a la entropía termodinámica"
 ```
+
+Use `round_trip_source` for the reviewer-approved source-language phrase that should remain recoverable after back-translation. That is better than using the first target-language phrase mechanically.
 
 ## Starter Generation
 
@@ -47,6 +53,29 @@ The generated `multilingual_qa.seed.yaml` is not meant for immediate trust. It i
 - multi-word concept titles as draft required terms
 - likely caveat candidates from grounded source fragments
 - likely forbidden confusions derived from negated caveat language
+
+## Promotion Tooling
+
+Didactopus can now promote selected seed entries into a curated spec:
+
+```bash
+python -m didactopus.multilingual_qa_review \
+  --seed domain-packs/mit-ocw-information-entropy/multilingual_qa.seed.yaml \
+  --out domain-packs/mit-ocw-information-entropy/multilingual_qa.yaml \
+  --language es \
+  --required-term-id shannon-entropy \
+  --required-term-id channel-capacity \
+  --required-caveat-id shannon-vs-thermo-not-identical \
+  --forbidden-confusion-id shannon-equals-thermodynamic-entropy \
+  --canonical-round-trip-id shannon-entropy \
+  --canonical-round-trip-id shannon-vs-thermo-not-identical
+```
+
+This is meant to reduce manual editing by letting a reviewer:
+
+- choose which seed entries to keep
+- mark which entries should drive canonical round-trip checks
+- merge selected entries into the curated `multilingual_qa.yaml`
 
 ## What It Checks
 

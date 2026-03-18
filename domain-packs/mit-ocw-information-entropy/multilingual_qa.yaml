@@ -3,21 +3,29 @@ targets:
   es:
     required_terms:
       - id: shannon-entropy
+        round_trip_required: true
+        round_trip_source: "Shannon entropy"
         accepted:
           - "entropia"
           - "entropía"
           - "entropia de shannon"
           - "entropía de shannon"
       - id: channel-capacity
+        round_trip_required: true
+        round_trip_source: "channel capacity"
         accepted:
           - "capacidad del canal"
           - "capacidad de canal"
       - id: thermodynamic-entropy
+        round_trip_required: true
+        round_trip_source: "thermodynamic entropy"
         accepted:
           - "entropia termodinamica"
           - "entropía termodinámica"
     required_caveats:
       - id: shannon-vs-thermo-not-identical
+        round_trip_required: true
+        round_trip_source: "Shannon entropy is not identical to thermodynamic entropy"
         accepted:
           - "no es identica"
           - "no es idéntica"
@@ -34,18 +42,26 @@ targets:
   fr:
     required_terms:
       - id: shannon-entropy
+        round_trip_required: true
+        round_trip_source: "Shannon entropy"
         accepted:
           - "entropie"
           - "entropie de shannon"
       - id: channel-capacity
+        round_trip_required: true
+        round_trip_source: "channel capacity"
         accepted:
           - "capacite du canal"
           - "capacité du canal"
       - id: thermodynamic-entropy
+        round_trip_required: true
+        round_trip_source: "thermodynamic entropy"
         accepted:
           - "entropie thermodynamique"
     required_caveats:
       - id: shannon-vs-thermo-not-identical
+        round_trip_required: true
+        round_trip_source: "Shannon entropy is not identical to thermodynamic entropy"
         accepted:
           - "n'est pas identique"
           - "ne sont pas identiques"

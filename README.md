@@ -84,6 +84,12 @@ Didactopus can also generate a starter multilingual QA draft from a pack:
 python -m didactopus.multilingual_qa_seed domain-packs/mit-ocw-information-entropy
 ```
 
+and promote selected seed entries into a curated multilingual QA spec:
+
+```bash
+python -m didactopus.multilingual_qa_review --seed domain-packs/mit-ocw-information-entropy/multilingual_qa.seed.yaml --out domain-packs/mit-ocw-information-entropy/multilingual_qa.yaml --language es --required-term-id shannon-entropy
+```
+
 ## Start Here If You Just Want To Learn
 
 If your main question is "how quickly can this help me learn something?", start here:

@@ -8,7 +8,7 @@ from .config import load_config
 from .language_support import language_alignment_score, response_language_instruction
 from .learner_session import _grounding_block
 from .model_provider import ModelProvider
-from .multilingual_qa import multilingual_qa_for_text, round_trip_warning_for_phrases
+from .multilingual_qa import multilingual_qa_for_text, round_trip_source_phrases, round_trip_warning_for_phrases
 from .ocw_skill_agent_demo import build_skill_grounded_study_plan, evaluate_submission_with_skill, load_ocw_skill_context
 from .role_prompts import system_prompt_for_role
 
@@ -106,17 +106,7 @@ def _multilingual_score(role: str, text: str, language: str, qa_spec: dict | Non
 def _round_trip_phrases(qa_spec: dict | None, language: str) -> list[str]:
     if not qa_spec or language == "en":
         return []
-    target = (qa_spec.get("targets", {}) or {}).get(language, {}) or {}
-    phrases: list[str] = []
-    for entry in target.get("required_terms", []) or []:
-        accepted = entry.get("accepted", []) or []
-        if accepted:
-            phrases.append(str(accepted[0]))
-    for entry in target.get("required_caveats", []) or []:
-        accepted = entry.get("accepted", []) or []
-        if accepted:
-            phrases.append(str(accepted[0]))
-    return phrases[:6]
+    return round_trip_source_phrases(qa_spec, language=language)[:6]
 
 
 def _hardware_profile(

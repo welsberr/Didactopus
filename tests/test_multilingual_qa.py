@@ -4,6 +4,7 @@ from didactopus.multilingual_qa import (
     load_multilingual_qa_spec,
     multilingual_qa_for_pack,
     multilingual_qa_for_text,
+    round_trip_source_phrases,
     round_trip_warning_for_phrases,
 )
 
@@ -50,3 +51,11 @@ def test_round_trip_warning_for_phrases_flags_drift() -> None:
     )
     assert result["summary"]["round_trip_warning_count"] == 1
     assert result["summary"]["drifted_phrases"] == ["channel capacity"]
+
+
+def test_round_trip_source_phrases_use_canonical_source_text() -> None:
+    spec = load_multilingual_qa_spec("domain-packs/mit-ocw-information-entropy")
+    phrases = round_trip_source_phrases(spec, language="es")
+    assert "Shannon entropy" in phrases
+    assert "channel capacity" in phrases
+    assert "Shannon entropy is not identical to thermodynamic entropy" in phrases

@@ -76,6 +76,31 @@ def multilingual_qa_for_pack(source_dir: str | Path, *, language: str, text: str
     return multilingual_qa_for_text(spec, language=language, text=text)
 
 
+def round_trip_source_phrases(spec: dict, *, language: str) -> list[str]:
+    targets = spec.get("targets", {}) or {}
+    target = targets.get(language, {}) or {}
+    phrases: list[str] = []
+    for section in ("required_terms", "required_caveats"):
+        for entry in target.get(section, []) or []:
+            preferred = entry.get("round_trip_source")
+            if preferred:
+                phrases.append(str(preferred))
+            elif entry.get("round_trip_required"):
+                accepted = entry.get("accepted", []) or []
+                if accepted:
+                    phrases.append(str(accepted[0]))
+    if phrases:
+        return phrases
+
+    # Backward-compatible fallback for older specs with no explicit round-trip fields.
+    for section in ("required_terms", "required_caveats"):
+        for entry in target.get(section, []) or []:
+            accepted = entry.get("accepted", []) or []
+            if accepted:
+                phrases.append(str(accepted[0]))
+    return phrases
+
+
 def round_trip_warning_for_phrases(
     source_phrases: list[str],
     back_translated_text: str,
