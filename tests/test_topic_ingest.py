@@ -1,5 +1,7 @@
+import json
 from pathlib import Path
 from didactopus.document_adapters import adapt_document
+from didactopus.document_adapters import adapt_documents
 from didactopus.topic_ingest import document_to_course, build_topic_bundle, merge_courses_into_topic_course, extract_concept_candidates
 
 
@@ -60,3 +62,41 @@ def test_extract_concepts_retains_lessons_but_filters_generic_terms(tmp_path: Pa
     assert "MIT OCW 6.050J Information and Entropy: Syllabus" in titles
     assert "Explain" not in titles
     assert "Channel Capacity" in titles
+
+
+def test_adapt_documents_from_doclift_bundle(tmp_path: Path) -> None:
+    bundle = tmp_path / "bundle"
+    doc_dir = bundle / "documents" / "lesson-a"
+    doc_dir.mkdir(parents=True)
+    (bundle / "manifest.json").write_text(
+        json.dumps(
+            {
+                "documents": [
+                    {
+                        "title": "Lecture 1. Example",
+                        "document_kind": "lecture",
+                        "output_dir": str(doc_dir),
+                        "layout_path": str(doc_dir / "document.layout.json"),
+                        "tables_path": str(doc_dir / "document.tables.json"),
+                        "figures_path": str(doc_dir / "document.figures.json"),
+                        "table_count": 1,
+                        "figure_reference_count": 0,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    (doc_dir / "document.md").write_text("# Lecture 1. Example\n\n## Module\n### Lesson A\nBody.", encoding="utf-8")
+    (doc_dir / "document.layout.json").write_text("[]", encoding="utf-8")
+    (doc_dir / "document.tables.json").write_text(json.dumps({"source_path": "/tmp/source.doc", "tables": []}), encoding="utf-8")
+    (doc_dir / "document.figures.json").write_text(json.dumps({"source_path": "/tmp/source.doc", "figure_references": []}), encoding="utf-8")
+
+    docs = adapt_documents(bundle)
+
+    assert len(docs) == 1
+    assert docs[0].source_type == "doclift_bundle"
+    assert docs[0].title == "Lecture 1. Example"
+    assert docs[0].metadata["document_kind"] == "lecture"
+    assert docs[0].metadata["doclift_bundle"] is True
+    assert docs[0].source_path == "/tmp/source.doc"

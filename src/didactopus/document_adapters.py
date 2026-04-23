@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import re
 from .course_schema import NormalizedDocument, Section
@@ -29,6 +30,12 @@ def _simple_section_split(text: str) -> list[Section]:
 
 def read_textish(path: str | Path) -> str:
     return Path(path).read_text(encoding="utf-8")
+
+
+def _safe_read_json(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def adapt_markdown(path: str | Path) -> NormalizedDocument:
@@ -108,8 +115,62 @@ def adapt_pptx(path: str | Path) -> NormalizedDocument:
     )
 
 
+def is_doclift_bundle(path: str | Path) -> bool:
+    base = Path(path)
+    if not base.is_dir():
+        return False
+    manifest_path = base / "manifest.json"
+    documents_dir = base / "documents"
+    return manifest_path.exists() and documents_dir.exists()
+
+
+def adapt_doclift_bundle(path: str | Path) -> list[NormalizedDocument]:
+    base = Path(path)
+    manifest = _safe_read_json(base / "manifest.json")
+    by_output_dir = {
+        Path(item.get("output_dir", "")).name: item
+        for item in manifest.get("documents", [])
+        if isinstance(item, dict) and item.get("output_dir")
+    }
+    docs: list[NormalizedDocument] = []
+    for doc_dir in sorted(child for child in (base / "documents").iterdir() if child.is_dir()):
+        markdown_path = doc_dir / "document.md"
+        if not markdown_path.exists():
+            continue
+        text = markdown_path.read_text(encoding="utf-8")
+        sections = _simple_section_split(text)
+        bundle_meta = by_output_dir.get(doc_dir.name, {})
+        figures_payload = _safe_read_json(doc_dir / "document.figures.json")
+        tables_payload = _safe_read_json(doc_dir / "document.tables.json")
+        source_path = figures_payload.get("source_path") or tables_payload.get("source_path") or str(markdown_path)
+        docs.append(
+            NormalizedDocument(
+                source_path=str(source_path),
+                source_type="doclift_bundle",
+                title=str(bundle_meta.get("title") or _title_from_path(doc_dir.name)),
+                text=text,
+                sections=sections,
+                metadata={
+                    "doclift_bundle": True,
+                    "bundle_root": str(base),
+                    "bundle_document_dir": str(doc_dir),
+                    "bundle_markdown_path": str(markdown_path),
+                    "document_kind": bundle_meta.get("document_kind", "document"),
+                    "layout_path": bundle_meta.get("layout_path", str(doc_dir / "document.layout.json")),
+                    "tables_path": bundle_meta.get("tables_path", str(doc_dir / "document.tables.json")),
+                    "figures_path": bundle_meta.get("figures_path", str(doc_dir / "document.figures.json")),
+                    "table_count": bundle_meta.get("table_count", 0),
+                    "figure_reference_count": bundle_meta.get("figure_reference_count", 0),
+                },
+            )
+        )
+    return docs
+
+
 def detect_adapter(path: str | Path) -> str:
     p = Path(path)
+    if is_doclift_bundle(p):
+        return "doclift_bundle"
     suffix = p.suffix.lower()
     if suffix == ".md":
         return "markdown"
@@ -128,11 +189,13 @@ def detect_adapter(path: str | Path) -> str:
 
 def is_supported_document(path: str | Path) -> bool:
     p = Path(path)
-    return p.is_file() and detect_adapter(p) in {"markdown", "text", "html", "pdf", "docx", "pptx"}
+    return detect_adapter(p) in {"markdown", "text", "html", "pdf", "docx", "pptx", "doclift_bundle"} and (p.is_file() or p.is_dir())
 
 
 def adapt_documents(path: str | Path) -> list[NormalizedDocument]:
     p = Path(path)
+    if is_doclift_bundle(p):
+        return adapt_doclift_bundle(p)
     if p.is_dir():
         docs = [adapt_document(child) for child in sorted(p.rglob("*")) if is_supported_document(child)]
         return docs
@@ -141,6 +204,11 @@ def adapt_documents(path: str | Path) -> list[NormalizedDocument]:
 
 def adapt_document(path: str | Path) -> NormalizedDocument:
     adapter = detect_adapter(path)
+    if adapter == "doclift_bundle":
+        docs = adapt_doclift_bundle(path)
+        if not docs:
+            raise ValueError(f"No documents found in doclift bundle {path}")
+        return docs[0]
     if adapter == "markdown":
         return adapt_markdown(path)
     if adapter == "html":
