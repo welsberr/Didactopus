@@ -1,0 +1,13 @@
+{
+  "source_path": "legacy/lecture-1.doc",
+  "tables": [
+    {
+      "table_id": "table-1",
+      "caption": "Example table",
+      "rows": [
+        ["Column A", "Column B"],
+        ["1", "2"]
+      ]
+    }
+  ]
+}

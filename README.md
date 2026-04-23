@@ -140,6 +140,26 @@ For the fastest included example, use the MIT OCW Information and Entropy demo. 
 - progress visualization
 - skill export
 
+## `doclift` Bundle Ingestion
+
+When your source material starts as legacy office documents, the intended
+boundary is:
+
+1. `doclift` normalizes the source tree into a bundle.
+2. `Didactopus` turns that bundle into a draft pack and learning path.
+3. `GroundRecall` can import the same bundle directly when you need canonical
+   knowledge storage instead of a learner pack.
+
+Example:
+
+```bash
+doclift convert-dir /path/to/legacy-course /tmp/doclift-bundle --asset-root /path/to/legacy-course
+didactopus doclift-bundle /tmp/doclift-bundle /tmp/didactopus-pack --course-title "Example Course"
+```
+
+That command writes the normal draft-pack outputs plus a
+`doclift_bundle_summary.json` file that records the bundle-to-pack conversion.
+
 ## Didactopus As Pedagogy Support
 
 Didactopus is broader than a learner chat loop.
