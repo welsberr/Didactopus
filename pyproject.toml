@@ -16,6 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
+didactopus = "didactopus.main:main"
 didactopus-api = "didactopus.api:main"
 
 [tool.setuptools.packages.find]

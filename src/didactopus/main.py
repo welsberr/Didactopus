@@ -1,16 +1,18 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
 from .config import load_config
+from .doclift_bundle_demo import run_doclift_bundle_demo
 from .review_loader import load_draft_pack
 from .review_schema import ReviewSession, ReviewAction
 from .review_actions import apply_action
 from .review_export import export_review_state_json, export_promoted_pack, export_review_ui_data
 
 
-def build_parser() -> argparse.ArgumentParser:
+def build_review_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Didactopus interactive review workflow scaffold")
     parser.add_argument("--draft-pack", required=True, help="Path to draft pack directory")
     parser.add_argument("--output-dir", default="review-output")
@@ -18,8 +20,25 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main() -> None:
-    args = build_parser().parse_args()
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Didactopus command-line tools")
+    subparsers = parser.add_subparsers(dest="command")
+
+    review_parser = subparsers.add_parser("review", help="Run the interactive review workflow scaffold")
+    review_parser.add_argument("--draft-pack", required=True, help="Path to draft pack directory")
+    review_parser.add_argument("--output-dir", default="review-output")
+    review_parser.add_argument("--config", default="configs/config.example.yaml")
+
+    doclift_parser = subparsers.add_parser("doclift-bundle", help="Generate a draft pack from a doclift bundle")
+    doclift_parser.add_argument("bundle_dir")
+    doclift_parser.add_argument("pack_dir")
+    doclift_parser.add_argument("--course-title", required=True)
+    doclift_parser.add_argument("--author", default="doclift bundle import")
+    doclift_parser.add_argument("--license-name", default="See source bundle metadata")
+    return parser
+
+
+def run_review_workflow(args: argparse.Namespace) -> None:
     config = load_config(Path(args.config))
     draft = load_draft_pack(args.draft_pack)
     session = ReviewSession(reviewer=config.review.default_reviewer, draft_pack=draft)
@@ -53,3 +72,27 @@ def main() -> None:
     print(f"Concepts: {len(session.draft_pack.concepts)}")
     print(f"Ledger entries: {len(session.ledger)}")
     print(f"Output dir: {outdir}")
+
+
+def main() -> None:
+    argv = sys.argv[1:]
+    if not argv or argv[0].startswith("-"):
+        args = build_review_parser().parse_args(argv)
+        run_review_workflow(args)
+        return
+
+    args = build_parser().parse_args(argv)
+    if args.command == "review":
+        run_review_workflow(args)
+        return
+    if args.command == "doclift-bundle":
+        summary = run_doclift_bundle_demo(
+            bundle_dir=args.bundle_dir,
+            course_title=args.course_title,
+            pack_dir=args.pack_dir,
+            author=args.author,
+            license_name=args.license_name,
+        )
+        print(summary)
+        return
+    build_parser().print_help()
