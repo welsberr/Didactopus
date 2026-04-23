@@ -38,6 +38,15 @@ def _safe_read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _resolve_bundle_path(base: Path, value: str | Path | None, fallback: Path) -> Path:
+    if value is None or value == "":
+        return fallback
+    path = Path(value)
+    if path.is_absolute():
+        return path
+    return base / path
+
+
 def adapt_markdown(path: str | Path) -> NormalizedDocument:
     text = read_textish(path)
     return NormalizedDocument(
@@ -140,9 +149,14 @@ def adapt_doclift_bundle(path: str | Path) -> list[NormalizedDocument]:
         text = markdown_path.read_text(encoding="utf-8")
         sections = _simple_section_split(text)
         bundle_meta = by_output_dir.get(doc_dir.name, {})
-        figures_payload = _safe_read_json(doc_dir / "document.figures.json")
-        tables_payload = _safe_read_json(doc_dir / "document.tables.json")
-        source_path = figures_payload.get("source_path") or tables_payload.get("source_path") or str(markdown_path)
+        layout_path = _resolve_bundle_path(base, bundle_meta.get("layout_path"), doc_dir / "document.layout.json")
+        tables_path = _resolve_bundle_path(base, bundle_meta.get("tables_path"), doc_dir / "document.tables.json")
+        figures_path = _resolve_bundle_path(base, bundle_meta.get("figures_path"), doc_dir / "document.figures.json")
+        figures_payload = _safe_read_json(figures_path)
+        tables_payload = _safe_read_json(tables_path)
+        source_path = figures_payload.get("source_path") or tables_payload.get("source_path") or markdown_path.relative_to(base).as_posix()
+        relative_doc_dir = doc_dir.relative_to(base).as_posix()
+        relative_markdown_path = markdown_path.relative_to(base).as_posix()
         docs.append(
             NormalizedDocument(
                 source_path=str(source_path),
@@ -152,13 +166,14 @@ def adapt_doclift_bundle(path: str | Path) -> list[NormalizedDocument]:
                 sections=sections,
                 metadata={
                     "doclift_bundle": True,
-                    "bundle_root": str(base),
-                    "bundle_document_dir": str(doc_dir),
-                    "bundle_markdown_path": str(markdown_path),
+                    "bundle_root": ".",
+                    "bundle_document_dir": relative_doc_dir,
+                    "bundle_markdown_path": relative_markdown_path,
                     "document_kind": bundle_meta.get("document_kind", "document"),
-                    "layout_path": bundle_meta.get("layout_path", str(doc_dir / "document.layout.json")),
-                    "tables_path": bundle_meta.get("tables_path", str(doc_dir / "document.tables.json")),
-                    "figures_path": bundle_meta.get("figures_path", str(doc_dir / "document.figures.json")),
+                    "source_path_kind": figures_payload.get("source_path_kind") or tables_payload.get("source_path_kind") or bundle_meta.get("source_path_kind", "source_root_relative"),
+                    "layout_path": bundle_meta.get("layout_path", layout_path.relative_to(base).as_posix()),
+                    "tables_path": bundle_meta.get("tables_path", tables_path.relative_to(base).as_posix()),
+                    "figures_path": bundle_meta.get("figures_path", figures_path.relative_to(base).as_posix()),
                     "table_count": bundle_meta.get("table_count", 0),
                     "figure_reference_count": bundle_meta.get("figure_reference_count", 0),
                 },

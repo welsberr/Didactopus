@@ -75,10 +75,10 @@ def test_adapt_documents_from_doclift_bundle(tmp_path: Path) -> None:
                     {
                         "title": "Lecture 1. Example",
                         "document_kind": "lecture",
-                        "output_dir": str(doc_dir),
-                        "layout_path": str(doc_dir / "document.layout.json"),
-                        "tables_path": str(doc_dir / "document.tables.json"),
-                        "figures_path": str(doc_dir / "document.figures.json"),
+                        "output_dir": "documents/lesson-a",
+                        "layout_path": "documents/lesson-a/document.layout.json",
+                        "tables_path": "documents/lesson-a/document.tables.json",
+                        "figures_path": "documents/lesson-a/document.figures.json",
                         "table_count": 1,
                         "figure_reference_count": 0,
                     }
@@ -89,8 +89,8 @@ def test_adapt_documents_from_doclift_bundle(tmp_path: Path) -> None:
     )
     (doc_dir / "document.md").write_text("# Lecture 1. Example\n\n## Module\n### Lesson A\nBody.", encoding="utf-8")
     (doc_dir / "document.layout.json").write_text("[]", encoding="utf-8")
-    (doc_dir / "document.tables.json").write_text(json.dumps({"source_path": "/tmp/source.doc", "tables": []}), encoding="utf-8")
-    (doc_dir / "document.figures.json").write_text(json.dumps({"source_path": "/tmp/source.doc", "figure_references": []}), encoding="utf-8")
+    (doc_dir / "document.tables.json").write_text(json.dumps({"source_path": "raw/source.doc", "source_path_kind": "source_root_relative", "tables": []}), encoding="utf-8")
+    (doc_dir / "document.figures.json").write_text(json.dumps({"source_path": "raw/source.doc", "source_path_kind": "source_root_relative", "figure_references": []}), encoding="utf-8")
 
     docs = adapt_documents(bundle)
 
@@ -99,4 +99,6 @@ def test_adapt_documents_from_doclift_bundle(tmp_path: Path) -> None:
     assert docs[0].title == "Lecture 1. Example"
     assert docs[0].metadata["document_kind"] == "lecture"
     assert docs[0].metadata["doclift_bundle"] is True
-    assert docs[0].source_path == "/tmp/source.doc"
+    assert docs[0].source_path == "raw/source.doc"
+    assert docs[0].metadata["bundle_markdown_path"] == "documents/lesson-a/document.md"
+    assert docs[0].metadata["source_path_kind"] == "source_root_relative"
