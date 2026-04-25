@@ -140,6 +140,31 @@ For the fastest included example, use the MIT OCW Information and Entropy demo. 
 - progress visualization
 - skill export
 
+## Learner Workbench Pilot
+
+Didactopus now also includes a learner-workbench pilot in the web UI.
+
+The current split is:
+
+- review workbench for candidate triage, synthesis, and promotion
+- learner workbench pilot for guided study and reflective revision
+
+The learner-workbench pilot currently uses the `Evidence Trail` sample pack and
+focuses on:
+
+- question framing
+- observation versus interpretation
+- source comparison
+- bibliography growth
+- revision under uncertainty
+
+The backend entrypoint for that pilot is `POST /api/learner-workbench/session`.
+The frontend pilot pack payload is [evidence-trail-pack.json](/home/netuser/bin/Didactopus/webui/public/packs/evidence-trail-pack.json), and the underlying pack lives in [domain-packs/evidence-trail](/home/netuser/bin/Didactopus/domain-packs/evidence-trail).
+
+This is still a pilot rather than the final learner UX. It is best understood as
+the first integrated learner-workbench path inside the main repository, not as a
+finished replacement for the existing learner-session demos.
+
 ## `doclift` Bundle Ingestion
 
 When your source material starts as legacy office documents, the intended

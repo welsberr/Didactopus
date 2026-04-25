@@ -87,7 +87,7 @@ Target features:
 
 ### 5. Learner workbench UI
 
-Status: planned
+Status: pilot in progress
 
 Why important:
 
@@ -102,6 +102,23 @@ Target features:
 - active practice task
 - evaluator feedback
 - recommended next step
+
+Current pilot state:
+
+- a backend learner-workbench path exists in `didactopus.learner_workbench`
+- the API exposes `POST /api/learner-workbench/session`
+- the web UI now has a launcher that separates review workbench from learner workbench
+- the first pilot pack exists at `domain-packs/evidence-trail/`
+- the frontend can load a static learner-pack payload from `webui/public/packs/evidence-trail-pack.json`
+- the current pilot explicitly emphasizes question framing, observation versus interpretation, uncertainty, and revision
+
+Next steps:
+
+- connect the learner-workbench pilot more directly to the standard learner-session backend
+- persist learner-workbench state instead of treating each step as a stateless interaction
+- ground the pilot more deeply in source fragments instead of mostly pack-level structure
+- decide which scientific-virtues framing belongs in the stable learner path versus remaining pilot-specific
+- document a simple local run path for using the learner workbench outside ad hoc development
 
 ### 6. Adaptive diagnostics and practice refinement
 
@@ -195,8 +212,9 @@ Examples:
 ## Suggested Implementation Sequence
 
 1. Strengthen `didactopus.learner_session` into the standard session backend.
-2. Build a small model-benchmark harness around that backend.
-3. Add accessible learner HTML and text-first outputs.
-4. Add local TTS and STT support to the same session flow.
-5. Expand adaptive practice and diagnostics.
-6. Improve review, impact analysis, and incremental update support.
+2. Fold the learner-workbench pilot into that backend without losing its stronger study-state framing.
+3. Build a small model-benchmark harness around the unified learner backend.
+4. Add accessible learner HTML and text-first outputs.
+5. Add local TTS and STT support to the same session flow.
+6. Expand adaptive practice and diagnostics.
+7. Improve review, impact analysis, and incremental update support.
