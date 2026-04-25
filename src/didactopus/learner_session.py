@@ -27,6 +27,16 @@ def _grounding_block(step: dict) -> str:
     return "\n".join(lines)
 
 
+def _scientific_virtues_block() -> str:
+    return (
+        "Scientific virtues operating guidance:\n"
+        "- Distinguish observation from interpretation.\n"
+        "- Preserve uncertainty where the evidence does not settle the issue.\n"
+        "- Treat revision as progress when better evidence changes the conclusion.\n"
+        "- Prefer source-grounded comparison over unsupported confidence."
+    )
+
+
 def _generate_role_text(
     provider: ModelProvider,
     *,
@@ -71,9 +81,10 @@ def build_graph_grounded_session(
     mentor_prompt = (
         f"{_grounding_block(primary)}\n\n"
         f"{_grounding_block(secondary)}\n\n"
+        f"{_scientific_virtues_block()}\n\n"
         f"Learner goal: {learner_goal}\n"
         "Respond as Didactopus mentor. Give a short grounded orientation, explain why these concepts come first, "
-        "and ask one focused question that keeps the learner doing the reasoning."
+        "ask one focused question that keeps the learner doing the reasoning, and explicitly separate what should be observed from what should be interpreted."
     )
     mentor_text = _generate_role_text(
         provider,
@@ -87,8 +98,10 @@ def build_graph_grounded_session(
 
     practice_prompt = (
         f"{_grounding_block(primary)}\n\n"
+        f"{_scientific_virtues_block()}\n\n"
         f"Learner goal: {learner_goal}\n"
-        "Create one reasoning-heavy practice task for the learner. Keep it grounded in the supporting lessons and do not provide the full solution."
+        "Create one reasoning-heavy practice task for the learner. Keep it grounded in the supporting lessons, do not provide the full solution, "
+        "and require the learner to identify observation, interpretation, and one condition that would justify revision."
     )
     practice_text = _generate_role_text(
         provider,
@@ -103,10 +116,12 @@ def build_graph_grounded_session(
     evaluation = evaluate_submission_with_skill(context, primary["concept_key"].split("::", 1)[-1], learner_submission)
     evaluator_prompt = (
         f"{_grounding_block(primary)}\n\n"
+        f"{_scientific_virtues_block()}\n\n"
         f"Practice task: {practice_text}\n"
         f"Learner submission: {learner_submission}\n"
         f"Deterministic evaluator result: verdict={evaluation['verdict']}, aggregated={evaluation['aggregated']}\n"
-        "Respond as Didactopus evaluator. Summarize strengths, real gaps, and one next revision target without pretending supported caveats are missing."
+        "Respond as Didactopus evaluator. Summarize strengths, real gaps, and one next revision target without pretending supported caveats are missing. "
+        "Reward honest uncertainty, careful source-grounded distinction between observation and interpretation, and justified revision."
     )
     evaluator_text = _generate_role_text(
         provider,
@@ -121,8 +136,10 @@ def build_graph_grounded_session(
     next_step_prompt = (
         f"{_grounding_block(primary)}\n\n"
         f"{_grounding_block(secondary)}\n\n"
+        f"{_scientific_virtues_block()}\n\n"
         f"Evaluator feedback: {evaluator_text}\n"
-        "Respond as Didactopus mentor. Give the next study action and explain why it follows from the grounded concept path."
+        "Respond as Didactopus mentor. Give the next study action, explain why it follows from the grounded concept path, "
+        "and state what new evidence or comparison would most help the learner revise or strengthen the current view."
     )
     next_step_text = _generate_role_text(
         provider,

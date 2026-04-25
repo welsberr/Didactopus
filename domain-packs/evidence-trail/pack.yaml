@@ -1,0 +1,23 @@
+name: evidence-trail
+display_name: Evidence Trail
+version: 0.1.0-draft
+schema_version: '1'
+didactopus_min_version: 0.1.0
+didactopus_max_version: 0.9.99
+description: Draft evo-edu-aligned pack for guided independent study through question framing, source comparison, bibliography growth, and reflective revision.
+author: Wesley R. Elsberry
+license: CC BY-NC-SA 4.0
+audience_level: self-learner
+dependencies: []
+overrides: []
+profile_templates: {}
+cross_pack_links: []
+supporting_artifacts:
+  - pack_compliance_manifest.json
+first_session_headline: Start with one question, one source trail, and one explicit revision.
+first_session_body: Begin with a focused question, compare model output and source material carefully, then record what changed in your understanding and why.
+first_session_checklist:
+  - State the question you are trying to answer.
+  - Compare one model observation with one cited source or species account.
+  - Write one interpretation and one uncertainty.
+  - Record what evidence would make you revise your current view.

@@ -1,0 +1,70 @@
+{
+  "id": "evidence-trail",
+  "title": "Evidence Trail",
+  "subtitle": "Draft evo-edu-aligned pack for guided independent study through question framing, source comparison, bibliography growth, and reflective revision.",
+  "level": "self-learner",
+  "concepts": [
+    {
+      "id": "question-framing",
+      "title": "Question Framing",
+      "prerequisites": [],
+      "masteryDimension": "mastery",
+      "exerciseReward": "Question Framing progress recorded"
+    },
+    {
+      "id": "observation-vs-interpretation",
+      "title": "Observation Versus Interpretation",
+      "prerequisites": [
+        "question-framing"
+      ],
+      "masteryDimension": "mastery",
+      "exerciseReward": "Observation Versus Interpretation progress recorded"
+    },
+    {
+      "id": "source-comparison",
+      "title": "Source Comparison",
+      "prerequisites": [
+        "observation-vs-interpretation"
+      ],
+      "masteryDimension": "mastery",
+      "exerciseReward": "Source Comparison progress recorded"
+    },
+    {
+      "id": "bibliography-growth",
+      "title": "Bibliography Growth",
+      "prerequisites": [
+        "source-comparison"
+      ],
+      "masteryDimension": "mastery",
+      "exerciseReward": "Bibliography Growth progress recorded"
+    },
+    {
+      "id": "revision-under-uncertainty",
+      "title": "Revision Under Uncertainty",
+      "prerequisites": [
+        "bibliography-growth"
+      ],
+      "masteryDimension": "mastery",
+      "exerciseReward": "Revision Under Uncertainty progress recorded"
+    }
+  ],
+  "onboarding": {
+    "headline": "Start with one question, one source trail, and one explicit revision.",
+    "body": "Begin with a focused question, compare model output and source material carefully, then record what changed in your understanding and why.",
+    "checklist": [
+      "State the question you are trying to answer.",
+      "Compare one model observation with one cited source or species account.",
+      "Write one interpretation and one uncertainty.",
+      "Record what evidence would make you revise your current view."
+    ]
+  },
+  "compliance": {
+    "sources": 6,
+    "attributionRequired": true,
+    "shareAlikeRequired": true,
+    "noncommercialOnly": true,
+    "flags": [
+      "derived-from-evo-edu-materials"
+    ]
+  }
+}

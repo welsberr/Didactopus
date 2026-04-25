@@ -6,7 +6,7 @@ from .db import Base, engine
 from .models import (
     LoginRequest, TokenPair, KnowledgeCandidateCreate, KnowledgeCandidateUpdate,
     ReviewCreate, PromoteRequest, SynthesisRunRequest, SynthesisPromoteRequest,
-    CreateLearnerRequest
+    CreateLearnerRequest, LearnerWorkbenchSessionRequest
 )
 from .repository import (
     authenticate_user, get_user_by_id, create_learner, learner_owned_by_user,
@@ -16,6 +16,7 @@ from .repository import (
 )
 from .auth import issue_access_token, issue_refresh_token, decode_token, new_token_id
 from .synthesis import generate_synthesis_candidates
+from .learner_workbench import build_pack_workbench_session
 
 Base.metadata.create_all(bind=engine)
 
@@ -57,6 +58,25 @@ def login(payload: LoginRequest):
 def api_create_learner(payload: CreateLearnerRequest, user = Depends(current_user)):
     create_learner(user.id, payload.learner_id, payload.display_name)
     return {"ok": True, "learner_id": payload.learner_id}
+
+
+@app.post("/api/learner-workbench/session")
+def api_learner_workbench_session(payload: LearnerWorkbenchSessionRequest):
+    try:
+        return build_pack_workbench_session(
+            pack_id=payload.pack_id,
+            concept_id=payload.concept_id,
+            learner_goal=payload.learner_goal,
+            question=payload.question,
+            observation=payload.observation,
+            interpretation=payload.interpretation,
+            uncertainty=payload.uncertainty,
+            revision_trigger=payload.revision_trigger,
+        )
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+    except KeyError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
 
 @app.post("/api/knowledge-candidates")
 def api_create_candidate(payload: KnowledgeCandidateCreate, reviewer = Depends(require_reviewer)):

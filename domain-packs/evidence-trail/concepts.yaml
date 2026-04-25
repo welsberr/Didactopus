@@ -1,0 +1,59 @@
+concepts:
+  - id: question-framing
+    title: Question Framing
+    description: >-
+      Start from a question narrow enough to investigate and revise. A good
+      study question gives the learner a way to compare evidence rather than
+      only gather disconnected facts.
+    prerequisites: []
+    mastery_signals:
+      - State a focused question that can be investigated with tools and sources.
+      - Distinguish the main question from broader background curiosity.
+    mastery_profile: {}
+  - id: observation-vs-interpretation
+    title: Observation Versus Interpretation
+    description: >-
+      Separate what the model, species account, or source actually shows from
+      the explanation you currently prefer. This distinction is necessary for
+      trustworthy revision.
+    prerequisites:
+      - question-framing
+    mastery_signals:
+      - Describe a model or source observation before drawing a conclusion.
+      - Mark which parts of an explanation are inference rather than direct observation.
+    mastery_profile: {}
+  - id: source-comparison
+    title: Source Comparison
+    description: >-
+      Compare sources by relevance, grounding, and limits rather than treating
+      all sources as equally strong. The learner should note where a source
+      supports, complicates, or fails to resolve a claim.
+    prerequisites:
+      - observation-vs-interpretation
+    mastery_signals:
+      - Explain why one source is stronger or weaker for the current question.
+      - Identify at least one unresolved conflict or limitation across sources.
+    mastery_profile: {}
+  - id: bibliography-growth
+    title: Bibliography Growth
+    description: >-
+      Extend a question through linked citations, related species records, and
+      literature trails. Bibliography growth should deepen the inquiry rather
+      than inflate the reading list without purpose.
+    prerequisites:
+      - source-comparison
+    mastery_signals:
+      - Add a useful new source that sharpens or tests the current explanation.
+      - Explain how a new citation changes the study path.
+    mastery_profile: {}
+  - id: revision-under-uncertainty
+    title: Revision Under Uncertainty
+    description: >-
+      Treat revision as a normal part of inquiry. The learner should be able to
+      state what changed, why it changed, and what uncertainty still remains.
+    prerequisites:
+      - bibliography-growth
+    mastery_signals:
+      - Write a revised explanation after comparing evidence.
+      - State one uncertainty or next evidence move instead of pretending closure.
+    mastery_profile: {}
