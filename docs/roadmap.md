@@ -22,6 +22,8 @@ Near-term scope:
 - make mentor, practice, and evaluator turns consistently source-grounded
 - improve trust-preserving feedback behavior
 - extend the session flow beyond one short interaction
+- make scientific virtues operational in the session loop by separating observation from interpretation, preserving uncertainty, and rewarding justified revision
+- replace stubbed provider output in learner-facing pilot flows with configured real model backends where available
 
 Current code anchors:
 
@@ -102,6 +104,25 @@ Target features:
 - active practice task
 - evaluator feedback
 - recommended next step
+- first external pilot should use the `evidence-trail` evo-edu pack as a learner-workbench test case
+
+Current progress:
+
+- the first external pilot pack now exists at `domain-packs/evidence-trail/`
+- `pack_to_frontend` output is generated and copied into `webui/public/packs/evidence-trail-pack.json`
+- the web UI now has a learner-workbench launcher and `Evidence Trail` pilot mode in addition to the review workbench
+- the learner pilot exposes question, observation, interpretation, uncertainty, and revision-trigger fields directly in the UI
+- scientific virtues are now reflected in the UI framing and in backend learner-session prompt construction
+- the backend now exposes `POST /api/learner-workbench/session`
+- end-to-end verification succeeded locally: the API starts, the endpoint returns structured concept/session output, and the frontend/backend contract is working
+
+Immediate next steps:
+
+- replace current stubbed mentor/practice/evaluator text with a configured real provider path
+- enrich the `Evidence Trail` pack with grounded source fragments so returned guidance is based on more than pack metadata
+- persist learner-session state instead of treating each call as a stateless step
+- connect learner progress, evidence, and revision history to the standard backend session model
+- define deployment notes for running the learner workbench against the local API outside development mode
 
 Current pilot state:
 
@@ -208,13 +229,18 @@ Examples:
 - Keep accessibility and low-cost deployment in scope from the start, not as cleanup work.
 - Preserve provenance and license compliance as first-class constraints.
 - Advance the current roadmap without assuming abundant compute, fluent English, expert supervision, or mature learners.
+- Treat scientific virtues as operational principles: encourage curiosity, honesty about evidence, skepticism toward weak claims, attentiveness to caveats, and revision when the evidence changes.
+- Separate observation from interpretation in learner-facing guidance so the system does not blur grounded support with model inference.
+- Frame revision as progress rather than as failure, especially in mentor and evaluator feedback.
 
 ## Suggested Implementation Sequence
 
 1. Strengthen `didactopus.learner_session` into the standard session backend.
 2. Fold the learner-workbench pilot into that backend without losing its stronger study-state framing.
-3. Build a small model-benchmark harness around the unified learner backend.
-4. Add accessible learner HTML and text-first outputs.
-5. Add local TTS and STT support to the same session flow.
-6. Expand adaptive practice and diagnostics.
-7. Improve review, impact analysis, and incremental update support.
+3. Replace stubbed learner-workbench provider output with a configured real model backend.
+4. Ground the `evidence-trail` pilot in richer source fragments and persisted learner state.
+5. Build a small model-benchmark harness around the unified learner backend.
+6. Add accessible learner HTML and text-first outputs.
+7. Add local TTS and STT support to the same session flow.
+8. Expand adaptive practice and diagnostics.
+9. Improve review, impact analysis, and incremental update support.

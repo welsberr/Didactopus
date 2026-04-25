@@ -37,6 +37,15 @@ Didactopus is built around a few core ideas:
 - explanations, critique, and next-step advice should preserve learner trust
 - local and low-cost deployment matter for access
 
+It should also operate under a scientific-virtues outlook. In practice that
+means Didactopus should reinforce habits such as:
+
+- curiosity about the question rather than premature closure
+- honesty about what is observed versus what is inferred
+- skepticism toward weakly supported claims, including model-generated claims
+- attentiveness to source quality, caveats, and uncertainty
+- willingness to revise when better evidence changes the picture
+
 In practice, that means Didactopus tries to help with:
 
 - topic structure
@@ -197,6 +206,14 @@ It is also meant to support the pedagogy around learning:
 - evaluating explanations with trust-preserving critique
 - exporting evidence and capability artifacts
 - supporting multilingual and accessible outputs
+
+Operationally, the scientific-virtues framing means Didactopus should:
+
+- separate observation from interpretation in learner-facing flows
+- reward justified revision rather than answer persistence
+- surface uncertainty explicitly instead of smoothing it away
+- push learners toward source comparison and evidence quality checks
+- avoid presenting confident unsupported synthesis as settled knowledge
 
 This is why the repository contains review workspaces, validation flows, knowledge graphs, and capability export machinery rather than only a chat interface.
 

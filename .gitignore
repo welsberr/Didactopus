@@ -13,3 +13,5 @@ build/
 configs/config.yaml
 tmp-*
 codex*
+ops/
+webui/node_modules/
