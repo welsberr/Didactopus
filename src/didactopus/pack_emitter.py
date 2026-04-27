@@ -71,8 +71,12 @@ def build_draft_pack(
     license_name: str,
     review_flags: list[str],
     conflicts: list[str] | None = None,
+    groundrecall_query_bundle: dict | None = None,
 ) -> DraftPack:
     pack_name = course.title.lower().replace(" ", "-")
+    supporting_artifacts = ["source_corpus.json", "knowledge_graph.json"]
+    if groundrecall_query_bundle is not None:
+        supporting_artifacts.append("groundrecall_query_bundle.json")
     pack = {
         "name": pack_name,
         "display_name": course.title,
@@ -87,7 +91,7 @@ def build_draft_pack(
         "overrides": [],
         "profile_templates": {},
         "cross_pack_links": [],
-        "supporting_artifacts": ["source_corpus.json", "knowledge_graph.json"],
+        "supporting_artifacts": supporting_artifacts,
     }
     concepts_yaml = {
         "concepts": [
@@ -134,6 +138,8 @@ def build_draft_pack(
             for src in course.source_records
         ],
     }
+    if groundrecall_query_bundle is not None:
+        attribution["groundrecall_query_bundle"] = groundrecall_query_bundle
     return DraftPack(
         pack=pack,
         concepts=concepts_yaml,
@@ -159,6 +165,11 @@ def write_draft_pack(pack: DraftPack, outdir: str | Path) -> None:
     conflict_lines = ["# Conflict Report", ""] + [f"- {flag}" for flag in pack.conflicts] if pack.conflicts else ["# Conflict Report", "", "- none"]
     (out / "conflict_report.md").write_text("\n".join(conflict_lines), encoding="utf-8")
     (out / "license_attribution.json").write_text(json.dumps(pack.attribution, indent=2), encoding="utf-8")
+    if isinstance(pack.attribution.get("groundrecall_query_bundle"), dict):
+        (out / "groundrecall_query_bundle.json").write_text(
+            json.dumps(pack.attribution["groundrecall_query_bundle"], indent=2),
+            encoding="utf-8",
+        )
 
 
 def write_source_corpus(course: NormalizedCourse, outdir: str | Path) -> None:
