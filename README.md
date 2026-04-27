@@ -194,6 +194,30 @@ didactopus doclift-bundle /tmp/doclift-bundle /tmp/didactopus-pack --course-titl
 That command writes the normal draft-pack outputs plus a
 `doclift_bundle_summary.json` file that records the bundle-to-pack conversion.
 
+If you already have a reviewed concept in `GroundRecall`, Didactopus can now
+pull a pack-ready `groundrecall_query_bundle.json` directly from a
+GroundRecall store and carry it through the same pack-generation path:
+
+```bash
+didactopus doclift-bundle-groundrecall \
+  /path/to/groundrecall-store \
+  channel-capacity \
+  /tmp/doclift-bundle \
+  /tmp/didactopus-pack \
+  --course-title "Example Course"
+```
+
+That flow:
+
+- exports `groundrecall_query_bundle.json` for the chosen concept
+- places it under the generated pack as a declared supporting artifact
+- makes the resulting pack consumable by the learner workbench with
+  GroundRecall review and graph context intact
+
+The fuller bridge workflow is documented in:
+
+- `docs/groundrecall-bridge.md`
+
 ## Didactopus As Pedagogy Support
 
 Didactopus is broader than a learner chat loop.
