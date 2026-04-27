@@ -6,6 +6,7 @@ from pathlib import Path
 
 from .config import load_config
 from .doclift_bundle_demo import run_doclift_bundle_demo
+from .groundrecall_pack_bridge import run_doclift_bundle_with_groundrecall
 from .review_loader import load_draft_pack
 from .review_schema import ReviewSession, ReviewAction
 from .review_actions import apply_action
@@ -35,6 +36,18 @@ def build_parser() -> argparse.ArgumentParser:
     doclift_parser.add_argument("--course-title", required=True)
     doclift_parser.add_argument("--author", default="doclift bundle import")
     doclift_parser.add_argument("--license-name", default="See source bundle metadata")
+
+    doclift_gr_parser = subparsers.add_parser(
+        "doclift-bundle-groundrecall",
+        help="Generate a draft pack from a doclift bundle using a GroundRecall concept query bundle",
+    )
+    doclift_gr_parser.add_argument("groundrecall_store_dir")
+    doclift_gr_parser.add_argument("groundrecall_concept_ref")
+    doclift_gr_parser.add_argument("bundle_dir")
+    doclift_gr_parser.add_argument("pack_dir")
+    doclift_gr_parser.add_argument("--course-title", required=True)
+    doclift_gr_parser.add_argument("--author", default="doclift bundle import")
+    doclift_gr_parser.add_argument("--license-name", default="See source bundle metadata")
     return parser
 
 
@@ -87,6 +100,18 @@ def main() -> None:
         return
     if args.command == "doclift-bundle":
         summary = run_doclift_bundle_demo(
+            bundle_dir=args.bundle_dir,
+            course_title=args.course_title,
+            pack_dir=args.pack_dir,
+            author=args.author,
+            license_name=args.license_name,
+        )
+        print(summary)
+        return
+    if args.command == "doclift-bundle-groundrecall":
+        summary = run_doclift_bundle_with_groundrecall(
+            groundrecall_store_dir=args.groundrecall_store_dir,
+            groundrecall_concept_ref=args.groundrecall_concept_ref,
             bundle_dir=args.bundle_dir,
             course_title=args.course_title,
             pack_dir=args.pack_dir,

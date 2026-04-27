@@ -41,6 +41,37 @@ def test_main_doclift_bundle_subcommand(monkeypatch, capsys, tmp_path: Path) -> 
     assert "Example Course" in out
 
 
+def test_main_doclift_bundle_groundrecall_subcommand(monkeypatch, capsys, tmp_path: Path) -> None:
+    captured: dict = {}
+
+    def _fake_run_doclift_bundle_with_groundrecall(**kwargs):
+        captured.update({key: str(value) for key, value in kwargs.items()})
+        return {"pack_dir": str(kwargs["pack_dir"]), "course_title": kwargs["course_title"]}
+
+    monkeypatch.setattr(main_module, "run_doclift_bundle_with_groundrecall", _fake_run_doclift_bundle_with_groundrecall)
+    monkeypatch.setattr(
+        main_module.sys,
+        "argv",
+        [
+            "didactopus",
+            "doclift-bundle-groundrecall",
+            str(tmp_path / "store"),
+            "channel-capacity",
+            str(tmp_path / "bundle"),
+            str(tmp_path / "pack"),
+            "--course-title",
+            "Example Course",
+        ],
+    )
+
+    main_module.main()
+    out = capsys.readouterr().out
+
+    assert captured["groundrecall_concept_ref"] == "channel-capacity"
+    assert captured["course_title"] == "Example Course"
+    assert "Example Course" in out
+
+
 def test_main_legacy_review_mode_uses_review_parser(monkeypatch, tmp_path: Path) -> None:
     called: dict = {}
 
