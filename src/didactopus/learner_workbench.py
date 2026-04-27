@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import yaml
@@ -17,6 +18,31 @@ def _load_yaml(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
+def _load_groundrecall_summary(pack_dir: Path) -> dict:
+    path = pack_dir / "groundrecall_query_bundle.json"
+    if not path.exists():
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    review_candidates = payload.get("review_candidates", []) or []
+    concept = payload.get("concept", {}) or {}
+    graph_codes = sorted(
+        {
+            code
+            for item in review_candidates
+            for code in item.get("finding_codes", []) or []
+            if "concept" in str(code) or "bridge" in str(code) or "component" in str(code)
+        }
+    )
+    top_rationales = [str(item.get("rationale", "")).strip() for item in review_candidates if str(item.get("rationale", "")).strip()][:3]
+    return {
+        "concept_id": concept.get("concept_id", ""),
+        "concept_title": concept.get("title", ""),
+        "review_candidate_count": len(review_candidates),
+        "graph_codes": graph_codes,
+        "top_rationales": top_rationales,
+    }
+
+
 def load_pack_context(pack_id: str) -> dict:
     pack_dir = DOMAIN_PACKS / pack_id
     if not pack_dir.exists():
@@ -24,11 +50,13 @@ def load_pack_context(pack_id: str) -> dict:
     pack = _load_yaml(pack_dir / "pack.yaml")
     concepts = (_load_yaml(pack_dir / "concepts.yaml")).get("concepts", []) or []
     by_id = {concept.get("id"): concept for concept in concepts}
+    groundrecall = _load_groundrecall_summary(pack_dir)
     return {
       "pack_dir": pack_dir,
       "pack": pack,
       "concepts": concepts,
       "by_id": by_id,
+      "groundrecall": groundrecall,
     }
 
 
@@ -53,6 +81,22 @@ def _concept_block(concept: dict, by_id: dict[str, dict]) -> str:
     if mastery_signals:
         lines.append("Mastery signals:")
         lines.extend(f"- {item}" for item in mastery_signals)
+    return "\n".join(lines)
+
+
+def _groundrecall_block(summary: dict) -> str:
+    if not summary:
+        return ""
+    lines = [
+        "GroundRecall context:",
+        f"- Query concept: {summary.get('concept_title') or summary.get('concept_id') or 'unknown'}",
+        f"- Review candidate count: {summary.get('review_candidate_count', 0)}",
+    ]
+    graph_codes = summary.get("graph_codes", []) or []
+    if graph_codes:
+        lines.append(f"- Structural signals: {', '.join(graph_codes)}")
+    for rationale in summary.get("top_rationales", []) or []:
+        lines.append(f"- Review cue: {rationale}")
     return "\n".join(lines)
 
 
@@ -128,6 +172,7 @@ def build_pack_workbench_session(
         f"Description: {pack.get('description', '')}\n"
         f"Audience level: {pack.get('audience_level', 'novice-friendly')}"
     )
+    groundrecall_block = _groundrecall_block(context.get("groundrecall", {}))
     learner_state_block = (
         f"Learner goal: {learner_goal}\n"
         f"Question: {question}\n"
@@ -142,7 +187,9 @@ def build_pack_workbench_session(
         role="mentor",
         prompt=(
             f"{pack_block}\n\n{_concept_block(concept, by_id)}\n\n{_concept_block(next_concept, by_id)}\n\n"
-            f"{_scientific_virtues_block()}\n\n{learner_state_block}\n"
+            f"{_scientific_virtues_block()}\n\n"
+            f"{groundrecall_block + chr(10) * 2 if groundrecall_block else ''}"
+            f"{learner_state_block}\n"
             "Respond as Didactopus mentor. Give a short grounded orientation, explain why this concept matters now, "
             "and ask one focused question that helps the learner distinguish observation from interpretation."
         ),
@@ -153,7 +200,9 @@ def build_pack_workbench_session(
         provider,
         role="practice",
         prompt=(
-            f"{pack_block}\n\n{_concept_block(concept, by_id)}\n\n{_scientific_virtues_block()}\n\n{learner_state_block}\n"
+            f"{pack_block}\n\n{_concept_block(concept, by_id)}\n\n{_scientific_virtues_block()}\n\n"
+            f"{groundrecall_block + chr(10) * 2 if groundrecall_block else ''}"
+            f"{learner_state_block}\n"
             "Respond as Didactopus practice designer. Create one compact task that asks for evidence comparison, honest uncertainty, and a revision condition."
         ),
         temperature=0.25,
@@ -163,7 +212,9 @@ def build_pack_workbench_session(
         provider,
         role="evaluator",
         prompt=(
-            f"{pack_block}\n\n{_concept_block(concept, by_id)}\n\n{_scientific_virtues_block()}\n\n{learner_state_block}\n"
+            f"{pack_block}\n\n{_concept_block(concept, by_id)}\n\n{_scientific_virtues_block()}\n\n"
+            f"{groundrecall_block + chr(10) * 2 if groundrecall_block else ''}"
+            f"{learner_state_block}\n"
             "Respond as Didactopus evaluator. Name strengths first, then real gaps, and give one revision target without pretending stated caveats are absent."
         ),
         temperature=0.2,
@@ -174,7 +225,9 @@ def build_pack_workbench_session(
         role="mentor",
         prompt=(
             f"{pack_block}\n\n{_concept_block(concept, by_id)}\n\n{_concept_block(next_concept, by_id)}\n\n"
-            f"{_scientific_virtues_block()}\n\nEvaluator feedback: {evaluator['text']}\n"
+            f"{_scientific_virtues_block()}\n\n"
+            f"{groundrecall_block + chr(10) * 2 if groundrecall_block else ''}"
+            f"Evaluator feedback: {evaluator['text']}\n"
             "Respond as Didactopus mentor. Give the next study action and say what new evidence or comparison would most help the learner revise or strengthen the current view."
         ),
         temperature=0.2,
@@ -188,6 +241,7 @@ def build_pack_workbench_session(
         "concept_title": concept.get("title"),
         "next_concept_id": next_concept.get("id"),
         "next_concept_title": next_concept.get("title"),
+        "groundrecall": context.get("groundrecall", {}),
         "mentor": mentor,
         "practice": practice,
         "evaluator": evaluator,
