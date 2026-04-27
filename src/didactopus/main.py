@@ -7,6 +7,7 @@ from pathlib import Path
 from .config import load_config
 from .doclift_bundle_demo import run_doclift_bundle_demo
 from .groundrecall_pack_bridge import run_doclift_bundle_with_groundrecall
+from .notebook_page import export_notebook_page_from_groundrecall_bundle
 from .review_loader import load_draft_pack
 from .review_schema import ReviewSession, ReviewAction
 from .review_actions import apply_action
@@ -48,6 +49,13 @@ def build_parser() -> argparse.ArgumentParser:
     doclift_gr_parser.add_argument("--course-title", required=True)
     doclift_gr_parser.add_argument("--author", default="doclift bundle import")
     doclift_gr_parser.add_argument("--license-name", default="See source bundle metadata")
+
+    notebook_parser = subparsers.add_parser(
+        "notebook-page",
+        help="Build a Notebook page payload from a GroundRecall query bundle",
+    )
+    notebook_parser.add_argument("groundrecall_query_bundle")
+    notebook_parser.add_argument("output_path")
     return parser
 
 
@@ -117,6 +125,13 @@ def main() -> None:
             pack_dir=args.pack_dir,
             author=args.author,
             license_name=args.license_name,
+        )
+        print(summary)
+        return
+    if args.command == "notebook-page":
+        summary = export_notebook_page_from_groundrecall_bundle(
+            args.groundrecall_query_bundle,
+            args.output_path,
         )
         print(summary)
         return

@@ -1,0 +1,113 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from didactopus.notebook_page import (
+    build_notebook_page_from_groundrecall_bundle,
+    export_notebook_page_from_groundrecall_bundle,
+)
+
+
+def _sample_bundle() -> dict:
+    return {
+        "bundle_kind": "groundrecall_query_bundle",
+        "concept": {
+            "concept_id": "concept::natural-selection",
+            "title": "Natural Selection",
+            "description": "Differential survival and reproduction.",
+            "aliases": ["selection"],
+        },
+        "relevant_claims": [
+            {"claim_id": "clm_001", "claim_text": "Selection can change trait frequencies."},
+            {"claim_id": "clm_002", "claim_text": "Selection depends on heritable variation."},
+        ],
+        "relations": [
+            {
+                "relation_id": "rel_001",
+                "source_id": "concept::variation",
+                "target_id": "concept::natural-selection",
+                "relation_type": "prerequisite",
+            },
+            {
+                "relation_id": "rel_002",
+                "source_id": "concept::natural-selection",
+                "target_id": "concept::adaptation",
+                "relation_type": "historical_successor",
+            },
+            {
+                "relation_id": "rel_003",
+                "source_id": "concept::natural-selection",
+                "target_id": "concept::common-descent",
+                "relation_type": "supports",
+            },
+        ],
+        "related_concepts": [
+            {
+                "concept_id": "concept::variation",
+                "title": "Variation",
+                "description": "Differences among individuals.",
+            },
+            {
+                "concept_id": "concept::adaptation",
+                "title": "Adaptation",
+                "description": "Traits fit to local conditions.",
+            },
+            {
+                "concept_id": "concept::common-descent",
+                "title": "Common Descent",
+                "description": "Shared ancestry of organisms.",
+            },
+        ],
+        "supporting_observations": [
+            {
+                "observation_id": "obs_001",
+                "text": "Population differences can affect survival.",
+                "origin_path": "texts/futuyma/ch1.md",
+                "grounding_status": "grounded",
+            }
+        ],
+        "source_artifacts": [
+            {
+                "artifact_id": "art_001",
+                "artifact_kind": "compiled_page",
+                "title": "Evolutionary Biology Chapter 1",
+                "path": "texts/futuyma/ch1.md",
+            }
+        ],
+        "review_candidates": [
+            {
+                "candidate_id": "concept::natural-selection",
+                "finding_codes": ["bridge_concept"],
+                "rationale": "Natural Selection | lane=conflict_resolution | priority=12 | graph=bridge_concept",
+            }
+        ],
+        "suggested_next_actions": ["Inspect supporting observations before export."],
+    }
+
+
+def test_build_notebook_page_buckets_graph_navigation() -> None:
+    page = build_notebook_page_from_groundrecall_bundle(_sample_bundle())
+
+    assert page["page_kind"] == "didactopus_notebook_page"
+    assert page["concept"]["title"] == "Natural Selection"
+    assert page["summary"]["claim_count"] == 2
+    assert page["graph_navigation"]["antecedent_concepts"][0]["title"] == "Variation"
+    assert page["graph_navigation"]["derivative_concepts"][0]["title"] == "Adaptation"
+    assert page["graph_navigation"]["closer_concepts"][0]["title"] == "Common Descent"
+    assert page["supporting_sources"][0]["supporting_observation_count"] == 1
+    assert page["review_context"]["graph_codes"] == ["bridge_concept"]
+    assert page["illustration_opportunities"]
+
+
+def test_export_notebook_page_writes_json(tmp_path: Path) -> None:
+    bundle_path = tmp_path / "groundrecall_query_bundle.json"
+    out_path = tmp_path / "notebook_page.json"
+    bundle_path.write_text(json.dumps(_sample_bundle()), encoding="utf-8")
+
+    payload = export_notebook_page_from_groundrecall_bundle(bundle_path, out_path)
+
+    assert out_path.exists()
+    assert payload["page_path"].endswith("notebook_page.json")
+    written = json.loads(out_path.read_text(encoding="utf-8"))
+    assert written["concept"]["concept_id"] == "concept::natural-selection"

@@ -96,3 +96,31 @@ def test_main_legacy_review_mode_uses_review_parser(monkeypatch, tmp_path: Path)
 
     assert called["draft_pack"] == str(tmp_path / "draft")
     assert called["output_dir"] == str(tmp_path / "out")
+
+
+def test_main_notebook_page_subcommand(monkeypatch, capsys, tmp_path: Path) -> None:
+    captured: dict = {}
+
+    def _fake_export_notebook_page_from_groundrecall_bundle(bundle_path, out_path):
+        captured["bundle_path"] = str(bundle_path)
+        captured["out_path"] = str(out_path)
+        return {"page_path": str(out_path)}
+
+    monkeypatch.setattr(main_module, "export_notebook_page_from_groundrecall_bundle", _fake_export_notebook_page_from_groundrecall_bundle)
+    monkeypatch.setattr(
+        main_module.sys,
+        "argv",
+        [
+            "didactopus",
+            "notebook-page",
+            str(tmp_path / "groundrecall_query_bundle.json"),
+            str(tmp_path / "notebook_page.json"),
+        ],
+    )
+
+    main_module.main()
+    out = capsys.readouterr().out
+
+    assert captured["bundle_path"].endswith("groundrecall_query_bundle.json")
+    assert captured["out_path"].endswith("notebook_page.json")
+    assert "page_path" in out
