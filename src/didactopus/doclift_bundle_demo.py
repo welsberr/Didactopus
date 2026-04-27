@@ -18,9 +18,11 @@ def run_doclift_bundle_demo(
     pack_dir: str | Path,
     author: str = "doclift bundle import",
     license_name: str = "See source bundle metadata",
+    groundrecall_query_bundle_path: str | Path | None = None,
 ) -> dict:
     bundle_dir = Path(bundle_dir)
     pack_dir = Path(pack_dir)
+    explicit_groundrecall_path = Path(groundrecall_query_bundle_path) if groundrecall_query_bundle_path else None
 
     docs = adapt_documents(bundle_dir)
     if not docs:
@@ -33,6 +35,7 @@ def run_doclift_bundle_demo(
     concepts = [concept for concept in concepts if concept.id in lesson_concept_ids]
     ctx = RuleContext(course=merged, concepts=concepts)
     run_rules(ctx, build_default_rules(enable_projects=False, enable_review=False))
+    groundrecall_bundle = _load_groundrecall_query_bundle(bundle_dir, explicit_groundrecall_path)
 
     draft = build_draft_pack(
         merged,
@@ -41,6 +44,7 @@ def run_doclift_bundle_demo(
         license_name=license_name,
         review_flags=ctx.review_flags,
         conflicts=[],
+        groundrecall_query_bundle=groundrecall_bundle,
     )
     write_draft_pack(draft, pack_dir)
     write_source_corpus(merged, pack_dir)
@@ -58,9 +62,26 @@ def run_doclift_bundle_demo(
         "module_count": len(merged.modules),
         "concept_count": len(ctx.concepts),
         "review_flags": list(ctx.review_flags),
+        "groundrecall_bundle_included": bool(groundrecall_bundle),
     }
     (pack_dir / "doclift_bundle_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary
+
+
+def _load_groundrecall_query_bundle(bundle_dir: Path, explicit_path: Path | None) -> dict | None:
+    candidates = []
+    if explicit_path is not None:
+        candidates.append(explicit_path)
+    candidates.extend(
+        [
+            bundle_dir / "groundrecall_query_bundle.json",
+            bundle_dir / "manifest.groundrecall_query_bundle.json",
+        ]
+    )
+    for path in candidates:
+        if path.exists():
+            return json.loads(path.read_text(encoding="utf-8"))
+    return None
 
 
 def main() -> None:
@@ -70,6 +91,7 @@ def main() -> None:
     parser.add_argument("--course-title", required=True)
     parser.add_argument("--author", default="doclift bundle import")
     parser.add_argument("--license-name", default="See source bundle metadata")
+    parser.add_argument("--groundrecall-query-bundle", default=None)
     args = parser.parse_args()
 
     summary = run_doclift_bundle_demo(
@@ -78,6 +100,7 @@ def main() -> None:
         pack_dir=args.pack_dir,
         author=args.author,
         license_name=args.license_name,
+        groundrecall_query_bundle_path=args.groundrecall_query_bundle,
     )
     print(json.dumps(summary, indent=2))
 
