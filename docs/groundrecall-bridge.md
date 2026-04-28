@@ -96,3 +96,12 @@ Run the plain `doclift` bundle conversion without GroundRecall:
 ```bash
 didactopus doclift-bundle /tmp/doclift-bundle /tmp/didactopus-pack --course-title "Example Course"
 ```
+
+Build just the Notebook page artifact from a GroundRecall concept:
+
+```bash
+didactopus notebook-page-groundrecall \
+  /path/to/groundrecall-store \
+  channel-capacity \
+  /tmp/notebook-page-export
+```

@@ -180,6 +180,17 @@ For important notebook concepts, export:
 
 - `groundrecall_query_bundle.json`
 
+If you only need the page-ready artifact for a concept, `Didactopus` now also
+has a direct wrapper that writes both the query bundle and `notebook_page.json`
+into one output directory:
+
+```bash
+didactopus notebook-page-groundrecall \
+  /path/to/groundrecall-store \
+  natural-selection \
+  /tmp/notebook-page-export
+```
+
 This becomes the handoff object for learner-facing or page-facing pack flows.
 
 Expected result:

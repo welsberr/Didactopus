@@ -214,9 +214,23 @@ That flow:
 - makes the resulting pack consumable by the learner workbench with
   GroundRecall review and graph context intact
 
+If you want just the Notebook page artifact without building a full pack, use
+the direct export wrapper:
+
+```bash
+didactopus notebook-page-groundrecall \
+  /path/to/groundrecall-store \
+  channel-capacity \
+  /tmp/notebook-page-export
+```
+
+That command writes both `groundrecall_query_bundle.json` and
+`notebook_page.json` into the output directory.
+
 The fuller bridge workflow is documented in:
 
 - `docs/groundrecall-bridge.md`
+- `docs/evo-edu-notebook-pipeline.md`
 
 ## Didactopus As Pedagogy Support
 
