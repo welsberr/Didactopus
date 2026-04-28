@@ -63,6 +63,7 @@ def run_doclift_bundle_demo(
         "concept_count": len(ctx.concepts),
         "review_flags": list(ctx.review_flags),
         "groundrecall_bundle_included": bool(groundrecall_bundle),
+        "notebook_page_included": bool(groundrecall_bundle),
     }
     (pack_dir / "doclift_bundle_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary

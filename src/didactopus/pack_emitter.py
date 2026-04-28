@@ -4,6 +4,7 @@ from pathlib import Path
 import json
 import yaml
 from .course_schema import NormalizedCourse, ConceptCandidate, DraftPack
+from .notebook_page import build_notebook_page_from_groundrecall_bundle
 
 
 def build_source_corpus(course: NormalizedCourse) -> dict:
@@ -76,7 +77,7 @@ def build_draft_pack(
     pack_name = course.title.lower().replace(" ", "-")
     supporting_artifacts = ["source_corpus.json", "knowledge_graph.json"]
     if groundrecall_query_bundle is not None:
-        supporting_artifacts.append("groundrecall_query_bundle.json")
+        supporting_artifacts.extend(["groundrecall_query_bundle.json", "notebook_page.json"])
     pack = {
         "name": pack_name,
         "display_name": course.title,
@@ -140,6 +141,7 @@ def build_draft_pack(
     }
     if groundrecall_query_bundle is not None:
         attribution["groundrecall_query_bundle"] = groundrecall_query_bundle
+        attribution["notebook_page"] = build_notebook_page_from_groundrecall_bundle(groundrecall_query_bundle)
     return DraftPack(
         pack=pack,
         concepts=concepts_yaml,
@@ -168,6 +170,11 @@ def write_draft_pack(pack: DraftPack, outdir: str | Path) -> None:
     if isinstance(pack.attribution.get("groundrecall_query_bundle"), dict):
         (out / "groundrecall_query_bundle.json").write_text(
             json.dumps(pack.attribution["groundrecall_query_bundle"], indent=2),
+            encoding="utf-8",
+        )
+    if isinstance(pack.attribution.get("notebook_page"), dict):
+        (out / "notebook_page.json").write_text(
+            json.dumps(pack.attribution["notebook_page"], indent=2),
             encoding="utf-8",
         )
 

@@ -51,5 +51,8 @@ def test_emit_pack_can_write_groundrecall_query_bundle(tmp_path: Path) -> None:
 
     pack_yaml = (tmp_path / "pack.yaml").read_text(encoding="utf-8")
     bundle_payload = (tmp_path / "groundrecall_query_bundle.json").read_text(encoding="utf-8")
+    notebook_payload = (tmp_path / "notebook_page.json").read_text(encoding="utf-8")
     assert "groundrecall_query_bundle.json" in pack_yaml
+    assert "notebook_page.json" in pack_yaml
     assert '"bundle_kind": "groundrecall_query_bundle"' in bundle_payload
+    assert '"page_kind": "didactopus_notebook_page"' in notebook_payload
