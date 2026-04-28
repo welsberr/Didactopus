@@ -8,6 +8,7 @@ from .config import load_config
 from .doclift_bundle_demo import run_doclift_bundle_demo
 from .groundrecall_pack_bridge import run_doclift_bundle_with_groundrecall
 from .notebook_page import export_notebook_page_from_groundrecall_bundle
+from .notebook_page import export_notebook_page_from_groundrecall_store
 from .review_loader import load_draft_pack
 from .review_schema import ReviewSession, ReviewAction
 from .review_actions import apply_action
@@ -56,6 +57,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     notebook_parser.add_argument("groundrecall_query_bundle")
     notebook_parser.add_argument("output_path")
+
+    notebook_gr_parser = subparsers.add_parser(
+        "notebook-page-groundrecall",
+        help="Build a Notebook page and query bundle directly from a GroundRecall concept",
+    )
+    notebook_gr_parser.add_argument("groundrecall_store_dir")
+    notebook_gr_parser.add_argument("groundrecall_concept_ref")
+    notebook_gr_parser.add_argument("output_dir")
     return parser
 
 
@@ -132,6 +141,14 @@ def main() -> None:
         summary = export_notebook_page_from_groundrecall_bundle(
             args.groundrecall_query_bundle,
             args.output_path,
+        )
+        print(summary)
+        return
+    if args.command == "notebook-page-groundrecall":
+        summary = export_notebook_page_from_groundrecall_store(
+            args.groundrecall_store_dir,
+            args.groundrecall_concept_ref,
+            args.output_dir,
         )
         print(summary)
         return

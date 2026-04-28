@@ -6,6 +6,7 @@ from pathlib import Path
 from didactopus.notebook_page import (
     build_notebook_page_from_groundrecall_bundle,
     export_notebook_page_from_groundrecall_bundle,
+    export_notebook_page_from_groundrecall_store,
 )
 
 
@@ -111,3 +112,31 @@ def test_export_notebook_page_writes_json(tmp_path: Path) -> None:
     assert payload["page_path"].endswith("notebook_page.json")
     written = json.loads(out_path.read_text(encoding="utf-8"))
     assert written["concept"]["concept_id"] == "concept::natural-selection"
+
+
+def test_export_notebook_page_from_groundrecall_store_writes_bundle_and_page(monkeypatch, tmp_path: Path) -> None:
+    captured: dict = {}
+
+    def _fake_export(store_dir, concept_ref, out_dir):
+        out_dir = Path(out_dir)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        bundle_path = out_dir / "groundrecall_query_bundle.json"
+        bundle_path.write_text(json.dumps(_sample_bundle()), encoding="utf-8")
+        captured["store_dir"] = str(store_dir)
+        captured["concept_ref"] = concept_ref
+        captured["out_dir"] = str(out_dir)
+        return {"bundle_path": str(bundle_path), "bundle": _sample_bundle()}
+
+    monkeypatch.setattr("didactopus.notebook_page._load_groundrecall_export", lambda: _fake_export)
+
+    payload = export_notebook_page_from_groundrecall_store(
+        tmp_path / "store",
+        "natural-selection",
+        tmp_path / "out",
+    )
+
+    assert captured["concept_ref"] == "natural-selection"
+    assert (tmp_path / "out" / "groundrecall_query_bundle.json").exists()
+    assert (tmp_path / "out" / "notebook_page.json").exists()
+    assert payload["concept_ref"] == "natural-selection"
+    assert payload["groundrecall_query_bundle_path"].endswith("groundrecall_query_bundle.json")

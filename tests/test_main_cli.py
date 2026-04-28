@@ -124,3 +124,33 @@ def test_main_notebook_page_subcommand(monkeypatch, capsys, tmp_path: Path) -> N
     assert captured["bundle_path"].endswith("groundrecall_query_bundle.json")
     assert captured["out_path"].endswith("notebook_page.json")
     assert "page_path" in out
+
+
+def test_main_notebook_page_groundrecall_subcommand(monkeypatch, capsys, tmp_path: Path) -> None:
+    captured: dict = {}
+
+    def _fake_export_notebook_page_from_groundrecall_store(store_dir, concept_ref, out_dir):
+        captured["store_dir"] = str(store_dir)
+        captured["concept_ref"] = concept_ref
+        captured["out_dir"] = str(out_dir)
+        return {"page_path": str(Path(out_dir) / "notebook_page.json")}
+
+    monkeypatch.setattr(main_module, "export_notebook_page_from_groundrecall_store", _fake_export_notebook_page_from_groundrecall_store)
+    monkeypatch.setattr(
+        main_module.sys,
+        "argv",
+        [
+            "didactopus",
+            "notebook-page-groundrecall",
+            str(tmp_path / "store"),
+            "natural-selection",
+            str(tmp_path / "out"),
+        ],
+    )
+
+    main_module.main()
+    out = capsys.readouterr().out
+
+    assert captured["concept_ref"] == "natural-selection"
+    assert captured["out_dir"].endswith("out")
+    assert "page_path" in out

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import sys
 from typing import Any
 
 
@@ -203,3 +204,28 @@ def export_notebook_page_from_groundrecall_bundle(bundle_path: str | Path, out_p
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(page, indent=2), encoding="utf-8")
     return {"page_path": str(target), "page": page}
+
+
+def export_notebook_page_from_groundrecall_store(
+    store_dir: str | Path,
+    concept_ref: str,
+    out_dir: str | Path,
+) -> dict[str, Any]:
+    export_groundrecall_query_bundle = _load_groundrecall_export()
+    target = Path(out_dir)
+    target.mkdir(parents=True, exist_ok=True)
+    exported = export_groundrecall_query_bundle(store_dir, concept_ref, target)
+    page_path = target / "notebook_page.json"
+    page_result = export_notebook_page_from_groundrecall_bundle(exported["bundle_path"], page_path)
+    page_result["groundrecall_query_bundle_path"] = exported["bundle_path"]
+    page_result["concept_ref"] = concept_ref
+    return page_result
+
+
+def _load_groundrecall_export():
+    groundrecall_src = Path("/home/netuser/bin/GroundRecall/src")
+    if groundrecall_src.exists():
+        sys.path.insert(0, str(groundrecall_src))
+    from groundrecall.export import export_groundrecall_query_bundle  # type: ignore
+
+    return export_groundrecall_query_bundle
