@@ -178,3 +178,6 @@ Near-term Didactopus work should therefore prioritize:
 
 The notebook is not the only Didactopus output. It is the durable center that
 lets the other outputs stay grounded, explainable, and pedagogically useful.
+
+For the implementation sequence that follows from this model, see
+[notebook-implementation-plan.md](./notebook-implementation-plan.md).
