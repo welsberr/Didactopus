@@ -68,6 +68,7 @@ def _merge_bucket_entries(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 def _review_context(bundle: dict[str, Any]) -> dict[str, Any]:
     review_candidates = bundle.get("review_candidates", []) or []
+    claims = bundle.get("relevant_claims", []) or []
     graph_codes = sorted(
         {
             code
@@ -77,10 +78,37 @@ def _review_context(bundle: dict[str, Any]) -> dict[str, Any]:
         }
     )
     top_rationales = [str(item.get("rationale", "")).strip() for item in review_candidates if str(item.get("rationale", "")).strip()][:3]
+    definition_candidates = 0
+    qualification_candidates = 0
+    constraint_candidates = 0
+    quote_candidates = 0
+    for claim in claims:
+        metadata = claim.get("metadata", {}) or {}
+        text = str(claim.get("claim_text", "")).strip()
+        lowered = text.lower()
+        if metadata.get("definition_candidate") or any(token in lowered for token in (" defined as ", " refers to ", " means ", " describes ")):
+            definition_candidates += 1
+        if metadata.get("qualification_candidate") or any(token in lowered for token in ("however", "although", "unless", "only if", "may not", "does not always")):
+            qualification_candidates += 1
+        if metadata.get("constraint_candidate") or any(token in lowered for token in ("must", "requires", "cannot", "depends on", "limited to", "constraint")):
+            constraint_candidates += 1
+        if metadata.get("quote_candidate") or (len(text) >= 140 and text.endswith((".", "!", '"', "”"))):
+            quote_candidates += 1
     return {
         "review_candidate_count": len(review_candidates),
         "graph_codes": graph_codes,
         "top_rationales": top_rationales,
+        "secondary_products": {
+            "definition_candidates": definition_candidates,
+            "qualification_candidates": qualification_candidates,
+            "constraint_candidates": constraint_candidates,
+            "quote_candidates": quote_candidates,
+        },
+        "public_output_policy": {
+            "quotes_require_attribution": True,
+            "public_prose_should_be_paraphrastic": True,
+            "unmarked_source_wording_is_not_allowed": True,
+        },
     }
 
 
