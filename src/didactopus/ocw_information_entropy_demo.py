@@ -163,6 +163,22 @@ def _load_groundrecall_runtime():
     return run_groundrecall_import, promote_import_to_store, export_groundrecall_query_bundle
 
 
+def _merge_source_inventories(primary_path: Path, extra_path: Path, out_path: Path) -> Path:
+    primary = load_sources(primary_path)
+    extra = load_sources(extra_path)
+    merged = []
+    seen_ids: set[str] = set()
+    for source in [*primary.sources, *extra.sources]:
+        if source.source_id in seen_ids:
+            continue
+        seen_ids.add(source.source_id)
+        merged.append(source.model_dump())
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    import yaml
+    out_path.write_text(yaml.safe_dump({"sources": merged}, sort_keys=False), encoding="utf-8")
+    return out_path
+
+
 def resolve_ocw_demo_paths(
     root: Path,
     course_repo: str | Path | None = None,
@@ -221,14 +237,29 @@ def run_ocw_information_entropy_demo(
     pack_dir: str | Path,
     run_dir: str | Path,
     skill_dir: str | Path,
+    wolfe_snippets_dir: str | Path | None = None,
+    wolfe_source_inventory: str | Path | None = None,
 ) -> dict:
     course_source = Path(course_source)
     source_inventory = Path(source_inventory)
     pack_dir = Path(pack_dir)
     run_dir = Path(run_dir)
     skill_dir = Path(skill_dir)
+    wolfe_snippets_dir = Path(wolfe_snippets_dir) if wolfe_snippets_dir is not None else None
+    wolfe_source_inventory = Path(wolfe_source_inventory) if wolfe_source_inventory is not None else None
 
     docs = adapt_documents(course_source)
+    wolfe_doc_count = 0
+    if wolfe_snippets_dir is not None and wolfe_snippets_dir.exists():
+        wolfe_docs = adapt_documents(wolfe_snippets_dir)
+        docs.extend(wolfe_docs)
+        wolfe_doc_count = len(wolfe_docs)
+    if wolfe_doc_count and not (wolfe_source_inventory is not None and wolfe_source_inventory.exists()):
+        review_flag = (
+            "Wolfe snippet augmentation was used without a Wolfe source inventory; compliance manifest excludes those augmentation sources."
+        )
+    else:
+        review_flag = ""
     if not docs:
         raise ValueError(f"No supported source documents found under {course_source}")
     courses = [document_to_course(doc, "MIT OCW Information and Entropy") for doc in docs]
@@ -238,6 +269,8 @@ def run_ocw_information_entropy_demo(
     concepts = extract_concept_candidates(merged)
     ctx = RuleContext(course=merged, concepts=concepts)
     run_rules(ctx, build_default_rules())
+    if review_flag:
+        ctx.review_flags.append(review_flag)
 
     draft = build_draft_pack(
         merged,
@@ -250,11 +283,21 @@ def run_ocw_information_entropy_demo(
     write_draft_pack(draft, pack_dir)
     write_source_corpus(merged, pack_dir)
     write_knowledge_graph(merged, ctx.concepts, pack_dir)
-    if source_inventory.exists():
-        inventory = load_sources(source_inventory)
+    effective_inventory_path = source_inventory
+    if wolfe_source_inventory is not None and wolfe_source_inventory.exists():
+        effective_inventory_path = _merge_source_inventories(
+            source_inventory,
+            wolfe_source_inventory,
+            run_dir / "merged_source_inventory.yaml",
+        )
+    if effective_inventory_path.exists():
+        inventory = load_sources(effective_inventory_path)
         compliance_manifest = build_pack_compliance_manifest(draft.pack["name"], draft.pack["display_name"], inventory)
         write_manifest(compliance_manifest, pack_dir / "pack_compliance_manifest.json")
-        (pack_dir / "source_inventory.yaml").write_text(source_inventory.read_text(encoding="utf-8"), encoding="utf-8")
+        if effective_inventory_path.suffix.lower() in {".yaml", ".yml"}:
+            (pack_dir / "source_inventory.yaml").write_text(effective_inventory_path.read_text(encoding="utf-8"), encoding="utf-8")
+        else:
+            (pack_dir / "source_inventory.json").write_text(effective_inventory_path.read_text(encoding="utf-8"), encoding="utf-8")
 
     validation = validate_pack(pack_dir)
     if not validation.is_valid:
@@ -324,6 +367,10 @@ def run_ocw_information_entropy_demo(
         "pack_dir": str(pack_dir),
         "skill_dir": str(skill_dir),
         "source_inventory": str(source_inventory),
+        "effective_source_inventory": str(effective_inventory_path),
+        "wolfe_snippets_dir": str(wolfe_snippets_dir) if wolfe_snippets_dir is not None else "",
+        "wolfe_source_inventory": str(wolfe_source_inventory) if wolfe_source_inventory is not None else "",
+        "wolfe_source_document_count": wolfe_doc_count,
         "review_flags": list(ctx.review_flags),
         "concept_count": len(ctx.concepts),
         "source_fragment_count": len(json.loads((pack_dir / "source_corpus.json").read_text(encoding="utf-8")).get("fragments", [])),
@@ -357,6 +404,8 @@ def main() -> None:
     parser.add_argument("--pack-dir")
     parser.add_argument("--run-dir")
     parser.add_argument("--skill-dir")
+    parser.add_argument("--wolfe-snippets-dir")
+    parser.add_argument("--wolfe-source-inventory")
     args = parser.parse_args()
 
     if args.course_repo_target:
@@ -383,6 +432,8 @@ def main() -> None:
         pack_dir=resolved["pack_dir"],
         run_dir=resolved["run_dir"],
         skill_dir=resolved["skill_dir"],
+        wolfe_snippets_dir=args.wolfe_snippets_dir,
+        wolfe_source_inventory=args.wolfe_source_inventory,
     )
     print(json.dumps(summary, indent=2))
 

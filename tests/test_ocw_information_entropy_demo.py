@@ -57,3 +57,59 @@ def test_ocw_demo_accepts_directory_tree_sources(tmp_path: Path) -> None:
     assert len(corpus["sources"]) == 2
     assert groundrecall_bundle["bundle_kind"] == "groundrecall_query_bundle"
     assert any(fragment["lesson_title"] == "Shannon Entropy" for fragment in corpus["fragments"])
+
+
+def test_ocw_demo_can_apply_wolfe_snippet_augmentation(tmp_path: Path) -> None:
+    source_dir = tmp_path / "course"
+    source_dir.mkdir()
+    (source_dir / "unit1.md").write_text(
+        "# Course\n\n## Unit 1\n### Thermodynamics and Entropy\n- Objective: Explain entropy.\nEntropy links uncertainty to physics.",
+        encoding="utf-8",
+    )
+    sources = tmp_path / "sources.yaml"
+    sources.write_text("sources: []\n", encoding="utf-8")
+
+    wolfe_dir = tmp_path / "wolfe"
+    wolfe_dir.mkdir()
+    (wolfe_dir / "snippet.md").write_text(
+        "# Wolfe Snippet\n\n## Augmentation\n### Entropy Comparison\n- Objective: Compare Shannon entropy with thermodynamic entropy.\nThe two notions differ in interpretation even when the mathematics overlaps.",
+        encoding="utf-8",
+    )
+    wolfe_sources = tmp_path / "wolfe-sources.yaml"
+    wolfe_sources.write_text(
+        "\n".join(
+            [
+                "sources:",
+                "  - source_id: wolfe-local-snippet",
+                "    title: Wolfe local snippet",
+                "    url: file:///local/wolfe/snippet",
+                "    publisher: Local Library",
+                "    creator: Local Search",
+                "    license_id: local-only",
+                "    license_url: https://example.invalid/local-only",
+                "    retrieved_at: '2026-05-08'",
+                "    adapted: false",
+                "    attribution_text: Local Wolfe-derived snippet for private evaluation.",
+                "    excluded_from_upstream_license: true",
+                "    exclusion_notes: Local-only experimental augmentation.",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    summary = run_ocw_information_entropy_demo(
+        course_source=source_dir,
+        source_inventory=sources,
+        pack_dir=tmp_path / "pack",
+        run_dir=tmp_path / "run",
+        skill_dir=tmp_path / "skill",
+        wolfe_snippets_dir=wolfe_dir,
+        wolfe_source_inventory=wolfe_sources,
+    )
+
+    bundle = json.loads((tmp_path / "pack" / "groundrecall_query_bundle.json").read_text(encoding="utf-8"))
+    manifest = json.loads((tmp_path / "pack" / "pack_compliance_manifest.json").read_text(encoding="utf-8"))
+    assert summary["wolfe_source_document_count"] == 1
+    assert summary["source_document_count"] == 2
+    assert "wolfe-local-snippet" in manifest["derived_from_sources"]
+    assert bundle["bundle_kind"] == "groundrecall_query_bundle"
