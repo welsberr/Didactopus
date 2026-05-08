@@ -102,6 +102,11 @@ def build_draft_pack(
                 "description": c.description,
                 "prerequisites": c.prerequisites,
                 "mastery_signals": c.mastery_signals,
+                "source_role": c.source_role,
+                "distinctions": c.distinctions,
+                "definition_candidates": c.definition_candidates,
+                "qualification_candidates": c.qualification_candidates,
+                "constraint_candidates": c.constraint_candidates,
                 "mastery_profile": {},
             }
             for c in concepts

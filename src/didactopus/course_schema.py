@@ -58,6 +58,11 @@ class ConceptCandidate(BaseModel):
     source_courses: list[str] = Field(default_factory=list)
     prerequisites: list[str] = Field(default_factory=list)
     mastery_signals: list[str] = Field(default_factory=list)
+    source_role: str = ""
+    distinctions: list[str] = Field(default_factory=list)
+    definition_candidates: list[str] = Field(default_factory=list)
+    qualification_candidates: list[str] = Field(default_factory=list)
+    constraint_candidates: list[str] = Field(default_factory=list)
 
 
 class DraftPack(BaseModel):

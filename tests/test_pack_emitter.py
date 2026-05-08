@@ -1,4 +1,5 @@
 from pathlib import Path
+import yaml
 from didactopus.course_ingest import parse_markdown_course, extract_concept_candidates
 from didactopus.knowledge_graph import write_knowledge_graph
 from didactopus.rule_policy import RuleContext, build_default_rules, run_rules
@@ -56,3 +57,28 @@ def test_emit_pack_can_write_groundrecall_query_bundle(tmp_path: Path) -> None:
     assert "notebook_page.json" in pack_yaml
     assert '"bundle_kind": "groundrecall_query_bundle"' in bundle_payload
     assert '"page_kind": "didactopus_notebook_page"' in notebook_payload
+
+
+def test_emit_pack_preserves_richer_concept_fields(tmp_path: Path) -> None:
+    sample = """
+# OCW Slice
+
+## Broader Applications
+### Thermodynamics and Entropy
+- Objective: Explain how thermodynamic entropy relates to, and differs from, Shannon entropy.
+- Exercise: Compare the two entropy notions and identify what is preserved across the analogy.
+Entropy is a measure of uncertainty in the source model. The analogy is useful but dangerous when used loosely.
+"""
+    course = parse_markdown_course(sample, "OCW Slice")
+    concepts = extract_concept_candidates(course)
+    ctx = RuleContext(course=course, concepts=concepts)
+    run_rules(ctx, build_default_rules())
+    draft = build_draft_pack(course, ctx.concepts, "Tester", "REVIEW", ctx.review_flags)
+    write_draft_pack(draft, tmp_path)
+
+    concepts_yaml = yaml.safe_load((tmp_path / "concepts.yaml").read_text(encoding="utf-8"))
+    concept = concepts_yaml["concepts"][0]
+    assert concept["source_role"] == "nuance"
+    assert concept["distinctions"]
+    assert concept["definition_candidates"]
+    assert concept["qualification_candidates"]
