@@ -20,8 +20,22 @@ def _sample_bundle() -> dict:
             "aliases": ["selection"],
         },
         "relevant_claims": [
-            {"claim_id": "clm_001", "claim_text": "Selection can change trait frequencies."},
-            {"claim_id": "clm_002", "claim_text": "Selection depends on heritable variation."},
+            {
+                "claim_id": "clm_001",
+                "claim_text": "Selection can change trait frequencies.",
+                "source_roles": ["overview"],
+            },
+            {
+                "claim_id": "clm_002",
+                "claim_text": "Selection does not imply adaptation.",
+                "source_roles": ["overview"],
+                "distinction": {
+                    "claim_id": "clm_002",
+                    "distinction_type": "non_implication",
+                    "cue": "does not imply",
+                    "text": "Selection does not imply adaptation.",
+                },
+            },
         ],
         "relations": [
             {
@@ -74,6 +88,16 @@ def _sample_bundle() -> dict:
                 "artifact_kind": "compiled_page",
                 "title": "Evolutionary Biology Chapter 1",
                 "path": "texts/futuyma/ch1.md",
+                "source_role": "overview",
+            }
+        ],
+        "source_role_summary": {"overview": 1},
+        "key_distinctions": [
+            {
+                "claim_id": "clm_002",
+                "distinction_type": "non_implication",
+                "cue": "does not imply",
+                "text": "Selection does not imply adaptation.",
             }
         ],
         "review_candidates": [
@@ -97,7 +121,14 @@ def test_build_notebook_page_buckets_graph_navigation() -> None:
     assert page["graph_navigation"]["derivative_concepts"][0]["title"] == "Adaptation"
     assert page["graph_navigation"]["closer_concepts"][0]["title"] == "Common Descent"
     assert page["supporting_sources"][0]["supporting_observation_count"] == 1
+    assert page["supporting_sources"][0]["source_role"] == "overview"
+    assert page["summary"]["source_role_count"] == 1
+    assert page["summary"]["distinction_count"] == 1
+    assert page["source_role_summary"]["overview"] == 1
+    assert page["distinctions"][0]["distinction_type"] == "non_implication"
     assert page["review_context"]["graph_codes"] == ["bridge_concept"]
+    assert page["review_context"]["source_role_summary"]["overview"] == 1
+    assert page["review_context"]["key_distinctions"][0]["distinction_type"] == "non_implication"
     assert page["illustration_opportunities"]
 
 

@@ -82,10 +82,21 @@ def _review_context(bundle: dict[str, Any]) -> dict[str, Any]:
     qualification_candidates = 0
     constraint_candidates = 0
     quote_candidates = 0
+    distinction_candidates = []
     for claim in claims:
         metadata = claim.get("metadata", {}) or {}
         text = str(claim.get("claim_text", "")).strip()
         lowered = text.lower()
+        distinction = claim.get("distinction")
+        if isinstance(distinction, dict):
+            distinction_candidates.append(
+                {
+                    "claim_id": distinction.get("claim_id", claim.get("claim_id", "")),
+                    "distinction_type": distinction.get("distinction_type", ""),
+                    "cue": distinction.get("cue", ""),
+                    "text": distinction.get("text", text),
+                }
+            )
         if metadata.get("definition_candidate") or any(token in lowered for token in (" defined as ", " refers to ", " means ", " describes ")):
             definition_candidates += 1
         if metadata.get("qualification_candidate") or any(token in lowered for token in ("however", "although", "unless", "only if", "may not", "does not always")):
@@ -104,6 +115,8 @@ def _review_context(bundle: dict[str, Any]) -> dict[str, Any]:
             "constraint_candidates": constraint_candidates,
             "quote_candidates": quote_candidates,
         },
+        "source_role_summary": bundle.get("source_role_summary", {}) or {},
+        "key_distinctions": distinction_candidates[:6] or (bundle.get("key_distinctions", []) or [])[:6],
         "public_output_policy": {
             "quotes_require_attribution": True,
             "public_prose_should_be_paraphrastic": True,
@@ -130,6 +143,7 @@ def _supporting_sources(bundle: dict[str, Any]) -> list[dict[str, Any]]:
                 "title": artifact.get("title", ""),
                 "path": path,
                 "artifact_kind": artifact.get("artifact_kind", ""),
+                "source_role": artifact.get("source_role", ""),
                 "supporting_observation_count": by_origin.get(path, 0),
             }
         )
@@ -214,8 +228,12 @@ def build_notebook_page_from_groundrecall_bundle(bundle: dict[str, Any]) -> dict
             "claim_count": len(bundle.get("relevant_claims", []) or []),
             "supporting_observation_count": len(supporting_observations),
             "related_concept_count": len(bundle.get("related_concepts", []) or []),
+            "source_role_count": len(bundle.get("source_role_summary", {}) or {}),
+            "distinction_count": len(bundle.get("key_distinctions", []) or []),
         },
         "graph_navigation": navigation,
+        "source_role_summary": bundle.get("source_role_summary", {}) or {},
+        "distinctions": (bundle.get("key_distinctions", []) or [])[:6],
         "supporting_sources": _supporting_sources(bundle),
         "supporting_excerpts": supporting_excerpts,
         "review_context": _review_context(bundle),
