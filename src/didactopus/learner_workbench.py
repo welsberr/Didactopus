@@ -34,12 +34,18 @@ def _load_groundrecall_summary(pack_dir: Path) -> dict:
         }
     )
     top_rationales = [str(item.get("rationale", "")).strip() for item in review_candidates if str(item.get("rationale", "")).strip()][:3]
+    source_role_summary = payload.get("source_role_summary", {}) or {}
+    key_distinctions = payload.get("key_distinctions", []) or []
+    secondary_products = payload.get("review_context", {}).get("secondary_products", {}) if isinstance(payload.get("review_context"), dict) else {}
     return {
         "concept_id": concept.get("concept_id", ""),
         "concept_title": concept.get("title", ""),
         "review_candidate_count": len(review_candidates),
         "graph_codes": graph_codes,
         "top_rationales": top_rationales,
+        "source_role_summary": source_role_summary,
+        "key_distinctions": key_distinctions[:5],
+        "secondary_products": secondary_products,
     }
 
 
@@ -95,6 +101,23 @@ def _groundrecall_block(summary: dict) -> str:
     graph_codes = summary.get("graph_codes", []) or []
     if graph_codes:
         lines.append(f"- Structural signals: {', '.join(graph_codes)}")
+    source_role_summary = summary.get("source_role_summary", {}) or {}
+    if source_role_summary:
+        lines.append(
+            "- Source roles: "
+            + ", ".join(f"{role}={count}" for role, count in sorted(source_role_summary.items()))
+        )
+    for item in summary.get("key_distinctions", []) or []:
+        text = str(item.get("text", "")).strip()
+        distinction_type = str(item.get("distinction_type", "")).strip()
+        if text:
+            lines.append(f"- Distinction ({distinction_type or 'contrast'}): {text}")
+    secondary_products = summary.get("secondary_products", {}) or {}
+    if secondary_products:
+        lines.append(
+            "- Secondary review products: "
+            + ", ".join(f"{key}={value}" for key, value in sorted(secondary_products.items()) if value)
+        )
     for rationale in summary.get("top_rationales", []) or []:
         lines.append(f"- Review cue: {rationale}")
     return "\n".join(lines)

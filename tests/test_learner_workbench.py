@@ -62,6 +62,15 @@ def test_build_pack_workbench_session_includes_groundrecall_context(monkeypatch,
             {
                 "bundle_kind": "groundrecall_query_bundle",
                 "concept": {"concept_id": "concept::question-framing", "title": "Question Framing"},
+                "source_role_summary": {"overview": 1, "argumentation": 1},
+                "key_distinctions": [
+                    {
+                        "claim_id": "clm_001",
+                        "distinction_type": "non_implication",
+                        "cue": "does not imply",
+                        "text": "A guiding question does not imply a settled interpretation.",
+                    }
+                ],
                 "review_candidates": [
                     {
                         "candidate_id": "concept::question-framing",
@@ -88,4 +97,8 @@ def test_build_pack_workbench_session_includes_groundrecall_context(monkeypatch,
 
     assert payload["groundrecall"]["review_candidate_count"] == 1
     assert payload["groundrecall"]["graph_codes"] == ["bridge_concept"]
+    assert payload["groundrecall"]["source_role_summary"]["overview"] == 1
+    assert payload["groundrecall"]["key_distinctions"][0]["distinction_type"] == "non_implication"
     assert "GroundRecall context:" in payload["mentor"]["text"]
+    assert "Source roles:" in payload["mentor"]["text"]
+    assert "Distinction" in payload["mentor"]["text"]
