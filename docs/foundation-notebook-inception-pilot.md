@@ -55,6 +55,26 @@ This is a better first region than a broad "history of evolutionary thought"
 pilot because it stresses concept navigation without forcing huge historical
 scope immediately.
 
+## Pilot revision from execution
+
+The original pilot choice was good enough to start, but the actual run showed
+that the stable Notebook center should be broader than a narrow topic label.
+
+In practice, the pilot worked better after shifting toward a hub such as:
+
+- `Evolutionary Dynamics of Populations`
+
+The operational lesson is:
+
+- narrow topics are still useful as first-ring and second-ring nodes
+- but the primary Notebook page works better when anchored on a broad
+  explanatory hub
+- bibliography topics alone are too thin to serve as the main Notebook center
+
+This should inform future Notebook inception work. Start with a manageable
+region, but expect the durable center to be a broad explanatory hub rather than
+the narrow starting label.
+
 ## Pilot workspace
 
 Create one stable workspace outside the library root, for example:
@@ -258,6 +278,23 @@ For this first pilot, Foundation Notebook inception should mean:
 
 If all six are true, Notebook inception has happened even if public publishing
 and richer UI are still pending.
+
+## Additional lesson from the pilot
+
+Inception is only the beginning. The pilot also showed that a strong Notebook
+depends on extraction classes beyond ordinary claims.
+
+The most useful additions were:
+
+- definitions
+- qualifications
+- constraints
+- contrasts/distinctions
+- quote candidates
+- source-role weighting
+
+Those should be treated as part of the normal Notebook operating model, not as
+optional polish after inception.
 
 ## Expected artifact inventory
 

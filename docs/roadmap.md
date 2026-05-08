@@ -24,6 +24,10 @@ Near-term scope:
 - extend the session flow beyond one short interaction
 - make scientific virtues operational in the session loop by separating observation from interpretation, preserving uncertainty, and rewarding justified revision
 - replace stubbed provider output in learner-facing pilot flows with configured real model backends where available
+- make learner-facing guidance explicitly distinction-aware:
+  - `A vs B`
+  - `A does not imply B`
+  - `B can occur without A`
 
 Current code anchors:
 
@@ -101,6 +105,8 @@ Target features:
 - current concept and why-it-matters view
 - prerequisite chain and supporting lessons
 - grounded source excerpts
+- definitions, constraints, and qualifications view
+- quote candidates and source-trail view for argumentation workflows
 - active practice task
 - evaluator feedback
 - recommended next step
@@ -172,8 +178,62 @@ Target features:
 - lesson and source-fragment references in explanations
 - explicit distinction between cited source support and model inference
 - easier inspection of concept-to-source provenance
+- explicit quote marking and attribution in any public-facing output
+- no unmarked source wording in public Notebook exposition
 
-### 8. Pack quality, review, and concept-graph curation improvements
+### 8. Notebook-centered knowledge layer
+
+Status: planned
+
+Why it matters:
+
+- The Foundation Notebook pilot suggests that Didactopus needs one durable
+  concept-network representation between raw source grounding and learner-facing
+  products.
+- Topic labels alone are too weak; broad explanatory hubs and first-ring
+  concept neighborhoods work better.
+- The Notebook is the right place to preserve definitions, constraints,
+  qualifications, and contrasts.
+- The pilot also suggests that the Notebook is the durable center between raw
+  source-grounding work and learner-facing products, not just a supplemental
+  static page format.
+
+Target features:
+
+- hub-first concept organization
+- first-ring and second-ring concept neighborhoods
+- first-class distinction modeling:
+  - `A vs B`
+  - `A does not imply B`
+  - `B can occur without A`
+- support for source-role weighting:
+  - overview
+  - mechanism
+  - nuance
+  - controversy
+  - argumentation
+- support for learner-significance cues so explanation and practice can answer
+  “why does this distinction matter?”
+- Notebook-adjacent secondary products:
+  - definitions
+  - qualifications
+  - constraints
+  - quote candidates
+- separate rendering rules for Notebook, workbench, and public exposition
+
+Immediate next steps:
+
+- promote the Foundation Notebook pilot conclusions into the stable design
+  model for Didactopus
+- prefer broad explanatory hubs over narrow topic labels when organizing new
+  Notebook regions
+- make source-role-aware retrieval available to learner workbench flows
+- treat secondary products as first-class review/export outputs rather than
+  incidental metadata
+- connect Notebook concept neighborhoods more directly to learner-session
+  grounding and practice generation
+
+### 9. Pack quality, review, and concept-graph curation improvements
 
 Status: planned
 
@@ -190,7 +250,7 @@ Target features:
 - stronger review support for noisy or broad concepts
 - improved source coverage QA
 
-### 9. Incremental re-ingestion and course updates
+### 10. Incremental re-ingestion and course updates
 
 Status: planned
 
@@ -206,7 +266,7 @@ Target features:
 - graph and pack diffs
 - preservation of learner evidence across source updates
 
-### 10. Richer multimodal and notation support
+### 11. Richer multimodal and notation support
 
 Status: longer-term
 
@@ -232,15 +292,20 @@ Examples:
 - Treat scientific virtues as operational principles: encourage curiosity, honesty about evidence, skepticism toward weak claims, attentiveness to caveats, and revision when the evidence changes.
 - Separate observation from interpretation in learner-facing guidance so the system does not blur grounded support with model inference.
 - Frame revision as progress rather than as failure, especially in mentor and evaluator feedback.
+- Preserve distinctions, caveats, and scope conditions as learning assets rather
+  than treating them as noise.
+- Treat the Notebook as the durable knowledge layer, but not as the only
+  learner-facing representation.
 
 ## Suggested Implementation Sequence
 
 1. Strengthen `didactopus.learner_session` into the standard session backend.
 2. Fold the learner-workbench pilot into that backend without losing its stronger study-state framing.
-3. Replace stubbed learner-workbench provider output with a configured real model backend.
-4. Ground the `evidence-trail` pilot in richer source fragments and persisted learner state.
-5. Build a small model-benchmark harness around the unified learner backend.
-6. Add accessible learner HTML and text-first outputs.
-7. Add local TTS and STT support to the same session flow.
-8. Expand adaptive practice and diagnostics.
-9. Improve review, impact analysis, and incremental update support.
+3. Add a Notebook-centered operating layer with hub concepts, distinctions, and secondary products.
+4. Replace stubbed learner-workbench provider output with a configured real model backend.
+5. Ground the `evidence-trail` pilot and future Notebook pilots in richer source fragments, definitions, constraints, and persisted learner state.
+6. Build a small model-benchmark harness around the unified learner backend.
+7. Add accessible learner HTML and text-first outputs.
+8. Add local TTS and STT support to the same session flow.
+9. Expand adaptive practice and diagnostics.
+10. Improve review, impact analysis, and incremental update support.
