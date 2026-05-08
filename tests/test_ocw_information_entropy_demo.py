@@ -17,9 +17,13 @@ def test_ocw_information_entropy_demo_generates_pack_and_skill(tmp_path: Path) -
     assert (tmp_path / "pack" / "pack.yaml").exists()
     assert (tmp_path / "pack" / "pack_compliance_manifest.json").exists()
     assert (tmp_path / "pack" / "source_corpus.json").exists()
+    assert (tmp_path / "pack" / "groundrecall_query_bundle.json").exists()
+    assert (tmp_path / "pack" / "notebook_page.json").exists()
     assert (tmp_path / "run" / "capability_profile.json").exists()
     assert (tmp_path / "skill" / "SKILL.md").exists()
     assert summary["target_concept"].endswith("thermodynamics-and-entropy")
+    assert summary["groundrecall_concept_ref"] == "Thermodynamics and Entropy"
+    assert summary["groundrecall_bundle_included"] is True
     assert summary["mastered_concepts"]
     assert summary["source_document_count"] >= 1
     assert summary["source_fragment_count"] >= 1
@@ -48,6 +52,8 @@ def test_ocw_demo_accepts_directory_tree_sources(tmp_path: Path) -> None:
     )
 
     corpus = json.loads((tmp_path / "pack" / "source_corpus.json").read_text(encoding="utf-8"))
+    groundrecall_bundle = json.loads((tmp_path / "pack" / "groundrecall_query_bundle.json").read_text(encoding="utf-8"))
     assert summary["source_document_count"] == 2
     assert len(corpus["sources"]) == 2
+    assert groundrecall_bundle["bundle_kind"] == "groundrecall_query_bundle"
     assert any(fragment["lesson_title"] == "Shannon Entropy" for fragment in corpus["fragments"])

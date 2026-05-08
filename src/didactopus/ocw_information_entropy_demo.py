@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import sys
 
 from .agentic_loop import AgenticStudentState, integrate_attempt
 from .artifact_registry import validate_pack
@@ -126,6 +127,16 @@ def _write_skill_bundle(
             (run_asset_dir / source.name).write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
 
 
+def _stage_groundrecall_pack_source(pack_dir: Path, target_dir: Path) -> Path:
+    target_dir.mkdir(parents=True, exist_ok=True)
+    for name in ["pack.yaml", "concepts.yaml", "roadmap.yaml", "projects.yaml", "rubrics.yaml"]:
+        source = pack_dir / name
+        if source.exists():
+            target = target_dir / name
+            target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+    return target_dir
+
+
 def _select_target_concept(pack_name: str, concepts: list, preferred_id: str = "thermodynamics-and-entropy") -> str:
     ids = [concept.id for concept in concepts]
     if preferred_id in ids:
@@ -133,6 +144,23 @@ def _select_target_concept(pack_name: str, concepts: list, preferred_id: str = "
     if not ids:
         raise ValueError("No concept candidates available to select as target.")
     return f"{pack_name}::{ids[-1]}"
+
+
+def _pack_concept_ref(target_key: str, concepts: list) -> str:
+    target_id = target_key.split("::", 1)[-1]
+    for concept in concepts:
+        if concept.id == target_id:
+            return concept.title
+    return target_id
+
+
+def _load_groundrecall_runtime():
+    groundrecall_src = Path("/home/netuser/bin/GroundRecall/src")
+    if groundrecall_src.exists():
+        sys.path.insert(0, str(groundrecall_src))
+    from groundrecall import export_groundrecall_query_bundle, promote_import_to_store, run_groundrecall_import  # type: ignore
+
+    return run_groundrecall_import, promote_import_to_store, export_groundrecall_query_bundle
 
 
 def resolve_ocw_demo_paths(
@@ -240,7 +268,41 @@ def run_ocw_information_entropy_demo(
         "critique": 0.7,
     })
     target_key = _select_target_concept(draft.pack["name"], ctx.concepts)
+    target_concept_ref = _pack_concept_ref(target_key, ctx.concepts)
     concept_path = graph.curriculum_path_to_target(set(), target_key)
+
+    run_groundrecall_import, promote_import_to_store, export_groundrecall_query_bundle = _load_groundrecall_runtime()
+    groundrecall_root = run_dir / "groundrecall"
+    groundrecall_source_pack = _stage_groundrecall_pack_source(pack_dir, groundrecall_root / "pack-source")
+    import_result = run_groundrecall_import(
+        groundrecall_source_pack,
+        out_root=groundrecall_root / "imports",
+        mode="quick",
+        import_id="didactopus-pack",
+    )
+    store_dir = groundrecall_root / "store"
+    promote_import_to_store(
+        import_result.out_dir,
+        store_dir,
+        reviewer="Didactopus OCW demo",
+        allow_lint_errors=True,
+    )
+    exported_bundle = export_groundrecall_query_bundle(
+        store_dir,
+        target_concept_ref,
+        groundrecall_root / "export",
+    )
+
+    draft = build_draft_pack(
+        merged,
+        ctx.concepts,
+        author="MIT OCW derived demo",
+        license_name="CC BY-NC-SA 4.0",
+        review_flags=ctx.review_flags,
+        conflicts=[],
+        groundrecall_query_bundle=exported_bundle["bundle"],
+    )
+    write_draft_pack(draft, pack_dir)
 
     state = AgenticStudentState(
         learner_id="ocw-information-entropy-agent",
@@ -267,6 +329,8 @@ def run_ocw_information_entropy_demo(
         "source_fragment_count": len(json.loads((pack_dir / "source_corpus.json").read_text(encoding="utf-8")).get("fragments", [])),
         "knowledge_graph_summary": json.loads((pack_dir / "knowledge_graph.json").read_text(encoding="utf-8")).get("summary", {}),
         "target_concept": target_key,
+        "groundrecall_concept_ref": target_concept_ref,
+        "groundrecall_bundle_included": (pack_dir / "groundrecall_query_bundle.json").exists(),
         "curriculum_path": concept_path,
         "mastered_concepts": sorted(state.mastered_concepts),
         "artifact_count": len(state.artifacts),
