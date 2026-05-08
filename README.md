@@ -231,6 +231,7 @@ The fuller bridge workflow is documented in:
 
 - `docs/groundrecall-bridge.md`
 - `docs/evo-edu-notebook-pipeline.md`
+- `docs/foundation-notebook-inception-pilot.md`
 
 ## Didactopus As Pedagogy Support
 
