@@ -7,6 +7,7 @@ from pathlib import Path
 from .config import load_config
 from .doclift_bundle_demo import run_doclift_bundle_demo
 from .groundrecall_pack_bridge import run_doclift_bundle_with_groundrecall
+from .augmentation_bundle_probe import write_probe_report
 from .notebook_page import export_notebook_page_from_groundrecall_bundle
 from .notebook_page import export_notebook_page_from_groundrecall_store
 from .review_loader import load_draft_pack
@@ -65,6 +66,14 @@ def build_parser() -> argparse.ArgumentParser:
     notebook_gr_parser.add_argument("groundrecall_store_dir")
     notebook_gr_parser.add_argument("groundrecall_concept_ref")
     notebook_gr_parser.add_argument("output_dir")
+
+    augmentation_probe_parser = subparsers.add_parser(
+        "augmentation-bundle-probe",
+        help="Probe an augmentation bundle against an existing GroundRecall query bundle",
+    )
+    augmentation_probe_parser.add_argument("augmentation_bundle")
+    augmentation_probe_parser.add_argument("groundrecall_query_bundle")
+    augmentation_probe_parser.add_argument("output_path")
     return parser
 
 
@@ -149,6 +158,14 @@ def main() -> None:
             args.groundrecall_store_dir,
             args.groundrecall_concept_ref,
             args.output_dir,
+        )
+        print(summary)
+        return
+    if args.command == "augmentation-bundle-probe":
+        summary = write_probe_report(
+            args.augmentation_bundle,
+            args.groundrecall_query_bundle,
+            args.output_path,
         )
         print(summary)
         return
