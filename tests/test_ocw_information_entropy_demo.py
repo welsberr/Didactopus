@@ -96,6 +96,16 @@ def test_ocw_demo_can_apply_wolfe_snippet_augmentation(tmp_path: Path) -> None:
         ),
         encoding="utf-8",
     )
+    (wolfe_dir / "concept-alignment.yaml").write_text(
+        "\n".join(
+            [
+                "alignments:",
+                "  - source_title: Entropy Comparison",
+                "    target_title: Thermodynamics and Entropy",
+            ]
+        ),
+        encoding="utf-8",
+    )
 
     summary = run_ocw_information_entropy_demo(
         course_source=source_dir,
@@ -109,7 +119,9 @@ def test_ocw_demo_can_apply_wolfe_snippet_augmentation(tmp_path: Path) -> None:
 
     bundle = json.loads((tmp_path / "pack" / "groundrecall_query_bundle.json").read_text(encoding="utf-8"))
     manifest = json.loads((tmp_path / "pack" / "pack_compliance_manifest.json").read_text(encoding="utf-8"))
+    concept_titles = [item["title"] for item in (json.loads((tmp_path / "pack" / "knowledge_graph.json").read_text(encoding="utf-8"))["nodes"]) if item.get("type") == "concept"]
     assert summary["wolfe_source_document_count"] == 1
     assert summary["source_document_count"] == 2
     assert "wolfe-local-snippet" in manifest["derived_from_sources"]
     assert bundle["bundle_kind"] == "groundrecall_query_bundle"
+    assert "Entropy Comparison" not in concept_titles

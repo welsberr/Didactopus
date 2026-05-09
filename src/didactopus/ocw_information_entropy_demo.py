@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import sys
+import re
 
 from .agentic_loop import AgenticStudentState, integrate_attempt
 from .artifact_registry import validate_pack
@@ -179,6 +180,83 @@ def _merge_source_inventories(primary_path: Path, extra_path: Path, out_path: Pa
     return out_path
 
 
+def _slugify(text: str) -> str:
+    cleaned = re.sub(r"[^a-zA-Z0-9]+", "-", text.strip().lower()).strip("-")
+    return cleaned or "untitled"
+
+
+def _merge_concept_descriptions(primary: str, secondary: str, max_chars: int = 640) -> str:
+    primary = (primary or "").strip()
+    secondary = (secondary or "").strip()
+    if not primary:
+        return secondary[:max_chars]
+    if not secondary or secondary in primary:
+        return primary[:max_chars]
+    merged = f"{primary} {secondary}".strip()
+    return merged[:max_chars]
+
+
+def _merge_unique(existing: list[str], additions: list[str]) -> list[str]:
+    seen = set(existing)
+    out = list(existing)
+    for item in additions:
+        if item not in seen:
+            seen.add(item)
+            out.append(item)
+    return out
+
+
+def _load_wolfe_concept_alignment(wolfe_snippets_dir: Path | None) -> dict[str, str]:
+    if wolfe_snippets_dir is None:
+        return {}
+    import yaml
+
+    path = wolfe_snippets_dir / "concept-alignment.yaml"
+    if not path.exists():
+        return {}
+    payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    alignments = payload.get("alignments", []) or []
+    mapping: dict[str, str] = {}
+    for item in alignments:
+        if not isinstance(item, dict):
+            continue
+        source_title = str(item.get("source_title", "")).strip()
+        target_title = str(item.get("target_title", "")).strip()
+        if source_title and target_title:
+            mapping[source_title] = target_title
+    return mapping
+
+
+def _apply_concept_alignment(concepts: list, alignment: dict[str, str]) -> list:
+    if not alignment:
+        return concepts
+    merged_by_id: dict[str, object] = {}
+    ordered_ids: list[str] = []
+    for concept in concepts:
+        target_title = alignment.get(concept.title, concept.title)
+        target_id = _slugify(target_title)
+        if target_id not in merged_by_id:
+            concept.id = target_id
+            concept.title = target_title
+            merged_by_id[target_id] = concept
+            ordered_ids.append(target_id)
+            continue
+        existing = merged_by_id[target_id]
+        existing.description = _merge_concept_descriptions(existing.description, concept.description)
+        existing.source_modules = _merge_unique(existing.source_modules, concept.source_modules)
+        existing.source_lessons = _merge_unique(existing.source_lessons, concept.source_lessons)
+        existing.source_courses = _merge_unique(existing.source_courses, concept.source_courses)
+        existing.prerequisites = _merge_unique(existing.prerequisites, concept.prerequisites)
+        existing.mastery_signals = _merge_unique(existing.mastery_signals, concept.mastery_signals)
+        existing.distinctions = _merge_unique(existing.distinctions, concept.distinctions)
+        existing.definition_candidates = _merge_unique(existing.definition_candidates, concept.definition_candidates)
+        existing.qualification_candidates = _merge_unique(existing.qualification_candidates, concept.qualification_candidates)
+        existing.constraint_candidates = _merge_unique(existing.constraint_candidates, concept.constraint_candidates)
+        if existing.source_role != "nuance" and concept.source_role == "nuance":
+            existing.source_role = concept.source_role
+    return [merged_by_id[item] for item in ordered_ids]
+
+
 def resolve_ocw_demo_paths(
     root: Path,
     course_repo: str | Path | None = None,
@@ -251,7 +329,11 @@ def run_ocw_information_entropy_demo(
     docs = adapt_documents(course_source)
     wolfe_doc_count = 0
     if wolfe_snippets_dir is not None and wolfe_snippets_dir.exists():
-        wolfe_docs = adapt_documents(wolfe_snippets_dir)
+        wolfe_docs = [
+            doc
+            for doc in adapt_documents(wolfe_snippets_dir)
+            if Path(getattr(doc, "source_path", "")).name not in {"concept-alignment.yaml", "concept-alignment.yml", "concept-alignment.json"}
+        ]
         docs.extend(wolfe_docs)
         wolfe_doc_count = len(wolfe_docs)
     if wolfe_doc_count and not (wolfe_source_inventory is not None and wolfe_source_inventory.exists()):
@@ -267,6 +349,7 @@ def run_ocw_information_entropy_demo(
     merged.rights_note = DEFAULT_RIGHTS_NOTE
 
     concepts = extract_concept_candidates(merged)
+    concepts = _apply_concept_alignment(concepts, _load_wolfe_concept_alignment(wolfe_snippets_dir))
     ctx = RuleContext(course=merged, concepts=concepts)
     run_rules(ctx, build_default_rules())
     if review_flag:
