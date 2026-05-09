@@ -125,3 +125,76 @@ def test_ocw_demo_can_apply_wolfe_snippet_augmentation(tmp_path: Path) -> None:
     assert "wolfe-local-snippet" in manifest["derived_from_sources"]
     assert bundle["bundle_kind"] == "groundrecall_query_bundle"
     assert "Entropy Comparison" not in concept_titles
+
+
+def test_ocw_demo_can_load_augmentation_bundle(tmp_path: Path) -> None:
+    source_dir = tmp_path / "course"
+    source_dir.mkdir()
+    (source_dir / "unit1.md").write_text(
+        "# Course\n\n## Unit 1\n### Thermodynamics and Entropy\n- Objective: Explain entropy.\nEntropy links uncertainty to physics.",
+        encoding="utf-8",
+    )
+    sources = tmp_path / "sources.yaml"
+    sources.write_text("sources: []\n", encoding="utf-8")
+
+    bundle_dir = tmp_path / "bundle"
+    snippets_dir = bundle_dir / "snippets"
+    snippets_dir.mkdir(parents=True)
+    (snippets_dir / "snippet.md").write_text(
+        "# Wolfe Snippet\n\n## Augmentation\n### Entropy Comparison\n- Objective: Compare Shannon entropy with thermodynamic entropy.\nThe two notions differ in interpretation even when the mathematics overlaps.",
+        encoding="utf-8",
+    )
+    (bundle_dir / "sources.yaml").write_text(
+        "\n".join(
+            [
+                "sources:",
+                "  - source_id: wolfe-local-snippet",
+                "    title: Wolfe local snippet",
+                "    url: file:///local/wolfe/snippet",
+                "    publisher: Local Library",
+                "    creator: Local Search",
+                "    license_id: local-only",
+                "    license_url: https://example.invalid/local-only",
+                "    retrieved_at: '2026-05-08'",
+                "    adapted: false",
+                "    attribution_text: Local Wolfe-derived snippet for private evaluation.",
+                "    excluded_from_upstream_license: true",
+                "    exclusion_notes: Local-only experimental augmentation.",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    (snippets_dir / "concept-alignment.yaml").write_text(
+        "\n".join(
+            [
+                "alignments:",
+                "  - source_title: Entropy Comparison",
+                "    target_title: Thermodynamics and Entropy",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    (bundle_dir / "bundle.yaml").write_text(
+        "\n".join(
+            [
+                "title: OCW Wolfe Bundle",
+                "snippets_dir: snippets",
+                "source_inventory: sources.yaml",
+                "concept_alignment: snippets/concept-alignment.yaml",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    summary = run_ocw_information_entropy_demo(
+        course_source=source_dir,
+        source_inventory=sources,
+        pack_dir=tmp_path / "pack",
+        run_dir=tmp_path / "run",
+        skill_dir=tmp_path / "skill",
+        augmentation_bundle=bundle_dir,
+    )
+
+    assert summary["augmentation_bundle"].endswith("/bundle")
+    assert summary["augmentation_bundle_title"] == "OCW Wolfe Bundle"
+    assert summary["wolfe_source_document_count"] == 1

@@ -6,6 +6,7 @@ import sys
 import re
 
 from .agentic_loop import AgenticStudentState, integrate_attempt
+from .augmentation_bundle import load_augmentation_bundle
 from .artifact_registry import validate_pack
 from .course_ingestion_compliance import build_pack_compliance_manifest, load_sources, write_manifest
 from .course_repo import bootstrap_course_repo, resolve_course_repo
@@ -227,6 +228,24 @@ def _load_wolfe_concept_alignment(wolfe_snippets_dir: Path | None) -> dict[str, 
     return mapping
 
 
+def _load_wolfe_concept_alignment_path(path: Path | None) -> dict[str, str]:
+    if path is None or not path.exists():
+        return {}
+    import yaml
+
+    payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    alignments = payload.get("alignments", []) or []
+    mapping: dict[str, str] = {}
+    for item in alignments:
+        if not isinstance(item, dict):
+            continue
+        source_title = str(item.get("source_title", "")).strip()
+        target_title = str(item.get("target_title", "")).strip()
+        if source_title and target_title:
+            mapping[source_title] = target_title
+    return mapping
+
+
 def _apply_concept_alignment(concepts: list, alignment: dict[str, str]) -> list:
     if not alignment:
         return concepts
@@ -317,12 +336,22 @@ def run_ocw_information_entropy_demo(
     skill_dir: str | Path,
     wolfe_snippets_dir: str | Path | None = None,
     wolfe_source_inventory: str | Path | None = None,
+    augmentation_bundle: str | Path | None = None,
 ) -> dict:
     course_source = Path(course_source)
     source_inventory = Path(source_inventory)
     pack_dir = Path(pack_dir)
     run_dir = Path(run_dir)
     skill_dir = Path(skill_dir)
+    augmentation_bundle = Path(augmentation_bundle) if augmentation_bundle is not None else None
+    augmentation_alignment_path: Path | None = None
+    augmentation_bundle_title = ""
+    if augmentation_bundle is not None:
+        bundle_payload = load_augmentation_bundle(augmentation_bundle)
+        wolfe_snippets_dir = Path(bundle_payload["snippets_dir"])
+        wolfe_source_inventory = Path(bundle_payload["source_inventory"])
+        augmentation_alignment_path = Path(bundle_payload["concept_alignment"])
+        augmentation_bundle_title = bundle_payload.get("title", "")
     wolfe_snippets_dir = Path(wolfe_snippets_dir) if wolfe_snippets_dir is not None else None
     wolfe_source_inventory = Path(wolfe_source_inventory) if wolfe_source_inventory is not None else None
 
@@ -349,7 +378,8 @@ def run_ocw_information_entropy_demo(
     merged.rights_note = DEFAULT_RIGHTS_NOTE
 
     concepts = extract_concept_candidates(merged)
-    concepts = _apply_concept_alignment(concepts, _load_wolfe_concept_alignment(wolfe_snippets_dir))
+    alignment = _load_wolfe_concept_alignment_path(augmentation_alignment_path) if augmentation_alignment_path is not None else _load_wolfe_concept_alignment(wolfe_snippets_dir)
+    concepts = _apply_concept_alignment(concepts, alignment)
     ctx = RuleContext(course=merged, concepts=concepts)
     run_rules(ctx, build_default_rules())
     if review_flag:
@@ -453,6 +483,8 @@ def run_ocw_information_entropy_demo(
         "effective_source_inventory": str(effective_inventory_path),
         "wolfe_snippets_dir": str(wolfe_snippets_dir) if wolfe_snippets_dir is not None else "",
         "wolfe_source_inventory": str(wolfe_source_inventory) if wolfe_source_inventory is not None else "",
+        "augmentation_bundle": str(augmentation_bundle) if augmentation_bundle is not None else "",
+        "augmentation_bundle_title": augmentation_bundle_title,
         "wolfe_source_document_count": wolfe_doc_count,
         "review_flags": list(ctx.review_flags),
         "concept_count": len(ctx.concepts),
@@ -489,6 +521,7 @@ def main() -> None:
     parser.add_argument("--skill-dir")
     parser.add_argument("--wolfe-snippets-dir")
     parser.add_argument("--wolfe-source-inventory")
+    parser.add_argument("--augmentation-bundle")
     args = parser.parse_args()
 
     if args.course_repo_target:
@@ -517,6 +550,7 @@ def main() -> None:
         skill_dir=resolved["skill_dir"],
         wolfe_snippets_dir=args.wolfe_snippets_dir,
         wolfe_source_inventory=args.wolfe_source_inventory,
+        augmentation_bundle=args.augmentation_bundle,
     )
     print(json.dumps(summary, indent=2))
 
