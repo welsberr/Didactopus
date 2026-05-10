@@ -62,6 +62,10 @@ def _find_existing_bundle(index: dict[str, dict[str, Any]], concept_slug: str) -
     return None
 
 
+def _is_placeholder_bundle(payload: dict[str, Any]) -> bool:
+    return not (payload.get("relevant_claims", []) or [])
+
+
 def _claim_matches(claim: dict[str, Any], keyword_phrases: list[str]) -> bool:
     text = str(claim.get("claim_text", "")).lower()
     return any(phrase in text for phrase in keyword_phrases)
@@ -202,7 +206,11 @@ def run_first_ring_batch_promotion(
         concept_slug = str(entry["concept"]).strip()
         target_path = output / f"query_bundle__{concept_slug}.json"
         existing = _find_existing_bundle(bundle_index, concept_slug)
-        if existing and existing["path"].resolve() == target_path.resolve():
+        if (
+            existing
+            and existing["path"].resolve() == target_path.resolve()
+            and not (entry.get("compose_from") and _is_placeholder_bundle(existing["payload"]))
+        ):
             payload = existing["payload"]
             status = "existing"
         elif existing and not entry.get("compose_from"):

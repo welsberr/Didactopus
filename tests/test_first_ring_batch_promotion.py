@@ -96,3 +96,73 @@ promotion_priority:
     synth = json.loads((canonical / "query_bundle__natural-selection.json").read_text())
     assert synth["concept"]["concept_id"] == "concept::natural-selection"
     assert len(synth["relevant_claims"]) == 2
+
+
+def test_first_ring_batch_promotion_replaces_placeholder_bundle_when_compose_from_is_added(tmp_path: Path) -> None:
+    canonical = tmp_path / "canonical"
+    canonical.mkdir()
+    placeholder_payload = {
+        "bundle_kind": "groundrecall_query_bundle",
+        "query_type": "concept",
+        "concept": {
+            "concept_id": "concept::gene-pool",
+            "title": "Gene Pool",
+            "aliases": [],
+            "description": "Placeholder bundle.",
+            "source_artifact_ids": [],
+            "current_status": "reviewed",
+        },
+        "relevant_claims": [],
+        "relations": [],
+        "supporting_observations": [],
+        "source_artifacts": [],
+        "related_concepts": [],
+    }
+    source_payload = {
+        "bundle_kind": "groundrecall_query_bundle",
+        "query_type": "concept",
+        "concept": {
+            "concept_id": "concept::variation",
+            "title": "Variation",
+            "aliases": [],
+            "description": "Source bundle.",
+            "source_artifact_ids": ["a1"],
+            "current_status": "reviewed",
+        },
+        "relevant_claims": [
+            {
+                "claim_id": "c1",
+                "claim_text": "Evolution is a change in the gene pool of a population over time.",
+                "source_observation_ids": ["o1"],
+                "metadata": {},
+            }
+        ],
+        "relations": [],
+        "supporting_observations": [{"observation_id": "o1", "text": "Evolution is a change in the gene pool of a population over time."}],
+        "source_artifacts": [{"artifact_id": "a1", "title": "doc"}],
+        "related_concepts": [],
+    }
+    (canonical / "query_bundle__gene-pool.json").write_text(json.dumps(placeholder_payload))
+    (canonical / "query_bundle__variation.json").write_text(json.dumps(source_payload))
+
+    manifest = tmp_path / "manifest.yaml"
+    manifest.write_text(
+        """
+promotion_priority:
+  tier_3:
+    - concept: gene-pool
+      label: Gene Pool
+      compose_from:
+        bundle_refs:
+          - query_bundle__variation.json
+        keyword_phrases:
+          - gene pool
+"""
+    )
+
+    run_first_ring_batch_promotion(manifest, canonical)
+    report = json.loads((canonical / "first_ring_batch_promotion_report.json").read_text())
+    statuses = {item["concept"]: item["status"] for item in report["generated"]}
+    assert statuses["gene-pool"] == "synthesized"
+    synth = json.loads((canonical / "query_bundle__gene-pool.json").read_text())
+    assert len(synth["relevant_claims"]) == 1
