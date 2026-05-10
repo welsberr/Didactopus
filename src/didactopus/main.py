@@ -10,6 +10,7 @@ from .groundrecall_pack_bridge import run_doclift_bundle_with_groundrecall
 from .augmentation_bundle_probe import write_probe_report
 from .archive_phrase_inventory import write_archive_phrase_inventory_report
 from .first_ring_batch_promotion import run_first_ring_batch_promotion
+from .hub_bundle_rebuild import rebuild_hub_bundle_from_binding
 from .notebook_page import export_notebook_page_from_groundrecall_bundle
 from .notebook_page import export_notebook_page_from_groundrecall_store
 from .review_loader import load_draft_pack
@@ -93,6 +94,12 @@ def build_parser() -> argparse.ArgumentParser:
     first_ring_parser.add_argument("manifest_path")
     first_ring_parser.add_argument("canonical_dir")
     first_ring_parser.add_argument("--output-dir")
+
+    hub_rebuild_parser = subparsers.add_parser(
+        "hub-bundle-rebuild",
+        help="Rebuild a hub bundle support layer from the bundle paths listed in a hub binding manifest",
+    )
+    hub_rebuild_parser.add_argument("binding_path")
     return parser
 
 
@@ -203,6 +210,10 @@ def main() -> None:
             args.canonical_dir,
             args.output_dir,
         )
+        print(summary)
+        return
+    if args.command == "hub-bundle-rebuild":
+        summary = rebuild_hub_bundle_from_binding(args.binding_path)
         print(summary)
         return
     build_parser().print_help()
