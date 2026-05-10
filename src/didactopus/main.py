@@ -8,6 +8,7 @@ from .config import load_config
 from .doclift_bundle_demo import run_doclift_bundle_demo
 from .groundrecall_pack_bridge import run_doclift_bundle_with_groundrecall
 from .augmentation_bundle_probe import write_probe_report
+from .archive_phrase_inventory import write_archive_phrase_inventory_report
 from .notebook_page import export_notebook_page_from_groundrecall_bundle
 from .notebook_page import export_notebook_page_from_groundrecall_store
 from .review_loader import load_draft_pack
@@ -74,6 +75,15 @@ def build_parser() -> argparse.ArgumentParser:
     augmentation_probe_parser.add_argument("augmentation_bundle")
     augmentation_probe_parser.add_argument("groundrecall_query_bundle")
     augmentation_probe_parser.add_argument("output_path")
+
+    phrase_inventory_parser = subparsers.add_parser(
+        "archive-phrase-inventory",
+        help="Extract and rank repeated phrase candidates from archive-style source bundles",
+    )
+    phrase_inventory_parser.add_argument("output_path")
+    phrase_inventory_parser.add_argument("input_paths", nargs="+")
+    phrase_inventory_parser.add_argument("--seed-term", action="append", default=[])
+    phrase_inventory_parser.add_argument("--top-n", type=int, default=50)
     return parser
 
 
@@ -166,6 +176,15 @@ def main() -> None:
             args.augmentation_bundle,
             args.groundrecall_query_bundle,
             args.output_path,
+        )
+        print(summary)
+        return
+    if args.command == "archive-phrase-inventory":
+        summary = write_archive_phrase_inventory_report(
+            args.input_paths,
+            args.output_path,
+            seed_terms=args.seed_term,
+            top_n=args.top_n,
         )
         print(summary)
         return
