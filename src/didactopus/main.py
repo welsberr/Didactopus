@@ -11,6 +11,7 @@ from .augmentation_bundle_probe import write_probe_report
 from .archive_phrase_inventory import write_archive_phrase_inventory_report
 from .first_ring_batch_promotion import run_first_ring_batch_promotion
 from .hub_bundle_rebuild import rebuild_hub_bundle_from_binding
+from .notebook_promotion_pipeline import run_notebook_promotion_pipeline
 from .notebook_page import export_notebook_page_from_groundrecall_bundle
 from .notebook_page import export_notebook_page_from_groundrecall_store
 from .review_loader import load_draft_pack
@@ -100,6 +101,19 @@ def build_parser() -> argparse.ArgumentParser:
         help="Rebuild a hub bundle support layer from the bundle paths listed in a hub binding manifest",
     )
     hub_rebuild_parser.add_argument("binding_path")
+
+    pipeline_parser = subparsers.add_parser(
+        "notebook-promotion-pipeline",
+        help="Run the Notebook phrase-inventory, batch-promotion, and hub-rebuild loop and write a comparison report",
+    )
+    pipeline_parser.add_argument("binding_path")
+    pipeline_parser.add_argument("manifest_path")
+    pipeline_parser.add_argument("canonical_dir")
+    pipeline_parser.add_argument("output_path")
+    pipeline_parser.add_argument("--phrase-inventory-output")
+    pipeline_parser.add_argument("--phrase-input", action="append", default=[])
+    pipeline_parser.add_argument("--seed-term", action="append", default=[])
+    pipeline_parser.add_argument("--top-n", type=int, default=50)
     return parser
 
 
@@ -214,6 +228,19 @@ def main() -> None:
         return
     if args.command == "hub-bundle-rebuild":
         summary = rebuild_hub_bundle_from_binding(args.binding_path)
+        print(summary)
+        return
+    if args.command == "notebook-promotion-pipeline":
+        summary = run_notebook_promotion_pipeline(
+            binding_path=args.binding_path,
+            manifest_path=args.manifest_path,
+            canonical_dir=args.canonical_dir,
+            output_path=args.output_path,
+            phrase_inventory_output=args.phrase_inventory_output,
+            phrase_inputs=args.phrase_input,
+            seed_terms=args.seed_term,
+            top_n=args.top_n,
+        )
         print(summary)
         return
     build_parser().print_help()
