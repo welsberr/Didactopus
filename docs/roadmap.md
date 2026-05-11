@@ -232,6 +232,58 @@ Immediate next steps:
   incidental metadata
 - connect Notebook concept neighborhoods more directly to learner-session
   grounding and practice generation
+- add a project-level `.groundrecall/work-map.{json,md}` convention so active
+  source roots, export roots, temp builds, and deployment targets stay easy to
+  find across long-running modernization work
+- extend Notebook-related terminology work into bibliography/index workflows:
+  - expand TOA/CiteGeist keyword and keyphrase coverage for Notebook concepts
+  - use book-index terminology as an authoritative signal for concept ranking
+  - allow opposition-index terminology to raise salience without raising
+    authority score
+- add citation-coverage triage for public-facing pages:
+  - `citation_missing`
+  - `citation_thin`
+  - `citation_rich`
+- use visible citation blocks for pages that do not yet have full citation
+  support
+
+### 8a. Timeline framework for Archive modernization
+
+Status: planned
+
+Why it matters:
+
+- The Archive needs a structured chronology path for publications, court cases,
+  educational milestones, and controversy events.
+- A timeline is useful even before the full citation graph and Notebook link
+  structure are complete.
+- A timeline framework is realistic for rollout, even if deep expansion is a
+  post-rollout task.
+
+Near-term scope:
+
+- support timeline entry types:
+  - `publication`
+  - `case`
+  - `event`
+- support multiple time granularities:
+  - exact date
+  - year
+  - date range
+  - decade
+  - century
+  - deep-time epoch
+- seed a small set of high-value entries for public launch
+- connect timeline entries to Notebook concepts, citation status, and later
+  evidence-docket expansion
+
+Longer-term scope:
+
+- add aggregate entries for years, decades, and centuries
+- add deep-time scientific chronology back through geological eras and major
+  life-history milestones
+- connect publications to open-access links, cites/cited-by expansion, and
+  opposition-response dockets
 
 ### 9. Pack quality, review, and concept-graph curation improvements
 

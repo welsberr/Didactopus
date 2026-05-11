@@ -219,6 +219,22 @@ The next practical Didactopus sequence should be:
 3. upgrade `notebook_page` to summarize hub, neighborhood, and secondary lanes
 4. expose secondary-product and distinction views in learner/workbench flows
 5. enforce explicit public citation and quote-marking contracts
+6. keep a `.groundrecall/work-map` in active projects so source roots,
+   temporary builds, exports, and deployment targets remain easy to locate
+
+## Related modernization tasks
+
+The Notebook work now clearly depends on adjacent modernization tasks:
+
+- expand bibliography keyword/keyphrase coverage so CiteGeist and TOA
+  bibliography support reflect Notebook terminology
+- harvest terminology from book indexes as a separate authoritative signal
+- ingest opposition-index terminology as a salience signal with lower authority
+  weight
+- attach citation-block fallbacks to pages that are not yet citation-complete
+- schedule citation expansion for pages that already have some citations
+- keep a timeline framework in scope for rollout even if the fuller timeline
+  graph is a later phase
 
 ## What the pilot changed
 
