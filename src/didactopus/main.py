@@ -12,6 +12,7 @@ from .archive_phrase_inventory import write_archive_phrase_inventory_report
 from .first_ring_batch_promotion import run_first_ring_batch_promotion
 from .hub_bundle_rebuild import rebuild_hub_bundle_from_binding
 from .notebook_promotion_pipeline import run_notebook_promotion_pipeline
+from .notebook_workmap_refresh import run_notebook_workmap_refresh
 from .notebook_page import export_notebook_page_from_groundrecall_bundle
 from .notebook_page import export_notebook_page_from_groundrecall_store
 from .review_loader import load_draft_pack
@@ -114,6 +115,15 @@ def build_parser() -> argparse.ArgumentParser:
     pipeline_parser.add_argument("--phrase-input", action="append", default=[])
     pipeline_parser.add_argument("--seed-term", action="append", default=[])
     pipeline_parser.add_argument("--top-n", type=int, default=50)
+
+    workmap_parser = subparsers.add_parser(
+        "notebook-workmap-refresh",
+        help="Run the Notebook promotion pipeline from a project work-map so active paths do not need to be reassembled by hand",
+    )
+    workmap_parser.add_argument("work_map_path")
+    workmap_parser.add_argument("--output-path")
+    workmap_parser.add_argument("--phrase-inventory-output")
+    workmap_parser.add_argument("--top-n", type=int, default=50)
     return parser
 
 
@@ -239,6 +249,15 @@ def main() -> None:
             phrase_inventory_output=args.phrase_inventory_output,
             phrase_inputs=args.phrase_input,
             seed_terms=args.seed_term,
+            top_n=args.top_n,
+        )
+        print(summary)
+        return
+    if args.command == "notebook-workmap-refresh":
+        summary = run_notebook_workmap_refresh(
+            args.work_map_path,
+            output_path=args.output_path,
+            phrase_inventory_output=args.phrase_inventory_output,
             top_n=args.top_n,
         )
         print(summary)
