@@ -8,6 +8,12 @@ from .config import load_config
 from .graph_retrieval import lesson_titles_for_concept, prerequisite_titles, source_fragments_for_concept
 from .model_provider import ModelProvider
 from .ocw_skill_agent_demo import load_ocw_skill_context
+from .provider_policy import (
+    effective_provider_for_kind,
+    healthy_gateway_models,
+    provider_diagnostics_for_kind,
+    resolve_role_model_overrides,
+)
 from .role_prompts import evaluator_system_prompt, learner_system_prompt, mentor_system_prompt, practice_system_prompt
 
 
@@ -182,49 +188,29 @@ def _grounding_text_for_title(context, title: str) -> str:
     return "\n".join(lines)
 
 
+def _healthy_gateway_models(provider: ModelProvider) -> set[str]:
+    return healthy_gateway_models(provider)
+
+
+def _apply_gateway_fallbacks(provider: ModelProvider) -> dict[str, str]:
+    return resolve_role_model_overrides(provider, kind="chat")
+
+
 def _healthy_rolemesh_models(provider: ModelProvider) -> set[str]:
-    config = provider.config
-    if config.provider.lower() != "rolemesh":
-        return set()
-    models = set(config.rolemesh.role_to_model.values()) | {config.rolemesh.default_model}
-    healthy: set[str] = set()
-    for model in models:
-        try:
-            provider._rolemesh_chat_completion(  # type: ignore[attr-defined]
-                {
-                    "model": model,
-                    "messages": [{"role": "user", "content": "Reply with ok."}],
-                    "max_tokens": 16,
-                    "temperature": 0.0,
-                }
-            )
-            healthy.add(model)
-        except Exception:
-            continue
-    return healthy
+    return _healthy_gateway_models(provider)
 
 
 def _apply_rolemesh_fallbacks(provider: ModelProvider) -> dict[str, str]:
-    config = provider.config
-    if config.provider.lower() != "rolemesh":
-        return {}
-    healthy = _healthy_rolemesh_models(provider)
-    if not healthy:
-        raise RuntimeError("No healthy RoleMesh models available for transcript generation.")
-    fallback_model = config.rolemesh.default_model if config.rolemesh.default_model in healthy else sorted(healthy)[0]
-    adjusted = {}
-    for role, model in list(config.rolemesh.role_to_model.items()):
-        if model not in healthy:
-            config.rolemesh.role_to_model[role] = fallback_model
-            adjusted[role] = fallback_model
-    return adjusted
+    return _apply_gateway_fallbacks(provider)
 
 
 def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path) -> dict:
     config = load_config(config_path)
     provider = ModelProvider(config.model_provider)
+    effective_provider = effective_provider_for_kind(provider, kind="chat")
     context = load_ocw_skill_context(skill_dir)
-    role_fallbacks = _apply_rolemesh_fallbacks(provider)
+    model_fallbacks = effective_provider.role_model_overrides
+    provider_diagnostics = provider_diagnostics_for_kind(provider, kind="chat")
     status_updates: list[str] = []
 
     def emit_status(message: str) -> None:
@@ -240,7 +226,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
     turns.append(_format_turn("user", "Learner Goal", goal))
 
     mentor_open = _generate_checked(
-        provider,
+        effective_provider,
         "The learner wants to approach the Information and Entropy course carefully. "
         "Ask a short opening question that checks what they already understand and points them to the first concept.",
         role="mentor",
@@ -254,7 +240,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
     turns.append(_format_turn("assistant", "Didactopus Mentor", mentor_open))
 
     learner_reflection = _generate_checked(
-        provider,
+        effective_provider,
         "Respond as the learner. Mention partial understanding of randomness and probability, but uncertainty about "
         "how that becomes entropy and communication limits in information theory.",
         role="learner",
@@ -268,7 +254,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
     turns.append(_format_turn("assistant", "AI Learner", learner_reflection))
 
     mentor_guidance = _generate_checked(
-        provider,
+        effective_provider,
         f"{_grounding_text_for_title(context, path_titles[1])}\n\n"
         f"{_grounding_text_for_title(context, path_titles[2])}\n\n"
         "Given the learner reflection, explain the first two concepts to study from the generated path and why. "
@@ -284,7 +270,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
     turns.append(_format_turn("assistant", "Didactopus Mentor", mentor_guidance))
 
     practice_task = _generate_checked(
-        provider,
+        effective_provider,
         f"{_grounding_text_for_title(context, path_titles[1])}\n\n"
         f"{_grounding_text_for_title(context, path_titles[2])}\n\n"
         "Generate one short practice task that forces the learner to connect counting/probability with Shannon entropy, "
@@ -300,7 +286,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
     turns.append(_format_turn("assistant", "Didactopus Practice Designer", practice_task))
 
     learner_attempt = _generate_checked(
-        provider,
+        effective_provider,
         f"Respond as the learner attempting this task in information theory: {practice_task} "
         "Give a concise answer in your own words, with one uncertainty still present.",
         role="learner",
@@ -369,7 +355,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
 
     for stage in stage_specs:
         mentor_stage = _generate_checked(
-            provider,
+            effective_provider,
             f"{_grounding_text_for_title(context, stage['grounding_title'])}\n\n"
             f"The learner is continuing through the MIT OCW Information and Entropy course. "
             f"Bridge from the previous work into {stage['topic']}. "
@@ -386,7 +372,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
         turns.append(_format_turn("assistant", "Didactopus Mentor", mentor_stage))
 
         learner_stage = _generate_checked(
-            provider,
+            effective_provider,
             f"Respond as the learner after studying {stage['topic']}. "
             f"Summarize what now makes sense and one remaining difficulty about {stage['practice_anchor']}.",
             role="learner",
@@ -400,7 +386,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
         turns.append(_format_turn("assistant", "AI Learner", learner_stage))
 
         practice_stage = _generate_checked(
-            provider,
+            effective_provider,
             f"{_grounding_text_for_title(context, stage['grounding_title'])}\n\n"
             f"Create one short reasoning task about {stage['practice_anchor']} for the learner. "
             "Keep it course-relevant and do not provide the full solution.",
@@ -415,7 +401,7 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
         turns.append(_format_turn("assistant", "Didactopus Practice Designer", practice_stage))
 
         evaluator_stage = _generate_checked(
-            provider,
+            effective_provider,
             f"{_grounding_text_for_title(context, stage['grounding_title'])}\n\n"
             f"Give short evaluator feedback on this learner reflection in the context of {stage['topic']}: "
             f"{learner_stage}\nTask context: {practice_stage}",
@@ -435,7 +421,9 @@ def build_ocw_rolemesh_transcript(config_path: str | Path, skill_dir: str | Path
         "course": context.pack.get("display_name", context.pack.get("name", "")),
         "curriculum_path_titles": path_titles,
         "graph_grounding_summary": context.run_summary.get("knowledge_graph_summary", {}),
-        "role_fallbacks": role_fallbacks,
+        "model_fallbacks": model_fallbacks,
+        "role_fallbacks": model_fallbacks,
+        "provider_diagnostics": provider_diagnostics,
         "status_updates": status_updates,
         "transcript": turns,
     }

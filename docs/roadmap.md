@@ -4,6 +4,13 @@ This document summarizes the current prioritized improvement roadmap for Didacto
 
 The ordering is intentional. The project should first strengthen the graph-grounded mentor loop that defines the real learner task, then use that stable backbone for local-model evaluation, accessibility work, and broader UX improvements.
 
+Access-constrained education is now treated as a core design pressure. The
+system should be able to serve learners who lack reliable tutors, institutional
+support, cloud access, or safe public access to education. That does not mean
+Didactopus can promise secrecy or personal safety in hostile environments; it
+means offline-first operation, privacy-preserving defaults, low-expertise
+stewardship, and reviewed learning packs must shape the roadmap.
+
 ## Priorities
 
 ### 1. Graph-grounded conversational mentor loop
@@ -20,6 +27,9 @@ Near-term scope:
 
 - continue strengthening the learner session backend
 - make mentor, practice, and evaluator turns consistently source-grounded
+- implement the mentoring process contract in `docs/mentoring-operational-process.md`
+- use study-aid records as layered overlays rather than source replacements
+- add claim-alignment and citation-support practice where the domain calls for it
 - improve trust-preserving feedback behavior
 - extend the session flow beyond one short interaction
 
@@ -43,16 +53,102 @@ Why next:
 Primary questions:
 
 - Which models are adequate for `mentor`, `practice`, and `evaluator` roles?
+- Which smaller models are useful as AI learner stand-ins for source-specific
+  mentorship experiments?
 - What latency, memory, and throughput are acceptable on Raspberry Pi-class hardware?
 - Which roles can degrade gracefully to smaller models?
+- How much does mentorship improve groundedness, calibration, transfer, and
+  hallucination resistance?
 
 Expected outputs:
 
 - benchmark tasks grounded in the MIT OCW pack
 - per-role adequacy scores
+- source-blind pretest, posttest, transfer, and retention runs for AI learners
+- `scored_claims.csv` exports for practical `G` estimation
+- groundedness reports comparing pre- and post-mentorship behavior
 - recommended deployment profiles for low-end, laptop, and stronger local systems
 
-### 3. Accessibility-first learner interaction
+Current anchors:
+
+- `docs/ai-learner-mentorship-benchmark.md`
+- `docs/pedagogical-research-alignment.md`
+- `didactopus.ai_learner_benchmark`
+- `didactopus.source_spine_transfer_experiment`
+
+### 3. Access-constrained offline learner appliance
+
+Status: planned
+
+Why high priority:
+
+- Learners in under-resourced or hostile settings may not be able to rely on
+  human tutors, cloud services, or public institutional support.
+- Reducing dependence on technically privileged operators is part of the
+  educational mission, not only a packaging concern.
+- Offline-first, local-only operation improves privacy and resilience even for
+  ordinary personal learning.
+
+Target features:
+
+- repeatable single-machine learner-node profile
+- no default telemetry or automatic remote calls
+- local-only learner ledger by default
+- local search and local model routing
+- setup health check and "ready for learning" report
+- explicit labeling of remote routes when enabled
+- plain-language steward documentation
+- local export, archive, and deletion workflows for learner records
+
+Current anchors:
+
+- `docs/access-constrained-mentoring.md`
+- `docs/deployment-modes.md`
+- `docs/interoperability-and-feature-adoption.md`
+
+### 4. Pack capsules and low-bandwidth distribution
+
+Status: planned
+
+Why this follows the appliance:
+
+- An offline learner appliance is only useful if it can receive reviewed,
+  immediately usable learning material.
+- Pack distribution must not assume Git, Python, or continuous internet access.
+
+Target features:
+
+- pack capsule manifest with content, license, checksums, language,
+  accessibility features, model requirements, and review status
+- import from local directory, archive file, or removable media
+- signed pack verification when signing infrastructure exists
+- printable learner and steward guides generated from pack metadata
+- low-bandwidth update bundles and local mirror support
+- reviewed coverage ledgers that say what a pack does and does not teach
+- boundary adapters for Common Cartridge, QTI, EPUB, ZIM/static web bundles,
+  and H5P package metadata where mappings are reliable
+
+### 5. Steward experience and maintenance
+
+Status: planned
+
+Why this matters:
+
+- A deployment model that requires a sophisticated technologist at every site
+  will not solve the access problem.
+- The practical operator should become a local steward, not necessarily an
+  expert system administrator.
+
+Target features:
+
+- installer profiles for single learner, shared device, small LAN, and kiosk
+- plain-language diagnostics for model, disk, pack integrity, and offline mode
+- backup, restore, export, deletion, update, and repair workflows
+- recovery path for corrupted indexes, missing models, and failed imports
+- advanced configuration still available for expert maintainers but not
+  required for normal operation
+
+### 6. Accessibility-first learner interaction
 
 Status: planned
 
@@ -69,7 +165,7 @@ Target features:
 - text-first navigation of concept neighborhoods and progress
 - explicit structural cues in explanations and feedback
 
-### 4. Voice interaction with local STT and TTS
+### 7. Voice interaction with local STT and TTS
 
 Status: planned
 
@@ -85,7 +181,7 @@ Target features:
 - spoken waiting notices during slow local-model responses
 - repeat, interrupt, and slow-down controls
 
-### 5. Learner workbench UI
+### 8. Learner workbench UI
 
 Status: planned
 
@@ -103,7 +199,7 @@ Target features:
 - evaluator feedback
 - recommended next step
 
-### 6. Adaptive diagnostics and practice refinement
+### 9. Adaptive diagnostics and practice refinement
 
 Status: planned
 
@@ -120,7 +216,7 @@ Target features:
 - hint ladders and difficulty control
 - oral, short-answer, and compare-and-contrast practice modes
 
-### 7. Source-grounded citation transparency
+### 10. Source-grounded citation transparency
 
 Status: planned
 
@@ -135,7 +231,7 @@ Target features:
 - explicit distinction between cited source support and model inference
 - easier inspection of concept-to-source provenance
 
-### 8. Pack quality, review, and concept-graph curation improvements
+### 11. Pack quality, review, and concept-graph curation improvements
 
 Status: planned
 
@@ -152,7 +248,7 @@ Target features:
 - stronger review support for noisy or broad concepts
 - improved source coverage QA
 
-### 9. Incremental re-ingestion and course updates
+### 12. Incremental re-ingestion and course updates
 
 Status: planned
 
@@ -168,7 +264,26 @@ Target features:
 - graph and pack diffs
 - preservation of learner evidence across source updates
 
-### 10. Richer multimodal and notation support
+### 13. Human pilot and field-readiness evaluation
+
+Status: planned
+
+Why later:
+
+- The mentoring loop, offline appliance, pack capsules, and privacy defaults
+  need to be stable before higher-risk or access-constrained pilots.
+- Human-rights-sensitive deployments require local social, legal, and personal
+  risk assessment beyond normal product testing.
+
+Target features:
+
+- low-risk pilots before any high-risk deployment
+- learning evaluation with pretest, posttest, retention, and calibration
+- steward-maintenance friction measures
+- privacy and data-retention review
+- red-team review for unsafe model behavior and accidental remote exposure
+
+### 14. Richer multimodal and notation support
 
 Status: longer-term
 
@@ -189,13 +304,23 @@ Examples:
 - Optimize for guided learning, not answer offloading.
 - Prefer role-adequate local models over chasing a single best model.
 - Keep accessibility and low-cost deployment in scope from the start, not as cleanup work.
+- Treat access-constrained education as a core deployment concern.
+- Make offline-first and no-telemetry defaults the basic learner-node posture.
+- Reduce operator privilege requirements through steward-friendly setup and
+  maintenance paths.
 - Preserve provenance and license compliance as first-class constraints.
+- Do not promise secrecy, anonymity, or legal safety for hostile environments.
 
 ## Suggested Implementation Sequence
 
 1. Strengthen `didactopus.learner_session` into the standard session backend.
 2. Build a small model-benchmark harness around that backend.
-3. Add accessible learner HTML and text-first outputs.
-4. Add local TTS and STT support to the same session flow.
-5. Expand adaptive practice and diagnostics.
-6. Improve review, impact analysis, and incremental update support.
+3. Prototype the offline learner appliance profile with local-only defaults.
+4. Define pack capsules and low-bandwidth import/export workflows.
+5. Add steward health checks and maintenance commands.
+6. Build the standards registry and first Common Cartridge/QTI/xAPI mapping
+   crosswalks.
+7. Add accessible learner HTML and text-first outputs.
+8. Add local TTS and STT support to the same session flow.
+9. Expand adaptive practice and diagnostics.
+10. Improve review, impact analysis, and incremental update support.

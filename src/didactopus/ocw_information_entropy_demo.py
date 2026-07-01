@@ -7,7 +7,7 @@ from .agentic_loop import AgenticStudentState, integrate_attempt
 from .artifact_registry import validate_pack
 from .course_ingestion_compliance import build_pack_compliance_manifest, load_sources, write_manifest
 from .course_repo import bootstrap_course_repo, resolve_course_repo
-from .document_adapters import adapt_documents
+from .document_adapters import adapt_documents, canonical_source_path
 from .evaluator_pipeline import LearnerAttempt
 from .graph_builder import build_concept_graph
 from .mastery_ledger import (
@@ -77,6 +77,7 @@ def _write_skill_bundle(
     run_dir: Path,
     concept_path: list[str],
     mastered_concepts: list[str],
+    display_roots: tuple[Path, ...] = (),
 ) -> None:
     references_dir = skill_dir / "references"
     assets_dir = skill_dir / "assets" / "generated"
@@ -99,8 +100,8 @@ def _write_skill_bundle(
     summary_lines = [
         "# Generated Course Summary",
         "",
-        f"- Pack dir: `{pack_dir}`",
-        f"- Run dir: `{run_dir}`",
+        f"- Pack dir: `{_display_path(pack_dir, *display_roots)}`",
+        f"- Run dir: `{_display_path(run_dir, *display_roots)}`",
         "",
         "## Curriculum Path Used By The Demo Learner",
     ]
@@ -133,6 +134,34 @@ def _select_target_concept(pack_name: str, concepts: list, preferred_id: str = "
     if not ids:
         raise ValueError("No concept candidates available to select as target.")
     return f"{pack_name}::{ids[-1]}"
+
+
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
+
+
+def _is_relative_to(path: Path, root: Path) -> bool:
+    try:
+        path.resolve().relative_to(root.resolve())
+        return True
+    except ValueError:
+        return False
+
+
+def _source_display_root(course_source: Path) -> Path:
+    repo_root = _repo_root()
+    if _is_relative_to(course_source, repo_root):
+        return repo_root
+    return course_source.parent
+
+
+def _display_path(path: str | Path, *roots: str | Path) -> str:
+    path_text = str(path)
+    for root in roots:
+        rendered = canonical_source_path(path, root)
+        if rendered != path_text:
+            return rendered
+    return path_text
 
 
 def resolve_ocw_demo_paths(
@@ -199,8 +228,10 @@ def run_ocw_information_entropy_demo(
     pack_dir = Path(pack_dir)
     run_dir = Path(run_dir)
     skill_dir = Path(skill_dir)
+    source_display_root = _source_display_root(course_source)
+    summary_roots = (source_display_root, _repo_root())
 
-    docs = adapt_documents(course_source)
+    docs = adapt_documents(course_source, display_root=source_display_root)
     if not docs:
         raise ValueError(f"No supported source documents found under {course_source}")
     courses = [document_to_course(doc, "MIT OCW Information and Entropy") for doc in docs]
@@ -257,11 +288,11 @@ def run_ocw_information_entropy_demo(
     export_artifact_manifest(profile, str(run_dir / "artifact_manifest.json"))
 
     summary = {
-        "course_source": str(course_source),
+        "course_source": _display_path(course_source, *summary_roots),
         "source_document_count": len(docs),
-        "pack_dir": str(pack_dir),
-        "skill_dir": str(skill_dir),
-        "source_inventory": str(source_inventory),
+        "pack_dir": _display_path(pack_dir, *summary_roots),
+        "skill_dir": _display_path(skill_dir, *summary_roots),
+        "source_inventory": _display_path(source_inventory, *summary_roots),
         "review_flags": list(ctx.review_flags),
         "concept_count": len(ctx.concepts),
         "source_fragment_count": len(json.loads((pack_dir / "source_corpus.json").read_text(encoding="utf-8")).get("fragments", [])),
@@ -273,11 +304,11 @@ def run_ocw_information_entropy_demo(
     }
     compliance_path = pack_dir / "pack_compliance_manifest.json"
     if compliance_path.exists():
-        summary["compliance_manifest"] = str(compliance_path)
+        summary["compliance_manifest"] = _display_path(compliance_path, *summary_roots)
         summary["compliance"] = json.loads(compliance_path.read_text(encoding="utf-8"))
     (run_dir / "run_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
-    _write_skill_bundle(skill_dir, pack_dir, run_dir, concept_path, summary["mastered_concepts"])
+    _write_skill_bundle(skill_dir, pack_dir, run_dir, concept_path, summary["mastered_concepts"], display_roots=summary_roots)
     return summary
 
 

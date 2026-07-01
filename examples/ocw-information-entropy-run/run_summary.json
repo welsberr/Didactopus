@@ -11,6 +11,12 @@
   ],
   "concept_count": 34,
   "source_fragment_count": 60,
+  "knowledge_graph_summary": {
+    "node_count": 98,
+    "edge_count": 178,
+    "concept_count": 34,
+    "source_count": 3
+  },
   "target_concept": "mit-ocw-information-and-entropy::thermodynamics-and-entropy",
   "curriculum_path": [
     "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-course-home",

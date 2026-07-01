@@ -31,7 +31,7 @@ Then open:
 - `examples/ocw-information-entropy-run/learner_progress.html`
 - `examples/ocw-information-entropy-session.json`
 - `examples/ocw-information-entropy-skill-demo/skill_demo.md`
-- `examples/ocw-information-entropy-rolemesh-transcript/rolemesh_transcript.md`
+- `examples/ocw-information-entropy-provider-transcript/provider_transcript.md`
 - `skills/ocw-information-entropy-agent/`
 
 That gives you:
@@ -73,6 +73,7 @@ python -m didactopus.ocw_information_entropy_demo
 python -m didactopus.learner_session_demo
 python -m didactopus.ocw_progress_viz
 python -m didactopus.ocw_progress_viz --full-map
+python -m didactopus.provider_inspect --config configs/config.geniehive.example.yaml
 ```
 
 4. Run the "agent uses the learned skill" demo:
@@ -96,7 +97,7 @@ What you get:
 - a capability export
 - a reusable skill bundle
 - visual progress artifacts
-- an optional local-LLM learner/mentor transcript path via RoleMesh
+- an optional local-LLM learner/mentor transcript path via a gateway-backed provider such as GenieHive
 
 This is the best "show me why this is fun" path in the current repo.
 
@@ -106,7 +107,7 @@ If you already have notes, a syllabus, or a course outline, the lightest custom 
 
 1. Put the material in a Markdown or text file.
 2. Adapt and ingest it through the course/topic pipeline.
-3. Emit a draft pack.
+3. Emit a draft pack and the Notebook/course bundle artifacts that a learner-facing surface will need.
 4. Review only what matters.
 
 The easiest reference for this flow is the OCW demo source tree:
@@ -116,6 +117,40 @@ The easiest reference for this flow is the OCW demo source tree:
 Use it as a template for your own topic, then follow the same pattern implemented in:
 
 - `didactopus.ocw_information_entropy_demo`
+
+The important boundary is that ingestion should not stop at an internal pack.
+For Notebook-style material, the target bundle should also include concept
+pages, scaffold JSON, learning-path artifacts, and policy artifacts that
+Didactopus can consume later. The current bundle contract is:
+
+- `notebook/notebook-course-bundle-contract.json`
+- `notebook/notebook-pack-mode-contract.json`
+- `notebook/notebook-export-manifest.json`
+
+That second contract makes the product modes explicit:
+
+- `pack` mode: structured metadata and graph outputs that keep the learner tied closely to source materials
+- `notebook` mode: accumulated reviewed explanatory content that can support study more independently
+- `hybrid` mode: pack backbone plus selectively expanded Notebook treatment
+
+The export manifest matters because it distinguishes:
+
+- workspace state: Notebook source artifacts exist locally
+- export state: the reviewed learner-facing and machine-readable bundle is present together and ready for deployment or downstream consumption
+
+The Notebook side now also has a single-entry local build/check wrapper:
+
+- `python3 notebook/tools/build_notebook_bundle.py`
+
+That command regenerates the Notebook export manifest/index and runs the export
+and public-surface regression checks for the current bundle.
+
+There is also a publish-side companion:
+
+- `python3 notebook/tools/publish_notebook_bundle.py`
+
+That command runs the Notebook build/check wrapper and then publishes the
+reviewed Notebook surface to the configured evo-edu.org deployment target.
 
 ### If you want a mentor more than a curation tool
 
@@ -181,6 +216,106 @@ That demo builds a graph-grounded session from the MIT OCW skill bundle and emit
 - a recommended next step
 
 The point of this module is architectural as much as demonstrational: it is the session core that future accessibility, model-benchmark, and voice-interaction work should build on.
+
+Reasoning scaffolds are meant to improve this flow materially. When a reviewed
+scaffold is available, it should help shape the mentor's opening question, the
+evidence check requested from the learner, the misconception pattern to guard
+against, and the revision step suggested next.
+
+The current operational target for mentor behavior is documented in
+`docs/mentoring-operational-process.md`. In short, the mentor should use
+source-grounded study-aid layers, worked examples, retrieval prompts, argument
+records, and citation checks to help the learner attempt and revise work
+without hiding provenance or substituting for the learner's thinking.
+
+For local-model research, the companion plan is
+`docs/ai-learner-mentorship-benchmark.md`. That process treats local LLMs as
+learner stand-ins, runs source-blind pretests before mentorship, measures
+hallucination and calibration, then exports claim-level rows suitable for the
+practical `G` grounding estimator.
+
+The same learner-session surface can now also run from a reviewed Notebook path
+contract instead of only the OCW skill graph:
+
+```bash
+PYTHONPATH=src python3 -m didactopus.learner_session_demo \
+  --sequence notebook/learning-paths/foundations-first-ring.didactopus.json \
+  --step-index 0
+```
+
+That keeps the same session payload shape while grounding the mentor/practice/
+evaluation flow in one step of the Notebook-backed concept sequence.
+
+If you want a deterministic session-plan input from the current evo-edu
+Notebook path contract, use:
+
+```bash
+PYTHONPATH=src python3 -m didactopus.main sequence-plan \
+  --sequence notebook/learning-paths/foundations-first-ring.didactopus.json
+```
+
+That turns the reviewed Notebook sequence into a mentorship-oriented plan with
+per-step session goals, mentor openings, evidence focus, and transition cues.
+
+If you want the same output as a dedicated demo artifact, use:
+
+```bash
+PYTHONPATH=src python3 -m didactopus.notebook_learning_sequence_demo
+```
+
+That writes a deterministic session-plan JSON under `examples/` using the
+current Notebook first-ring sequence contract.
+
+The scaffold-record ranking used for Notebook-backed session planning is now
+loaded from the Notebook side:
+
+- `notebook/learning-paths/foundations-first-ring.selection-policy.json`
+
+That keeps the mentoring logic generic: sequence order comes from the Notebook,
+concept-local reasoning aids come from scaffold files, and record-selection
+policy can evolve without further hard-coding source-specific rules into the
+session builder.
+
+### Current provider inspection path
+
+If you want to see how Didactopus currently resolves gateway-backed roles without running a full transcript or learner session, use:
+
+```bash
+python -m didactopus.provider_inspect --config configs/config.geniehive.example.yaml
+```
+
+Or through the umbrella CLI:
+
+```bash
+python -m didactopus.main provider-inspect --config configs/config.geniehive.example.yaml
+```
+
+That emits the current provider diagnostics payload, including:
+
+- healthy model and role aliases
+- selected fallback model
+- effective role-model overrides
+- resolved route/service details for each configured role
+
+GroundRecall now also has an internal namespace and umbrella CLI surface:
+
+```bash
+python -m didactopus.groundrecall.cli inspect /path/to/groundrecall-store
+python -m didactopus.groundrecall.cli query /path/to/groundrecall-store "channel capacity"
+```
+
+## Local Test Note
+
+If you have multiple local `Didactopus` checkouts or an older editable install,
+plain `pytest` may import the wrong package tree. For source-of-truth local
+verification, prefer:
+
+```bash
+PYTHONPATH=src python3 -m pytest tests/test_learner_session.py
+```
+
+That ensures the learner-session and scaffold-adjacent tests run against the
+current checkout rather than a stale installed copy.
 
 ## What Is In This Repository
 
@@ -356,36 +491,36 @@ The generated MIT OCW pack also includes:
 - `pack_compliance_manifest.json`
 - `source_inventory.yaml`
 
-### Try the local RoleMesh integration path
+### Try the local gateway integration path
 
 Stubbed local-provider demo:
 
 ```bash
-python -m didactopus.rolemesh_demo --config configs/config.example.yaml
+python -m didactopus.gateway_demo --config configs/config.example.yaml
 ```
 
-RoleMesh-backed example config:
+GenieHive-backed example config:
 
 ```bash
-python -m didactopus.rolemesh_demo --config configs/config.rolemesh.example.yaml
+python -m didactopus.gateway_demo --config configs/config.geniehive.example.yaml
 ```
 
 MIT OCW learner transcript through the local-LLM path:
 
 ```bash
-python -m didactopus.ocw_rolemesh_transcript_demo --config configs/config.rolemesh.example.yaml
+python -m didactopus.ocw_provider_transcript_demo --config configs/config.geniehive.example.yaml
 ```
 
 If your local models are slow, Didactopus now prints pending-status lines while each mentor, practice, learner, or evaluator turn is being generated. For a long manual run, capture both the transcript payload and those live status messages:
 
 ```bash
-python -u -m didactopus.ocw_rolemesh_transcript_demo \
-  --config configs/config.rolemesh.example.yaml \
-  --out-dir examples/ocw-information-entropy-rolemesh-transcript \
-  2>&1 | tee examples/ocw-information-entropy-rolemesh-transcript/manual-run.log
+python -u -m didactopus.ocw_provider_transcript_demo \
+  --config configs/config.geniehive.example.yaml \
+  --out-dir examples/ocw-information-entropy-provider-transcript \
+  2>&1 | tee examples/ocw-information-entropy-provider-transcript/manual-run.log
 ```
 
-That command leaves the final transcript in `rolemesh_transcript.md` and `rolemesh_transcript.json`, while `manual-run.log` preserves the conversational “working on it” notices during the wait.
+That command leaves the final transcript in `provider_transcript.md` and `provider_transcript.json`, while `manual-run.log` preserves the conversational “working on it” notices during the wait.
 
 ### Render learner progress visualizations
 
@@ -435,6 +570,15 @@ What remains heuristic or lightweight:
 - [docs/roadmap.md](docs/roadmap.md)
 - [docs/course-to-pack.md](docs/course-to-pack.md)
 - [docs/learning-graph.md](docs/learning-graph.md)
+- [docs/access-constrained-mentoring.md](docs/access-constrained-mentoring.md)
+- [docs/interoperability-and-feature-adoption.md](docs/interoperability-and-feature-adoption.md)
+- [docs/deployment-modes.md](docs/deployment-modes.md)
+- [docs/mentoring-operational-process.md](docs/mentoring-operational-process.md)
+- [docs/ai-learner-mentorship-benchmark.md](docs/ai-learner-mentorship-benchmark.md)
+- [docs/groundrecall-llmwiki-import.md](docs/groundrecall-llmwiki-import.md)
+- [docs/groundrecall-migration-plan.md](docs/groundrecall-migration-plan.md)
+- [docs/groundrecall-repo-bootstrap.md](docs/groundrecall-repo-bootstrap.md)
+- [docs/groundrecall-assistant-architecture.md](docs/groundrecall-assistant-architecture.md)
 - [docs/agentic-learner-loop.md](docs/agentic-learner-loop.md)
 - [docs/mastery-ledger.md](docs/mastery-ledger.md)
 - [docs/workspace-manager.md](docs/workspace-manager.md)

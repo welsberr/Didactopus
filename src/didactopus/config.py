@@ -51,7 +51,7 @@ class LocalProviderConfig(BaseModel):
     model_name: str = "local-demo"
 
 
-class RoleMeshProviderConfig(BaseModel):
+class GatewayProviderConfig(BaseModel):
     base_url: str = os.getenv("DIDACTOPUS_ROLEMESH_BASE_URL", "http://127.0.0.1:8000")
     api_key: str = os.getenv("DIDACTOPUS_ROLEMESH_API_KEY", "")
     default_model: str = "planner"
@@ -62,7 +62,15 @@ class RoleMeshProviderConfig(BaseModel):
 class ModelProviderConfig(BaseModel):
     provider: str = "stub"
     local: LocalProviderConfig = Field(default_factory=LocalProviderConfig)
-    rolemesh: RoleMeshProviderConfig = Field(default_factory=RoleMeshProviderConfig)
+    geniehive: GatewayProviderConfig = Field(default_factory=GatewayProviderConfig)
+    rolemesh: GatewayProviderConfig = Field(default_factory=GatewayProviderConfig)
+
+    @property
+    def gateway(self) -> GatewayProviderConfig:
+        provider_name = self.provider.lower()
+        if provider_name == "geniehive":
+            return self.geniehive
+        return self.rolemesh
 
 
 class AppConfig(BaseModel):

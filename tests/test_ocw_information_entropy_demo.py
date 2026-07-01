@@ -24,6 +24,15 @@ def test_ocw_information_entropy_demo_generates_pack_and_skill(tmp_path: Path) -
     assert summary["source_document_count"] >= 1
     assert summary["source_fragment_count"] >= 1
 
+    corpus = json.loads((tmp_path / "pack" / "source_corpus.json").read_text(encoding="utf-8"))
+    assert all(not Path(source["source_path"]).is_absolute() for source in corpus["sources"])
+    assert any(source["source_path"].startswith("examples/ocw-information-entropy/course/") for source in corpus["sources"])
+
+    graph = json.loads((tmp_path / "pack" / "knowledge_graph.json").read_text(encoding="utf-8"))
+    source_nodes = [node for node in graph["nodes"] if node["type"] == "source"]
+    assert all(not Path(node["source_path"]).is_absolute() for node in source_nodes)
+    assert all(not node["id"].startswith("source::home-") for node in source_nodes)
+
 
 def test_ocw_demo_accepts_directory_tree_sources(tmp_path: Path) -> None:
     source_dir = tmp_path / "course"
@@ -50,4 +59,7 @@ def test_ocw_demo_accepts_directory_tree_sources(tmp_path: Path) -> None:
     corpus = json.loads((tmp_path / "pack" / "source_corpus.json").read_text(encoding="utf-8"))
     assert summary["source_document_count"] == 2
     assert len(corpus["sources"]) == 2
+    assert {source["source_path"] for source in corpus["sources"]} == {"course/unit1.md", "course/unit2.txt"}
+    assert summary["course_source"] == "course"
+    assert summary["pack_dir"] == "pack"
     assert any(fragment["lesson_title"] == "Shannon Entropy" for fragment in corpus["fragments"])

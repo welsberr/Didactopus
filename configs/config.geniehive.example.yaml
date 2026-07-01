@@ -1,0 +1,28 @@
+review:
+  default_reviewer: "Wesley R. Elsberry"
+  write_promoted_pack: true
+
+bridge:
+  host: "127.0.0.1"
+  port: 8765
+  registry_path: "workspace_registry.json"
+  default_workspace_root: "workspaces"
+
+model_provider:
+  provider: "geniehive"
+  local:
+    backend: "stub"
+    model_name: "unused-when-geniehive-enabled"
+  geniehive:
+    base_url: "http://127.0.0.1:8800"
+    api_key: "change-me-client-key-1"
+    default_model: "planner"
+    # Didactopus defines its own canonical role ids. GenieHive model or role aliases are mapped to them here.
+    # Change the values on the right to fit your local gateway setup.
+    role_to_model:
+      mentor: "planner"
+      learner: "writer"
+      practice: "writer"
+      project_advisor: "planner"
+      evaluator: "reviewer"
+    timeout_seconds: 30.0

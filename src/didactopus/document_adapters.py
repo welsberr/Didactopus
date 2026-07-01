@@ -2,7 +2,20 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
+import subprocess
+import tempfile
 from .course_schema import NormalizedDocument, Section
+
+
+def canonical_source_path(path: str | Path, display_root: str | Path | None = None) -> str:
+    if display_root is None:
+        return str(path)
+    p = Path(path)
+    root = Path(display_root)
+    try:
+        return p.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return str(path)
 
 
 def _title_from_path(path: str | Path) -> str:
@@ -28,13 +41,16 @@ def _simple_section_split(text: str) -> list[Section]:
 
 
 def read_textish(path: str | Path) -> str:
-    return Path(path).read_text(encoding="utf-8")
+    try:
+        return Path(path).read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        return Path(path).read_text(encoding="latin-1")
 
 
-def adapt_markdown(path: str | Path) -> NormalizedDocument:
+def adapt_markdown(path: str | Path, display_root: str | Path | None = None) -> NormalizedDocument:
     text = read_textish(path)
     return NormalizedDocument(
-        source_path=str(path),
+        source_path=canonical_source_path(path, display_root),
         source_type="markdown",
         title=_title_from_path(path),
         text=text,
@@ -43,10 +59,10 @@ def adapt_markdown(path: str | Path) -> NormalizedDocument:
     )
 
 
-def adapt_text(path: str | Path) -> NormalizedDocument:
+def adapt_text(path: str | Path, display_root: str | Path | None = None) -> NormalizedDocument:
     text = read_textish(path)
     return NormalizedDocument(
-        source_path=str(path),
+        source_path=canonical_source_path(path, display_root),
         source_type="text",
         title=_title_from_path(path),
         text=text,
@@ -55,12 +71,12 @@ def adapt_text(path: str | Path) -> NormalizedDocument:
     )
 
 
-def adapt_html(path: str | Path) -> NormalizedDocument:
+def adapt_html(path: str | Path, display_root: str | Path | None = None) -> NormalizedDocument:
     raw = read_textish(path)
     text = re.sub(r"<[^>]+>", " ", raw)
     text = re.sub(r"\s+", " ", text).strip()
     return NormalizedDocument(
-        source_path=str(path),
+        source_path=canonical_source_path(path, display_root),
         source_type="html",
         title=_title_from_path(path),
         text=text,
@@ -69,24 +85,53 @@ def adapt_html(path: str | Path) -> NormalizedDocument:
     )
 
 
-def adapt_pdf(path: str | Path) -> NormalizedDocument:
-    # Stub: in a real implementation, plug in PDF text extraction here.
-    text = read_textish(path)
+def _extract_pdf_text(path: str | Path) -> tuple[str, str]:
+    result = subprocess.run(
+        ["pdftotext", "-layout", str(path), "-"],
+        check=True,
+        capture_output=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    text = result.stdout
+    if text.strip():
+        return text, "pdftotext-layout"
+
+    with tempfile.TemporaryDirectory(prefix="didactopus-pdf-ocr-") as tmp:
+        tmp_path = Path(tmp)
+        sidecar = tmp_path / "sidecar.txt"
+        output_pdf = tmp_path / "ocr.pdf"
+        subprocess.run(
+            ["ocrmypdf", "--sidecar", str(sidecar), str(path), str(output_pdf)],
+            check=True,
+            capture_output=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        if sidecar.exists():
+            text = sidecar.read_text(encoding="utf-8", errors="replace")
+    if not text.strip():
+        raise RuntimeError(f"PDF text extraction produced no text: {path}")
+    return text, "ocrmypdf-sidecar"
+
+
+def adapt_pdf(path: str | Path, display_root: str | Path | None = None) -> NormalizedDocument:
+    text, extraction = _extract_pdf_text(path)
     return NormalizedDocument(
-        source_path=str(path),
+        source_path=canonical_source_path(path, display_root),
         source_type="pdf",
         title=_title_from_path(path),
         text=text,
         sections=_simple_section_split(text),
-        metadata={"extraction": "stub-pdf-text"},
+        metadata={"extraction": extraction},
     )
 
 
-def adapt_docx(path: str | Path) -> NormalizedDocument:
+def adapt_docx(path: str | Path, display_root: str | Path | None = None) -> NormalizedDocument:
     # Stub: in a real implementation, plug in DOCX extraction here.
     text = read_textish(path)
     return NormalizedDocument(
-        source_path=str(path),
+        source_path=canonical_source_path(path, display_root),
         source_type="docx",
         title=_title_from_path(path),
         text=text,
@@ -95,11 +140,11 @@ def adapt_docx(path: str | Path) -> NormalizedDocument:
     )
 
 
-def adapt_pptx(path: str | Path) -> NormalizedDocument:
+def adapt_pptx(path: str | Path, display_root: str | Path | None = None) -> NormalizedDocument:
     # Stub: in a real implementation, plug in PPTX extraction here.
     text = read_textish(path)
     return NormalizedDocument(
-        source_path=str(path),
+        source_path=canonical_source_path(path, display_root),
         source_type="pptx",
         title=_title_from_path(path),
         text=text,
@@ -131,24 +176,24 @@ def is_supported_document(path: str | Path) -> bool:
     return p.is_file() and detect_adapter(p) in {"markdown", "text", "html", "pdf", "docx", "pptx"}
 
 
-def adapt_documents(path: str | Path) -> list[NormalizedDocument]:
+def adapt_documents(path: str | Path, display_root: str | Path | None = None) -> list[NormalizedDocument]:
     p = Path(path)
     if p.is_dir():
-        docs = [adapt_document(child) for child in sorted(p.rglob("*")) if is_supported_document(child)]
+        docs = [adapt_document(child, display_root=display_root) for child in sorted(p.rglob("*")) if is_supported_document(child)]
         return docs
-    return [adapt_document(p)]
+    return [adapt_document(p, display_root=display_root)]
 
 
-def adapt_document(path: str | Path) -> NormalizedDocument:
+def adapt_document(path: str | Path, display_root: str | Path | None = None) -> NormalizedDocument:
     adapter = detect_adapter(path)
     if adapter == "markdown":
-        return adapt_markdown(path)
+        return adapt_markdown(path, display_root=display_root)
     if adapter == "html":
-        return adapt_html(path)
+        return adapt_html(path, display_root=display_root)
     if adapter == "pdf":
-        return adapt_pdf(path)
+        return adapt_pdf(path, display_root=display_root)
     if adapter == "docx":
-        return adapt_docx(path)
+        return adapt_docx(path, display_root=display_root)
     if adapter == "pptx":
-        return adapt_pptx(path)
-    return adapt_text(path)
+        return adapt_pptx(path, display_root=display_root)
+    return adapt_text(path, display_root=display_root)

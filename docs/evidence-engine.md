@@ -33,3 +33,22 @@ This is intentionally simple and transparent.
 - uncertainty estimates
 - Bayesian mastery models
 - multi-rubric scoring per concept
+
+## AI Learner Benchmark Evidence
+
+AI-learner benchmark evidence should be tracked separately from ordinary human
+learner evidence. It can improve mentor, practice, evaluator, and source
+grounding behavior, but it should not certify human learning effectiveness.
+
+Additional benchmark evidence fields should include:
+
+- phase: pretest, intervention, posttest, transfer, retention;
+- intervention condition;
+- model id and route metadata;
+- source visibility: source-blind, source-provided, or source-withheld;
+- confidence or predicted probability;
+- correctness label;
+- hallucination or unsupported assertion flags;
+- source-anchor precision and recall;
+- abstention quality;
+- `G` metric component links when available.
