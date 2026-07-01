@@ -4,6 +4,7 @@ from pathlib import Path
 import json
 import yaml
 from .course_schema import NormalizedCourse, ConceptCandidate, DraftPack
+from .notebook_page import build_notebook_page_from_groundrecall_bundle
 
 
 def build_source_corpus(course: NormalizedCourse) -> dict:
@@ -71,8 +72,12 @@ def build_draft_pack(
     license_name: str,
     review_flags: list[str],
     conflicts: list[str] | None = None,
+    groundrecall_query_bundle: dict | None = None,
 ) -> DraftPack:
     pack_name = course.title.lower().replace(" ", "-")
+    supporting_artifacts = ["source_corpus.json", "knowledge_graph.json"]
+    if groundrecall_query_bundle is not None:
+        supporting_artifacts.extend(["groundrecall_query_bundle.json", "notebook_page.json"])
     pack = {
         "name": pack_name,
         "display_name": course.title,
@@ -87,7 +92,7 @@ def build_draft_pack(
         "overrides": [],
         "profile_templates": {},
         "cross_pack_links": [],
-        "supporting_artifacts": ["source_corpus.json", "knowledge_graph.json"],
+        "supporting_artifacts": supporting_artifacts,
     }
     concepts_yaml = {
         "concepts": [
@@ -97,6 +102,11 @@ def build_draft_pack(
                 "description": c.description,
                 "prerequisites": c.prerequisites,
                 "mastery_signals": c.mastery_signals,
+                "source_role": c.source_role,
+                "distinctions": c.distinctions,
+                "definition_candidates": c.definition_candidates,
+                "qualification_candidates": c.qualification_candidates,
+                "constraint_candidates": c.constraint_candidates,
                 "mastery_profile": {},
             }
             for c in concepts
@@ -134,6 +144,9 @@ def build_draft_pack(
             for src in course.source_records
         ],
     }
+    if groundrecall_query_bundle is not None:
+        attribution["groundrecall_query_bundle"] = groundrecall_query_bundle
+        attribution["notebook_page"] = build_notebook_page_from_groundrecall_bundle(groundrecall_query_bundle)
     return DraftPack(
         pack=pack,
         concepts=concepts_yaml,
@@ -159,6 +172,16 @@ def write_draft_pack(pack: DraftPack, outdir: str | Path) -> None:
     conflict_lines = ["# Conflict Report", ""] + [f"- {flag}" for flag in pack.conflicts] if pack.conflicts else ["# Conflict Report", "", "- none"]
     (out / "conflict_report.md").write_text("\n".join(conflict_lines), encoding="utf-8")
     (out / "license_attribution.json").write_text(json.dumps(pack.attribution, indent=2), encoding="utf-8")
+    if isinstance(pack.attribution.get("groundrecall_query_bundle"), dict):
+        (out / "groundrecall_query_bundle.json").write_text(
+            json.dumps(pack.attribution["groundrecall_query_bundle"], indent=2),
+            encoding="utf-8",
+        )
+    if isinstance(pack.attribution.get("notebook_page"), dict):
+        (out / "notebook_page.json").write_text(
+            json.dumps(pack.attribution["notebook_page"], indent=2),
+            encoding="utf-8",
+        )
 
 
 def write_source_corpus(course: NormalizedCourse, outdir: str | Path) -> None:

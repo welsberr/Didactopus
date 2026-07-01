@@ -1,0 +1,16 @@
+{
+  "documents": [
+    {
+      "document_id": "lecture-1",
+      "title": "Lecture 1. Example",
+      "document_kind": "lecture",
+      "output_dir": "documents/lecture-1",
+      "markdown_path": "documents/lecture-1/document.md",
+      "layout_path": "documents/lecture-1/document.layout.json",
+      "tables_path": "documents/lecture-1/document.tables.json",
+      "figures_path": "documents/lecture-1/document.figures.json",
+      "table_count": 1,
+      "figure_reference_count": 1
+    }
+  ]
+}

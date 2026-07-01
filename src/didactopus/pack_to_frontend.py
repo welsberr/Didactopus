@@ -5,12 +5,33 @@ import argparse, json, yaml
 def load_yaml(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
+
+def _load_json(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+
+
+def _notebook_summary(pack_dir: Path) -> dict:
+    bundle = _load_json(pack_dir / "groundrecall_query_bundle.json")
+    page = _load_json(pack_dir / "notebook_page.json")
+    concept = page.get("concept", {}) or bundle.get("concept", {}) or {}
+    return {
+        "available": bool(bundle or page),
+        "conceptId": concept.get("concept_id", ""),
+        "conceptTitle": concept.get("title", ""),
+        "claimCount": len(bundle.get("relevant_claims", []) or []),
+        "sourceRoleSummary": page.get("source_role_summary", {}) or bundle.get("source_role_summary", {}) or {},
+        "distinctionCount": len(page.get("distinctions", []) or bundle.get("key_distinctions", []) or []),
+        "supportingObservationCount": (page.get("summary", {}) or {}).get("supporting_observation_count", 0),
+        "relatedConceptCount": (page.get("summary", {}) or {}).get("related_concept_count", 0),
+    }
+
 def convert_pack(pack_dir: str | Path) -> dict:
     pack_dir = Path(pack_dir)
     pack = load_yaml(pack_dir / "pack.yaml")
     concepts_data = load_yaml(pack_dir / "concepts.yaml")
     compliance_path = pack_dir / "pack_compliance_manifest.json"
     compliance = json.loads(compliance_path.read_text(encoding="utf-8")) if compliance_path.exists() else {}
+    notebook = _notebook_summary(pack_dir)
 
     concepts = []
     for item in concepts_data.get("concepts", []) or []:
@@ -39,6 +60,7 @@ def convert_pack(pack_dir: str | Path) -> dict:
         "level": pack.get("audience_level", "novice-friendly"),
         "concepts": concepts,
         "onboarding": onboarding,
+        "notebook": notebook,
         "compliance": {
             "sources": len(compliance.get("derived_from_sources", []) or []),
             "attributionRequired": bool(compliance.get("attribution_required", False)),

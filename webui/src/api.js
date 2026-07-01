@@ -53,3 +53,13 @@ export async function promoteSynthesis(token, synthesisId, payload) {
   if (!res.ok) throw new Error("promoteSynthesis failed");
   return await res.json();
 }
+
+export async function createLearnerWorkbenchSession(payload) {
+  const res = await fetch(`${API}/learner-workbench/session`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error("createLearnerWorkbenchSession failed");
+  return await res.json();
+}

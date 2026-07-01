@@ -1,0 +1,25 @@
+source_language: en
+review_status: curated
+promoted_from_seed: domain-packs/mit-ocw-information-entropy/multilingual_qa.seed.yaml
+targets:
+  es:
+    required_terms:
+    - id: shannon-entropy
+      accepted:
+      - Shannon Entropy
+      round_trip_required: true
+      round_trip_source: Shannon Entropy
+    required_caveats:
+    - id: thermodynamics-and-entropy
+      accepted:
+      - Objective Explain how thermodynamic entropy relates to, and differs from,
+        Shannon entropy. Exercise Compare the two entropy notions and identify what
+        is preserved across the analogy. The course uses entropy as a bridge concept
+        between communication theory and physics while insisting on careful interpretation.
+    forbidden_confusions:
+    - id: thermodynamics-and-entropy-confusion
+      patterns:
+      - Objective Explain how thermodynamic entropy relates to, and is identical to,
+        Shannon entropy. Exercise Compare the two entropy notions and identify what
+        is preserved across the analogy. The course uses entropy as a bridge concept
+        between communication theory and physics while insisting on careful interpretation.

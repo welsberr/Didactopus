@@ -1,0 +1,18 @@
+candidates:
+  - name: "stub-baseline"
+    config: "configs/config.example.yaml"
+    prompt_variant: "baseline"
+    language: "en"
+  - name: "stub-strict-grounding"
+    config: "configs/config.example.yaml"
+    prompt_variant: "strict_grounding"
+    language: "es"
+  - name: "stub-trust-preserving"
+    config: "configs/config.example.yaml"
+    prompt_variant: "trust_preserving"
+    language: "fr"
+
+review:
+  enabled: true
+  config: "configs/config.example.yaml"
+  role: "mentor"

@@ -6,6 +6,7 @@ from .course_schema import NormalizedCourse, NormalizedSourceRecord, Module, Les
 
 HEADING_RE = re.compile(r"^(#{1,3})\s+(.*)$")
 BULLET_RE = re.compile(r"^\s*[-*+]\s+(.*)$")
+SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
 
 
 def slugify(text: str) -> str:
@@ -41,6 +42,120 @@ def extract_key_terms(text: str, min_term_length: int = 4, max_terms: int = 8) -
         if len(ordered) >= max_terms:
             break
     return ordered
+
+
+def _lesson_sentences(lesson: Lesson) -> list[str]:
+    parts = [lesson.body, *lesson.objectives, *lesson.exercises]
+    joined = "\n".join(part.strip() for part in parts if part and part.strip())
+    if not joined:
+        return []
+    sentences = []
+    for chunk in SENTENCE_SPLIT_RE.split(joined):
+        text = " ".join(chunk.split()).strip(" -")
+        if text:
+            sentences.append(text)
+    return sentences
+
+
+def _compact_description(lesson: Lesson, max_chars: int = 320) -> str:
+    sentences = _lesson_sentences(lesson)
+    if not sentences:
+        return lesson.title
+    out = []
+    total = 0
+    for sentence in sentences:
+        candidate = sentence if sentence.endswith((".", "!", "?")) else f"{sentence}."
+        if out and total + 1 + len(candidate) > max_chars:
+            break
+        out.append(candidate)
+        total += len(candidate) + (1 if out[:-1] else 0)
+        if len(out) >= 2:
+            break
+    return " ".join(out).strip()[:max_chars]
+
+
+def _extract_sentences_by_patterns(sentences: list[str], patterns: list[str], max_items: int = 3) -> list[str]:
+    compiled = [re.compile(pattern, re.IGNORECASE) for pattern in patterns]
+    out: list[str] = []
+    seen: set[str] = set()
+    for sentence in sentences:
+        lowered = sentence.lower()
+        if lowered in seen:
+            continue
+        if any(pattern.search(sentence) for pattern in compiled):
+            seen.add(lowered)
+            out.append(sentence)
+        if len(out) >= max_items:
+            break
+    return out
+
+
+def _infer_source_role(module: Module, lesson: Lesson, distinctions: list[str], qualifications: list[str], constraints: list[str]) -> str:
+    title_blob = " ".join([module.title, lesson.title, lesson.body]).lower()
+    if distinctions or qualifications or constraints:
+        return "nuance"
+    if any(token in title_blob for token in ("foundation", "background", "course identity", "course description", "reading base", "learning norms")):
+        return "overview"
+    if any(token in title_blob for token in ("coding", "capacity", "compression", "error-correcting", "error correcting", "mutual information", "reversible", "quantum", "cryptography", "noise")):
+        return "mechanism"
+    return "overview"
+
+
+def _concept_enrichment(module: Module, lesson: Lesson) -> dict[str, list[str] | str]:
+    sentences = _lesson_sentences(lesson)
+    distinctions = _extract_sentences_by_patterns(
+        sentences,
+        [
+            r"\bcompare\b",
+            r"\bcontrast\b",
+            r"\bdistinguish\b",
+            r"\bdiffer(?:ent|s)?\b",
+            r"\brelat(?:e|es|ed)\b.+\band\b",
+            r"\bnot\b.+\bbut\b",
+            r"\bversus\b|\bvs\.?\b",
+        ],
+    )
+    definitions = _extract_sentences_by_patterns(
+        sentences,
+        [
+            r"\bis (?:a|an|the)\b",
+            r"\bmeasure of\b",
+            r"\brefers to\b",
+            r"\bdefined as\b",
+            r"\btreated as\b",
+        ],
+    )
+    qualifications = _extract_sentences_by_patterns(
+        sentences,
+        [
+            r"\bbut\b",
+            r"\bhowever\b",
+            r"\bwhile\b",
+            r"\balthough\b",
+            r"\bcareful\b",
+            r"\bnot identical\b",
+            r"\bdangerous\b",
+        ],
+    )
+    constraints = _extract_sentences_by_patterns(
+        sentences,
+        [
+            r"\bimpossible\b",
+            r"\blimit(?:s)?\b",
+            r"\bfailure mode(?:s)?\b",
+            r"\bcannot\b",
+            r"\bonly up to\b",
+            r"\bin the long run\b",
+            r"\babove capacity\b",
+        ],
+    )
+    return {
+        "source_role": _infer_source_role(module, lesson, distinctions, qualifications, constraints),
+        "distinctions": distinctions,
+        "definition_candidates": definitions,
+        "qualification_candidates": qualifications,
+        "constraint_candidates": constraints,
+    }
 
 
 def parse_markdown_like(text: str, title: str, source_name: str, source_path: str) -> NormalizedSourceRecord:
@@ -167,6 +282,7 @@ def extract_concept_candidates(course: NormalizedCourse) -> list[ConceptCandidat
     seen_ids: set[str] = set()
     for module in course.modules:
         for lesson in module.lessons:
+            enrichment = _concept_enrichment(module, lesson)
             title_id = slugify(lesson.title)
             if title_id not in seen_ids:
                 seen_ids.add(title_id)
@@ -174,10 +290,16 @@ def extract_concept_candidates(course: NormalizedCourse) -> list[ConceptCandidat
                     ConceptCandidate(
                         id=title_id,
                         title=lesson.title,
-                        description=lesson.body[:240].strip(),
+                        description=_compact_description(lesson),
                         source_modules=[module.title],
                         source_lessons=[lesson.title],
+                        source_courses=list(lesson.source_refs),
                         mastery_signals=list(lesson.objectives[:3] or lesson.exercises[:2]),
+                        source_role=str(enrichment["source_role"]),
+                        distinctions=list(enrichment["distinctions"]),
+                        definition_candidates=list(enrichment["definition_candidates"]),
+                        qualification_candidates=list(enrichment["qualification_candidates"]),
+                        constraint_candidates=list(enrichment["constraint_candidates"]),
                     )
                 )
             for term in lesson.key_terms:
@@ -192,7 +314,13 @@ def extract_concept_candidates(course: NormalizedCourse) -> list[ConceptCandidat
                         description=f"Candidate concept extracted from lesson '{lesson.title}'.",
                         source_modules=[module.title],
                         source_lessons=[lesson.title],
+                        source_courses=list(lesson.source_refs),
                         mastery_signals=list(lesson.objectives[:2]),
+                        source_role=str(enrichment["source_role"]),
+                        distinctions=list(enrichment["distinctions"][:1]),
+                        definition_candidates=list(enrichment["definition_candidates"][:1]),
+                        qualification_candidates=list(enrichment["qualification_candidates"][:1]),
+                        constraint_candidates=list(enrichment["constraint_candidates"][:1]),
                     )
                 )
     return concepts

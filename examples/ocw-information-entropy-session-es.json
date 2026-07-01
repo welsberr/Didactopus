@@ -1,0 +1,244 @@
+{
+  "goal": "Help me understand how Shannon entropy leads into channel capacity and thermodynamic entropy.",
+  "output_language": "es",
+  "source_language": "en",
+  "study_plan": {
+    "skill": "ocw-information-entropy-agent",
+    "task": "Help me understand how Shannon entropy leads into channel capacity and thermodynamic entropy.",
+    "source_language": "en",
+    "steps": [
+      {
+        "concept_key": "mit-ocw-information-and-entropy::independent-reasoning-and-careful-comparison",
+        "title": "Independent Reasoning and Careful Comparison",
+        "status": "mastered",
+        "prerequisites": [
+          "mit-ocw-information-and-entropy::course-notes-and-reference-texts"
+        ],
+        "prerequisite_titles": [
+          "Course Notes and Reference Texts"
+        ],
+        "supporting_lessons": [
+          "Independent Reasoning and Careful Comparison"
+        ],
+        "source_fragments": [
+          {
+            "lesson_title": "Independent Reasoning and Careful Comparison",
+            "kind": "lesson_body",
+            "text": "- Objective: Explain why the course requires precise comparison of related but non-identical concepts.\n- Exercise: Write a short note distinguishing Shannon entropy, channel capacity, and thermodynamic entropy.\nThe syllabus framing implies a style of work where analogy is useful but dangerous when used loosely. Learners must compare models carefully, state assumptions, and notice where similar mathematics does not imply identical interpretation."
+          },
+          {
+            "lesson_title": "Independent Reasoning and Careful Comparison",
+            "kind": "objective",
+            "text": "Explain why the course requires precise comparison of related but non-identical concepts."
+          }
+        ],
+        "recommended_action": "Use Independent Reasoning and Careful Comparison as the primary teaching anchor."
+      },
+      {
+        "concept_key": "mit-ocw-information-and-entropy::thermodynamics-and-entropy",
+        "title": "Thermodynamics and Entropy",
+        "status": "mastered",
+        "prerequisites": [
+          "mit-ocw-information-and-entropy::cryptography-and-information-hiding"
+        ],
+        "prerequisite_titles": [
+          "Cryptography and Information Hiding"
+        ],
+        "supporting_lessons": [
+          "Thermodynamics and Entropy"
+        ],
+        "source_fragments": [
+          {
+            "lesson_title": "Thermodynamics and Entropy",
+            "kind": "lesson_body",
+            "text": "- Objective: Explain how thermodynamic entropy relates to, and differs from, Shannon entropy.\n- Exercise: Compare the two entropy notions and identify what is preserved across the analogy.\nThe course uses entropy as a bridge concept between communication theory and physics while insisting on careful interpretation."
+          },
+          {
+            "lesson_title": "Thermodynamics and Entropy",
+            "kind": "objective",
+            "text": "Explain how thermodynamic entropy relates to, and differs from, Shannon entropy."
+          }
+        ],
+        "recommended_action": "Use Thermodynamics and Entropy as the primary teaching anchor."
+      },
+      {
+        "concept_key": "mit-ocw-information-and-entropy::shannon-entropy",
+        "title": "Shannon Entropy",
+        "status": "mastered",
+        "prerequisites": [
+          "mit-ocw-information-and-entropy::counting-and-probability"
+        ],
+        "prerequisite_titles": [
+          "Counting and Probability"
+        ],
+        "supporting_lessons": [
+          "Shannon Entropy"
+        ],
+        "source_fragments": [
+          {
+            "lesson_title": "Shannon Entropy",
+            "kind": "lesson_body",
+            "text": "- Objective: Explain Shannon entropy as a measure of uncertainty and compare high-entropy and low-entropy sources.\n- Exercise: Compute the entropy of a Bernoulli source and interpret the result.\nThe course then introduces entropy as a quantitative measure of uncertainty for a source model and uses it to reason about representation cost and surprise."
+          },
+          {
+            "lesson_title": "Shannon Entropy",
+            "kind": "objective",
+            "text": "Explain Shannon entropy as a measure of uncertainty and compare high-entropy and low-entropy sources."
+          }
+        ],
+        "recommended_action": "Use Shannon Entropy as the primary teaching anchor."
+      }
+    ],
+    "guided_path_reference": [
+      "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-course-home",
+      "mit-ocw-information-and-entropy::information-and-entropy",
+      "mit-ocw-information-and-entropy::ultimate-limits-to-communication-and-computation",
+      "mit-ocw-information-and-entropy::open-textbooks-problem-sets-and-programming-work",
+      "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-syllabus",
+      "mit-ocw-information-and-entropy::prerequisites-and-mathematical-background",
+      "mit-ocw-information-and-entropy::assessment-structure",
+      "mit-ocw-information-and-entropy::course-notes-and-reference-texts",
+      "mit-ocw-information-and-entropy::independent-reasoning-and-careful-comparison",
+      "mit-ocw-information-and-entropy::mit-ocw-6-050j-information-and-entropy-unit-sequence",
+      "mit-ocw-information-and-entropy::counting-and-probability",
+      "mit-ocw-information-and-entropy::shannon-entropy",
+      "mit-ocw-information-and-entropy::mutual-information",
+      "mit-ocw-information-and-entropy::source-coding-and-compression",
+      "mit-ocw-information-and-entropy::huffman-coding",
+      "mit-ocw-information-and-entropy::channel-capacity",
+      "mit-ocw-information-and-entropy::channel-coding",
+      "mit-ocw-information-and-entropy::error-correcting-codes",
+      "mit-ocw-information-and-entropy::cryptography-and-information-hiding",
+      "mit-ocw-information-and-entropy::thermodynamics-and-entropy"
+    ]
+  },
+  "primary_concept": {
+    "concept_key": "mit-ocw-information-and-entropy::independent-reasoning-and-careful-comparison",
+    "title": "Independent Reasoning and Careful Comparison",
+    "status": "mastered",
+    "prerequisites": [
+      "mit-ocw-information-and-entropy::course-notes-and-reference-texts"
+    ],
+    "prerequisite_titles": [
+      "Course Notes and Reference Texts"
+    ],
+    "supporting_lessons": [
+      "Independent Reasoning and Careful Comparison"
+    ],
+    "source_fragments": [
+      {
+        "lesson_title": "Independent Reasoning and Careful Comparison",
+        "kind": "lesson_body",
+        "text": "- Objective: Explain why the course requires precise comparison of related but non-identical concepts.\n- Exercise: Write a short note distinguishing Shannon entropy, channel capacity, and thermodynamic entropy.\nThe syllabus framing implies a style of work where analogy is useful but dangerous when used loosely. Learners must compare models carefully, state assumptions, and notice where similar mathematics does not imply identical interpretation."
+      },
+      {
+        "lesson_title": "Independent Reasoning and Careful Comparison",
+        "kind": "objective",
+        "text": "Explain why the course requires precise comparison of related but non-identical concepts."
+      }
+    ],
+    "recommended_action": "Use Independent Reasoning and Careful Comparison as the primary teaching anchor."
+  },
+  "secondary_concept": {
+    "concept_key": "mit-ocw-information-and-entropy::thermodynamics-and-entropy",
+    "title": "Thermodynamics and Entropy",
+    "status": "mastered",
+    "prerequisites": [
+      "mit-ocw-information-and-entropy::cryptography-and-information-hiding"
+    ],
+    "prerequisite_titles": [
+      "Cryptography and Information Hiding"
+    ],
+    "supporting_lessons": [
+      "Thermodynamics and Entropy"
+    ],
+    "source_fragments": [
+      {
+        "lesson_title": "Thermodynamics and Entropy",
+        "kind": "lesson_body",
+        "text": "- Objective: Explain how thermodynamic entropy relates to, and differs from, Shannon entropy.\n- Exercise: Compare the two entropy notions and identify what is preserved across the analogy.\nThe course uses entropy as a bridge concept between communication theory and physics while insisting on careful interpretation."
+      },
+      {
+        "lesson_title": "Thermodynamics and Entropy",
+        "kind": "objective",
+        "text": "Explain how thermodynamic entropy relates to, and differs from, Shannon entropy."
+      }
+    ],
+    "recommended_action": "Use Thermodynamics and Entropy as the primary teaching anchor."
+  },
+  "practice_task": "[stubbed-response] [practice] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+  "evaluation": {
+    "concept_key": "mit-ocw-information-and-entropy::independent-reasoning-and-careful-comparison",
+    "submission": "Entropy measures uncertainty because more possible outcomes require more information to describe, but one limitation is that thermodynamic entropy is not identical to Shannon entropy.",
+    "verdict": "needs_revision",
+    "aggregated": {
+      "correctness": 0.6000000000000001,
+      "explanation": 0.85,
+      "critique": 0.6499999999999999
+    },
+    "evaluators": [
+      {
+        "name": "rubric",
+        "dimensions": {
+          "correctness": 0.8,
+          "explanation": 0.85
+        },
+        "notes": "Heuristic scaffold rubric score."
+      },
+      {
+        "name": "symbolic_rule",
+        "dimensions": {
+          "correctness": 0.4
+        },
+        "notes": "Stub symbolic evaluator."
+      },
+      {
+        "name": "critique",
+        "dimensions": {
+          "critique": 0.6499999999999999
+        },
+        "notes": "Stub critique evaluator."
+      }
+    ],
+    "skill_reference": {
+      "skill_name": "ocw-information-entropy-agent",
+      "mastered_by_demo_agent": true,
+      "supporting_lessons": [
+        "Independent Reasoning and Careful Comparison"
+      ]
+    },
+    "follow_up": "Rework the answer so it states the equality/relationship explicitly and explains why it matters."
+  },
+  "turns": [
+    {
+      "role": "user",
+      "label": "Learner Goal",
+      "content": "Help me understand how Shannon entropy leads into channel capacity and thermodynamic entropy."
+    },
+    {
+      "role": "assistant",
+      "label": "Didactopus Mentor",
+      "content": "[stubbed-response] [mentor] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons"
+    },
+    {
+      "role": "assistant",
+      "label": "Didactopus Practice Designer",
+      "content": "[stubbed-response] [practice] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons"
+    },
+    {
+      "role": "user",
+      "label": "Learner Submission",
+      "content": "Entropy measures uncertainty because more possible outcomes require more information to describe, but one limitation is that thermodynamic entropy is not identical to Shannon entropy."
+    },
+    {
+      "role": "assistant",
+      "label": "Didactopus Evaluator",
+      "content": "[stubbed-response] [evaluator] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons"
+    },
+    {
+      "role": "assistant",
+      "label": "Didactopus Mentor",
+      "content": "[stubbed-response] [mentor] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons"
+    }
+  ]
+}

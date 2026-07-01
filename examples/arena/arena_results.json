@@ -1,0 +1,254 @@
+{
+  "arena": {
+    "name": "didactopus-behavior-arena",
+    "candidate_count": 3
+  },
+  "ranked_candidates": [
+    {
+      "candidate_name": "stub-baseline",
+      "config": "configs/config.example.yaml",
+      "prompt_variant": "baseline",
+      "language": "en",
+      "provider": "stub",
+      "overall_score": 0.733,
+      "overall_rating": "borderline",
+      "role_results": [
+        {
+          "role": "mentor",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "baseline",
+          "language": "en",
+          "latency_ms": 0.021,
+          "adequacy_score": 0.72,
+          "adequacy_rating": "borderline",
+          "grounded_score": 0.65,
+          "multilingual_score": 1.0,
+          "response_preview": "[stubbed-response] [mentor] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Did not ask a focused learner question."
+          ]
+        },
+        {
+          "role": "practice",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "baseline",
+          "language": "en",
+          "latency_ms": 0.005,
+          "adequacy_score": 1.0,
+          "adequacy_rating": "adequate",
+          "grounded_score": 1.0,
+          "multilingual_score": 1.0,
+          "response_preview": "[stubbed-response] [practice] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": []
+        },
+        {
+          "role": "evaluator",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "baseline",
+          "language": "en",
+          "latency_ms": 0.004,
+          "adequacy_score": 0.48,
+          "adequacy_rating": "inadequate",
+          "grounded_score": 0.35,
+          "multilingual_score": 1.0,
+          "response_preview": "[stubbed-response] [evaluator] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Did not acknowledge learner strengths.",
+            "Did not provide a concrete next step."
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_name": "stub-strict-grounding",
+      "config": "configs/config.example.yaml",
+      "prompt_variant": "strict_grounding",
+      "language": "es",
+      "provider": "stub",
+      "overall_score": 0.547,
+      "overall_rating": "inadequate",
+      "role_results": [
+        {
+          "role": "mentor",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "strict_grounding",
+          "language": "es",
+          "latency_ms": 0.028,
+          "adequacy_score": 0.52,
+          "adequacy_rating": "inadequate",
+          "grounded_score": 0.65,
+          "multilingual_score": 0.0,
+          "response_preview": "[stubbed-response] [mentor] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Did not ask a focused learner question.",
+            "Response does not appear to be in Spanish.",
+            "Missing required multilingual term 'shannon-entropy' for language 'es'.",
+            "Missing required multilingual term 'channel-capacity' for language 'es'.",
+            "Missing required multilingual term 'thermodynamic-entropy' for language 'es'.",
+            "Missing required multilingual caveat 'shannon-vs-thermo-not-identical' for language 'es'.",
+            "Did not visibly preserve a key grounded concept term in multilingual output."
+          ]
+        },
+        {
+          "role": "practice",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "strict_grounding",
+          "language": "es",
+          "latency_ms": 0.006,
+          "adequacy_score": 0.82,
+          "adequacy_rating": "adequate",
+          "grounded_score": 1.0,
+          "multilingual_score": 0.1,
+          "response_preview": "[stubbed-response] [practice] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Response does not appear to be in Spanish.",
+            "Missing required multilingual term 'shannon-entropy' for language 'es'.",
+            "Missing required multilingual term 'channel-capacity' for language 'es'.",
+            "Missing required multilingual term 'thermodynamic-entropy' for language 'es'.",
+            "Missing required multilingual caveat 'shannon-vs-thermo-not-identical' for language 'es'."
+          ]
+        },
+        {
+          "role": "evaluator",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "strict_grounding",
+          "language": "es",
+          "latency_ms": 0.006,
+          "adequacy_score": 0.3,
+          "adequacy_rating": "inadequate",
+          "grounded_score": 0.35,
+          "multilingual_score": 0.1,
+          "response_preview": "[stubbed-response] [evaluator] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Did not acknowledge learner strengths.",
+            "Did not provide a concrete next step.",
+            "Response does not appear to be in Spanish.",
+            "Missing required multilingual term 'shannon-entropy' for language 'es'.",
+            "Missing required multilingual term 'channel-capacity' for language 'es'.",
+            "Missing required multilingual term 'thermodynamic-entropy' for language 'es'.",
+            "Missing required multilingual caveat 'shannon-vs-thermo-not-identical' for language 'es'."
+          ]
+        }
+      ]
+    },
+    {
+      "candidate_name": "stub-trust-preserving",
+      "config": "configs/config.example.yaml",
+      "prompt_variant": "trust_preserving",
+      "language": "fr",
+      "provider": "stub",
+      "overall_score": 0.547,
+      "overall_rating": "inadequate",
+      "role_results": [
+        {
+          "role": "mentor",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "trust_preserving",
+          "language": "fr",
+          "latency_ms": 0.024,
+          "adequacy_score": 0.52,
+          "adequacy_rating": "inadequate",
+          "grounded_score": 0.65,
+          "multilingual_score": 0.0,
+          "response_preview": "[stubbed-response] [mentor] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Did not ask a focused learner question.",
+            "Response does not appear to be in French.",
+            "Missing required multilingual term 'shannon-entropy' for language 'fr'.",
+            "Missing required multilingual term 'channel-capacity' for language 'fr'.",
+            "Missing required multilingual term 'thermodynamic-entropy' for language 'fr'.",
+            "Missing required multilingual caveat 'shannon-vs-thermo-not-identical' for language 'fr'.",
+            "Did not visibly preserve a key grounded concept term in multilingual output."
+          ]
+        },
+        {
+          "role": "practice",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "trust_preserving",
+          "language": "fr",
+          "latency_ms": 0.006,
+          "adequacy_score": 0.82,
+          "adequacy_rating": "adequate",
+          "grounded_score": 1.0,
+          "multilingual_score": 0.1,
+          "response_preview": "[stubbed-response] [practice] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Response does not appear to be in French.",
+            "Missing required multilingual term 'shannon-entropy' for language 'fr'.",
+            "Missing required multilingual term 'channel-capacity' for language 'fr'.",
+            "Missing required multilingual term 'thermodynamic-entropy' for language 'fr'.",
+            "Missing required multilingual caveat 'shannon-vs-thermo-not-identical' for language 'fr'."
+          ]
+        },
+        {
+          "role": "evaluator",
+          "provider": "stub",
+          "model_name": "local-demo",
+          "prompt_variant": "trust_preserving",
+          "language": "fr",
+          "latency_ms": 0.005,
+          "adequacy_score": 0.3,
+          "adequacy_rating": "inadequate",
+          "grounded_score": 0.35,
+          "multilingual_score": 0.1,
+          "response_preview": "[stubbed-response] [evaluator] Concept: Independent Reasoning and Careful Comparison Prerequisites: Course Notes and Reference Texts Supporting lessons",
+          "notes": [
+            "Did not acknowledge learner strengths.",
+            "Did not provide a concrete next step.",
+            "Response does not appear to be in French.",
+            "Missing required multilingual term 'shannon-entropy' for language 'fr'.",
+            "Missing required multilingual term 'channel-capacity' for language 'fr'.",
+            "Missing required multilingual term 'thermodynamic-entropy' for language 'fr'.",
+            "Missing required multilingual caveat 'shannon-vs-thermo-not-identical' for language 'fr'."
+          ]
+        }
+      ]
+    }
+  ],
+  "review_queue": [
+    {
+      "candidate_name": "stub-baseline",
+      "overall_rating": "borderline",
+      "overall_score": 0.733,
+      "needs_human_review": true,
+      "weak_roles": [
+        "mentor",
+        "evaluator"
+      ]
+    },
+    {
+      "candidate_name": "stub-strict-grounding",
+      "overall_rating": "inadequate",
+      "overall_score": 0.547,
+      "needs_human_review": true,
+      "weak_roles": [
+        "mentor",
+        "evaluator"
+      ]
+    },
+    {
+      "candidate_name": "stub-trust-preserving",
+      "overall_rating": "inadequate",
+      "overall_score": 0.547,
+      "needs_human_review": true,
+      "weak_roles": [
+        "mentor",
+        "evaluator"
+      ]
+    }
+  ],
+  "llm_review": {
+    "provider": "stub",
+    "model_name": "local-demo",
+    "role": "mentor",
+    "summary": "[stubbed-response] [mentor] Review these Didactopus arena results for a human reviewer. Rank the strongest candidates, identify likely prompt improv"
+  }
+}

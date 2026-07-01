@@ -47,6 +47,11 @@ class ConceptEntry(BaseModel):
     description: str = ""
     prerequisites: list[str] = Field(default_factory=list)
     mastery_signals: list[str] = Field(default_factory=list)
+    source_role: str = ""
+    distinctions: list[str] = Field(default_factory=list)
+    definition_candidates: list[str] = Field(default_factory=list)
+    qualification_candidates: list[str] = Field(default_factory=list)
+    constraint_candidates: list[str] = Field(default_factory=list)
     mastery_profile: MasteryProfileSpec = Field(default_factory=MasteryProfileSpec)
 
 

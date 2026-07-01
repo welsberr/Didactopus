@@ -11,6 +11,7 @@ from .ocw_skill_agent_demo import (
     evaluate_submission_with_skill,
 )
 from .provider_policy import effective_provider_for_kind
+from .language_support import response_language_instruction
 from .role_prompts import system_prompt_for_role
 
 
@@ -62,11 +63,13 @@ def _generate_role_text(
     *,
     role: str,
     prompt: str,
+    language: str = "en",
+    source_language: str = "en",
     temperature: float = 0.2,
     max_tokens: int = 220,
 ) -> str:
     return provider.generate(
-        prompt,
+        f"{prompt}{response_language_instruction(language, source_language)}",
         role=role,
         system_prompt=system_prompt_for_role(role),
         temperature=temperature,
@@ -112,6 +115,8 @@ def build_graph_grounded_session(
     provider: ModelProvider,
     learner_goal: str,
     learner_submission: str,
+    language: str = "en",
+    source_language: str = "en",
 ) -> dict:
     provider = effective_provider_for_kind(provider, kind="chat")
     study_plan = build_skill_grounded_study_plan(context, learner_goal)
@@ -132,6 +137,8 @@ def build_graph_grounded_session(
         provider,
         role="mentor",
         prompt=mentor_prompt,
+        language=language,
+        source_language=source_language,
         temperature=0.2,
         max_tokens=260,
     )
@@ -145,6 +152,8 @@ def build_graph_grounded_session(
         provider,
         role="practice",
         prompt=practice_prompt,
+        language=language,
+        source_language=source_language,
         temperature=0.3,
         max_tokens=220,
     )
@@ -161,6 +170,8 @@ def build_graph_grounded_session(
         provider,
         role="evaluator",
         prompt=evaluator_prompt,
+        language=language,
+        source_language=source_language,
         temperature=0.2,
         max_tokens=240,
     )
@@ -175,6 +186,8 @@ def build_graph_grounded_session(
         provider,
         role="mentor",
         prompt=next_step_prompt,
+        language=language,
+        source_language=source_language,
         temperature=0.2,
         max_tokens=220,
     )
@@ -190,6 +203,8 @@ def build_graph_grounded_session(
 
     return {
         "goal": learner_goal,
+        "output_language": language,
+        "source_language": source_language,
         "study_plan": study_plan,
         "primary_concept": primary,
         "secondary_concept": secondary,
@@ -206,6 +221,8 @@ def build_notebook_sequence_grounded_session(
     step_index: int,
     learner_submission: str,
     learner_goal: str | None = None,
+    language: str = "en",
+    source_language: str = "en",
 ) -> dict:
     provider = effective_provider_for_kind(provider, kind="chat")
     sessions = session_plan.get("sessions", [])
@@ -229,6 +246,8 @@ def build_notebook_sequence_grounded_session(
         provider,
         role="mentor",
         prompt=mentor_prompt,
+        language=language,
+        source_language=source_language,
         temperature=0.2,
         max_tokens=260,
     )
@@ -244,6 +263,8 @@ def build_notebook_sequence_grounded_session(
         provider,
         role="practice",
         prompt=practice_prompt,
+        language=language,
+        source_language=source_language,
         temperature=0.3,
         max_tokens=220,
     )
@@ -262,6 +283,8 @@ def build_notebook_sequence_grounded_session(
         provider,
         role="evaluator",
         prompt=evaluator_prompt,
+        language=language,
+        source_language=source_language,
         temperature=0.2,
         max_tokens=240,
     )
@@ -276,6 +299,8 @@ def build_notebook_sequence_grounded_session(
         provider,
         role="mentor",
         prompt=next_step_prompt,
+        language=language,
+        source_language=source_language,
         temperature=0.2,
         max_tokens=220,
     )
@@ -291,6 +316,8 @@ def build_notebook_sequence_grounded_session(
 
     return {
         "goal": resolved_goal,
+        "output_language": language,
+        "source_language": source_language,
         "study_plan": {
             "sequence_id": session_plan.get("sequence_id"),
             "sequence_title": session_plan.get("sequence_title"),

@@ -65,3 +65,14 @@ class MasteryRecord(BaseModel):
 class LearnerState(BaseModel):
     learner_id: str
     records: list[MasteryRecord] = Field(default_factory=list)
+
+
+class LearnerWorkbenchSessionRequest(BaseModel):
+    pack_id: str
+    concept_id: str
+    learner_goal: str = ""
+    question: str = ""
+    observation: str = ""
+    interpretation: str = ""
+    uncertainty: str = ""
+    revision_trigger: str = ""

@@ -1,0 +1,26 @@
+review:
+  default_reviewer: "Wesley R. Elsberry"
+  write_promoted_pack: true
+
+bridge:
+  host: "127.0.0.1"
+  port: 8765
+  registry_path: "workspace_registry.json"
+  default_workspace_root: "workspaces"
+
+model_provider:
+  provider: "openai_compatible"
+  openai_compatible:
+    # For OpenAI itself, leave this as https://api.openai.com/v1
+    # For another OpenAI-compatible hosted service, change the base URL and model names.
+    base_url: "https://api.openai.com/v1"
+    api_key: "set-me-via-env-or-local-config"
+    default_model: "gpt-4.1-mini"
+    role_to_model:
+      mentor: "gpt-4.1-mini"
+      learner: "gpt-4.1-mini"
+      practice: "gpt-4.1-mini"
+      project_advisor: "gpt-4.1-mini"
+      evaluator: "gpt-4.1-mini"
+    timeout_seconds: 60.0
+    auth_scheme: "bearer"

@@ -4,7 +4,12 @@ import argparse, json, yaml
 from .compliance_models import SourceInventory, PackComplianceManifest
 
 def load_sources(path: str | Path) -> SourceInventory:
-    data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+    p = Path(path)
+    raw = p.read_text(encoding="utf-8")
+    if p.suffix.lower() == ".json":
+        data = json.loads(raw) if raw.strip() else {}
+    else:
+        data = yaml.safe_load(raw) or {}
     return SourceInventory.model_validate(data)
 
 def build_pack_compliance_manifest(

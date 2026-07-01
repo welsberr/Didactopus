@@ -1,0 +1,9 @@
+{
+  "source_path": "legacy/lecture-1.doc",
+  "figure_references": [
+    {
+      "label": "Figure 1",
+      "caption": "Example figure caption"
+    }
+  ]
+}

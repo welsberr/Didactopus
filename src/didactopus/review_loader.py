@@ -15,6 +15,11 @@ def load_draft_pack(pack_dir: str | Path) -> DraftPackData:
                 description=item.get("description", ""),
                 prerequisites=list(item.get("prerequisites", [])),
                 mastery_signals=list(item.get("mastery_signals", [])),
+                source_role=item.get("source_role", ""),
+                distinctions=list(item.get("distinctions", [])),
+                definition_candidates=list(item.get("definition_candidates", [])),
+                qualification_candidates=list(item.get("qualification_candidates", [])),
+                constraint_candidates=list(item.get("constraint_candidates", [])),
                 status=item.get("status", "needs_review"),
                 notes=list(item.get("notes", [])),
             )

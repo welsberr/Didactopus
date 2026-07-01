@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from .config import load_config
+from .learner_accessibility import render_accessible_session_outputs
 from .learner_session import (
     build_graph_grounded_session,
     build_notebook_sequence_grounded_session,
@@ -18,6 +19,9 @@ def run_learner_session_demo(
     config_path: str | Path,
     skill_dir: str | Path,
     out_path: str | Path | None = None,
+    accessible_html_path: str | Path | None = None,
+    accessible_text_path: str | Path | None = None,
+    language: str = "en",
     *,
     sequence_path: str | Path | None = None,
     step_index: int = 0,
@@ -36,6 +40,8 @@ def run_learner_session_demo(
             learner_submission=learner_submission
             or "Allele frequencies changed across generations, and I would compare whether the shift reflects chance sampling or another mechanism before naming a cause.",
             learner_goal=learner_goal,
+            language=language,
+            source_language="en",
         )
     else:
         context = load_ocw_skill_context(skill_dir)
@@ -46,10 +52,16 @@ def run_learner_session_demo(
             or "Help me understand how Shannon entropy leads into channel capacity and thermodynamic entropy.",
             learner_submission=learner_submission
             or "Entropy measures uncertainty because more possible outcomes require more information to describe, but one limitation is that thermodynamic entropy is not identical to Shannon entropy.",
+            language=language,
+            source_language="en",
         )
     payload["provider_diagnostics"] = provider_diagnostics_for_kind(base_provider, kind="chat")
     if out_path is not None:
-        Path(out_path).write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        out_path = Path(out_path)
+        out_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        html_path = Path(accessible_html_path) if accessible_html_path is not None else out_path.with_suffix(".html")
+        text_path = Path(accessible_text_path) if accessible_text_path is not None else out_path.with_suffix(".txt")
+        render_accessible_session_outputs(payload, out_html=html_path, out_text=text_path)
     return payload
 
 
@@ -65,11 +77,17 @@ def main() -> None:
     parser.add_argument("--step-index", type=int, default=0)
     parser.add_argument("--learner-goal")
     parser.add_argument("--learner-submission")
+    parser.add_argument("--accessible-html", default=None)
+    parser.add_argument("--accessible-text", default=None)
+    parser.add_argument("--language", default="en")
     args = parser.parse_args()
     payload = run_learner_session_demo(
         args.config,
         args.skill_dir,
         args.out,
+        args.accessible_html,
+        args.accessible_text,
+        args.language,
         sequence_path=args.sequence,
         step_index=args.step_index,
         learner_goal=args.learner_goal,

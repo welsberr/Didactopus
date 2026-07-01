@@ -1,0 +1,24 @@
+review:
+  default_reviewer: "Wesley R. Elsberry"
+  write_promoted_pack: true
+
+bridge:
+  host: "127.0.0.1"
+  port: 8765
+  registry_path: "workspace_registry.json"
+  default_workspace_root: "workspaces"
+
+model_provider:
+  provider: "ollama"
+  ollama:
+    base_url: "http://127.0.0.1:11434/v1"
+    api_key: "ollama"
+    # Set this to a model you have already pulled with `ollama pull ...`.
+    default_model: "llama3.2:3b"
+    role_to_model:
+      mentor: "llama3.2:3b"
+      learner: "llama3.2:3b"
+      practice: "llama3.2:3b"
+      project_advisor: "llama3.2:3b"
+      evaluator: "llama3.2:3b"
+    timeout_seconds: 90.0

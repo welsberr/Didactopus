@@ -1,0 +1,42 @@
+{
+  "pack_id": "evidence-trail",
+  "display_name": "Evidence Trail",
+  "attribution_required": true,
+  "share_alike_required": true,
+  "noncommercial_only": true,
+  "restrictive_flags": [
+    "derived-from-evo-edu-materials"
+  ],
+  "derived_from_sources": [
+    {
+      "title": "evo-edu.org Evidence Trail pack",
+      "kind": "site_pack",
+      "locator": "https://evo-edu.org/evo/packs/evidence-trail/"
+    },
+    {
+      "title": "evo-edu.org Evidence Trail study log",
+      "kind": "site_support_material",
+      "locator": "https://evo-edu.org/evo/packs/evidence-trail/study-log.html"
+    },
+    {
+      "title": "evo-edu.org Scientific Virtues",
+      "kind": "site_background",
+      "locator": "https://evo-edu.org/evo/scientific-virtues/"
+    },
+    {
+      "title": "evo-edu.org Notebook",
+      "kind": "site_background",
+      "locator": "https://evo-edu.org/evo/notebook/"
+    },
+    {
+      "title": "EcoSpecies",
+      "kind": "supporting_resource",
+      "locator": "https://evo-edu.org/apps/ecospecies/"
+    },
+    {
+      "title": "Literature Explorer",
+      "kind": "supporting_resource",
+      "locator": "https://evo-edu.org/apps/literature-explorer/"
+    }
+  ]
+}
