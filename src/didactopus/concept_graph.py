@@ -2,10 +2,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any
-from pathlib import Path
-import json
 import networkx as nx
-from epistemap import Edge, GraphBundle, Node, ancestors, shortest_path, topological_order
+from epistemap import (
+    Edge,
+    GraphBundle,
+    Node,
+    ancestors,
+    shortest_path,
+    topological_order,
+    write_cytoscape_json,
+    write_graphviz_dot,
+)
 
 REL_PREREQ = "prerequisite"
 REL_EQUIVALENT = "equivalent_to"
@@ -85,17 +92,7 @@ class ConceptGraph:
         return shortest_path(self.to_epistemap(), source, target, edge_types={REL_PREREQ})
 
     def export_graphviz(self, path: str) -> None:
-        lines = ["digraph Didactopus {"]
-        for node in self.graph.nodes:
-            lines.append(f'  "{node}";')
-        for u, v, data in self.graph.edges(data=True):
-            lines.append(f'  "{u}" -> "{v}" [label="{data.get("relation", "")}"];')
-        lines.append("}")
-        Path(path).write_text("\n".join(lines), encoding="utf-8")
+        write_graphviz_dot(self.to_epistemap(), path, graph_name="Didactopus")
 
     def export_cytoscape_json(self, path: str) -> None:
-        data = {
-            "nodes": [{"data": {"id": n, **attrs}} for n, attrs in self.graph.nodes(data=True)],
-            "edges": [{"data": {"source": u, "target": v, **attrs}} for u, v, attrs in self.graph.edges(data=True)],
-        }
-        Path(path).write_text(json.dumps(data, indent=2), encoding="utf-8")
+        write_cytoscape_json(self.to_epistemap(), path)
