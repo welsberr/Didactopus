@@ -10,3 +10,4 @@ def test_curriculum_path_to_target() -> None:
     path = graph.curriculum_path_to_target(set(), "bayes-extension::posterior")
     assert "bayes-extension::prior" in path
     assert "bayes-extension::posterior" in path
+    assert graph.prerequisite_shortest_path("bayes-extension::prior", "bayes-extension::posterior")

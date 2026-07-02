@@ -5,6 +5,7 @@ from typing import Any
 from pathlib import Path
 import json
 import networkx as nx
+from epistemap import Edge, GraphBundle, Node, ancestors, shortest_path, topological_order
 
 REL_PREREQ = "prerequisite"
 REL_EQUIVALENT = "equivalent_to"
@@ -38,13 +39,28 @@ class ConceptGraph:
                 g.add_edge(u, v)
         return g
 
+    def to_epistemap(self) -> GraphBundle:
+        return GraphBundle(
+            graph_id="didactopus-concept-graph",
+            title="Didactopus concept graph",
+            nodes=[
+                Node(id=node, type="concept", title=str(data.get("title", node)), description=str(data.get("description", "")), metadata=dict(data))
+                for node, data in self.graph.nodes(data=True)
+            ],
+            edges=[
+                Edge(source=u, target=v, type=str(data.get("relation", "")), metadata={key: value for key, value in data.items() if key != "relation"})
+                for u, v, data in self.graph.edges(data=True)
+            ],
+            metadata={"source": "didactopus"},
+        )
+
     def prerequisite_chain(self, concept: str) -> list[str]:
-        return list(nx.ancestors(self.prerequisite_subgraph(), concept))
+        return ancestors(self.to_epistemap(), concept, edge_types={REL_PREREQ})
 
     def curriculum_path_to_target(self, mastered: set[str], target: str) -> list[str]:
-        pg = self.prerequisite_subgraph()
-        needed = set(nx.ancestors(pg, target)) | {target}
-        ordered = [n for n in nx.topological_sort(pg) if n in needed]
+        bundle = self.to_epistemap()
+        needed = set(ancestors(bundle, target, edge_types={REL_PREREQ})) | {target}
+        ordered = [n for n in topological_order(bundle, edge_types={REL_PREREQ}, node_types={"concept"}) if n in needed]
         return [n for n in ordered if n not in mastered]
 
     def ready_concepts(self, mastered: set[str]) -> list[str]:
@@ -64,6 +80,9 @@ class ConceptGraph:
             if data.get("relation") in relation_types:
                 found.append(v)
         return found
+
+    def prerequisite_shortest_path(self, source: str, target: str) -> list[str]:
+        return shortest_path(self.to_epistemap(), source, target, edge_types={REL_PREREQ})
 
     def export_graphviz(self, path: str) -> None:
         lines = ["digraph Didactopus {"]

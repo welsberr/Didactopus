@@ -18,15 +18,13 @@ class PlannerWeights:
 
 
 def _distance_bonus(graph: ConceptGraph, concept: str, targets: list[str]) -> float:
-    pg = graph.prerequisite_subgraph()
     best = inf
     for target in targets:
-        try:
-            import networkx as nx
-            dist = len(nx.shortest_path(pg, concept, target)) - 1
-            best = min(best, dist)
-        except Exception:
+        path = graph.prerequisite_shortest_path(concept, target)
+        if not path:
             continue
+        dist = len(path) - 1
+        best = min(best, dist)
     if best is inf:
         return 0.0
     return 1.0 / (1.0 + best)
