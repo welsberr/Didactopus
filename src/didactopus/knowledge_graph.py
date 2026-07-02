@@ -1,60 +1,56 @@
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
+
+from epistemap import Edge, GraphBundle, Node, node_id, typed_id
 
 from .course_schema import ConceptCandidate, NormalizedCourse
 
 
 def _slugify(text: str) -> str:
-    cleaned = re.sub(r"[^a-zA-Z0-9]+", "-", text.strip().lower()).strip("-")
-    return cleaned or "untitled"
+    from epistemap import slugify
+
+    return slugify(text)
 
 
 def _source_node_id(source_path: str) -> str:
-    return f"source::{_slugify(source_path)}"
+    return node_id("source", source_path)
 
 
 def _module_node_id(module_title: str) -> str:
-    return f"module::{_slugify(module_title)}"
+    return node_id("module", module_title)
 
 
 def _lesson_node_id(module_title: str, lesson_title: str) -> str:
-    return f"lesson::{_slugify(module_title)}::{_slugify(lesson_title)}"
+    return node_id("lesson", module_title, lesson_title)
 
 
 def _concept_node_id(concept_id: str) -> str:
-    return f"concept::{concept_id}"
+    return typed_id("concept", concept_id)
 
 
 def _signal_node_id(kind: str, lesson_title: str, idx: int) -> str:
-    return f"{kind}::{_slugify(lesson_title)}::{idx}"
+    return node_id(kind, lesson_title, str(idx))
 
 
-def _add_node(nodes: dict[str, dict], node_id: str, node_type: str, **attrs) -> None:
-    node = nodes.setdefault(node_id, {"id": node_id, "type": node_type})
+def _add_node(nodes: dict[str, Node], node_id: str, node_type: str, **attrs) -> None:
+    node = nodes.setdefault(node_id, Node(id=node_id, type=node_type))
     for key, value in attrs.items():
         if value not in (None, "", [], {}):
-            node[key] = value
+            if key in {"title", "description"}:
+                setattr(node, key, value)
+            else:
+                node.metadata[key] = value
 
 
-def _add_edge(edges: list[dict], source: str, target: str, edge_type: str, justification: str, provenance: list[str] | None = None, confidence: float = 1.0) -> None:
-    edges.append(
-        {
-            "source": source,
-            "target": target,
-            "type": edge_type,
-            "justification": justification,
-            "provenance": list(provenance or []),
-            "confidence": confidence,
-        }
-    )
+def _add_edge(edges: list[Edge], source: str, target: str, edge_type: str, justification: str, provenance: list[str] | None = None, confidence: float = 1.0) -> None:
+    edges.append(Edge(source=source, target=target, type=edge_type, justification=justification, confidence=confidence, metadata={"provenance": list(provenance or [])}))
 
 
-def build_knowledge_graph(course: NormalizedCourse, concepts: list[ConceptCandidate]) -> dict:
-    nodes: dict[str, dict] = {}
-    edges: list[dict] = []
+def build_epistemap_graph(course: NormalizedCourse, concepts: list[ConceptCandidate]) -> GraphBundle:
+    nodes: dict[str, Node] = {}
+    edges: list[Edge] = []
 
     for source in course.source_records:
         source_id = _source_node_id(source.source_path)
@@ -68,7 +64,6 @@ def build_knowledge_graph(course: NormalizedCourse, concepts: list[ConceptCandid
             metadata=getattr(source, "metadata", {}),
         )
 
-    concept_ids = {concept.id for concept in concepts}
     for concept in concepts:
         concept_node_id = _concept_node_id(concept.id)
         _add_node(
@@ -198,18 +193,56 @@ def build_knowledge_graph(course: NormalizedCourse, concepts: list[ConceptCandid
                             confidence=0.9 if concept.id == _slugify(lesson.title) else 0.7,
                         )
 
-    return {
-        "course_title": course.title,
-        "rights_note": course.rights_note,
-        "summary": {
-            "node_count": len(nodes),
-            "edge_count": len(edges),
-            "concept_count": len(concepts),
-            "source_count": len(course.source_records),
+    return GraphBundle(
+        graph_id=_slugify(course.title),
+        title=course.title,
+        description="Didactopus course knowledge graph",
+        nodes=list(nodes.values()),
+        edges=edges,
+        metadata={
+            "source": "didactopus",
+            "course_title": course.title,
+            "rights_note": course.rights_note,
+            "summary": {
+                "concept_count": len(concepts),
+                "source_count": len(course.source_records),
+            },
         },
-        "nodes": list(nodes.values()),
-        "edges": edges,
-    }
+    )
+
+
+def build_knowledge_graph(course: NormalizedCourse, concepts: list[ConceptCandidate]) -> dict:
+    bundle = build_epistemap_graph(course, concepts)
+    payload = bundle.model_dump_legacy()
+    payload.update(
+        {
+            "course_title": course.title,
+            "rights_note": course.rights_note,
+            "summary": {
+                "node_count": len(bundle.nodes),
+                "edge_count": len(bundle.edges),
+                "concept_count": len(concepts),
+                "source_count": len(course.source_records),
+            },
+            "nodes": [_legacy_node(node) for node in bundle.nodes],
+            "edges": [_legacy_edge(edge) for edge in bundle.edges],
+        }
+    )
+    return payload
+
+
+def _legacy_node(node: Node) -> dict:
+    payload = node.model_dump(exclude_none=True)
+    metadata = payload.pop("metadata", {})
+    payload.update(metadata)
+    return payload
+
+
+def _legacy_edge(edge: Edge) -> dict:
+    payload = edge.model_dump(exclude_none=True)
+    metadata = payload.pop("metadata", {})
+    payload.update(metadata)
+    return payload
 
 
 def write_knowledge_graph(course: NormalizedCourse, concepts: list[ConceptCandidate], outdir: str | Path) -> None:

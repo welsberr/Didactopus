@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from epistemap import Edge, GraphBundle as EpistemapBundle, Node, neighborhood
+
 
 @dataclass
 class GraphBundle:
@@ -17,8 +19,35 @@ def _node_index(bundle: GraphBundle) -> dict[str, dict]:
     return {node["id"]: node for node in bundle.knowledge_graph.get("nodes", [])}
 
 
-def _edges(bundle: GraphBundle) -> list[dict]:
-    return list(bundle.knowledge_graph.get("edges", []))
+def _epistemap_bundle(bundle: GraphBundle) -> EpistemapBundle:
+    return EpistemapBundle(
+        graph_id=str(bundle.knowledge_graph.get("graph_id", "")),
+        title=str(bundle.knowledge_graph.get("title") or bundle.knowledge_graph.get("course_title", "")),
+        nodes=[
+            Node(
+                id=str(node["id"]),
+                type=str(node.get("type", "")),
+                title=str(node.get("title", "")),
+                description=str(node.get("description", "")),
+                metadata={key: value for key, value in node.items() if key not in {"id", "type", "title", "description"}},
+            )
+            for node in bundle.knowledge_graph.get("nodes", [])
+            if "id" in node
+        ],
+        edges=[
+            Edge(
+                source=str(edge["source"]),
+                target=str(edge["target"]),
+                type=str(edge.get("type", "")),
+                justification=str(edge.get("justification", "")),
+                confidence=edge.get("confidence"),
+                metadata={key: value for key, value in edge.items() if key not in {"source", "target", "type", "justification", "confidence"}},
+            )
+            for edge in bundle.knowledge_graph.get("edges", [])
+            if "source" in edge and "target" in edge
+        ],
+        metadata={key: value for key, value in bundle.knowledge_graph.items() if key not in {"nodes", "edges"}},
+    )
 
 
 def get_concept_node(bundle: GraphBundle, concept_id: str) -> dict | None:
@@ -27,21 +56,30 @@ def get_concept_node(bundle: GraphBundle, concept_id: str) -> dict | None:
 
 def concept_neighborhood(bundle: GraphBundle, concept_id: str) -> dict:
     node_id = concept_node_id(concept_id)
-    nodes = _node_index(bundle)
-    incoming = []
-    outgoing = []
-    for edge in _edges(bundle):
-        if edge["target"] == node_id:
-            incoming.append(edge)
-        if edge["source"] == node_id:
-            outgoing.append(edge)
+    payload = neighborhood(_epistemap_bundle(bundle), node_id)
     return {
-        "concept": nodes.get(node_id, {}),
-        "incoming": incoming,
-        "outgoing": outgoing,
-        "incoming_nodes": [nodes[edge["source"]] for edge in incoming if edge["source"] in nodes],
-        "outgoing_nodes": [nodes[edge["target"]] for edge in outgoing if edge["target"] in nodes],
+        "concept": _node_dict(payload["node"]),
+        "incoming": [_edge_dict(edge) for edge in payload["incoming"]],
+        "outgoing": [_edge_dict(edge) for edge in payload["outgoing"]],
+        "incoming_nodes": [_node_dict(node) for node in payload["incoming_nodes"]],
+        "outgoing_nodes": [_node_dict(node) for node in payload["outgoing_nodes"]],
     }
+
+
+def _node_dict(node: Node | None) -> dict:
+    if node is None:
+        return {}
+    payload = node.model_dump(exclude_none=True)
+    metadata = payload.pop("metadata", {})
+    payload.update(metadata)
+    return payload
+
+
+def _edge_dict(edge: Edge) -> dict:
+    payload = edge.model_dump(exclude_none=True)
+    metadata = payload.pop("metadata", {})
+    payload.update(metadata)
+    return payload
 
 
 def source_fragments_for_concept(bundle: GraphBundle, concept_id: str, limit: int = 3) -> list[dict]:
