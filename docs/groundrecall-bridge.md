@@ -15,6 +15,10 @@ Use this when:
 The bridge does not replace `Didactopus` pack generation. It enriches it with a
 pack-ready `groundrecall_query_bundle.json` artifact.
 
+For graph-aware workbenches, `Didactopus` can also consume GroundRecall
+`graph_interchange.json` bundles using schema
+`groundrecall.graph_interchange.v1`.
+
 ## Inputs
 
 You need:
@@ -63,6 +67,7 @@ The generated pack directory contains the normal `Didactopus` draft-pack files,
 plus:
 
 - `groundrecall_query_bundle.json`
+- optionally, `graph_interchange.json`
 - `doclift_bundle_summary.json`
 
 The pack summary also records:
@@ -90,6 +95,18 @@ Export the pack-ready query bundle directly from GroundRecall:
 python -m groundrecall.export /path/to/groundrecall-store /tmp/groundrecall-export \
   --pack-ready-concept channel-capacity
 ```
+
+Export graph diagnostics and graph interchange data directly from GroundRecall:
+
+```bash
+groundrecall export /path/to/groundrecall-store /tmp/groundrecall-export \
+  --include-graph-diagnostics \
+  --include-graph-interchange
+```
+
+When a pack directory contains `graph_interchange.json`, learner-workbench
+prompts can include graph size and quality signals such as inferred relation
+counts, weak relation grounding, and unsupported claim counts.
 
 Run the plain `doclift` bundle conversion without GroundRecall:
 
