@@ -65,6 +65,7 @@ def test_run_didactopus_arena_writes_outputs(tmp_path: Path) -> None:
     assert (tmp_path / "arena_review_queue.json").exists()
     assert (tmp_path / "arena_g_rows.csv").exists()
     assert (tmp_path / "arena_g_manifest.json").exists()
+    assert (tmp_path / "arena_g_summary.json").exists()
     assert (tmp_path / "arena_report.md").exists()
     queue = json.loads((tmp_path / "arena_review_queue.json").read_text(encoding="utf-8"))
     assert queue
@@ -75,4 +76,8 @@ def test_run_didactopus_arena_writes_outputs(tmp_path: Path) -> None:
     manifest = json.loads((tmp_path / "arena_g_manifest.json").read_text(encoding="utf-8"))
     assert manifest["evaluation_target"] == "grounded_role_behavior"
     assert manifest["row_file"] == "arena_g_rows.csv"
+    summary = json.loads((tmp_path / "arena_g_summary.json").read_text(encoding="utf-8"))
+    assert summary["summary_kind"] == "epistemap_g_experiment_summary"
+    assert summary["group_by"] == "condition"
+    assert summary["manifest"]["experiment_id"] == "didactopus-behavior-arena"
     assert "LLM Review Summary" in (tmp_path / "arena_report.md").read_text(encoding="utf-8")

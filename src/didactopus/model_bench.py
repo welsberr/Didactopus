@@ -4,7 +4,13 @@ import json
 from pathlib import Path
 from time import perf_counter
 
-from epistemap import g_evaluation_row, g_experiment_manifest, write_g_experiment_manifest, write_g_rows_csv
+from epistemap import (
+    g_evaluation_row,
+    g_experiment_manifest,
+    g_experiment_summary,
+    write_g_experiment_manifest,
+    write_g_rows_csv,
+)
 
 from .config import load_config
 from .language_support import language_alignment_score, response_language_instruction
@@ -311,24 +317,29 @@ def run_model_benchmark(
     (out_dir / "model_benchmark.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
     rows = model_benchmark_g_evaluation_rows(payload)
     write_g_rows_csv(rows, out_dir / "model_benchmark_g_rows.csv")
+    manifest = g_experiment_manifest(
+        experiment_id="didactopus-local-model-adequacy",
+        name="Didactopus local-model adequacy benchmark",
+        row_file="model_benchmark_g_rows.csv",
+        evaluation_target="grounded_role_behavior",
+        corpus=str(payload["context"]["skill_name"]),
+        conditions=[payload["benchmark"]["hardware_profile"]["profile_name"]],
+        phases=["mentor", "practice", "evaluator"],
+        reliability_treatment="single-model-local-hardware-profile",
+        temporal_assumptions={"clock": "role_sequence"},
+        row_count=len(rows),
+        metadata={
+            "provider": payload["benchmark"]["provider"],
+            "output_language": payload["context"]["output_language"],
+        },
+    )
     write_g_experiment_manifest(
-        g_experiment_manifest(
-            experiment_id="didactopus-local-model-adequacy",
-            name="Didactopus local-model adequacy benchmark",
-            row_file="model_benchmark_g_rows.csv",
-            evaluation_target="grounded_role_behavior",
-            corpus=str(payload["context"]["skill_name"]),
-            conditions=[payload["benchmark"]["hardware_profile"]["profile_name"]],
-            phases=["mentor", "practice", "evaluator"],
-            reliability_treatment="single-model-local-hardware-profile",
-            temporal_assumptions={"clock": "role_sequence"},
-            row_count=len(rows),
-            metadata={
-                "provider": payload["benchmark"]["provider"],
-                "output_language": payload["context"]["output_language"],
-            },
-        ),
+        manifest,
         out_dir / "model_benchmark_g_manifest.json",
+    )
+    (out_dir / "model_benchmark_g_summary.json").write_text(
+        json.dumps(g_experiment_summary(rows, manifest=manifest, group_by="condition"), indent=2),
+        encoding="utf-8",
     )
 
     lines = [

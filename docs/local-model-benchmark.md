@@ -63,6 +63,7 @@ The benchmark writes:
 - `model_benchmark.md`
 - `model_benchmark_g_rows.csv`
 - `model_benchmark_g_manifest.json`
+- `model_benchmark_g_summary.json`
 
 These include:
 
@@ -75,7 +76,9 @@ These include:
 The G row export uses Epistemap's canonical row shape. It evaluates
 grounded-role behavior for the Didactopus mentor loop; it is not a source-truth
 or claim-verification score. The manifest records the skill corpus, hardware
-profile condition, role phases, and row file for later comparison.
+profile condition, role phases, and row file for later comparison. The summary
+groups rows by hardware-profile condition and preserves Epistemap metric
+warnings when the export lacks a clean/reference environment.
 
 ## Current Scoring Shape
 

@@ -85,10 +85,13 @@ The arena currently writes:
 - `arena_report.md`
 - `arena_g_rows.csv`
 - `arena_g_manifest.json`
+- `arena_g_summary.json`
 
 The G row export uses Epistemap's canonical row shape. It evaluates
 grounded-role behavior across candidate prompt/model/language conditions; it is
-not a source-truth or claim-verification score.
+not a source-truth or claim-verification score. The summary groups rows by
+prompt condition and preserves Epistemap metric warnings when the export lacks a
+clean/reference environment.
 
 When a candidate sets a non-English `language`, the arena now also tracks a heuristic `multilingual_score` alongside the grounded behavior score. This is meant to catch obvious failures where a model ignores the requested output language or drops key grounded terms.
 

@@ -25,16 +25,21 @@ def test_run_model_benchmark_writes_reports(tmp_path) -> None:
     md_path = tmp_path / "model_benchmark.md"
     rows_path = tmp_path / "model_benchmark_g_rows.csv"
     manifest_path = tmp_path / "model_benchmark_g_manifest.json"
+    summary_path = tmp_path / "model_benchmark_g_summary.json"
     assert json_path.exists()
     assert md_path.exists()
     assert rows_path.exists()
     assert manifest_path.exists()
+    assert summary_path.exists()
 
     written = json.loads(json_path.read_text(encoding="utf-8"))
     assert written["summary"]["overall_adequacy_score"] == payload["summary"]["overall_adequacy_score"]
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert manifest["evaluation_target"] == "grounded_role_behavior"
     assert manifest["row_file"] == "model_benchmark_g_rows.csv"
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    assert summary["summary_kind"] == "epistemap_g_experiment_summary"
+    assert summary["manifest"]["experiment_id"] == "didactopus-local-model-adequacy"
     assert "evaluation_target" in rows_path.read_text(encoding="utf-8")
     assert "Role Results" in md_path.read_text(encoding="utf-8")
 
