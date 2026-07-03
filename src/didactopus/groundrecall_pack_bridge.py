@@ -40,6 +40,21 @@ def run_doclift_bundle_with_groundrecall(
     bayesian_label = exported.get("bayesian_reliability_label") or exported.get("bundle", {}).get("assessment_summary", {}).get("bayesian_label", "")
     if bayesian_label:
         summary["bayesian_reliability_label"] = bayesian_label
+    manifest_path = exported.get("assessment_manifest_json_path", "")
+    if manifest_path:
+        copied = _copy_supporting_artifact(Path(manifest_path), pack_dir, "assessment_manifest.json")
+        if copied:
+            summary["assessment_manifest_json_path"] = str(copied)
+    validation_json_path = exported.get("assessment_validation_json_path", "")
+    if validation_json_path:
+        copied = _copy_supporting_artifact(Path(validation_json_path), pack_dir, "assessment_validation.json")
+        if copied:
+            summary["assessment_validation_json_path"] = str(copied)
+    validation_markdown_path = exported.get("assessment_validation_markdown_path", "")
+    if validation_markdown_path:
+        copied = _copy_supporting_artifact(Path(validation_markdown_path), pack_dir, "assessment_validation.md")
+        if copied:
+            summary["assessment_validation_markdown_path"] = str(copied)
     sidecar_path = exported.get("bayesian_reliability_markdown_path", "")
     if sidecar_path:
         copied = _copy_supporting_artifact(Path(sidecar_path), pack_dir, "bayesian_reliability.md")
