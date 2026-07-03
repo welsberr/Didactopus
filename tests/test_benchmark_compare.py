@@ -30,14 +30,21 @@ def test_compare_g_summary_files_ranks_and_writes_output(tmp_path: Path) -> None
     weak = _summary(tmp_path / "weak_g_summary.json", "weak", 0.2)
     strong = _summary(tmp_path / "strong_g_summary.json", "strong", 0.8)
     out_path = tmp_path / "comparison.json"
+    out_markdown_path = tmp_path / "comparison.md"
 
-    comparison = compare_g_summary_files([weak, strong], baseline_id="weak", out_path=out_path)
+    comparison = compare_g_summary_files(
+        [weak, strong],
+        baseline_id="weak",
+        out_path=out_path,
+        out_markdown_path=out_markdown_path,
+    )
 
     assert comparison["comparison_kind"] == "epistemap_g_summary_comparison"
     assert comparison["summaries"][0]["experiment_id"] == "strong"
     assert comparison["summaries"][0]["delta_from_baseline"] > 0
     assert out_path.exists()
     assert json.loads(out_path.read_text(encoding="utf-8"))["baseline_id"] == "weak"
+    assert "# Epistemap G Comparison" in out_markdown_path.read_text(encoding="utf-8")
 
 
 def test_compare_g_summary_files_can_require_compatible_inputs(tmp_path: Path) -> None:
