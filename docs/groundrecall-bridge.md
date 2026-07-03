@@ -56,6 +56,7 @@ The command performs four steps:
 2. places that artifact in a temporary `_groundrecall` area under the target pack
 3. runs the normal `doclift` bundle demo pack generation flow
 4. writes the resulting pack with `groundrecall_query_bundle.json` included as a declared supporting artifact
+5. copies `bayesian_reliability.md` into the pack when GroundRecall exported it
 
 ## Outputs
 
@@ -63,6 +64,7 @@ The generated pack directory contains the normal `Didactopus` draft-pack files,
 plus:
 
 - `groundrecall_query_bundle.json`
+- `bayesian_reliability.md` when available
 - `doclift_bundle_summary.json`
 
 The pack summary also records:
@@ -70,6 +72,7 @@ The pack summary also records:
 - `groundrecall_bundle_included`
 - `groundrecall_concept_ref`
 - `groundrecall_query_bundle_path`
+- `bayesian_reliability_markdown_path` when available
 
 ## Why This Matters
 

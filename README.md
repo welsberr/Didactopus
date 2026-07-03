@@ -211,6 +211,7 @@ That flow:
 
 - exports `groundrecall_query_bundle.json` for the chosen concept
 - places it under the generated pack as a declared supporting artifact
+- carries `bayesian_reliability.md` into the pack when GroundRecall provides it
 - makes the resulting pack consumable by the learner workbench with
   GroundRecall review and graph context intact
 
