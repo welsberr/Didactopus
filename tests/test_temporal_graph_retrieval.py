@@ -1,6 +1,12 @@
 from __future__ import annotations
 
-from didactopus.graph_retrieval import GraphBundle, temporal_claim_context, temporal_graph_slice, temporal_summary
+from didactopus.graph_retrieval import (
+    GraphBundle,
+    concept_epistemic_summary,
+    temporal_claim_context,
+    temporal_graph_slice,
+    temporal_summary,
+)
 
 
 def _bundle() -> GraphBundle:
@@ -52,6 +58,43 @@ def _bundle() -> GraphBundle:
         },
         source_corpus={"fragments": []},
     )
+
+
+def _concept_bundle() -> GraphBundle:
+    return GraphBundle(
+        knowledge_graph={
+            "graph_id": "science-course",
+            "title": "Information Theory",
+            "nodes": [
+                {"id": "concept::entropy", "type": "concept", "title": "Entropy"},
+                {
+                    "id": "lesson::source-coding",
+                    "type": "lesson",
+                    "title": "Source coding",
+                    "status": "grounded",
+                    "source_quality": "peer_reviewed",
+                },
+            ],
+            "edges": [
+                {
+                    "source": "lesson::source-coding",
+                    "target": "concept::entropy",
+                    "type": "teaches_concept",
+                    "confidence": 0.9,
+                },
+            ],
+        },
+        source_corpus={"fragments": []},
+    )
+
+
+def test_concept_epistemic_summary_includes_bayesian_reliability() -> None:
+    payload = concept_epistemic_summary(_concept_bundle(), "entropy")
+
+    assert payload["node_id"] == "concept::entropy"
+    assert payload["summary"]["direct_support_count"] == 1
+    assert payload["bayesian_reliability"]["posterior"]["mean"] > 0.5
+    assert payload["bayesian_reliability"]["prior_sensitivity"]["mean_range"] > 0
 
 
 def test_temporal_graph_slice_filters_future_evidence() -> None:

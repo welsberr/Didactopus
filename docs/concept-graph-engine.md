@@ -9,6 +9,8 @@ The concept graph engine provides the backbone for Didactopus.
 - semantic similarity scoring hook
 - curriculum pathfinding
 - visualization export
+- Epistemap-backed concept epistemic summaries with heuristic and Bayesian
+  reliability context
 
 ## Edge types
 

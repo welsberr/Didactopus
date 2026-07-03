@@ -10,6 +10,7 @@ from epistemap import (
     evidence_available_at,
     fair_play_diagnostic,
     graph_at,
+    epistemic_summary,
     neighborhood,
     stale_claims_after,
     tenability_window,
@@ -76,6 +77,12 @@ def concept_neighborhood(bundle: GraphBundle, concept_id: str) -> dict:
         "incoming_nodes": [_node_dict(node) for node in payload["incoming_nodes"]],
         "outgoing_nodes": [_node_dict(node) for node in payload["outgoing_nodes"]],
     }
+
+
+def concept_epistemic_summary(bundle: GraphBundle, concept_id: str) -> dict:
+    """Return Epistemap epistemic and Bayesian reliability context for a concept."""
+
+    return epistemic_summary(_epistemap_bundle(bundle), concept_node_id(concept_id))
 
 
 def temporal_graph_slice(bundle: GraphBundle, when) -> dict:
