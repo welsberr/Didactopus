@@ -80,6 +80,16 @@ profile condition, role phases, and row file for later comparison. The summary
 groups rows by hardware-profile condition and preserves Epistemap metric
 warnings when the export lacks a clean/reference environment.
 
+To compare multiple benchmark or arena summary files:
+
+```bash
+python -m didactopus.benchmark_compare \
+  examples/model-benchmark/model_benchmark_g_summary.json \
+  examples/model-benchmark-es/model_benchmark_g_summary.json \
+  --baseline-id didactopus-local-model-adequacy \
+  --out examples/model-benchmark-comparison.json
+```
+
 ## Current Scoring Shape
 
 The current heuristic scoring asks whether each role does the right kind of work:
