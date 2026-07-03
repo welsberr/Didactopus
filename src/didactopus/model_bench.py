@@ -8,6 +8,7 @@ from epistemap import (
     g_evaluation_row,
     g_experiment_manifest,
     g_experiment_summary,
+    write_g_experiment_summary_markdown,
     write_g_experiment_manifest,
     write_g_rows_csv,
 )
@@ -337,10 +338,9 @@ def run_model_benchmark(
         manifest,
         out_dir / "model_benchmark_g_manifest.json",
     )
-    (out_dir / "model_benchmark_g_summary.json").write_text(
-        json.dumps(g_experiment_summary(rows, manifest=manifest, group_by="condition"), indent=2),
-        encoding="utf-8",
-    )
+    g_summary = g_experiment_summary(rows, manifest=manifest, group_by="condition")
+    (out_dir / "model_benchmark_g_summary.json").write_text(json.dumps(g_summary, indent=2), encoding="utf-8")
+    write_g_experiment_summary_markdown(g_summary, out_dir / "model_benchmark_g_summary.md")
 
     lines = [
         "# Didactopus Local Model Benchmark",
