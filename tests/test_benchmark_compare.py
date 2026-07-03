@@ -5,12 +5,16 @@ from didactopus.benchmark_compare import compare_g_summary_files
 
 
 def _summary(path: Path, experiment_id: str, g_value: float) -> Path:
+    return _summary_with_target(path, experiment_id, g_value, "grounded_role_behavior")
+
+
+def _summary_with_target(path: Path, experiment_id: str, g_value: float, evaluation_target: str) -> Path:
     payload = {
         "summary_kind": "epistemap_g_experiment_summary",
         "manifest": {
             "experiment_id": experiment_id,
             "name": experiment_id,
-            "evaluation_target": "grounded_role_behavior",
+            "evaluation_target": evaluation_target,
         },
         "overall": {
             "G": g_value,
@@ -34,3 +38,15 @@ def test_compare_g_summary_files_ranks_and_writes_output(tmp_path: Path) -> None
     assert comparison["summaries"][0]["delta_from_baseline"] > 0
     assert out_path.exists()
     assert json.loads(out_path.read_text(encoding="utf-8"))["baseline_id"] == "weak"
+
+
+def test_compare_g_summary_files_can_require_compatible_inputs(tmp_path: Path) -> None:
+    recognition = _summary_with_target(tmp_path / "recognition.json", "recognition", 0.8, "recognition")
+    translation = _summary_with_target(tmp_path / "translation.json", "translation", 0.9, "translation")
+
+    try:
+        compare_g_summary_files([recognition, translation], require_compatible=True)
+    except SystemExit as exc:
+        assert exc.code == 2
+    else:
+        raise AssertionError("expected incompatible comparison to exit with status 2")

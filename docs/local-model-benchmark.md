@@ -87,6 +87,7 @@ python -m didactopus.benchmark_compare \
   examples/model-benchmark/model_benchmark_g_summary.json \
   examples/model-benchmark-es/model_benchmark_g_summary.json \
   --baseline-id didactopus-local-model-adequacy \
+  --require-compatible \
   --out examples/model-benchmark-comparison.json
 ```
 
