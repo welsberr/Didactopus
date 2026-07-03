@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Iterable
 
-from epistemap import g_summary_comparison
+from epistemap import g_summary_comparison_from_files
 
 
 def compare_g_summary_files(
@@ -16,13 +16,7 @@ def compare_g_summary_files(
 ) -> dict:
     """Compare Epistemap G summary JSON files produced by Didactopus runs."""
 
-    summaries = [json.loads(Path(path).read_text(encoding="utf-8")) for path in summary_paths]
-    comparison = g_summary_comparison(summaries, baseline_id=baseline_id)
-    if out_path is not None:
-        destination = Path(out_path)
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(json.dumps(comparison, indent=2), encoding="utf-8")
-    return comparison
+    return g_summary_comparison_from_files(summary_paths, baseline_id=baseline_id, out_json=out_path)
 
 
 def build_parser() -> argparse.ArgumentParser:
