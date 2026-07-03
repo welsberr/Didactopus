@@ -21,6 +21,9 @@ Near-term scope:
 - continue strengthening the learner session backend
 - make mentor, practice, and evaluator turns consistently source-grounded
 - improve trust-preserving feedback behavior
+- pass concept-level Epistemap Bayesian reliability summaries into mentor and
+  evaluator context when available, without presenting them as final truth
+  labels
 - extend the session flow beyond one short interaction
 - make scientific virtues operational in the session loop by separating observation from interpretation, preserving uncertainty, and rewarding justified revision
 - replace stubbed provider output in learner-facing pilot flows with configured real model backends where available
@@ -35,6 +38,15 @@ Current code anchors:
 - `didactopus.learner_session_demo`
 - `didactopus.graph_retrieval`
 - `didactopus.ocw_rolemesh_transcript_demo`
+
+Assessment experiments:
+
+- compare mentor responses with no reliability summary, heuristic reliability
+  only, Bayesian posterior summary, and both together
+- test whether communicating uncertainty improves learner calibration without
+  reducing useful practice progress
+- track whether prior-sensitive or thin-evidence graph regions require different
+  mentor language than stable-support regions
 
 ### 2. Local-model adequacy benchmark for constrained hardware
 
@@ -57,6 +69,9 @@ Expected outputs:
 - benchmark tasks grounded in the MIT OCW pack
 - per-role adequacy scores
 - recommended deployment profiles for low-end, laptop, and stronger local systems
+- Epistemap G summaries and Markdown reports for each benchmark run
+- comparison reports that relate local-model adequacy to the reliability
+  profile of the source graph region used in the task
 
 ### 3. Accessibility-first learner interaction
 
@@ -126,6 +141,9 @@ Immediate next steps:
 
 - replace current stubbed mentor/practice/evaluator text with a configured real provider path
 - enrich the `Evidence Trail` pack with grounded source fragments so returned guidance is based on more than pack metadata
+- surface concept posterior stability, effective sample size, and
+  prior-sensitivity labels in backend learner-session diagnostics before
+  deciding how much of that should be visible to learners
 - persist learner-session state instead of treating each call as a stateless step
 - connect learner progress, evidence, and revision history to the standard backend session model
 - define deployment notes for running the learner workbench against the local API outside development mode
@@ -163,6 +181,17 @@ Target features:
 - remedial branch suggestions
 - hint ladders and difficulty control
 - oral, short-answer, and compare-and-contrast practice modes
+- reliability-aware practice selection that treats fragile, contested, or
+  prior-sensitive concepts differently from stable-support concepts
+
+Assessment experiments:
+
+- compare next-step recommendations based only on learner mastery versus
+  recommendations that also account for graph posterior stability
+- test whether contested-evidence practice improves recognition of unsupported
+  assertions and manufactured-doubt patterns
+- export learner/model responses as Epistemap G rows to evaluate whether
+  reliability-aware practice improves calibration and transfer
 
 ### 7. Source-grounded citation transparency
 
@@ -180,6 +209,8 @@ Target features:
 - easier inspection of concept-to-source provenance
 - explicit quote marking and attribution in any public-facing output
 - no unmarked source wording in public Notebook exposition
+- optional review-facing reliability panel showing posterior support,
+  credible interval width, effective sample size, and prior sensitivity
 
 ### 8. Notebook-centered knowledge layer
 
@@ -228,6 +259,8 @@ Immediate next steps:
 - prefer broad explanatory hubs over narrow topic labels when organizing new
   Notebook regions
 - make source-role-aware retrieval available to learner workbench flows
+- attach Epistemap concept epistemic summaries to Notebook hub and first-ring
+  neighborhoods so review can prioritize fragile or contested regions
 - treat secondary products as first-class review/export outputs rather than
   incidental metadata
 - connect Notebook concept neighborhoods more directly to learner-session
