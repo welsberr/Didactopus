@@ -2,106 +2,21 @@
 
 ![Didactopus mascot](artwork/didactopus-mascot.png)
 
-Didactopus is a local-first educational workbench for turning source material into structured learning domains, grounding tutoring and evaluation in those domains, and exporting knowledge products that other AI systems can use as a skill.
+Didactopus is a local-first Python codebase for turning educational source material into structured learning domains, evaluating learner progress against those domains, and exporting review, mastery, and skill artifacts.
 
-The short version is:
+Its intended use is closer to a structured mentor or self-study workbench than a "do my assignment for me" engine. The project should help learners get guidance, sequencing, feedback, and explanation without encouraging the offloading effect that comes from unstructured GenAI use.
 
-- ingest a course, topic outline, or notes
-- build a concept graph and learning path
-- review and improve that structure
-- use it to support guided human learning
-- export grounded knowledge products for AI use
-
-## Project Description
-
-Didactopus sits between raw educational material and both human and AI learning activity.
-
-It is not meant to be a "do the assignment for me" system. Its intended role is closer to a structured mentor, pedagogy workbench, and knowledge-grounding layer. The aim is to reduce confusion, improve sequencing, and make learning more visible without encouraging answer offloading.
-
-At a high level, the repository does six things:
+At a high level, the repository does five things:
 
 1. Ingest source material such as Markdown, text, HTML, PDF-ish text, DOCX-ish text, and PPTX-ish text into normalized course/topic structures.
 2. Distill those structures into draft domain packs with concepts, prerequisites, roadmaps, projects, attribution, and review flags.
-3. Validate, review, and promote those packs through a workspace-backed review flow.
-4. Build learning graphs, learner sessions, evidence summaries, and capability exports.
-5. Support grounded LLM-backed mentor, practice, and evaluator behavior.
-6. Export reusable knowledge products and skills from grounded learning artifacts.
-
-## Design And Teaching Philosophy
-
-Didactopus is built around a few core ideas:
-
-- learning should stay effortful for the learner
-- guidance should be structured, grounded, and inspectable
-- source material should matter more than model prior knowledge
-- explanations, critique, and next-step advice should preserve learner trust
-- local and low-cost deployment matter for access
-
-It should also operate under a scientific-virtues outlook. In practice that
-means Didactopus should reinforce habits such as:
-
-- curiosity about the question rather than premature closure
-- honesty about what is observed versus what is inferred
-- skepticism toward weakly supported claims, including model-generated claims
-- attentiveness to source quality, caveats, and uncertainty
-- willingness to revise when better evidence changes the picture
-
-In practice, that means Didactopus tries to help with:
-
-- topic structure
-- prerequisite visibility
-- study sequencing
-- grounded explanation
-- practice design
-- evaluator feedback
-- capability and progress artifacts
-
-It explicitly tries not to become a silent answer surrogate.
-
-The project is also being advanced with a future-compatibility constraint: avoid choices that assume abundant compute, fluent English, expert supervision, or only mature learners. That keeps the current roadmap moving while preserving eventual usefulness for more constrained and equity-sensitive educational settings.
-
-## Who It Is For
-
-Didactopus has several real audiences:
-
-- autodidacts who want a structured mentor scaffold for a topic
-- students who want help understanding coursework without outsourcing the work
-- instructors, tutors, and curriculum designers who want reviewable concept structures
-- technically oriented users who want local, grounded LLM support
-- libraries, labs, and other shared-resource settings that may want a more advanced local inference stack
-
-The repo currently serves the technically comfortable user best, but the design direction is broader: grounded, accessible educational support that can work for a single learner or in a shared institutional setting.
-
-## Brief Roadmap
-
-Current priorities are:
-
-1. graph-grounded learner sessions
-2. local-model adequacy benchmarking
-3. multilingual grounded learner support
-4. accessibility-first learner outputs
-5. arena-based comparison of model, prompt, and language choices
-
-The live detailed roadmap is in:
-
-- `docs/roadmap.md`
-- `docs/multilingual-qa.md`
-
-Didactopus can also generate a starter multilingual QA draft from a pack:
-
-```bash
-python -m didactopus.multilingual_qa_seed domain-packs/mit-ocw-information-entropy
-```
-
-and promote selected seed entries into a curated multilingual QA spec:
-
-```bash
-python -m didactopus.multilingual_qa_review --seed domain-packs/mit-ocw-information-entropy/multilingual_qa.seed.yaml --out domain-packs/mit-ocw-information-entropy/multilingual_qa.yaml --language es --required-term-id shannon-entropy
-```
+3. Validate, review, and promote those draft packs through a workspace-backed review flow.
+4. Build merged learning graphs, rank next concepts, accumulate learner evidence, and export capability profiles.
+5. Demonstrate end-to-end flows, including an MIT OCW Information and Entropy demo that produces a pack, learner outputs, a reusable skill bundle, and progress visualizations.
 
 ## Start Here If You Just Want To Learn
 
-If your main question is "how quickly can this help me learn something?", start here:
+If you only want the shortest path to "show me Didactopus helping someone learn," run:
 
 ```bash
 pip install -e .
@@ -115,187 +30,292 @@ Then open:
 
 - `examples/ocw-information-entropy-run/learner_progress.html`
 - `examples/ocw-information-entropy-session.json`
-- `examples/ocw-information-entropy-session.html`
-- `examples/ocw-information-entropy-session.txt`
 - `examples/ocw-information-entropy-skill-demo/skill_demo.md`
+- `examples/ocw-information-entropy-provider-transcript/provider_transcript.md`
 - `skills/ocw-information-entropy-agent/`
 
-That path gives you:
+That gives you:
 
-- a generated domain pack
-- a graph-grounded learner session
-- accessible HTML and text outputs
-- a visible mastery path
-- a capability export
-- a reusable grounded skill
+- a generated topic pack
+- a graph-grounded mentor/practice/evaluator learner session
+- a visible learning path
+- progress artifacts
+- a reusable skill grounded in the exported knowledge
+- a transcript showing how a local-LLM-backed learner/mentor interaction can look
 
 The point is not to replace your effort. The point is to give your effort structure, feedback, and momentum.
 
-## Basic Learner Use Case
+If that is your use case, read the next section, `Fast Start For Impatient Autodidacts`, and skip the deeper architecture sections until you need them.
 
-The simplest Didactopus pattern for a human learner is:
+## Fast Start For Impatient Autodidacts
 
-1. Start from a topic or course source.
-2. Generate a draft pack and path quickly.
-3. Use the learner session to get explanation, practice, and feedback.
-4. Review only the obvious extraction noise.
-5. Keep learning with the grounded structure instead of starting every time from a blank prompt.
+If your real question is "How quickly can I get this to help me learn something?", use one of these paths.
 
-For the fastest included example, use the MIT OCW Information and Entropy demo. It is the current end-to-end reference flow for:
+### Fastest path: use the included MIT OCW demo
 
-- course ingestion
-- graph construction
-- learner session generation
-- progress visualization
-- skill export
+This is the shortest route to seeing the whole system work as a personal mentor scaffold.
 
-## Learner Workbench Pilot
-
-Didactopus now also includes a learner-workbench pilot in the web UI.
-
-The current split is:
-
-- review workbench for candidate triage, synthesis, and promotion
-- learner workbench pilot for guided study and reflective revision
-
-The learner-workbench pilot currently uses the `Evidence Trail` sample pack and
-focuses on:
-
-- question framing
-- observation versus interpretation
-- source comparison
-- bibliography growth
-- revision under uncertainty
-
-The backend entrypoint for that pilot is `POST /api/learner-workbench/session`.
-The frontend pilot pack payload is [evidence-trail-pack.json](/home/netuser/bin/Didactopus/webui/public/packs/evidence-trail-pack.json), and the underlying pack lives in [domain-packs/evidence-trail](/home/netuser/bin/Didactopus/domain-packs/evidence-trail).
-
-This is still a pilot rather than the final learner UX. It is best understood as
-the first integrated learner-workbench path inside the main repository, not as a
-finished replacement for the existing learner-session demos.
-
-## `doclift` Bundle Ingestion
-
-When your source material starts as legacy office documents, the intended
-boundary is:
-
-1. `doclift` normalizes the source tree into a bundle.
-2. `Didactopus` turns that bundle into a draft pack and learning path.
-3. `GroundRecall` can import the same bundle directly when you need canonical
-   knowledge storage instead of a learner pack.
-
-Example:
+1. Install the repo:
 
 ```bash
-doclift convert-dir /path/to/legacy-course /tmp/doclift-bundle --asset-root /path/to/legacy-course
-didactopus doclift-bundle /tmp/doclift-bundle /tmp/didactopus-pack --course-title "Example Course"
+pip install -e .
 ```
 
-That command writes the normal draft-pack outputs plus a
-`doclift_bundle_summary.json` file that records the bundle-to-pack conversion.
-
-If you already have a reviewed concept in `GroundRecall`, Didactopus can now
-pull a pack-ready `groundrecall_query_bundle.json` directly from a
-GroundRecall store and carry it through the same pack-generation path:
-
-```bash
-didactopus doclift-bundle-groundrecall \
-  /path/to/groundrecall-store \
-  channel-capacity \
-  /tmp/doclift-bundle \
-  /tmp/didactopus-pack \
-  --course-title "Example Course"
-```
-
-That flow:
-
-- exports `groundrecall_query_bundle.json` for the chosen concept
-- places it under the generated pack as a declared supporting artifact
-- carries `bayesian_reliability.md` into the pack when GroundRecall provides it
-- makes the resulting pack consumable by the learner workbench with
-  GroundRecall review and graph context intact
-
-If you want just the Notebook page artifact without building a full pack, use
-the direct export wrapper:
-
-```bash
-didactopus notebook-page-groundrecall \
-  /path/to/groundrecall-store \
-  channel-capacity \
-  /tmp/notebook-page-export
-```
-
-That command writes both `groundrecall_query_bundle.json` and
-`notebook_page.json` into the output directory.
-
-The fuller bridge workflow is documented in:
-
-- `docs/groundrecall-bridge.md`
-- `docs/evo-edu-notebook-pipeline.md`
-- `docs/foundation-notebook-inception-pilot.md`
-
-## Didactopus As Pedagogy Support
-
-Didactopus is broader than a learner chat loop.
-
-It is also meant to support the pedagogy around learning:
-
-- building and reviewing concept structures
-- checking prerequisite logic
-- generating and comparing practice tasks
-- evaluating explanations with trust-preserving critique
-- exporting evidence and capability artifacts
-- supporting multilingual and accessible outputs
-
-Operationally, the scientific-virtues framing means Didactopus should:
-
-- separate observation from interpretation in learner-facing flows
-- reward justified revision rather than answer persistence
-- surface uncertainty explicitly instead of smoothing it away
-- push learners toward source comparison and evidence quality checks
-- avoid presenting confident unsupported synthesis as settled knowledge
-
-This is why the repository contains review workspaces, validation flows, knowledge graphs, and capability export machinery rather than only a chat interface.
-
-## Grounded AI Learner And Skill Production
-
-Didactopus can also produce grounded knowledge products that other AI systems can use.
-
-The current repo demonstrates:
-
-- generating a grounded domain pack from MIT OCW-derived material
-- running deterministic and LLM-backed learner-style flows over that pack
-- exporting capability and artifact summaries
-- packaging those artifacts into a reusable skill bundle
-
-The key idea is that the AI skill should come from the reviewed knowledge product, not from an ungrounded prompt alone.
-
-The main demo commands are:
+2. Generate the demo pack, learner outputs, and reusable skill:
 
 ```bash
 python -m didactopus.ocw_information_entropy_demo
-python -m didactopus.learner_session_demo --language es
-python -m didactopus.ocw_skill_agent_demo
-python -m didactopus.model_bench
-python -m didactopus.arena --arena-spec configs/arena.example.yaml
 ```
 
-## LLM Setup Paths
+3. Render the learner progress views:
 
-If you want live LLM-backed Didactopus behavior without the complexity of RoleMesh, start with one of these:
+```bash
+python -m didactopus.learner_session_demo
+python -m didactopus.ocw_progress_viz
+python -m didactopus.ocw_progress_viz --full-map
+python -m didactopus.provider_inspect --config configs/config.geniehive.example.yaml
+```
 
-1. `ollama` for simple local use
-2. `openai_compatible` for simple hosted use
-3. `rolemesh` only if you need routing and multi-model orchestration
+4. Run the "agent uses the learned skill" demo:
 
-Low-friction starting configs:
+```bash
+python -m didactopus.ocw_skill_agent_demo
+```
 
-- `configs/config.ollama.example.yaml`
-- `configs/config.openai-compatible.example.yaml`
+After that, inspect:
 
-Setup docs:
+- `examples/ocw-information-entropy-run/`
+- `examples/ocw-information-entropy-skill-demo/`
+- `skills/ocw-information-entropy-agent/`
 
-- `docs/model-provider-setup.md`
+What you get:
+
+- a domain pack for the topic
+- a guided curriculum path
+- a deterministic learner run over that path
+- a graph-grounded learner session with mentor, practice, evaluation, and next-step turns
+- a capability export
+- a reusable skill bundle
+- visual progress artifacts
+- an optional local-LLM learner/mentor transcript path via a gateway-backed provider such as GenieHive
+
+This is the best "show me why this is fun" path in the current repo.
+
+### Fast custom path: turn one markdown file into a draft learning domain
+
+If you already have notes, a syllabus, or a course outline, the lightest custom workflow is:
+
+1. Put the material in a Markdown or text file.
+2. Adapt and ingest it through the course/topic pipeline.
+3. Emit a draft pack and the Notebook/course bundle artifacts that a learner-facing surface will need.
+4. Review only what matters.
+
+The easiest reference for this flow is the OCW demo source tree:
+
+- `examples/ocw-information-entropy/course/`
+
+Use it as a template for your own topic, then follow the same pattern implemented in:
+
+- `didactopus.ocw_information_entropy_demo`
+
+The important boundary is that ingestion should not stop at an internal pack.
+For Notebook-style material, the target bundle should also include concept
+pages, scaffold JSON, learning-path artifacts, and policy artifacts that
+Didactopus can consume later. The current bundle contract is:
+
+- `notebook/notebook-course-bundle-contract.json`
+- `notebook/notebook-pack-mode-contract.json`
+- `notebook/notebook-export-manifest.json`
+
+That second contract makes the product modes explicit:
+
+- `pack` mode: structured metadata and graph outputs that keep the learner tied closely to source materials
+- `notebook` mode: accumulated reviewed explanatory content that can support study more independently
+- `hybrid` mode: pack backbone plus selectively expanded Notebook treatment
+
+The export manifest matters because it distinguishes:
+
+- workspace state: Notebook source artifacts exist locally
+- export state: the reviewed learner-facing and machine-readable bundle is present together and ready for deployment or downstream consumption
+
+The Notebook side now also has a single-entry local build/check wrapper:
+
+- `python3 notebook/tools/build_notebook_bundle.py`
+
+That command regenerates the Notebook export manifest/index and runs the export
+and public-surface regression checks for the current bundle.
+
+There is also a publish-side companion:
+
+- `python3 notebook/tools/publish_notebook_bundle.py`
+
+That command runs the Notebook build/check wrapper and then publishes the
+reviewed Notebook surface to the configured evo-edu.org deployment target.
+
+### If you want a mentor more than a curation tool
+
+Treat Didactopus as a loop:
+
+1. Start from one topic you genuinely care about.
+2. Generate a draft pack quickly, even if it is imperfect.
+3. Keep only the concepts and progression that feel useful.
+4. Use the resulting pack and skill outputs to drive explanations, study plans, and self-checks.
+
+The important idea is not "perfect ingestion first." It is "usable learning structure fast enough that you keep going."
+
+### If you are using it alongside coursework
+
+The intended pattern is:
+
+1. Use Didactopus to clarify the topic map and prerequisites.
+2. Ask it for hints, sequencing, comparisons, and self-check prompts.
+3. Use its outputs to diagnose where you are weak.
+4. Still do the actual writing, solving, and explaining yourself.
+
+That is the difference between assisted learning and offloading. Didactopus should help you think better, not quietly substitute for your thinking.
+
+### Current friction honestly stated
+
+The lowest-friction path is the included demo. The custom path still asks you to be comfortable with:
+
+- running Python commands locally
+- editing or preparing a source file
+- accepting heuristic extraction noise
+- reviewing draft outputs before trusting them
+
+Didactopus is already good at reducing the activation energy from "pile of source material" to "coherent learning structure," but it is not yet a one-click end-user tutor product.
+
+### Why use it anyway?
+
+Because it can make learning feel more like building a visible map of mastery than passively consuming material.
+
+Instead of only reading notes, you can get:
+
+- a concept graph
+- a staged path
+- explicit prerequisites
+- evidence-aware progress artifacts
+- reusable skill outputs for future tutoring or evaluation
+
+In the best case, that makes learning feel more like active skill-building and less like either passive consumption or answer outsourcing.
+
+### Current learner-session backbone
+
+The main mentor-style backend now has a dedicated demo entry point:
+
+```bash
+python -m didactopus.learner_session_demo
+```
+
+That demo builds a graph-grounded session from the MIT OCW skill bundle and emits:
+
+- a learner goal
+- a grounded mentor response
+- a practice prompt
+- evaluator feedback
+- a recommended next step
+
+The point of this module is architectural as much as demonstrational: it is the session core that future accessibility, model-benchmark, and voice-interaction work should build on.
+
+Reasoning scaffolds are meant to improve this flow materially. When a reviewed
+scaffold is available, it should help shape the mentor's opening question, the
+evidence check requested from the learner, the misconception pattern to guard
+against, and the revision step suggested next.
+
+The current operational target for mentor behavior is documented in
+`docs/mentoring-operational-process.md`. In short, the mentor should use
+source-grounded study-aid layers, worked examples, retrieval prompts, argument
+records, and citation checks to help the learner attempt and revise work
+without hiding provenance or substituting for the learner's thinking.
+
+For local-model research, the companion plan is
+`docs/ai-learner-mentorship-benchmark.md`. That process treats local LLMs as
+learner stand-ins, runs source-blind pretests before mentorship, measures
+hallucination and calibration, then exports claim-level rows suitable for the
+practical `G` grounding estimator.
+
+The same learner-session surface can now also run from a reviewed Notebook path
+contract instead of only the OCW skill graph:
+
+```bash
+PYTHONPATH=src python3 -m didactopus.learner_session_demo \
+  --sequence notebook/learning-paths/foundations-first-ring.didactopus.json \
+  --step-index 0
+```
+
+That keeps the same session payload shape while grounding the mentor/practice/
+evaluation flow in one step of the Notebook-backed concept sequence.
+
+If you want a deterministic session-plan input from the current evo-edu
+Notebook path contract, use:
+
+```bash
+PYTHONPATH=src python3 -m didactopus.main sequence-plan \
+  --sequence notebook/learning-paths/foundations-first-ring.didactopus.json
+```
+
+That turns the reviewed Notebook sequence into a mentorship-oriented plan with
+per-step session goals, mentor openings, evidence focus, and transition cues.
+
+If you want the same output as a dedicated demo artifact, use:
+
+```bash
+PYTHONPATH=src python3 -m didactopus.notebook_learning_sequence_demo
+```
+
+That writes a deterministic session-plan JSON under `examples/` using the
+current Notebook first-ring sequence contract.
+
+The scaffold-record ranking used for Notebook-backed session planning is now
+loaded from the Notebook side:
+
+- `notebook/learning-paths/foundations-first-ring.selection-policy.json`
+
+That keeps the mentoring logic generic: sequence order comes from the Notebook,
+concept-local reasoning aids come from scaffold files, and record-selection
+policy can evolve without further hard-coding source-specific rules into the
+session builder.
+
+### Current provider inspection path
+
+If you want to see how Didactopus currently resolves gateway-backed roles without running a full transcript or learner session, use:
+
+```bash
+python -m didactopus.provider_inspect --config configs/config.geniehive.example.yaml
+```
+
+Or through the umbrella CLI:
+
+```bash
+python -m didactopus.main provider-inspect --config configs/config.geniehive.example.yaml
+```
+
+That emits the current provider diagnostics payload, including:
+
+- healthy model and role aliases
+- selected fallback model
+- effective role-model overrides
+- resolved route/service details for each configured role
+
+GroundRecall now also has an internal namespace and umbrella CLI surface:
+
+```bash
+python -m didactopus.groundrecall.cli inspect /path/to/groundrecall-store
+python -m didactopus.groundrecall.cli query /path/to/groundrecall-store "channel capacity"
+```
+
+## Local Test Note
+
+If you have multiple local `Didactopus` checkouts or an older editable install,
+plain `pytest` may import the wrong package tree. For source-of-truth local
+verification, prefer:
+
+```bash
+PYTHONPATH=src python3 -m pytest tests/test_learner_session.py
+```
+
+That ensures the learner-session and scaffold-adjacent tests run against the
+current checkout rather than a stale installed copy.
 
 ## What Is In This Repository
 
@@ -471,36 +491,36 @@ The generated MIT OCW pack also includes:
 - `pack_compliance_manifest.json`
 - `source_inventory.yaml`
 
-### Try the local RoleMesh integration path
+### Try the local gateway integration path
 
 Stubbed local-provider demo:
 
 ```bash
-python -m didactopus.rolemesh_demo --config configs/config.example.yaml
+python -m didactopus.gateway_demo --config configs/config.example.yaml
 ```
 
-RoleMesh-backed example config:
+GenieHive-backed example config:
 
 ```bash
-python -m didactopus.rolemesh_demo --config configs/config.rolemesh.example.yaml
+python -m didactopus.gateway_demo --config configs/config.geniehive.example.yaml
 ```
 
 MIT OCW learner transcript through the local-LLM path:
 
 ```bash
-python -m didactopus.ocw_rolemesh_transcript_demo --config configs/config.rolemesh.example.yaml
+python -m didactopus.ocw_provider_transcript_demo --config configs/config.geniehive.example.yaml
 ```
 
 If your local models are slow, Didactopus now prints pending-status lines while each mentor, practice, learner, or evaluator turn is being generated. For a long manual run, capture both the transcript payload and those live status messages:
 
 ```bash
-python -u -m didactopus.ocw_rolemesh_transcript_demo \
-  --config configs/config.rolemesh.example.yaml \
-  --out-dir examples/ocw-information-entropy-rolemesh-transcript \
-  2>&1 | tee examples/ocw-information-entropy-rolemesh-transcript/manual-run.log
+python -u -m didactopus.ocw_provider_transcript_demo \
+  --config configs/config.geniehive.example.yaml \
+  --out-dir examples/ocw-information-entropy-provider-transcript \
+  2>&1 | tee examples/ocw-information-entropy-provider-transcript/manual-run.log
 ```
 
-That command leaves the final transcript in `rolemesh_transcript.md` and `rolemesh_transcript.json`, while `manual-run.log` preserves the conversational “working on it” notices during the wait.
+That command leaves the final transcript in `provider_transcript.md` and `provider_transcript.json`, while `manual-run.log` preserves the conversational “working on it” notices during the wait.
 
 ### Render learner progress visualizations
 
@@ -548,12 +568,17 @@ What remains heuristic or lightweight:
 ## Recommended Reading
 
 - [docs/roadmap.md](docs/roadmap.md)
-- [docs/arena.md](docs/arena.md)
-- [docs/learner-accessibility.md](docs/learner-accessibility.md)
-- [docs/local-model-benchmark.md](docs/local-model-benchmark.md)
-- [docs/model-provider-setup.md](docs/model-provider-setup.md)
 - [docs/course-to-pack.md](docs/course-to-pack.md)
 - [docs/learning-graph.md](docs/learning-graph.md)
+- [docs/access-constrained-mentoring.md](docs/access-constrained-mentoring.md)
+- [docs/interoperability-and-feature-adoption.md](docs/interoperability-and-feature-adoption.md)
+- [docs/deployment-modes.md](docs/deployment-modes.md)
+- [docs/mentoring-operational-process.md](docs/mentoring-operational-process.md)
+- [docs/ai-learner-mentorship-benchmark.md](docs/ai-learner-mentorship-benchmark.md)
+- [docs/groundrecall-llmwiki-import.md](docs/groundrecall-llmwiki-import.md)
+- [docs/groundrecall-migration-plan.md](docs/groundrecall-migration-plan.md)
+- [docs/groundrecall-repo-bootstrap.md](docs/groundrecall-repo-bootstrap.md)
+- [docs/groundrecall-assistant-architecture.md](docs/groundrecall-assistant-architecture.md)
 - [docs/agentic-learner-loop.md](docs/agentic-learner-loop.md)
 - [docs/mastery-ledger.md](docs/mastery-ledger.md)
 - [docs/workspace-manager.md](docs/workspace-manager.md)

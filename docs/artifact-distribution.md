@@ -42,6 +42,41 @@ Eventually, packs could be distributed through a registry or package index. A ma
 - compatible Didactopus versions
 - dependencies on other packs or shared competencies
 
+### 4. Offline pack capsules
+Access-constrained deployments need packs that can be moved by archive file,
+removable media, or local mirror without requiring Git or continuous internet
+access. A pack capsule should include:
+
+- pack manifest;
+- source, concept, practice, answer-key, and coverage artifacts;
+- license and redistribution metadata;
+- language and accessibility metadata;
+- model and hardware requirements;
+- review status and provenance;
+- checksums, and signatures when signing infrastructure is available;
+- printable learner and steward guides.
+
+Pack capsules remain the canonical Didactopus distribution unit. External
+standards should be boundary adapters, not replacements for the internal pack
+model. The first useful adapters are:
+
+- Common Cartridge for LMS/course exchange;
+- QTI for reviewed assessment item exchange;
+- EPUB for portable learner guides;
+- ZIM/static web bundles for offline libraries and local mirrors;
+- H5P package metadata for interactive practice assets;
+- xAPI export for optional local learner-event interchange.
+
+The adoption plan is tracked in
+[interoperability-and-feature-adoption.md](interoperability-and-feature-adoption.md).
+
+The first manifest fixture is under
+`examples/pack-capsule-example/didactopus-pack-capsule.json`. Validate it with:
+
+```bash
+PYTHONPATH=src python -m didactopus.main pack-capsule-validate examples/pack-capsule-example/didactopus-pack-capsule.json
+```
+
 ## Design requirements
 
 Artifacts should be:
@@ -52,6 +87,8 @@ Artifacts should be:
 - schema-validated
 - mergeable and composable
 - usable offline
+- importable without expert configuration
+- verifiable by checksum or signature where possible
 
 ## Recommended file formats
 
@@ -84,3 +121,5 @@ Later, Didactopus should support:
 - artifact provenance metadata
 - import/export CLI commands
 - trust policies for third-party packs
+- low-bandwidth update bundles
+- local mirror and removable-media workflows

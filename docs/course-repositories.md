@@ -113,6 +113,6 @@ Each course should still keep its own:
 
 The current in-repo reference example is:
 
-- [didactopus-course.yaml](/home/netuser/dev/Didactopustry1/examples/ocw-information-entropy/didactopus-course.yaml)
-- [course](/home/netuser/dev/Didactopustry1/examples/ocw-information-entropy/course)
-- [sources.yaml](/home/netuser/dev/Didactopustry1/examples/ocw-information-entropy/sources.yaml)
+- [didactopus-course.yaml](../examples/ocw-information-entropy/didactopus-course.yaml)
+- [course](../examples/ocw-information-entropy/course)
+- [sources.yaml](../examples/ocw-information-entropy/sources.yaml)

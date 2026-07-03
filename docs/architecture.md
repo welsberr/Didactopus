@@ -51,6 +51,16 @@ The provider abstraction should support:
 - vLLM or comparable self-hosted inference
 - optional remote APIs only by explicit configuration
 
+For access-constrained deployments, local-first must also mean:
+
+- no telemetry, cloud sync, crash upload, or remote model route by default;
+- clear labeling before any external route is used;
+- local-only learner ledgers unless deliberately exported;
+- minimal learner identity requirements;
+- pack and model health checks that a local steward can understand;
+- no promise that application settings alone provide secrecy or safety in
+  hostile environments.
+
 ## Artifact ecosystem
 
 The architecture should support:
@@ -59,6 +69,8 @@ The architecture should support:
 - version validation
 - compatibility checks
 - offline local discovery
+- offline pack capsules with checksums or signatures
+- low-bandwidth and removable-media distribution
 
 ## Safety against shallow learning
 

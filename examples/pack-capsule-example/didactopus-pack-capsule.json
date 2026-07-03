@@ -1,0 +1,46 @@
+{
+  "schema_version": "didactopus-pack-capsule-v0",
+  "capsule_id": "example-foundations-0.1.0",
+  "pack_name": "example-foundations",
+  "title": "Example Foundations",
+  "version": "0.1.0",
+  "language": "en",
+  "license": "CC-BY-4.0",
+  "review_status": "reviewed",
+  "content_files": [
+    {
+      "path": "content/lesson.md",
+      "role": "source",
+      "required": true,
+      "sha256": "e4eecdbba4d36895a70096a92c20e26aae2b9fca991a8e52dd76cb3f10ccfa03",
+      "media_type": "text/markdown"
+    }
+  ],
+  "provenance_summary": "Synthetic repository fixture for the Didactopus pack capsule manifest v0.",
+  "accessibility_features": [
+    "text_only",
+    "markdown_source"
+  ],
+  "model_requirements": [
+    {
+      "role": "mentor",
+      "minimum_context_tokens": 4096,
+      "tested_routes": [
+        "stub-local"
+      ],
+      "adequacy_report": "Fixture only; not a real adequacy claim."
+    }
+  ],
+  "external_adapters": [
+    {
+      "standard_id": "qti",
+      "direction": "export",
+      "mapping_status": "lossy_export",
+      "artifact_path": null,
+      "notes": "Example reviewed quiz export target."
+    }
+  ],
+  "privacy_profile": "local_only",
+  "telemetry_enabled": false,
+  "remote_routes_allowed": false
+}

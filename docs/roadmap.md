@@ -4,6 +4,13 @@ This document summarizes the current prioritized improvement roadmap for Didacto
 
 The ordering is intentional. The project should first strengthen the graph-grounded mentor loop that defines the real learner task, then use that stable backbone for local-model evaluation, accessibility work, and broader UX improvements.
 
+Access-constrained education is now treated as a core design pressure. The
+system should be able to serve learners who lack reliable tutors, institutional
+support, cloud access, or safe public access to education. That does not mean
+Didactopus can promise secrecy or personal safety in hostile environments; it
+means offline-first operation, privacy-preserving defaults, low-expertise
+stewardship, and reviewed learning packs must shape the roadmap.
+
 ## Priorities
 
 ### 1. Graph-grounded conversational mentor loop
@@ -20,17 +27,14 @@ Near-term scope:
 
 - continue strengthening the learner session backend
 - make mentor, practice, and evaluator turns consistently source-grounded
+- implement the mentoring process contract in `docs/mentoring-operational-process.md`
+- use study-aid records as layered overlays rather than source replacements
+- add claim-alignment and citation-support practice where the domain calls for it
 - improve trust-preserving feedback behavior
 - pass concept-level Epistemap Bayesian reliability summaries into mentor and
   evaluator context when available, without presenting them as final truth
   labels
 - extend the session flow beyond one short interaction
-- make scientific virtues operational in the session loop by separating observation from interpretation, preserving uncertainty, and rewarding justified revision
-- replace stubbed provider output in learner-facing pilot flows with configured real model backends where available
-- make learner-facing guidance explicitly distinction-aware:
-  - `A vs B`
-  - `A does not imply B`
-  - `B can occur without A`
 
 Current code anchors:
 
@@ -38,15 +42,6 @@ Current code anchors:
 - `didactopus.learner_session_demo`
 - `didactopus.graph_retrieval`
 - `didactopus.ocw_rolemesh_transcript_demo`
-
-Assessment experiments:
-
-- compare mentor responses with no reliability summary, heuristic reliability
-  only, Bayesian posterior summary, and both together
-- test whether communicating uncertainty improves learner calibration without
-  reducing useful practice progress
-- track whether prior-sensitive or thin-evidence graph regions require different
-  mentor language than stable-support regions
 
 ### 2. Local-model adequacy benchmark for constrained hardware
 
@@ -61,19 +56,114 @@ Why next:
 Primary questions:
 
 - Which models are adequate for `mentor`, `practice`, and `evaluator` roles?
+- Which smaller models are useful as AI learner stand-ins for source-specific
+  mentorship experiments?
 - What latency, memory, and throughput are acceptable on Raspberry Pi-class hardware?
 - Which roles can degrade gracefully to smaller models?
+- How much does mentorship improve groundedness, calibration, transfer, and
+  hallucination resistance?
 
 Expected outputs:
 
 - benchmark tasks grounded in the MIT OCW pack
 - per-role adequacy scores
-- recommended deployment profiles for low-end, laptop, and stronger local systems
+- source-blind pretest, posttest, transfer, and retention runs for AI learners
+- `scored_claims.csv` exports for practical `G` estimation
 - Epistemap G summaries and Markdown reports for each benchmark run
+- groundedness reports comparing pre- and post-mentorship behavior
 - comparison reports that relate local-model adequacy to the reliability
   profile of the source graph region used in the task
+- recommended deployment profiles for low-end, laptop, and stronger local systems
 
-### 3. Accessibility-first learner interaction
+Current anchors:
+
+- `docs/ai-learner-mentorship-benchmark.md`
+- `docs/pedagogical-research-alignment.md`
+- `didactopus.ai_learner_benchmark`
+- `didactopus.source_spine_transfer_experiment`
+
+Assessment experiments:
+
+- compare mentor responses with no reliability summary, heuristic reliability
+  only, Bayesian posterior summary, and both together
+- test whether communicating uncertainty improves learner calibration without
+  reducing useful practice progress
+- track whether prior-sensitive or thin-evidence graph regions require different
+  mentor language than stable-support regions
+
+### 3. Access-constrained offline learner appliance
+
+Status: planned
+
+Why high priority:
+
+- Learners in under-resourced or hostile settings may not be able to rely on
+  human tutors, cloud services, or public institutional support.
+- Reducing dependence on technically privileged operators is part of the
+  educational mission, not only a packaging concern.
+- Offline-first, local-only operation improves privacy and resilience even for
+  ordinary personal learning.
+
+Target features:
+
+- repeatable single-machine learner-node profile
+- no default telemetry or automatic remote calls
+- local-only learner ledger by default
+- local search and local model routing
+- setup health check and "ready for learning" report
+- explicit labeling of remote routes when enabled
+- plain-language steward documentation
+- local export, archive, and deletion workflows for learner records
+
+Current anchors:
+
+- `docs/access-constrained-mentoring.md`
+- `docs/deployment-modes.md`
+- `docs/interoperability-and-feature-adoption.md`
+
+### 4. Pack capsules and low-bandwidth distribution
+
+Status: planned
+
+Why this follows the appliance:
+
+- An offline learner appliance is only useful if it can receive reviewed,
+  immediately usable learning material.
+- Pack distribution must not assume Git, Python, or continuous internet access.
+
+Target features:
+
+- pack capsule manifest with content, license, checksums, language,
+  accessibility features, model requirements, and review status
+- import from local directory, archive file, or removable media
+- signed pack verification when signing infrastructure exists
+- printable learner and steward guides generated from pack metadata
+- low-bandwidth update bundles and local mirror support
+- reviewed coverage ledgers that say what a pack does and does not teach
+- boundary adapters for Common Cartridge, QTI, EPUB, ZIM/static web bundles,
+  and H5P package metadata where mappings are reliable
+
+### 5. Steward experience and maintenance
+
+Status: planned
+
+Why this matters:
+
+- A deployment model that requires a sophisticated technologist at every site
+  will not solve the access problem.
+- The practical operator should become a local steward, not necessarily an
+  expert system administrator.
+
+Target features:
+
+- installer profiles for single learner, shared device, small LAN, and kiosk
+- plain-language diagnostics for model, disk, pack integrity, and offline mode
+- backup, restore, export, deletion, update, and repair workflows
+- recovery path for corrupted indexes, missing models, and failed imports
+- advanced configuration still available for expert maintainers but not
+  required for normal operation
+
+### 6. Accessibility-first learner interaction
 
 Status: planned
 
@@ -90,7 +180,7 @@ Target features:
 - text-first navigation of concept neighborhoods and progress
 - explicit structural cues in explanations and feedback
 
-### 4. Voice interaction with local STT and TTS
+### 7. Voice interaction with local STT and TTS
 
 Status: planned
 
@@ -106,9 +196,9 @@ Target features:
 - spoken waiting notices during slow local-model responses
 - repeat, interrupt, and slow-down controls
 
-### 5. Learner workbench UI
+### 8. Learner workbench UI
 
-Status: pilot in progress
+Status: planned
 
 Why important:
 
@@ -120,52 +210,13 @@ Target features:
 - current concept and why-it-matters view
 - prerequisite chain and supporting lessons
 - grounded source excerpts
-- definitions, constraints, and qualifications view
-- quote candidates and source-trail view for argumentation workflows
 - active practice task
 - evaluator feedback
 - recommended next step
-- first external pilot should use the `evidence-trail` evo-edu pack as a learner-workbench test case
+- backend diagnostics for concept posterior stability, effective sample size,
+  and prior sensitivity before deciding what should be visible to learners
 
-Current progress:
-
-- the first external pilot pack now exists at `domain-packs/evidence-trail/`
-- `pack_to_frontend` output is generated and copied into `webui/public/packs/evidence-trail-pack.json`
-- the web UI now has a learner-workbench launcher and `Evidence Trail` pilot mode in addition to the review workbench
-- the learner pilot exposes question, observation, interpretation, uncertainty, and revision-trigger fields directly in the UI
-- scientific virtues are now reflected in the UI framing and in backend learner-session prompt construction
-- the backend now exposes `POST /api/learner-workbench/session`
-- end-to-end verification succeeded locally: the API starts, the endpoint returns structured concept/session output, and the frontend/backend contract is working
-
-Immediate next steps:
-
-- replace current stubbed mentor/practice/evaluator text with a configured real provider path
-- enrich the `Evidence Trail` pack with grounded source fragments so returned guidance is based on more than pack metadata
-- surface concept posterior stability, effective sample size, and
-  prior-sensitivity labels in backend learner-session diagnostics before
-  deciding how much of that should be visible to learners
-- persist learner-session state instead of treating each call as a stateless step
-- connect learner progress, evidence, and revision history to the standard backend session model
-- define deployment notes for running the learner workbench against the local API outside development mode
-
-Current pilot state:
-
-- a backend learner-workbench path exists in `didactopus.learner_workbench`
-- the API exposes `POST /api/learner-workbench/session`
-- the web UI now has a launcher that separates review workbench from learner workbench
-- the first pilot pack exists at `domain-packs/evidence-trail/`
-- the frontend can load a static learner-pack payload from `webui/public/packs/evidence-trail-pack.json`
-- the current pilot explicitly emphasizes question framing, observation versus interpretation, uncertainty, and revision
-
-Next steps:
-
-- connect the learner-workbench pilot more directly to the standard learner-session backend
-- persist learner-workbench state instead of treating each step as a stateless interaction
-- ground the pilot more deeply in source fragments instead of mostly pack-level structure
-- decide which scientific-virtues framing belongs in the stable learner path versus remaining pilot-specific
-- document a simple local run path for using the learner workbench outside ad hoc development
-
-### 6. Adaptive diagnostics and practice refinement
+### 9. Adaptive diagnostics and practice refinement
 
 Status: planned
 
@@ -193,7 +244,7 @@ Assessment experiments:
 - export learner/model responses as Epistemap G rows to evaluate whether
   reliability-aware practice improves calibration and transfer
 
-### 7. Source-grounded citation transparency
+### 10. Source-grounded citation transparency
 
 Status: planned
 
@@ -207,118 +258,10 @@ Target features:
 - lesson and source-fragment references in explanations
 - explicit distinction between cited source support and model inference
 - easier inspection of concept-to-source provenance
-- explicit quote marking and attribution in any public-facing output
-- no unmarked source wording in public Notebook exposition
 - optional review-facing reliability panel showing posterior support,
   credible interval width, effective sample size, and prior sensitivity
 
-### 8. Notebook-centered knowledge layer
-
-Status: planned
-
-Why it matters:
-
-- The Foundation Notebook pilot suggests that Didactopus needs one durable
-  concept-network representation between raw source grounding and learner-facing
-  products.
-- Topic labels alone are too weak; broad explanatory hubs and first-ring
-  concept neighborhoods work better.
-- The Notebook is the right place to preserve definitions, constraints,
-  qualifications, and contrasts.
-- The pilot also suggests that the Notebook is the durable center between raw
-  source-grounding work and learner-facing products, not just a supplemental
-  static page format.
-
-Target features:
-
-- hub-first concept organization
-- first-ring and second-ring concept neighborhoods
-- first-class distinction modeling:
-  - `A vs B`
-  - `A does not imply B`
-  - `B can occur without A`
-- support for source-role weighting:
-  - overview
-  - mechanism
-  - nuance
-  - controversy
-  - argumentation
-- support for learner-significance cues so explanation and practice can answer
-  “why does this distinction matter?”
-- Notebook-adjacent secondary products:
-  - definitions
-  - qualifications
-  - constraints
-  - quote candidates
-- separate rendering rules for Notebook, workbench, and public exposition
-
-Immediate next steps:
-
-- promote the Foundation Notebook pilot conclusions into the stable design
-  model for Didactopus
-- prefer broad explanatory hubs over narrow topic labels when organizing new
-  Notebook regions
-- make source-role-aware retrieval available to learner workbench flows
-- attach Epistemap concept epistemic summaries to Notebook hub and first-ring
-  neighborhoods so review can prioritize fragile or contested regions
-- treat secondary products as first-class review/export outputs rather than
-  incidental metadata
-- connect Notebook concept neighborhoods more directly to learner-session
-  grounding and practice generation
-- add a project-level `.groundrecall/work-map.{json,md}` convention so active
-  source roots, export roots, temp builds, and deployment targets stay easy to
-  find across long-running modernization work
-- extend Notebook-related terminology work into bibliography/index workflows:
-  - expand TOA/CiteGeist keyword and keyphrase coverage for Notebook concepts
-  - use book-index terminology as an authoritative signal for concept ranking
-  - allow opposition-index terminology to raise salience without raising
-    authority score
-- add citation-coverage triage for public-facing pages:
-  - `citation_missing`
-  - `citation_thin`
-  - `citation_rich`
-- use visible citation blocks for pages that do not yet have full citation
-  support
-
-### 8a. Timeline framework for Archive modernization
-
-Status: planned
-
-Why it matters:
-
-- The Archive needs a structured chronology path for publications, court cases,
-  educational milestones, and controversy events.
-- A timeline is useful even before the full citation graph and Notebook link
-  structure are complete.
-- A timeline framework is realistic for rollout, even if deep expansion is a
-  post-rollout task.
-
-Near-term scope:
-
-- support timeline entry types:
-  - `publication`
-  - `case`
-  - `event`
-- support multiple time granularities:
-  - exact date
-  - year
-  - date range
-  - decade
-  - century
-  - deep-time epoch
-- seed a small set of high-value entries for public launch
-- connect timeline entries to Notebook concepts, citation status, and later
-  evidence-docket expansion
-
-Longer-term scope:
-
-- add aggregate entries for years, decades, and centuries
-- add deep-time scientific chronology back through geological eras and major
-  life-history milestones
-- connect publications to open-access links, cites/cited-by expansion, and
-  opposition-response dockets
-
-### 9. Pack quality, review, and concept-graph curation improvements
+### 11. Pack quality, review, and concept-graph curation improvements
 
 Status: planned
 
@@ -335,7 +278,7 @@ Target features:
 - stronger review support for noisy or broad concepts
 - improved source coverage QA
 
-### 10. Incremental re-ingestion and course updates
+### 12. Incremental re-ingestion and course updates
 
 Status: planned
 
@@ -351,7 +294,26 @@ Target features:
 - graph and pack diffs
 - preservation of learner evidence across source updates
 
-### 11. Richer multimodal and notation support
+### 13. Human pilot and field-readiness evaluation
+
+Status: planned
+
+Why later:
+
+- The mentoring loop, offline appliance, pack capsules, and privacy defaults
+  need to be stable before higher-risk or access-constrained pilots.
+- Human-rights-sensitive deployments require local social, legal, and personal
+  risk assessment beyond normal product testing.
+
+Target features:
+
+- low-risk pilots before any high-risk deployment
+- learning evaluation with pretest, posttest, retention, and calibration
+- steward-maintenance friction measures
+- privacy and data-retention review
+- red-team review for unsafe model behavior and accidental remote exposure
+
+### 14. Richer multimodal and notation support
 
 Status: longer-term
 
@@ -372,24 +334,22 @@ Examples:
 - Optimize for guided learning, not answer offloading.
 - Prefer role-adequate local models over chasing a single best model.
 - Keep accessibility and low-cost deployment in scope from the start, not as cleanup work.
+- Treat access-constrained education as a core deployment concern.
+- Make offline-first and no-telemetry defaults the basic learner-node posture.
+- Reduce operator privilege requirements through steward-friendly setup and
+  maintenance paths.
 - Preserve provenance and license compliance as first-class constraints.
-- Advance the current roadmap without assuming abundant compute, fluent English, expert supervision, or mature learners.
-- Treat scientific virtues as operational principles: encourage curiosity, honesty about evidence, skepticism toward weak claims, attentiveness to caveats, and revision when the evidence changes.
-- Separate observation from interpretation in learner-facing guidance so the system does not blur grounded support with model inference.
-- Frame revision as progress rather than as failure, especially in mentor and evaluator feedback.
-- Preserve distinctions, caveats, and scope conditions as learning assets rather
-  than treating them as noise.
-- Treat the Notebook as the durable knowledge layer, but not as the only
-  learner-facing representation.
+- Do not promise secrecy, anonymity, or legal safety for hostile environments.
 
 ## Suggested Implementation Sequence
 
 1. Strengthen `didactopus.learner_session` into the standard session backend.
-2. Fold the learner-workbench pilot into that backend without losing its stronger study-state framing.
-3. Add a Notebook-centered operating layer with hub concepts, distinctions, and secondary products.
-4. Replace stubbed learner-workbench provider output with a configured real model backend.
-5. Ground the `evidence-trail` pilot and future Notebook pilots in richer source fragments, definitions, constraints, and persisted learner state.
-6. Build a small model-benchmark harness around the unified learner backend.
+2. Build a small model-benchmark harness around that backend.
+3. Prototype the offline learner appliance profile with local-only defaults.
+4. Define pack capsules and low-bandwidth import/export workflows.
+5. Add steward health checks and maintenance commands.
+6. Build the standards registry and first Common Cartridge/QTI/xAPI mapping
+   crosswalks.
 7. Add accessible learner HTML and text-first outputs.
 8. Add local TTS and STT support to the same session flow.
 9. Expand adaptive practice and diagnostics.

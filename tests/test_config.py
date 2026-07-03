@@ -18,15 +18,10 @@ def test_load_rolemesh_config() -> None:
     assert set(config.model_provider.rolemesh.role_to_model) == set(role_ids())
 
 
-def test_load_ollama_config() -> None:
-    config = load_config(Path("configs/config.ollama.example.yaml"))
-    assert config.model_provider.provider == "ollama"
-    assert config.model_provider.ollama.base_url.endswith("/v1")
-    assert set(config.model_provider.ollama.role_to_model) == set(role_ids())
-
-
-def test_load_openai_compatible_config() -> None:
-    config = load_config(Path("configs/config.openai-compatible.example.yaml"))
-    assert config.model_provider.provider == "openai_compatible"
-    assert config.model_provider.openai_compatible.base_url == "https://api.openai.com/v1"
-    assert set(config.model_provider.openai_compatible.role_to_model) == set(role_ids())
+def test_load_geniehive_config() -> None:
+    config = load_config(Path("configs/config.geniehive.example.yaml"))
+    assert config.model_provider.provider == "geniehive"
+    assert config.model_provider.geniehive.role_to_model["mentor"] == "planner"
+    assert config.model_provider.geniehive.role_to_model["learner"] == "writer"
+    assert set(config.model_provider.geniehive.role_to_model) == set(role_ids())
+    assert config.model_provider.gateway.base_url == config.model_provider.geniehive.base_url

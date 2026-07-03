@@ -6,6 +6,7 @@ from pathlib import Path
 import yaml
 
 from .config import AppConfig
+from .graph_retrieval import graph_quality_summary, load_groundrecall_graph_interchange
 from .model_provider import ModelProvider
 from .role_prompts import system_prompt_for_role
 
@@ -19,9 +20,10 @@ def _load_yaml(path: Path) -> dict:
 
 
 def _load_groundrecall_summary(pack_dir: Path) -> dict:
+    interchange_summary = _load_groundrecall_interchange_summary(pack_dir)
     path = pack_dir / "groundrecall_query_bundle.json"
     if not path.exists():
-        return {}
+        return interchange_summary
     payload = json.loads(path.read_text(encoding="utf-8"))
     review_candidates = payload.get("review_candidates", []) or []
     concept = payload.get("concept", {}) or {}
@@ -37,7 +39,7 @@ def _load_groundrecall_summary(pack_dir: Path) -> dict:
     source_role_summary = payload.get("source_role_summary", {}) or {}
     key_distinctions = payload.get("key_distinctions", []) or []
     secondary_products = payload.get("review_context", {}).get("secondary_products", {}) if isinstance(payload.get("review_context"), dict) else {}
-    return {
+    summary = {
         "concept_id": concept.get("concept_id", ""),
         "concept_title": concept.get("title", ""),
         "review_candidate_count": len(review_candidates),
@@ -46,6 +48,31 @@ def _load_groundrecall_summary(pack_dir: Path) -> dict:
         "source_role_summary": source_role_summary,
         "key_distinctions": key_distinctions[:5],
         "secondary_products": secondary_products,
+    }
+    if interchange_summary:
+        summary.update(
+            {
+                "graph_interchange_included": True,
+                "graph_quality_summary": interchange_summary.get("graph_quality_summary", {}),
+                "graph_node_count": interchange_summary.get("graph_node_count", 0),
+                "graph_edge_count": interchange_summary.get("graph_edge_count", 0),
+                "graph_consumer_notes": interchange_summary.get("graph_consumer_notes", []),
+            }
+        )
+    return summary
+
+
+def _load_groundrecall_interchange_summary(pack_dir: Path) -> dict:
+    path = pack_dir / "graph_interchange.json"
+    if not path.exists():
+        return {}
+    bundle = load_groundrecall_graph_interchange(path)
+    return {
+        "graph_interchange_included": True,
+        "graph_node_count": len(bundle.knowledge_graph.get("nodes", []) or []),
+        "graph_edge_count": len(bundle.knowledge_graph.get("edges", []) or []),
+        "graph_quality_summary": graph_quality_summary(bundle),
+        "graph_consumer_notes": bundle.knowledge_graph.get("consumer_notes", []) or [],
     }
 
 
@@ -118,6 +145,19 @@ def _groundrecall_block(summary: dict) -> str:
             "- Secondary review products: "
             + ", ".join(f"{key}={value}" for key, value in sorted(secondary_products.items()) if value)
         )
+    if summary.get("graph_interchange_included"):
+        lines.append(
+            f"- Graph interchange: nodes={summary.get('graph_node_count', 0)}, edges={summary.get('graph_edge_count', 0)}"
+        )
+    quality_summary = summary.get("graph_quality_summary", {}) or {}
+    quality_parts = [
+        f"{key}={value}"
+        for key, value in sorted(quality_summary.items())
+        if key in {"inferred_relation_count", "weakly_grounded_relation_count", "unsupported_claim_count", "high_fanout_concept_count"}
+        and value
+    ]
+    if quality_parts:
+        lines.append("- Graph quality signals: " + ", ".join(quality_parts))
     for rationale in summary.get("top_rationales", []) or []:
         lines.append(f"- Review cue: {rationale}")
     return "\n".join(lines)

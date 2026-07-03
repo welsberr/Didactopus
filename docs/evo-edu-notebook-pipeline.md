@@ -179,6 +179,8 @@ Expected result:
 For important notebook concepts, export:
 
 - `groundrecall_query_bundle.json`
+- `graph_interchange.json` when a graph-aware workbench needs broader
+  neighborhood and quality diagnostics
 
 If you only need the page-ready artifact for a concept, `Didactopus` now also
 has a direct wrapper that writes both the query bundle and `notebook_page.json`
@@ -203,6 +205,7 @@ Use `Didactopus` to:
 
 - create draft packs around concept neighborhoods or topical modules
 - carry `groundrecall_query_bundle.json` as a declared supporting artifact
+- consume `graph_interchange.json` for graph quality and neighborhood context
 - expose learner-workbench context that includes review and graph signals
 - sequence "what next" items from prerequisites and nearby graph structure
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 import sys
 
@@ -61,9 +62,15 @@ def _copy_bayesian_reliability_sidecar(source_path: Path, pack_dir: Path) -> Pat
 
 
 def _load_groundrecall_export():
-    groundrecall_src = Path("/home/netuser/bin/GroundRecall/src")
-    if groundrecall_src.exists():
-        sys.path.insert(0, str(groundrecall_src))
+    repo_root = Path(__file__).resolve().parents[2]
+    candidates = [
+        Path(os.environ["GROUNDRECALL_SRC"]) if os.environ.get("GROUNDRECALL_SRC") else None,
+        repo_root.parent / "GroundRecall" / "src",
+    ]
+    for groundrecall_src in candidates:
+        if groundrecall_src is not None and (groundrecall_src / "groundrecall" / "export.py").exists():
+            sys.path.insert(0, str(groundrecall_src))
+            break
     from groundrecall.export import export_groundrecall_query_bundle  # type: ignore
 
     return export_groundrecall_query_bundle

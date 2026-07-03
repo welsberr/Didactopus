@@ -2,15 +2,12 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-import sys
-import re
 
 from .agentic_loop import AgenticStudentState, integrate_attempt
-from .augmentation_bundle import load_augmentation_bundle
 from .artifact_registry import validate_pack
 from .course_ingestion_compliance import build_pack_compliance_manifest, load_sources, write_manifest
 from .course_repo import bootstrap_course_repo, resolve_course_repo
-from .document_adapters import adapt_documents
+from .document_adapters import adapt_documents, canonical_source_path
 from .evaluator_pipeline import LearnerAttempt
 from .graph_builder import build_concept_graph
 from .mastery_ledger import (
@@ -80,6 +77,7 @@ def _write_skill_bundle(
     run_dir: Path,
     concept_path: list[str],
     mastered_concepts: list[str],
+    display_roots: tuple[Path, ...] = (),
 ) -> None:
     references_dir = skill_dir / "references"
     assets_dir = skill_dir / "assets" / "generated"
@@ -102,8 +100,8 @@ def _write_skill_bundle(
     summary_lines = [
         "# Generated Course Summary",
         "",
-        f"- Pack dir: `{pack_dir}`",
-        f"- Run dir: `{run_dir}`",
+        f"- Pack dir: `{_display_path(pack_dir, *display_roots)}`",
+        f"- Run dir: `{_display_path(run_dir, *display_roots)}`",
         "",
         "## Curriculum Path Used By The Demo Learner",
     ]
@@ -129,16 +127,6 @@ def _write_skill_bundle(
             (run_asset_dir / source.name).write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
 
 
-def _stage_groundrecall_pack_source(pack_dir: Path, target_dir: Path) -> Path:
-    target_dir.mkdir(parents=True, exist_ok=True)
-    for name in ["pack.yaml", "concepts.yaml", "roadmap.yaml", "projects.yaml", "rubrics.yaml"]:
-        source = pack_dir / name
-        if source.exists():
-            target = target_dir / name
-            target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
-    return target_dir
-
-
 def _select_target_concept(pack_name: str, concepts: list, preferred_id: str = "thermodynamics-and-entropy") -> str:
     ids = [concept.id for concept in concepts]
     if preferred_id in ids:
@@ -148,132 +136,32 @@ def _select_target_concept(pack_name: str, concepts: list, preferred_id: str = "
     return f"{pack_name}::{ids[-1]}"
 
 
-def _pack_concept_ref(target_key: str, concepts: list) -> str:
-    target_id = target_key.split("::", 1)[-1]
-    for concept in concepts:
-        if concept.id == target_id:
-            return concept.title
-    return target_id
+def _repo_root() -> Path:
+    return Path(__file__).resolve().parents[2]
 
 
-def _load_groundrecall_runtime():
-    groundrecall_src = Path("/home/netuser/bin/GroundRecall/src")
-    if groundrecall_src.exists():
-        sys.path.insert(0, str(groundrecall_src))
-    from groundrecall import export_groundrecall_query_bundle, promote_import_to_store, run_groundrecall_import  # type: ignore
-
-    return run_groundrecall_import, promote_import_to_store, export_groundrecall_query_bundle
-
-
-def _merge_source_inventories(primary_path: Path, extra_path: Path, out_path: Path) -> Path:
-    primary = load_sources(primary_path)
-    extra = load_sources(extra_path)
-    merged = []
-    seen_ids: set[str] = set()
-    for source in [*primary.sources, *extra.sources]:
-        if source.source_id in seen_ids:
-            continue
-        seen_ids.add(source.source_id)
-        merged.append(source.model_dump())
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    import yaml
-    out_path.write_text(yaml.safe_dump({"sources": merged}, sort_keys=False), encoding="utf-8")
-    return out_path
+def _is_relative_to(path: Path, root: Path) -> bool:
+    try:
+        path.resolve().relative_to(root.resolve())
+        return True
+    except ValueError:
+        return False
 
 
-def _slugify(text: str) -> str:
-    cleaned = re.sub(r"[^a-zA-Z0-9]+", "-", text.strip().lower()).strip("-")
-    return cleaned or "untitled"
+def _source_display_root(course_source: Path) -> Path:
+    repo_root = _repo_root()
+    if _is_relative_to(course_source, repo_root):
+        return repo_root
+    return course_source.parent
 
 
-def _merge_concept_descriptions(primary: str, secondary: str, max_chars: int = 640) -> str:
-    primary = (primary or "").strip()
-    secondary = (secondary or "").strip()
-    if not primary:
-        return secondary[:max_chars]
-    if not secondary or secondary in primary:
-        return primary[:max_chars]
-    merged = f"{primary} {secondary}".strip()
-    return merged[:max_chars]
-
-
-def _merge_unique(existing: list[str], additions: list[str]) -> list[str]:
-    seen = set(existing)
-    out = list(existing)
-    for item in additions:
-        if item not in seen:
-            seen.add(item)
-            out.append(item)
-    return out
-
-
-def _load_wolfe_concept_alignment(wolfe_snippets_dir: Path | None) -> dict[str, str]:
-    if wolfe_snippets_dir is None:
-        return {}
-    import yaml
-
-    path = wolfe_snippets_dir / "concept-alignment.yaml"
-    if not path.exists():
-        return {}
-    payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    alignments = payload.get("alignments", []) or []
-    mapping: dict[str, str] = {}
-    for item in alignments:
-        if not isinstance(item, dict):
-            continue
-        source_title = str(item.get("source_title", "")).strip()
-        target_title = str(item.get("target_title", "")).strip()
-        if source_title and target_title:
-            mapping[source_title] = target_title
-    return mapping
-
-
-def _load_wolfe_concept_alignment_path(path: Path | None) -> dict[str, str]:
-    if path is None or not path.exists():
-        return {}
-    import yaml
-
-    payload = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    alignments = payload.get("alignments", []) or []
-    mapping: dict[str, str] = {}
-    for item in alignments:
-        if not isinstance(item, dict):
-            continue
-        source_title = str(item.get("source_title", "")).strip()
-        target_title = str(item.get("target_title", "")).strip()
-        if source_title and target_title:
-            mapping[source_title] = target_title
-    return mapping
-
-
-def _apply_concept_alignment(concepts: list, alignment: dict[str, str]) -> list:
-    if not alignment:
-        return concepts
-    merged_by_id: dict[str, object] = {}
-    ordered_ids: list[str] = []
-    for concept in concepts:
-        target_title = alignment.get(concept.title, concept.title)
-        target_id = _slugify(target_title)
-        if target_id not in merged_by_id:
-            concept.id = target_id
-            concept.title = target_title
-            merged_by_id[target_id] = concept
-            ordered_ids.append(target_id)
-            continue
-        existing = merged_by_id[target_id]
-        existing.description = _merge_concept_descriptions(existing.description, concept.description)
-        existing.source_modules = _merge_unique(existing.source_modules, concept.source_modules)
-        existing.source_lessons = _merge_unique(existing.source_lessons, concept.source_lessons)
-        existing.source_courses = _merge_unique(existing.source_courses, concept.source_courses)
-        existing.prerequisites = _merge_unique(existing.prerequisites, concept.prerequisites)
-        existing.mastery_signals = _merge_unique(existing.mastery_signals, concept.mastery_signals)
-        existing.distinctions = _merge_unique(existing.distinctions, concept.distinctions)
-        existing.definition_candidates = _merge_unique(existing.definition_candidates, concept.definition_candidates)
-        existing.qualification_candidates = _merge_unique(existing.qualification_candidates, concept.qualification_candidates)
-        existing.constraint_candidates = _merge_unique(existing.constraint_candidates, concept.constraint_candidates)
-        if existing.source_role != "nuance" and concept.source_role == "nuance":
-            existing.source_role = concept.source_role
-    return [merged_by_id[item] for item in ordered_ids]
+def _display_path(path: str | Path, *roots: str | Path) -> str:
+    path_text = str(path)
+    for root in roots:
+        rendered = canonical_source_path(path, root)
+        if rendered != path_text:
+            return rendered
+    return path_text
 
 
 def resolve_ocw_demo_paths(
@@ -334,43 +222,16 @@ def run_ocw_information_entropy_demo(
     pack_dir: str | Path,
     run_dir: str | Path,
     skill_dir: str | Path,
-    wolfe_snippets_dir: str | Path | None = None,
-    wolfe_source_inventory: str | Path | None = None,
-    augmentation_bundle: str | Path | None = None,
 ) -> dict:
     course_source = Path(course_source)
     source_inventory = Path(source_inventory)
     pack_dir = Path(pack_dir)
     run_dir = Path(run_dir)
     skill_dir = Path(skill_dir)
-    augmentation_bundle = Path(augmentation_bundle) if augmentation_bundle is not None else None
-    augmentation_alignment_path: Path | None = None
-    augmentation_bundle_title = ""
-    if augmentation_bundle is not None:
-        bundle_payload = load_augmentation_bundle(augmentation_bundle)
-        wolfe_snippets_dir = Path(bundle_payload["snippets_dir"])
-        wolfe_source_inventory = Path(bundle_payload["source_inventory"])
-        augmentation_alignment_path = Path(bundle_payload["concept_alignment"])
-        augmentation_bundle_title = bundle_payload.get("title", "")
-    wolfe_snippets_dir = Path(wolfe_snippets_dir) if wolfe_snippets_dir is not None else None
-    wolfe_source_inventory = Path(wolfe_source_inventory) if wolfe_source_inventory is not None else None
+    source_display_root = _source_display_root(course_source)
+    summary_roots = (source_display_root, _repo_root())
 
-    docs = adapt_documents(course_source)
-    wolfe_doc_count = 0
-    if wolfe_snippets_dir is not None and wolfe_snippets_dir.exists():
-        wolfe_docs = [
-            doc
-            for doc in adapt_documents(wolfe_snippets_dir)
-            if Path(getattr(doc, "source_path", "")).name not in {"concept-alignment.yaml", "concept-alignment.yml", "concept-alignment.json"}
-        ]
-        docs.extend(wolfe_docs)
-        wolfe_doc_count = len(wolfe_docs)
-    if wolfe_doc_count and not (wolfe_source_inventory is not None and wolfe_source_inventory.exists()):
-        review_flag = (
-            "Wolfe snippet augmentation was used without a Wolfe source inventory; compliance manifest excludes those augmentation sources."
-        )
-    else:
-        review_flag = ""
+    docs = adapt_documents(course_source, display_root=source_display_root)
     if not docs:
         raise ValueError(f"No supported source documents found under {course_source}")
     courses = [document_to_course(doc, "MIT OCW Information and Entropy") for doc in docs]
@@ -378,12 +239,8 @@ def run_ocw_information_entropy_demo(
     merged.rights_note = DEFAULT_RIGHTS_NOTE
 
     concepts = extract_concept_candidates(merged)
-    alignment = _load_wolfe_concept_alignment_path(augmentation_alignment_path) if augmentation_alignment_path is not None else _load_wolfe_concept_alignment(wolfe_snippets_dir)
-    concepts = _apply_concept_alignment(concepts, alignment)
     ctx = RuleContext(course=merged, concepts=concepts)
     run_rules(ctx, build_default_rules())
-    if review_flag:
-        ctx.review_flags.append(review_flag)
 
     draft = build_draft_pack(
         merged,
@@ -396,21 +253,11 @@ def run_ocw_information_entropy_demo(
     write_draft_pack(draft, pack_dir)
     write_source_corpus(merged, pack_dir)
     write_knowledge_graph(merged, ctx.concepts, pack_dir)
-    effective_inventory_path = source_inventory
-    if wolfe_source_inventory is not None and wolfe_source_inventory.exists():
-        effective_inventory_path = _merge_source_inventories(
-            source_inventory,
-            wolfe_source_inventory,
-            run_dir / "merged_source_inventory.yaml",
-        )
-    if effective_inventory_path.exists():
-        inventory = load_sources(effective_inventory_path)
+    if source_inventory.exists():
+        inventory = load_sources(source_inventory)
         compliance_manifest = build_pack_compliance_manifest(draft.pack["name"], draft.pack["display_name"], inventory)
         write_manifest(compliance_manifest, pack_dir / "pack_compliance_manifest.json")
-        if effective_inventory_path.suffix.lower() in {".yaml", ".yml"}:
-            (pack_dir / "source_inventory.yaml").write_text(effective_inventory_path.read_text(encoding="utf-8"), encoding="utf-8")
-        else:
-            (pack_dir / "source_inventory.json").write_text(effective_inventory_path.read_text(encoding="utf-8"), encoding="utf-8")
+        (pack_dir / "source_inventory.yaml").write_text(source_inventory.read_text(encoding="utf-8"), encoding="utf-8")
 
     validation = validate_pack(pack_dir)
     if not validation.is_valid:
@@ -424,41 +271,7 @@ def run_ocw_information_entropy_demo(
         "critique": 0.7,
     })
     target_key = _select_target_concept(draft.pack["name"], ctx.concepts)
-    target_concept_ref = _pack_concept_ref(target_key, ctx.concepts)
     concept_path = graph.curriculum_path_to_target(set(), target_key)
-
-    run_groundrecall_import, promote_import_to_store, export_groundrecall_query_bundle = _load_groundrecall_runtime()
-    groundrecall_root = run_dir / "groundrecall"
-    groundrecall_source_pack = _stage_groundrecall_pack_source(pack_dir, groundrecall_root / "pack-source")
-    import_result = run_groundrecall_import(
-        groundrecall_source_pack,
-        out_root=groundrecall_root / "imports",
-        mode="quick",
-        import_id="didactopus-pack",
-    )
-    store_dir = groundrecall_root / "store"
-    promote_import_to_store(
-        import_result.out_dir,
-        store_dir,
-        reviewer="Didactopus OCW demo",
-        allow_lint_errors=True,
-    )
-    exported_bundle = export_groundrecall_query_bundle(
-        store_dir,
-        target_concept_ref,
-        groundrecall_root / "export",
-    )
-
-    draft = build_draft_pack(
-        merged,
-        ctx.concepts,
-        author="MIT OCW derived demo",
-        license_name="CC BY-NC-SA 4.0",
-        review_flags=ctx.review_flags,
-        conflicts=[],
-        groundrecall_query_bundle=exported_bundle["bundle"],
-    )
-    write_draft_pack(draft, pack_dir)
 
     state = AgenticStudentState(
         learner_id="ocw-information-entropy-agent",
@@ -475,35 +288,27 @@ def run_ocw_information_entropy_demo(
     export_artifact_manifest(profile, str(run_dir / "artifact_manifest.json"))
 
     summary = {
-        "course_source": str(course_source),
+        "course_source": _display_path(course_source, *summary_roots),
         "source_document_count": len(docs),
-        "pack_dir": str(pack_dir),
-        "skill_dir": str(skill_dir),
-        "source_inventory": str(source_inventory),
-        "effective_source_inventory": str(effective_inventory_path),
-        "wolfe_snippets_dir": str(wolfe_snippets_dir) if wolfe_snippets_dir is not None else "",
-        "wolfe_source_inventory": str(wolfe_source_inventory) if wolfe_source_inventory is not None else "",
-        "augmentation_bundle": str(augmentation_bundle) if augmentation_bundle is not None else "",
-        "augmentation_bundle_title": augmentation_bundle_title,
-        "wolfe_source_document_count": wolfe_doc_count,
+        "pack_dir": _display_path(pack_dir, *summary_roots),
+        "skill_dir": _display_path(skill_dir, *summary_roots),
+        "source_inventory": _display_path(source_inventory, *summary_roots),
         "review_flags": list(ctx.review_flags),
         "concept_count": len(ctx.concepts),
         "source_fragment_count": len(json.loads((pack_dir / "source_corpus.json").read_text(encoding="utf-8")).get("fragments", [])),
         "knowledge_graph_summary": json.loads((pack_dir / "knowledge_graph.json").read_text(encoding="utf-8")).get("summary", {}),
         "target_concept": target_key,
-        "groundrecall_concept_ref": target_concept_ref,
-        "groundrecall_bundle_included": (pack_dir / "groundrecall_query_bundle.json").exists(),
         "curriculum_path": concept_path,
         "mastered_concepts": sorted(state.mastered_concepts),
         "artifact_count": len(state.artifacts),
     }
     compliance_path = pack_dir / "pack_compliance_manifest.json"
     if compliance_path.exists():
-        summary["compliance_manifest"] = str(compliance_path)
+        summary["compliance_manifest"] = _display_path(compliance_path, *summary_roots)
         summary["compliance"] = json.loads(compliance_path.read_text(encoding="utf-8"))
     (run_dir / "run_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
-    _write_skill_bundle(skill_dir, pack_dir, run_dir, concept_path, summary["mastered_concepts"])
+    _write_skill_bundle(skill_dir, pack_dir, run_dir, concept_path, summary["mastered_concepts"], display_roots=summary_roots)
     return summary
 
 
@@ -519,9 +324,6 @@ def main() -> None:
     parser.add_argument("--pack-dir")
     parser.add_argument("--run-dir")
     parser.add_argument("--skill-dir")
-    parser.add_argument("--wolfe-snippets-dir")
-    parser.add_argument("--wolfe-source-inventory")
-    parser.add_argument("--augmentation-bundle")
     args = parser.parse_args()
 
     if args.course_repo_target:
@@ -548,9 +350,6 @@ def main() -> None:
         pack_dir=resolved["pack_dir"],
         run_dir=resolved["run_dir"],
         skill_dir=resolved["skill_dir"],
-        wolfe_snippets_dir=args.wolfe_snippets_dir,
-        wolfe_source_inventory=args.wolfe_source_inventory,
-        augmentation_bundle=args.augmentation_bundle,
     )
     print(json.dumps(summary, indent=2))
 

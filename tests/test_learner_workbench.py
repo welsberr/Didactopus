@@ -102,3 +102,60 @@ def test_build_pack_workbench_session_includes_groundrecall_context(monkeypatch,
     assert "GroundRecall context:" in payload["mentor"]["text"]
     assert "Source roles:" in payload["mentor"]["text"]
     assert "Distinction" in payload["mentor"]["text"]
+
+
+def test_build_pack_workbench_session_includes_groundrecall_interchange_quality(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(learner_workbench_module, "ModelProvider", _FakeProvider)
+    source_pack = learner_workbench_module.DOMAIN_PACKS / "evidence-trail"
+    copied_root = tmp_path / "domain-packs"
+    copied_pack = copied_root / "evidence-trail"
+    shutil.copytree(source_pack, copied_pack)
+    (copied_pack / "graph_interchange.json").write_text(
+        json.dumps(
+            {
+                "bundle_kind": "groundrecall_graph_interchange",
+                "schema_version": "groundrecall.graph_interchange.v1",
+                "snapshot_id": "snap-test",
+                "created_at": "2026-07-01T00:00:00Z",
+                "nodes": [
+                    {
+                        "node_id": "concept::question-framing",
+                        "node_kind": "concept",
+                        "title": "Question Framing",
+                        "description": "Choose a study question.",
+                        "status": "promoted",
+                    }
+                ],
+                "edges": [],
+                "claims": [],
+                "observations": [],
+                "diagnostics": {
+                    "quality_summary": {
+                        "inferred_relation_count": 2,
+                        "weakly_grounded_relation_count": 1,
+                        "unsupported_claim_count": 0,
+                    }
+                },
+                "consumer_notes": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(learner_workbench_module, "DOMAIN_PACKS", copied_root)
+
+    payload = learner_workbench_module.build_pack_workbench_session(
+        pack_id="evidence-trail",
+        concept_id="question-framing",
+        learner_goal="Understand how to compare evidence.",
+        question="Which question should guide the study step?",
+        observation="The pack starts with question framing.",
+        interpretation="Question framing organizes the next evidence move.",
+        uncertainty="I do not yet know which source will best test the interpretation.",
+        revision_trigger="A stronger source trail could change the current framing.",
+    )
+
+    assert payload["groundrecall"]["graph_interchange_included"] is True
+    assert payload["groundrecall"]["graph_node_count"] == 1
+    assert payload["groundrecall"]["graph_quality_summary"]["inferred_relation_count"] == 2
+    assert "Graph interchange: nodes=1, edges=0" in payload["mentor"]["text"]
+    assert "Graph quality signals:" in payload["mentor"]["text"]

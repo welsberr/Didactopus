@@ -168,7 +168,7 @@ normalized/doclift/
 Representative command pattern:
 
 ```bash
-cd /home/netuser/bin/doclift
+cd /path/to/doclift
 PYTHONPATH=src .venv/bin/python -m doclift.cli convert-dir \
   /path/to/pilot-source-dir \
   /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/normalized/doclift
@@ -186,7 +186,7 @@ Use `CiteGeist` for the Notebook bibliography layer.
 Representative command pattern:
 
 ```bash
-cd /home/netuser/bin/CiteGeist
+cd /path/to/CiteGeist
 PYTHONPATH=src .venv/bin/python -m citegeist --db \
   /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/citegeist/library.sqlite3 \
   ingest /path/to/pilot.bib
@@ -195,7 +195,7 @@ PYTHONPATH=src .venv/bin/python -m citegeist --db \
 Then export the Notebook topic bibliography bundle once the pilot topic exists:
 
 ```bash
-cd /home/netuser/bin/CiteGeist
+cd /path/to/CiteGeist
 PYTHONPATH=src .venv/bin/python -m citegeist --db \
   /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/citegeist/library.sqlite3 \
   export-notebook-topic natural-selection --output-dir \
@@ -229,7 +229,7 @@ Completion check:
 Use `GroundRecall` export:
 
 ```bash
-PYTHONPATH=/home/netuser/bin/GroundRecall/src python -m groundrecall.export \
+PYTHONPATH=/path/to/GroundRecall/src python -m groundrecall.export \
   /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/groundrecall/store \
   /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/groundrecall/export \
   --pack-ready-concept natural-selection

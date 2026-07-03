@@ -51,7 +51,7 @@ class LocalProviderConfig(BaseModel):
     model_name: str = "local-demo"
 
 
-class RoleMeshProviderConfig(BaseModel):
+class GatewayProviderConfig(BaseModel):
     base_url: str = os.getenv("DIDACTOPUS_ROLEMESH_BASE_URL", "http://127.0.0.1:8000")
     api_key: str = os.getenv("DIDACTOPUS_ROLEMESH_API_KEY", "")
     default_model: str = "planner"
@@ -59,29 +59,18 @@ class RoleMeshProviderConfig(BaseModel):
     timeout_seconds: float = 30.0
 
 
-class OllamaProviderConfig(BaseModel):
-    base_url: str = os.getenv("DIDACTOPUS_OLLAMA_BASE_URL", "http://127.0.0.1:11434/v1")
-    api_key: str = os.getenv("DIDACTOPUS_OLLAMA_API_KEY", "ollama")
-    default_model: str = os.getenv("DIDACTOPUS_OLLAMA_DEFAULT_MODEL", "llama3.2:3b")
-    role_to_model: dict[str, str] = Field(default_factory=default_role_to_model)
-    timeout_seconds: float = 60.0
-
-
-class OpenAICompatibleProviderConfig(BaseModel):
-    base_url: str = os.getenv("DIDACTOPUS_OPENAI_COMPAT_BASE_URL", "https://api.openai.com/v1")
-    api_key: str = os.getenv("DIDACTOPUS_OPENAI_COMPAT_API_KEY", "")
-    default_model: str = os.getenv("DIDACTOPUS_OPENAI_COMPAT_DEFAULT_MODEL", "gpt-4.1-mini")
-    role_to_model: dict[str, str] = Field(default_factory=default_role_to_model)
-    timeout_seconds: float = 60.0
-    auth_scheme: str = "bearer"
-
-
 class ModelProviderConfig(BaseModel):
     provider: str = "stub"
     local: LocalProviderConfig = Field(default_factory=LocalProviderConfig)
-    rolemesh: RoleMeshProviderConfig = Field(default_factory=RoleMeshProviderConfig)
-    ollama: OllamaProviderConfig = Field(default_factory=OllamaProviderConfig)
-    openai_compatible: OpenAICompatibleProviderConfig = Field(default_factory=OpenAICompatibleProviderConfig)
+    geniehive: GatewayProviderConfig = Field(default_factory=GatewayProviderConfig)
+    rolemesh: GatewayProviderConfig = Field(default_factory=GatewayProviderConfig)
+
+    @property
+    def gateway(self) -> GatewayProviderConfig:
+        provider_name = self.provider.lower()
+        if provider_name == "geniehive":
+            return self.geniehive
+        return self.rolemesh
 
 
 class AppConfig(BaseModel):

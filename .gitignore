@@ -11,7 +11,9 @@ build/
 *.egg-info/
 .env
 configs/config.yaml
-tmp-*
-codex*
-ops/
-webui/node_modules/
+backups/
+docs/AGENTIC_OS.md
+docs/reports/
+examples/ai-learner-mentorship/
+examples/notebook-allele-frequency-session.json
+examples/notebook-natural-selection-session.json
