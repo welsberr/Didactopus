@@ -95,6 +95,12 @@ def test_concept_epistemic_summary_includes_bayesian_reliability() -> None:
     assert payload["summary"]["direct_support_count"] == 1
     assert payload["bayesian_reliability"]["posterior"]["mean"] > 0.5
     assert payload["bayesian_reliability"]["prior_sensitivity"]["mean_range"] > 0
+    assert payload["bayesian_reliability"]["classification"]["label"] in {
+        "fragile_support",
+        "prior_sensitive",
+        "stable_support",
+        "thin_evidence",
+    }
 
 
 def test_temporal_graph_slice_filters_future_evidence() -> None:

@@ -21,7 +21,11 @@ def test_run_doclift_bundle_with_groundrecall_bridges_export_and_demo(monkeypatc
         return {
             "bundle_path": str(bundle_path),
             "bayesian_reliability_markdown_path": str(sidecar_path),
-            "bundle": {"bundle_kind": "groundrecall_query_bundle"},
+            "bayesian_reliability_label": "fragile_support",
+            "bundle": {
+                "bundle_kind": "groundrecall_query_bundle",
+                "assessment_summary": {"bayesian_label": "fragile_support"},
+            },
         }
 
     def _fake_run_doclift_bundle_demo(**kwargs):
@@ -46,6 +50,7 @@ def test_run_doclift_bundle_with_groundrecall_bridges_export_and_demo(monkeypatc
     assert captured["demo_kwargs"]["groundrecall_query_bundle_path"].endswith("groundrecall_query_bundle.json")
     assert payload["groundrecall_concept_ref"] == "channel-capacity"
     assert payload["groundrecall_query_bundle_path"].endswith("groundrecall_query_bundle.json")
+    assert payload["bayesian_reliability_label"] == "fragile_support"
     assert payload["bayesian_reliability_markdown_path"].endswith("bayesian_reliability.md")
     assert (tmp_path / "pack" / "bayesian_reliability.md").exists()
     assert "bayesian_reliability.md" in (tmp_path / "pack" / "pack.yaml").read_text(encoding="utf-8")

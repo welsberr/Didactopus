@@ -37,6 +37,9 @@ def run_doclift_bundle_with_groundrecall(
     )
     summary["groundrecall_concept_ref"] = groundrecall_concept_ref
     summary["groundrecall_query_bundle_path"] = exported["bundle_path"]
+    bayesian_label = exported.get("bayesian_reliability_label") or exported.get("bundle", {}).get("assessment_summary", {}).get("bayesian_label", "")
+    if bayesian_label:
+        summary["bayesian_reliability_label"] = bayesian_label
     sidecar_path = exported.get("bayesian_reliability_markdown_path", "")
     if sidecar_path:
         copied = _copy_bayesian_reliability_sidecar(Path(sidecar_path), pack_dir)
