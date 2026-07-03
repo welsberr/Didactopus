@@ -28,6 +28,12 @@ def _bundle() -> GraphBundle:
                     "title": "Clock contradiction",
                     "available_at": "1902-01-01",
                 },
+                {
+                    "id": "event::denouement",
+                    "type": "event",
+                    "title": "Denouement",
+                    "available_at": "1903-01-01",
+                },
             ],
             "edges": [
                 {
@@ -58,8 +64,9 @@ def test_temporal_graph_slice_filters_future_evidence() -> None:
 def test_temporal_summary_reports_timeline_events_and_stale_claims() -> None:
     payload = temporal_summary(_bundle())
 
-    assert payload["summary"]["timeline_event_count"] == 5
+    assert payload["summary"]["timeline_event_count"] == 6
     assert payload["stale_claims"][0]["claim_id"] == "claim::alibi"
+    assert payload["fair_play_diagnostic"]["rating"] == "fair"
 
 
 def test_temporal_claim_context_changes_status_by_time() -> None:

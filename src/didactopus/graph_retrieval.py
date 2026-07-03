@@ -8,6 +8,7 @@ from epistemap import (
     Node,
     claim_status_at,
     evidence_available_at,
+    fair_play_diagnostic,
     graph_at,
     neighborhood,
     stale_claims_after,
@@ -101,6 +102,7 @@ def temporal_summary(bundle: GraphBundle, *, when=None) -> dict:
     epistemap = _epistemap_bundle(bundle)
     active = graph_at(epistemap, when) if when is not None else epistemap
     events = timeline_events(active)
+    reveal_at = events[-1]["time"] if events else None
     return {
         "at": str(when) if when is not None else "",
         "summary": {
@@ -109,7 +111,12 @@ def temporal_summary(bundle: GraphBundle, *, when=None) -> dict:
             "timeline_event_count": len(events),
         },
         "events": events[:24],
-        "stale_claims": stale_claims_after(active, events[-1]["time"]) if events else [],
+        "stale_claims": stale_claims_after(active, reveal_at) if reveal_at else [],
+        "fair_play_diagnostic": (
+            fair_play_diagnostic(active, reveal_at=reveal_at)
+            if reveal_at
+            else {"rating": "no_timeline", "summary": {"claim_count": 0}, "claims": []}
+        ),
     }
 
 
