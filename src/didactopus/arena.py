@@ -5,6 +5,7 @@ from pathlib import Path
 from time import perf_counter
 
 import yaml
+from epistemap import g_evaluation_row, write_g_rows_csv
 
 from .config import load_config
 from .language_support import response_language_instruction
@@ -183,6 +184,44 @@ def _build_review_queue(candidate_results: list[dict]) -> list[dict]:
     return queue
 
 
+def arena_g_evaluation_rows(candidate_results: list[dict]) -> list[dict]:
+    """Return canonical G rows for arena adequacy evaluation.
+
+    These rows evaluate grounded role behavior, not source-claim truth.
+    """
+
+    rows = []
+    for result in candidate_results:
+        for role_result in result["role_results"]:
+            role = role_result["role"]
+            rows.append(
+                g_evaluation_row(
+                    y=1 if role_result["adequacy_rating"] == "adequate" else 0,
+                    p=float(role_result["adequacy_score"]),
+                    env=str(role_result.get("env", result.get("env", "K"))),
+                    run_id="didactopus-behavior-arena",
+                    subject_id=result["candidate_name"],
+                    condition=result["prompt_variant"],
+                    phase=role,
+                    item_id=f"{result['language']}::{role}",
+                    claim_id=f"didactopus-arena::{role}::adequate-grounded-behavior",
+                    answer=role_result["adequacy_rating"],
+                    response=role_result.get("response_preview", ""),
+                    source_anchor=result.get("config", ""),
+                    metadata={
+                        "provider": result.get("provider", ""),
+                        "model_name": role_result.get("model_name", ""),
+                        "language": result.get("language", ""),
+                        "latency_ms": role_result.get("latency_ms", ""),
+                        "grounded_score": role_result.get("grounded_score", ""),
+                        "multilingual_score": role_result.get("multilingual_score", ""),
+                        "evaluation_target": "grounded_role_behavior",
+                    },
+                )
+            )
+    return rows
+
+
 def _llm_review_summary(candidate_results: list[dict], spec: dict) -> dict | None:
     review_spec = spec.get("review", {})
     if not review_spec.get("enabled", False):
@@ -245,6 +284,7 @@ def run_didactopus_arena(
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "arena_results.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
     (out_dir / "arena_review_queue.json").write_text(json.dumps(payload["review_queue"], indent=2), encoding="utf-8")
+    write_g_rows_csv(arena_g_evaluation_rows(ranked), out_dir / "arena_g_rows.csv")
 
     lines = [
         "# Didactopus Arena Report",
