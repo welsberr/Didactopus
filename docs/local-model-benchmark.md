@@ -61,6 +61,8 @@ The benchmark writes:
 
 - `model_benchmark.json`
 - `model_benchmark.md`
+- `model_benchmark_g_rows.csv`
+- `model_benchmark_g_manifest.json`
 
 These include:
 
@@ -69,6 +71,11 @@ These include:
 - per-role latency
 - per-role adequacy score and adequacy rating
 - an overall recommendation
+
+The G row export uses Epistemap's canonical row shape. It evaluates
+grounded-role behavior for the Didactopus mentor loop; it is not a source-truth
+or claim-verification score. The manifest records the skill corpus, hardware
+profile condition, role phases, and row file for later comparison.
 
 ## Current Scoring Shape
 

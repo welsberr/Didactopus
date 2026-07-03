@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 from time import perf_counter
 
+from epistemap import g_evaluation_row, g_experiment_manifest, write_g_experiment_manifest, write_g_rows_csv
+
 from .config import load_config
 from .language_support import language_alignment_score, response_language_instruction
 from .learner_session import _grounding_block
@@ -122,6 +124,46 @@ def _hardware_profile(
         "ram_gb": ram_gb,
         "notes": notes or "",
     }
+
+
+def model_benchmark_g_evaluation_rows(payload: dict) -> list[dict]:
+    """Return canonical G rows for model-benchmark adequacy evaluation."""
+
+    benchmark = payload.get("benchmark", {})
+    context = payload.get("context", {})
+    hardware = benchmark.get("hardware_profile", {})
+    if not isinstance(hardware, dict):
+        hardware = {}
+    rows = []
+    for result in payload.get("role_results", []):
+        role = result["role"]
+        rows.append(
+            g_evaluation_row(
+                y=1 if result["adequacy_rating"] == "adequate" else 0,
+                p=float(result["adequacy_score"]),
+                env=str(result.get("env", "K")),
+                run_id=str(benchmark.get("name", "didactopus-local-model-adequacy")),
+                subject_id=str(result.get("model_name", "")),
+                condition=str(hardware.get("profile_name", "")),
+                phase=role,
+                item_id=f"{context.get('output_language', 'en')}::{role}",
+                claim_id=f"didactopus-model-benchmark::{role}::adequate-grounded-behavior",
+                answer=str(result["adequacy_rating"]),
+                response=str(result.get("response_preview", "")),
+                source_anchor=str(context.get("skill_name", "")),
+                metadata={
+                    "provider": result.get("provider", ""),
+                    "language": context.get("output_language", ""),
+                    "hardware_cpu": hardware.get("cpu", ""),
+                    "hardware_ram_gb": hardware.get("ram_gb", ""),
+                    "latency_ms": result.get("latency_ms", ""),
+                    "grounded_score": result.get("grounded_score", ""),
+                    "multilingual_score": result.get("multilingual_score", ""),
+                    "evaluation_target": "grounded_role_behavior",
+                },
+            )
+        )
+    return rows
 
 
 def run_model_benchmark(
@@ -267,6 +309,27 @@ def run_model_benchmark(
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "model_benchmark.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    rows = model_benchmark_g_evaluation_rows(payload)
+    write_g_rows_csv(rows, out_dir / "model_benchmark_g_rows.csv")
+    write_g_experiment_manifest(
+        g_experiment_manifest(
+            experiment_id="didactopus-local-model-adequacy",
+            name="Didactopus local-model adequacy benchmark",
+            row_file="model_benchmark_g_rows.csv",
+            evaluation_target="grounded_role_behavior",
+            corpus=str(payload["context"]["skill_name"]),
+            conditions=[payload["benchmark"]["hardware_profile"]["profile_name"]],
+            phases=["mentor", "practice", "evaluator"],
+            reliability_treatment="single-model-local-hardware-profile",
+            temporal_assumptions={"clock": "role_sequence"},
+            row_count=len(rows),
+            metadata={
+                "provider": payload["benchmark"]["provider"],
+                "output_language": payload["context"]["output_language"],
+            },
+        ),
+        out_dir / "model_benchmark_g_manifest.json",
+    )
 
     lines = [
         "# Didactopus Local Model Benchmark",

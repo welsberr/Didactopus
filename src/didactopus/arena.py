@@ -5,7 +5,7 @@ from pathlib import Path
 from time import perf_counter
 
 import yaml
-from epistemap import g_evaluation_row, write_g_rows_csv
+from epistemap import g_evaluation_row, g_experiment_manifest, write_g_experiment_manifest, write_g_rows_csv
 
 from .config import load_config
 from .language_support import response_language_instruction
@@ -284,7 +284,24 @@ def run_didactopus_arena(
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "arena_results.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
     (out_dir / "arena_review_queue.json").write_text(json.dumps(payload["review_queue"], indent=2), encoding="utf-8")
-    write_g_rows_csv(arena_g_evaluation_rows(ranked), out_dir / "arena_g_rows.csv")
+    rows = arena_g_evaluation_rows(ranked)
+    write_g_rows_csv(rows, out_dir / "arena_g_rows.csv")
+    write_g_experiment_manifest(
+        g_experiment_manifest(
+            experiment_id="didactopus-behavior-arena",
+            name="Didactopus behavior arena",
+            row_file="arena_g_rows.csv",
+            evaluation_target="grounded_role_behavior",
+            corpus="ocw-information-entropy-agent",
+            conditions=sorted({result["prompt_variant"] for result in ranked}),
+            phases=["mentor", "practice", "evaluator"],
+            reliability_treatment="prompt-variant-comparison",
+            temporal_assumptions={"clock": "role_sequence"},
+            row_count=len(rows),
+            metadata={"candidate_count": len(ranked)},
+        ),
+        out_dir / "arena_g_manifest.json",
+    )
 
     lines = [
         "# Didactopus Arena Report",

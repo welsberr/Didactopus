@@ -1,6 +1,6 @@
 import json
 
-from didactopus.model_bench import run_model_benchmark
+from didactopus.model_bench import model_benchmark_g_evaluation_rows, run_model_benchmark
 
 
 def test_run_model_benchmark_writes_reports(tmp_path) -> None:
@@ -23,12 +23,51 @@ def test_run_model_benchmark_writes_reports(tmp_path) -> None:
 
     json_path = tmp_path / "model_benchmark.json"
     md_path = tmp_path / "model_benchmark.md"
+    rows_path = tmp_path / "model_benchmark_g_rows.csv"
+    manifest_path = tmp_path / "model_benchmark_g_manifest.json"
     assert json_path.exists()
     assert md_path.exists()
+    assert rows_path.exists()
+    assert manifest_path.exists()
 
     written = json.loads(json_path.read_text(encoding="utf-8"))
     assert written["summary"]["overall_adequacy_score"] == payload["summary"]["overall_adequacy_score"]
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert manifest["evaluation_target"] == "grounded_role_behavior"
+    assert manifest["row_file"] == "model_benchmark_g_rows.csv"
+    assert "evaluation_target" in rows_path.read_text(encoding="utf-8")
     assert "Role Results" in md_path.read_text(encoding="utf-8")
+
+
+def test_model_benchmark_g_evaluation_rows_describe_grounded_behavior() -> None:
+    rows = model_benchmark_g_evaluation_rows(
+        {
+            "benchmark": {
+                "name": "didactopus-local-model-adequacy",
+                "provider": "stub",
+                "hardware_profile": {"profile_name": "apple-silicon", "cpu": "m3", "ram_gb": 24},
+            },
+            "context": {"skill_name": "ocw-information-entropy-agent", "output_language": "en"},
+            "role_results": [
+                {
+                    "role": "practice",
+                    "provider": "stub",
+                    "model_name": "local-model",
+                    "adequacy_score": 0.64,
+                    "adequacy_rating": "borderline",
+                    "grounded_score": 0.7,
+                    "multilingual_score": 1.0,
+                    "latency_ms": 5.0,
+                    "response_preview": "Grounded practice task.",
+                }
+            ],
+        }
+    )
+
+    assert rows[0]["y"] == 0
+    assert rows[0]["p"] == 0.64
+    assert rows[0]["condition"] == "apple-silicon"
+    assert rows[0]["evaluation_target"] == "grounded_role_behavior"
 
 
 def test_model_benchmark_captures_response_preview_and_latency(tmp_path) -> None:
