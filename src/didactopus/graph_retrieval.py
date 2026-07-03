@@ -2,7 +2,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from epistemap import Edge, GraphBundle as EpistemapBundle, Node, neighborhood
+from epistemap import (
+    Edge,
+    GraphBundle as EpistemapBundle,
+    Node,
+    claim_status_at,
+    evidence_available_at,
+    graph_at,
+    neighborhood,
+    stale_claims_after,
+    tenability_window,
+    timeline_events,
+)
 
 
 @dataclass
@@ -63,6 +74,55 @@ def concept_neighborhood(bundle: GraphBundle, concept_id: str) -> dict:
         "outgoing": [_edge_dict(edge) for edge in payload["outgoing"]],
         "incoming_nodes": [_node_dict(node) for node in payload["incoming_nodes"]],
         "outgoing_nodes": [_node_dict(node) for node in payload["outgoing_nodes"]],
+    }
+
+
+def temporal_graph_slice(bundle: GraphBundle, when) -> dict:
+    """Return a Didactopus-friendly knowledge graph slice available by `when`."""
+
+    sliced = graph_at(_epistemap_bundle(bundle), when)
+    return {
+        "graph_id": sliced.graph_id,
+        "title": sliced.title,
+        "description": sliced.description,
+        "nodes": [_node_dict(node) for node in sliced.nodes],
+        "edges": [_edge_dict(edge) for edge in sliced.edges],
+        "summary": {
+            "node_count": len(sliced.nodes),
+            "edge_count": len(sliced.edges),
+        },
+        "metadata": dict(sliced.metadata),
+    }
+
+
+def temporal_summary(bundle: GraphBundle, *, when=None) -> dict:
+    """Summarize dated graph events and stale claims for a course graph."""
+
+    epistemap = _epistemap_bundle(bundle)
+    active = graph_at(epistemap, when) if when is not None else epistemap
+    events = timeline_events(active)
+    return {
+        "at": str(when) if when is not None else "",
+        "summary": {
+            "node_count": len(active.nodes),
+            "edge_count": len(active.edges),
+            "timeline_event_count": len(events),
+        },
+        "events": events[:24],
+        "stale_claims": stale_claims_after(active, events[-1]["time"]) if events else [],
+    }
+
+
+def temporal_claim_context(bundle: GraphBundle, claim_id: str, when) -> dict:
+    """Return temporal status and evidence context for a claim-like node."""
+
+    epistemap = _epistemap_bundle(bundle)
+    return {
+        "claim_id": claim_id,
+        "at": str(when),
+        "status": claim_status_at(epistemap, claim_id, when),
+        "evidence": evidence_available_at(epistemap, claim_id, when),
+        "tenability_window": tenability_window(epistemap, claim_id),
     }
 
 
