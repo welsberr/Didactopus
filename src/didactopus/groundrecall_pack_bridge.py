@@ -42,23 +42,33 @@ def run_doclift_bundle_with_groundrecall(
         summary["bayesian_reliability_label"] = bayesian_label
     sidecar_path = exported.get("bayesian_reliability_markdown_path", "")
     if sidecar_path:
-        copied = _copy_bayesian_reliability_sidecar(Path(sidecar_path), pack_dir)
+        copied = _copy_supporting_artifact(Path(sidecar_path), pack_dir, "bayesian_reliability.md")
         if copied:
             summary["bayesian_reliability_markdown_path"] = str(copied)
+    assessment_json_path = exported.get("bayesian_assessment_json_path", "")
+    if assessment_json_path:
+        copied = _copy_supporting_artifact(Path(assessment_json_path), pack_dir, "bayesian_assessment.json")
+        if copied:
+            summary["bayesian_assessment_json_path"] = str(copied)
+    assessment_markdown_path = exported.get("bayesian_assessment_markdown_path", "")
+    if assessment_markdown_path:
+        copied = _copy_supporting_artifact(Path(assessment_markdown_path), pack_dir, "bayesian_assessment.md")
+        if copied:
+            summary["bayesian_assessment_markdown_path"] = str(copied)
     return summary
 
 
-def _copy_bayesian_reliability_sidecar(source_path: Path, pack_dir: Path) -> Path | None:
+def _copy_supporting_artifact(source_path: Path, pack_dir: Path, filename: str) -> Path | None:
     if not source_path.exists():
         return None
-    destination = pack_dir / "bayesian_reliability.md"
+    destination = pack_dir / filename
     destination.write_text(source_path.read_text(encoding="utf-8"), encoding="utf-8")
     pack_yaml_path = pack_dir / "pack.yaml"
     if pack_yaml_path.exists():
         pack = yaml.safe_load(pack_yaml_path.read_text(encoding="utf-8")) or {}
         artifacts = list(pack.get("supporting_artifacts", []) or [])
-        if "bayesian_reliability.md" not in artifacts:
-            artifacts.append("bayesian_reliability.md")
+        if filename not in artifacts:
+            artifacts.append(filename)
         pack["supporting_artifacts"] = artifacts
         pack_yaml_path.write_text(yaml.safe_dump(pack, sort_keys=False), encoding="utf-8")
     return destination
