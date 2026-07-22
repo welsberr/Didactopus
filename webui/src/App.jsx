@@ -27,8 +27,8 @@ function LauncherView({ onSelect }) {
           <p className="eyebrow">Didactopus</p>
           <h1>Choose a work mode.</h1>
           <p>
-            The current prototype now has two distinct entry points: the existing review workbench
-            and a learner-workbench pilot using the evo-edu `Evidence Trail` pack.
+            The current prototype has two distinct entry points: the review workbench and a
+            learner-workbench pilot using the included `Evidence Trail` example pack.
           </p>
         </div>
         <div className="toolbar">

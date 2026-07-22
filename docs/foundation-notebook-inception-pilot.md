@@ -3,7 +3,7 @@
 This note turns the broader Notebook pipeline into one concrete first run.
 
 It answers a narrower question than
-[evo-edu-notebook-pipeline.md](./evo-edu-notebook-pipeline.md):
+[notebook-producer-integration.md](./notebook-producer-integration.md):
 
 - what is the first pilot region,
 - what repos and commands are already ready,
@@ -80,7 +80,7 @@ the narrow starting label.
 Create one stable workspace outside the library root, for example:
 
 ```text
-/mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/
+/path/to/notebook-pilot/topic/
 ```
 
 Recommended layout:
@@ -114,7 +114,7 @@ Start with a deliberately small set.
 Choose 1 to 2 textbook sections on natural selection/adaptation from the local
 library root:
 
-- `/mnt/CIFS/pengolodh/Docs/Library`
+- `/path/to/local-library`
 
 The exact textbooks can be finalized during provisioning, but the likely first
 choices from the existing plan are:
@@ -171,7 +171,7 @@ Representative command pattern:
 cd /path/to/doclift
 PYTHONPATH=src .venv/bin/python -m doclift.cli convert-dir \
   /path/to/pilot-source-dir \
-  /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/normalized/doclift
+  /path/to/notebook-pilot/topic/normalized/doclift
 ```
 
 Completion check:
@@ -188,7 +188,7 @@ Representative command pattern:
 ```bash
 cd /path/to/CiteGeist
 PYTHONPATH=src .venv/bin/python -m citegeist --db \
-  /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/citegeist/library.sqlite3 \
+  /path/to/notebook-pilot/topic/citegeist/library.sqlite3 \
   ingest /path/to/pilot.bib
 ```
 
@@ -197,9 +197,9 @@ Then export the Notebook topic bibliography bundle once the pilot topic exists:
 ```bash
 cd /path/to/CiteGeist
 PYTHONPATH=src .venv/bin/python -m citegeist --db \
-  /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/citegeist/library.sqlite3 \
+  /path/to/notebook-pilot/topic/citegeist/library.sqlite3 \
   export-notebook-topic natural-selection --output-dir \
-  /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/citegeist/notebook-bundle
+  /path/to/notebook-pilot/topic/citegeist/notebook-bundle
 ```
 
 Completion check:
@@ -230,8 +230,8 @@ Use `GroundRecall` export:
 
 ```bash
 PYTHONPATH=/path/to/GroundRecall/src python -m groundrecall.export \
-  /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/groundrecall/store \
-  /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/groundrecall/export \
+  /path/to/notebook-pilot/topic/groundrecall/store \
+  /path/to/notebook-pilot/topic/groundrecall/export \
   --pack-ready-concept natural-selection
 ```
 
@@ -245,9 +245,9 @@ Use the direct `Didactopus` wrapper:
 
 ```bash
 didactopus notebook-page-groundrecall \
-  /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/groundrecall/store \
+  /path/to/notebook-pilot/topic/groundrecall/store \
   natural-selection \
-  /mnt/CIFS/pengolodh/Docs/Projects/evo-edu-notebook-pilot/natural-selection/didactopus/notebook-page
+  /path/to/notebook-pilot/topic/didactopus/notebook-page
 ```
 
 Completion check:

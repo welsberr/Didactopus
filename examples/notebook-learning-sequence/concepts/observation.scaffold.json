@@ -1,0 +1,14 @@
+{
+  "schema": "didactopus.notebook.reasoning_scaffold.v1",
+  "records": [
+    {
+      "id": "observation-001",
+      "type": "observation-check",
+      "question": "What was directly observed or measured?",
+      "answer_summary": "An observation reports the available evidence before assigning a cause.",
+      "verification_prompt": "Name the object, measurement or event, comparison, and important uncertainty.",
+      "misconception_guard": "Do not embed a causal explanation in the observation.",
+      "didactopus_prompt_seed": "Rewrite the statement without using causal language."
+    }
+  ]
+}

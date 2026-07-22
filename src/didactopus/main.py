@@ -9,7 +9,12 @@ from .config import load_config
 from .ai_learner_benchmark import run_benchmark as run_ai_learner_benchmark
 from .source_spine_transfer_experiment import run_experiment as run_source_spine_transfer_experiment
 from .provider_inspect import inspect_provider
-from .notebook_learning_sequence import build_notebook_sequence_session_plan
+from .notebook_learning_sequence import (
+    DEFAULT_NOTEBOOK_ROOT,
+    DEFAULT_SELECTION_POLICY_PATH,
+    DEFAULT_SEQUENCE_PATH,
+    build_notebook_sequence_session_plan,
+)
 from .citegeist_okf import write_citegeist_okf_source_bundle
 from .citation_extract import run_citations_from_ingest
 from .ensemble_ingest import run_ensemble_ingest
@@ -38,7 +43,21 @@ def build_parser() -> argparse.ArgumentParser:
         "sequence-plan",
         help="Build a mentorship-oriented session plan from a Notebook learning-sequence artifact",
     )
-    sequence_parser.add_argument("--sequence", required=True, help="Path to Notebook Didactopus learning-sequence JSON")
+    sequence_parser.add_argument(
+        "--sequence",
+        default=str(DEFAULT_SEQUENCE_PATH),
+        help="Path to a Didactopus learning-sequence JSON artifact",
+    )
+    sequence_parser.add_argument(
+        "--notebook-root",
+        default=str(DEFAULT_NOTEBOOK_ROOT),
+        help="Root used to resolve scaffold paths referenced by the sequence",
+    )
+    sequence_parser.add_argument(
+        "--selection-policy",
+        default=str(DEFAULT_SELECTION_POLICY_PATH),
+        help="Scaffold selection-policy JSON; pass an empty string to disable policy ranking",
+    )
     sequence_parser.add_argument("--learner-goal", help="Optional explicit learner goal to include in the session plan")
     sequence_parser.add_argument("--out", help="Optional output JSON path")
 
@@ -156,6 +175,8 @@ def _run_sequence_plan(args: argparse.Namespace) -> None:
     payload = build_notebook_sequence_session_plan(
         args.sequence,
         learner_goal=args.learner_goal,
+        notebook_root=args.notebook_root,
+        selection_policy_path=args.selection_policy or None,
     )
     if args.out:
         Path(args.out).write_text(json.dumps(payload, indent=2), encoding="utf-8")

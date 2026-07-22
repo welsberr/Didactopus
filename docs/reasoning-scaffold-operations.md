@@ -43,16 +43,10 @@ Didactopus can work with partial records, but the preferred shape is:
 
 ## Example Source
 
-The current evo-edu Notebook pilot is:
+The repository-owned, domain-neutral fixture is:
 
-- `notebook/concepts/allele-frequency-change.scaffold.json`
-- `notebook/concepts/allele-frequency-change.html`
-
-Use it as the reference fixture for future pack and learner-session integrations.
-
-The current Notebook path-level input is:
-
-- `notebook/learning-paths/foundations-first-ring.didactopus.json`
+- `examples/notebook-learning-sequence/concepts/observation.scaffold.json`
+- `examples/notebook-learning-sequence/learning-paths/guided-core.didactopus.json`
 
 Use that artifact when the goal is not just "consume one scaffold record" but
 "run a reviewed concept sequence with mentor openings and transition cues
@@ -89,7 +83,7 @@ The current thin consumer path is:
 
 ```bash
 PYTHONPATH=src python3 -m didactopus.main sequence-plan \
-  --sequence notebook/learning-paths/foundations-first-ring.didactopus.json
+  --sequence examples/notebook-learning-sequence/learning-paths/guided-core.didactopus.json
 ```
 
 That emits a deterministic mentorship-oriented session plan from the reviewed
@@ -99,7 +93,7 @@ The next consumer layer is the learner-session demo itself:
 
 ```bash
 PYTHONPATH=src python3 -m didactopus.learner_session_demo \
-  --sequence notebook/learning-paths/foundations-first-ring.didactopus.json \
+  --sequence examples/notebook-learning-sequence/learning-paths/guided-core.didactopus.json \
   --step-index 0
 ```
 

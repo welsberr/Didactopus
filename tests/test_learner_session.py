@@ -8,7 +8,10 @@ from didactopus.learner_session import (
 )
 from didactopus.learner_session_demo import run_learner_session_demo
 from didactopus.model_provider import ModelProvider
-from didactopus.notebook_learning_sequence import build_notebook_sequence_session_plan
+from didactopus.notebook_learning_sequence import (
+    DEFAULT_SEQUENCE_PATH,
+    build_notebook_sequence_session_plan,
+)
 from didactopus.ocw_skill_agent_demo import load_ocw_skill_context
 
 
@@ -49,9 +52,7 @@ def test_run_learner_session_demo_writes_output(tmp_path: Path) -> None:
 def test_build_notebook_sequence_grounded_session_uses_sequence_steps() -> None:
     root = Path(__file__).resolve().parents[1]
     provider = ModelProvider(load_config(root / "configs" / "config.example.yaml").model_provider)
-    session_plan = build_notebook_sequence_session_plan(
-        root.parent / "evo-edu.org" / "notebook" / "learning-paths" / "foundations-first-ring.didactopus.json"
-    )
+    session_plan = build_notebook_sequence_session_plan(DEFAULT_SEQUENCE_PATH)
 
     payload = build_notebook_sequence_grounded_session(
         session_plan=session_plan,
@@ -61,8 +62,8 @@ def test_build_notebook_sequence_grounded_session_uses_sequence_steps() -> None:
     )
 
     assert payload["study_plan"]["steps"]
-    assert payload["primary_concept"]["title"] == "Allele Frequency Change"
-    assert payload["secondary_concept"]["title"] == "Hardy-Weinberg Equilibrium"
+    assert payload["primary_concept"]["title"] == "Observation"
+    assert payload["secondary_concept"]["title"] == "Alternative Explanations"
     assert payload["evaluation"]["verdict"] in {"acceptable", "needs_revision"}
     assert payload["primary_concept"]["scaffold_record"]["verification_prompt"]
     assert payload["evaluation"]["aggregated"]["verification_prompt"]
@@ -75,14 +76,14 @@ def test_run_learner_session_demo_supports_notebook_sequence(tmp_path: Path) -> 
         root / "configs" / "config.example.yaml",
         root / "skills" / "ocw-information-entropy-agent",
         tmp_path / "notebook-session.json",
-        sequence_path=root.parent / "evo-edu.org" / "notebook" / "learning-paths" / "foundations-first-ring.didactopus.json",
+        sequence_path=DEFAULT_SEQUENCE_PATH,
         step_index=1,
         learner_submission="Hardy-Weinberg expectations matter because departures from the null model tell us to ask which assumption failed before we name a cause.",
     )
 
     assert (tmp_path / "notebook-session.json").exists()
-    assert payload["primary_concept"]["title"] == "Hardy-Weinberg Equilibrium"
-    assert payload["secondary_concept"]["title"] == "Genetic Drift"
+    assert payload["primary_concept"]["title"] == "Alternative Explanations"
+    assert payload["secondary_concept"]["title"] == "Qualified Conclusion"
     assert payload["provider_diagnostics"]["provider"] == "stub"
 
 

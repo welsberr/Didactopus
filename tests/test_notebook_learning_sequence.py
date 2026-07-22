@@ -2,16 +2,20 @@ import json
 from pathlib import Path
 
 from didactopus.notebook_learning_sequence import (
+    DEFAULT_NOTEBOOK_ROOT,
+    DEFAULT_SELECTION_POLICY_PATH,
+    DEFAULT_SEQUENCE_PATH,
     build_notebook_sequence_session_plan,
     load_notebook_learning_sequence,
     load_notebook_scaffold_selection_policy,
+    scaffold_path_for_concept_url,
     select_scaffold_record_for_step,
 )
 
 
 def _write_sequence_fixture(path: Path) -> None:
     payload = {
-        "schema": "evo-edu.notebook.didactopus_learning_sequence.v1",
+        "schema": "didactopus.notebook.learning_sequence.v1",
         "id": "notebook.learning-paths.test-sequence",
         "title": "Test Sequence",
         "sequence_kind": "guided_core_concepts",
@@ -60,7 +64,7 @@ def test_load_notebook_scaffold_selection_policy_reads_expected_schema() -> None
     payload = load_notebook_scaffold_selection_policy()
 
     assert payload["schema"] == "didactopus.notebook_scaffold_selection_policy.v1"
-    assert "notebook.concepts.natural-selection" in payload["concept_type_preferences"]
+    assert "didactopus.examples.observation" in payload["concept_type_preferences"]
     assert payload["trigger_type_preferences"]
 
 
@@ -79,19 +83,16 @@ def test_build_notebook_sequence_session_plan_exposes_session_fields(tmp_path: P
     assert plan["sessions"][1]["next_transition"] == "Move to the next cluster."
 
 
-def test_build_notebook_sequence_session_plan_enriches_real_notebook_scaffold_fields() -> None:
-    root = Path(__file__).resolve().parents[1]
-    plan = build_notebook_sequence_session_plan(
-        root.parent / "evo-edu.org" / "notebook" / "learning-paths" / "foundations-first-ring.didactopus.json"
-    )
+def test_build_notebook_sequence_session_plan_enriches_repository_fixture() -> None:
+    plan = build_notebook_sequence_session_plan(DEFAULT_SEQUENCE_PATH)
 
     first = plan["sessions"][0]
     assert first["scaffold_record_count"] >= 1
-    assert first["scaffold_pending_source_slots"] >= 1
+    assert first["scaffold_pending_source_slots"] == 0
     assert first["scaffold_record"]["verification_prompt"]
     assert first["scaffold_record"]["misconception_guard"]
     assert first["scaffold_record"]["didactopus_prompt_seed"]
-    assert first["scaffold_record"]["type"] == "definition-check"
+    assert first["scaffold_record"]["type"] == "observation-check"
 
 
 def test_select_scaffold_record_for_step_prefers_type_fit_over_raw_overlap() -> None:
@@ -125,25 +126,73 @@ def test_select_scaffold_record_for_step_prefers_type_fit_over_raw_overlap() -> 
         ]
     }
 
-    selected = select_scaffold_record_for_step(step, scaffold)
+    selected = select_scaffold_record_for_step(
+        step,
+        scaffold,
+        selection_policy={
+            "concept_type_preferences": {},
+            "trigger_type_preferences": [
+                {
+                    "trigger_terms": ["alternatives", "rival", "adaptive"],
+                    "preferred_types": ["alternative-check"],
+                }
+            ],
+        },
+    )
 
     assert selected is not None
     assert selected["id"] == "ad-004"
 
 
-def test_real_natural_selection_step_prefers_evidence_or_mechanism_records() -> None:
-    root = Path(__file__).resolve().parents[1]
+def test_repository_fixture_is_self_contained() -> None:
     plan = build_notebook_sequence_session_plan(
-        root.parent / "evo-edu.org" / "notebook" / "learning-paths" / "foundations-first-ring.didactopus.json"
+        DEFAULT_SEQUENCE_PATH,
+        notebook_root=DEFAULT_NOTEBOOK_ROOT,
+        selection_policy_path=DEFAULT_SELECTION_POLICY_PATH,
     )
 
-    natural_selection = next(
-        session for session in plan["sessions"] if session["concept_id"] == "notebook.concepts.natural-selection"
+    assert plan["session_count"] == 3
+    assert all(Path(item["scaffold_path"]).is_file() for item in plan["sessions"])
+    assert [item["scaffold_record"]["type"] for item in plan["sessions"]] == [
+        "observation-check",
+        "alternative-check",
+        "calibration-check",
+    ]
+
+
+def test_legacy_producer_schema_remains_readable(tmp_path: Path) -> None:
+    path = tmp_path / "legacy-sequence.json"
+    _write_sequence_fixture(path)
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["schema"] = "evo-edu.notebook.didactopus_learning_sequence.v1"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    assert load_notebook_learning_sequence(path)["title"] == "Test Sequence"
+
+
+def test_scaffold_url_resolution_is_rooted_and_accepts_absolute_urls(tmp_path: Path) -> None:
+    path = scaffold_path_for_concept_url(
+        "https://learning.example/notebook/concepts/alpha.html?language=en#start",
+        notebook_root=tmp_path,
     )
 
-    assert natural_selection["scaffold_record"]["type"] in {
-        "evidence-check",
-        "mechanism-contrast",
-        "environment-check",
-        "mixed-mechanism",
-    }
+    assert path == tmp_path / "concepts" / "alpha.scaffold.json"
+
+
+def test_explicit_scaffold_path_cannot_escape_root(tmp_path: Path) -> None:
+    sequence_path = tmp_path / "sequence.json"
+    _write_sequence_fixture(sequence_path)
+    payload = json.loads(sequence_path.read_text(encoding="utf-8"))
+    payload["sequence"][0]["scaffold_path"] = "../outside.scaffold.json"
+    sequence_path.write_text(json.dumps(payload), encoding="utf-8")
+
+    try:
+        build_notebook_sequence_session_plan(
+            sequence_path,
+            notebook_root=tmp_path,
+            selection_policy_path=None,
+        )
+    except ValueError as exc:
+        assert "escapes notebook root" in str(exc)
+    else:
+        raise AssertionError("Expected an escaping scaffold path to be rejected")

@@ -1,0 +1,14 @@
+{
+  "schema": "didactopus.notebook.reasoning_scaffold.v1",
+  "records": [
+    {
+      "id": "conclusion-001",
+      "type": "calibration-check",
+      "question": "How strong a conclusion does the evidence support?",
+      "answer_summary": "A qualified conclusion states the supported claim, uncertainty, and what evidence could prompt revision.",
+      "verification_prompt": "Separate the conclusion, limitation, and revision condition into three short statements.",
+      "misconception_guard": "Do not turn incomplete evidence into certainty or into a claim that nothing can be known.",
+      "didactopus_prompt_seed": "Calibrate the claim and add one condition that would change it."
+    }
+  ]
+}

@@ -4,6 +4,10 @@
 
 Didactopus is a local-first Python codebase for turning educational source material into structured learning domains, evaluating learner progress against those domains, and exporting review, mastery, and skill artifacts.
 
+For installation, verification, runtime entry points, and the boundary between
+repository-owned operations and optional integrations, start with
+[`OPERATIONS.md`](OPERATIONS.md).
+
 Its intended use is closer to a structured mentor or self-study workbench than a "do my assignment for me" engine. The project should help learners get guidance, sequencing, feedback, and explanation without encouraging the offloading effect that comes from unstructured GenAI use.
 
 At a high level, the repository does five things:
@@ -119,38 +123,25 @@ Use it as a template for your own topic, then follow the same pattern implemente
 - `didactopus.ocw_information_entropy_demo`
 
 The important boundary is that ingestion should not stop at an internal pack.
-For Notebook-style material, the target bundle should also include concept
-pages, scaffold JSON, learning-path artifacts, and policy artifacts that
-Didactopus can consume later. The current bundle contract is:
+For Notebook-style material, a producer can also emit scaffold JSON,
+learning-path artifacts, and selection-policy artifacts for Didactopus to
+consume. Didactopus owns that consumer contract and includes a complete,
+domain-neutral example under `examples/notebook-learning-sequence/`.
 
-- `notebook/notebook-course-bundle-contract.json`
-- `notebook/notebook-pack-mode-contract.json`
-- `notebook/notebook-export-manifest.json`
-
-That second contract makes the product modes explicit:
+The supported product modes are:
 
 - `pack` mode: structured metadata and graph outputs that keep the learner tied closely to source materials
 - `notebook` mode: accumulated reviewed explanatory content that can support study more independently
 - `hybrid` mode: pack backbone plus selectively expanded Notebook treatment
 
-The export manifest matters because it distinguishes:
+An external producer may additionally use an export manifest to distinguish:
 
 - workspace state: Notebook source artifacts exist locally
 - export state: the reviewed learner-facing and machine-readable bundle is present together and ready for deployment or downstream consumption
 
-The Notebook side now also has a single-entry local build/check wrapper:
-
-- `python3 notebook/tools/build_notebook_bundle.py`
-
-That command regenerates the Notebook export manifest/index and runs the export
-and public-surface regression checks for the current bundle.
-
-There is also a publish-side companion:
-
-- `python3 notebook/tools/publish_notebook_bundle.py`
-
-That command runs the Notebook build/check wrapper and then publishes the
-reviewed Notebook surface to the configured evo-edu.org deployment target.
+Site generation and publication belong to the producing repository. They are
+not Didactopus runtime requirements. See `OPERATIONS.md` for the exact
+repository-owned commands and integration boundary.
 
 ### If you want a mentor more than a curation tool
 
@@ -239,19 +230,18 @@ contract instead of only the OCW skill graph:
 
 ```bash
 PYTHONPATH=src python3 -m didactopus.learner_session_demo \
-  --sequence notebook/learning-paths/foundations-first-ring.didactopus.json \
+  --sequence examples/notebook-learning-sequence/learning-paths/guided-core.didactopus.json \
   --step-index 0
 ```
 
 That keeps the same session payload shape while grounding the mentor/practice/
 evaluation flow in one step of the Notebook-backed concept sequence.
 
-If you want a deterministic session-plan input from the current evo-edu
-Notebook path contract, use:
+To generate a deterministic session plan from the repository-owned example,
+use:
 
 ```bash
-PYTHONPATH=src python3 -m didactopus.main sequence-plan \
-  --sequence notebook/learning-paths/foundations-first-ring.didactopus.json
+PYTHONPATH=src python3 -m didactopus.main sequence-plan
 ```
 
 That turns the reviewed Notebook sequence into a mentorship-oriented plan with
@@ -264,17 +254,17 @@ PYTHONPATH=src python3 -m didactopus.notebook_learning_sequence_demo
 ```
 
 That writes a deterministic session-plan JSON under `examples/` using the
-current Notebook first-ring sequence contract.
+domain-neutral example contract.
 
-The scaffold-record ranking used for Notebook-backed session planning is now
-loaded from the Notebook side:
+The scaffold-record ranking used for Notebook-backed session planning is loaded
+from a configurable policy artifact. The local default is:
 
-- `notebook/learning-paths/foundations-first-ring.selection-policy.json`
+- `examples/notebook-learning-sequence/learning-paths/guided-core.selection-policy.json`
 
-That keeps the mentoring logic generic: sequence order comes from the Notebook,
-concept-local reasoning aids come from scaffold files, and record-selection
-policy can evolve without further hard-coding source-specific rules into the
-session builder.
+Sequence order, scaffold root, and selection policy can all be supplied on the
+command line. This keeps the mentoring logic generic and allows any repository
+or service to produce compatible artifacts without becoming a required
+Didactopus dependency.
 
 ### Current provider inspection path
 

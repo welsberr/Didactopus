@@ -1,0 +1,49 @@
+{
+  "schema": "didactopus.notebook.learning_sequence.v1",
+  "id": "didactopus.examples.guided-core",
+  "title": "Evidence to Explanation",
+  "status": "reviewed-example",
+  "sequence_kind": "guided_core_concepts",
+  "learner_model": {
+    "intended_use": "practice moving from an observation to a qualified explanation",
+    "mentor_style": [
+      "ask for short public reasoning products",
+      "separate observation from inference",
+      "keep alternatives visible",
+      "prefer revision over verdict"
+    ],
+    "success_condition": "the learner can state an observation, compare explanations, and identify what evidence would change the conclusion"
+  },
+  "sequence": [
+    {
+      "position": 1,
+      "concept_id": "didactopus.examples.observation",
+      "title": "Observation",
+      "url": "/notebook/concepts/observation.html",
+      "session_goal": "State what was observed without smuggling a cause into the description.",
+      "mentor_opening": "What can you report here before using the word because?",
+      "evidence_focus": "observable details, measurement, and uncertainty",
+      "next_transition": "Move from the observation to more than one possible explanation."
+    },
+    {
+      "position": 2,
+      "concept_id": "didactopus.examples.alternative-explanations",
+      "title": "Alternative Explanations",
+      "url": "/notebook/concepts/alternative-explanations.html",
+      "session_goal": "Compare plausible explanations without treating the first one as established.",
+      "mentor_opening": "What else could produce the same observation?",
+      "evidence_focus": "rival explanations and discriminating evidence",
+      "next_transition": "Move to a conclusion that states both support and limits."
+    },
+    {
+      "position": 3,
+      "concept_id": "didactopus.examples.qualified-conclusion",
+      "title": "Qualified Conclusion",
+      "url": "/notebook/concepts/qualified-conclusion.html",
+      "session_goal": "Write a conclusion proportional to the available evidence.",
+      "mentor_opening": "Which claim is supported, and what remains uncertain?",
+      "evidence_focus": "claim strength, limitations, and revision conditions",
+      "next_transition": "Use the same reasoning pattern with a domain-specific source set."
+    }
+  ]
+}

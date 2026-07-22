@@ -4,7 +4,7 @@ version: 0.1.0-draft
 schema_version: '1'
 didactopus_min_version: 0.1.0
 didactopus_max_version: 0.9.99
-description: Draft evo-edu-aligned pack for guided independent study through question framing, source comparison, bibliography growth, and reflective revision.
+description: Draft pack for guided independent study through question framing, source comparison, bibliography growth, and reflective revision.
 author: Wesley R. Elsberry
 license: CC BY-NC-SA 4.0
 audience_level: self-learner

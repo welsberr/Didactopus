@@ -1,0 +1,14 @@
+{
+  "schema": "didactopus.notebook.reasoning_scaffold.v1",
+  "records": [
+    {
+      "id": "alternatives-001",
+      "type": "alternative-check",
+      "question": "Which other explanations fit the same observation?",
+      "answer_summary": "A useful comparison keeps plausible alternatives visible until evidence distinguishes them.",
+      "verification_prompt": "Name two explanations and one observation that would favor one over the other.",
+      "misconception_guard": "Plausibility alone does not establish that an explanation is correct.",
+      "didactopus_prompt_seed": "Add a rival explanation and a discriminating test."
+    }
+  ]
+}

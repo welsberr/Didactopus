@@ -26,6 +26,20 @@ def test_main_provider_inspect_subcommand(capsys) -> None:
     assert '"kind": "chat"' in output
 
 
+def test_main_sequence_plan_uses_repository_owned_defaults(capsys) -> None:
+    original_argv = sys.argv
+    try:
+        sys.argv = ["didactopus.main", "sequence-plan"]
+        didactopus_main.main()
+    finally:
+        sys.argv = original_argv
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["sequence_id"] == "didactopus.examples.guided-core"
+    assert payload["session_count"] == 3
+    assert payload["sessions"][0]["scaffold_record"]["type"] == "observation-check"
+
+
 def test_main_legacy_review_invocation_routes_to_review(monkeypatch) -> None:
     original_argv = sys.argv
     seen: dict[str, object] = {}

@@ -3,17 +3,21 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import re
+from urllib.parse import urlsplit
 
 
-EXPECTED_SCHEMA = "evo-edu.notebook.didactopus_learning_sequence.v1"
-DEFAULT_NOTEBOOK_ROOT = Path(__file__).resolve().parents[2].parent / "evo-edu.org" / "notebook"
-DEFAULT_SELECTION_POLICY_PATH = DEFAULT_NOTEBOOK_ROOT / "learning-paths" / "foundations-first-ring.selection-policy.json"
+EXPECTED_SCHEMA = "didactopus.notebook.learning_sequence.v1"
+LEGACY_SCHEMAS = {"evo-edu.notebook.didactopus_learning_sequence.v1"}
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_NOTEBOOK_ROOT = REPOSITORY_ROOT / "examples" / "notebook-learning-sequence"
+DEFAULT_SEQUENCE_PATH = DEFAULT_NOTEBOOK_ROOT / "learning-paths" / "guided-core.didactopus.json"
+DEFAULT_SELECTION_POLICY_PATH = DEFAULT_NOTEBOOK_ROOT / "learning-paths" / "guided-core.selection-policy.json"
 EXPECTED_POLICY_SCHEMA = "didactopus.notebook_scaffold_selection_policy.v1"
 
 
 def load_notebook_learning_sequence(path: str | Path) -> dict:
     payload = json.loads(Path(path).read_text(encoding="utf-8"))
-    if payload.get("schema") != EXPECTED_SCHEMA:
+    if payload.get("schema") not in {EXPECTED_SCHEMA, *LEGACY_SCHEMAS}:
         raise ValueError(
             f"Unsupported learning-sequence schema: {payload.get('schema')!r}"
         )
@@ -47,10 +51,34 @@ def scaffold_path_for_concept_url(
     *,
     notebook_root: str | Path = DEFAULT_NOTEBOOK_ROOT,
 ) -> Path | None:
-    if not concept_url.startswith("/notebook/concepts/") or not concept_url.endswith(".html"):
+    route_path = urlsplit(concept_url).path
+    if not route_path.endswith(".html"):
         return None
-    relative = concept_url.removeprefix("/notebook/").removesuffix(".html") + ".scaffold.json"
-    return Path(notebook_root) / relative
+    if route_path.startswith("/notebook/"):
+        route_path = route_path.removeprefix("/notebook/")
+    else:
+        route_path = route_path.lstrip("/")
+    relative = Path(route_path).with_suffix(".scaffold.json")
+    root = Path(notebook_root).resolve()
+    candidate = (root / relative).resolve()
+    if candidate != root and root not in candidate.parents:
+        raise ValueError(f"Scaffold path escapes notebook root: {concept_url!r}")
+    return candidate
+
+
+def scaffold_path_for_step(
+    step: dict,
+    *,
+    notebook_root: str | Path = DEFAULT_NOTEBOOK_ROOT,
+) -> Path | None:
+    explicit_path = step.get("scaffold_path")
+    if explicit_path:
+        root = Path(notebook_root).resolve()
+        candidate = (root / explicit_path).resolve()
+        if candidate != root and root not in candidate.parents:
+            raise ValueError(f"Scaffold path escapes notebook root: {explicit_path!r}")
+        return candidate
+    return scaffold_path_for_concept_url(step.get("url", ""), notebook_root=notebook_root)
 
 
 def load_notebook_concept_scaffold_for_step(
@@ -58,20 +86,27 @@ def load_notebook_concept_scaffold_for_step(
     *,
     notebook_root: str | Path = DEFAULT_NOTEBOOK_ROOT,
 ) -> dict | None:
-    concept_url = step.get("url", "")
-    scaffold_path = scaffold_path_for_concept_url(concept_url, notebook_root=notebook_root)
+    scaffold_path = scaffold_path_for_step(step, notebook_root=notebook_root)
     if scaffold_path is None or not scaffold_path.exists():
         return None
     return json.loads(scaffold_path.read_text(encoding="utf-8"))
 
 
-def select_scaffold_record_for_step(step: dict, scaffold: dict | None) -> dict | None:
+def select_scaffold_record_for_step(
+    step: dict,
+    scaffold: dict | None,
+    *,
+    selection_policy: dict | None = None,
+) -> dict | None:
     if not scaffold:
         return None
     records = scaffold.get("records") or []
     if not records:
         return None
-    policy = load_notebook_scaffold_selection_policy()
+    policy = selection_policy or {
+        "concept_type_preferences": {},
+        "trigger_type_preferences": [],
+    }
     step_terms = _tokenize(
         " ".join(
             [
@@ -123,12 +158,23 @@ def build_notebook_sequence_session_plan(
     *,
     learner_goal: str | None = None,
     notebook_root: str | Path = DEFAULT_NOTEBOOK_ROOT,
+    selection_policy_path: str | Path | None = DEFAULT_SELECTION_POLICY_PATH,
 ) -> dict:
     payload = load_notebook_learning_sequence(path)
+    selection_policy = (
+        load_notebook_scaffold_selection_policy(selection_policy_path)
+        if selection_policy_path is not None
+        else None
+    )
     sessions: list[dict] = []
     for step in payload["sequence"]:
         scaffold = load_notebook_concept_scaffold_for_step(step, notebook_root=notebook_root)
-        selected_record = select_scaffold_record_for_step(step, scaffold)
+        selected_record = select_scaffold_record_for_step(
+            step,
+            scaffold,
+            selection_policy=selection_policy,
+        )
+        scaffold_path = scaffold_path_for_step(step, notebook_root=notebook_root)
         sessions.append(
             {
                 "position": step["position"],
@@ -139,9 +185,7 @@ def build_notebook_sequence_session_plan(
                 "mentor_opening": step["mentor_opening"],
                 "evidence_focus": step["evidence_focus"],
                 "next_transition": step["next_transition"],
-                "scaffold_path": str(scaffold_path_for_concept_url(step["url"], notebook_root=notebook_root))
-                if scaffold_path_for_concept_url(step["url"], notebook_root=notebook_root)
-                else None,
+                "scaffold_path": str(scaffold_path) if scaffold_path else None,
                 "scaffold_record_count": len((scaffold or {}).get("records", []) or []),
                 "scaffold_pending_source_slots": len(
                     [

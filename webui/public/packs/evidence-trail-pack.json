@@ -1,7 +1,7 @@
 {
   "id": "evidence-trail",
   "title": "Evidence Trail",
-  "subtitle": "Draft evo-edu-aligned pack for guided independent study through question framing, source comparison, bibliography growth, and reflective revision.",
+  "subtitle": "Draft pack for guided independent study through question framing, source comparison, bibliography growth, and reflective revision.",
   "level": "self-learner",
   "concepts": [
     {
@@ -64,7 +64,7 @@
     "shareAlikeRequired": true,
     "noncommercialOnly": true,
     "flags": [
-      "derived-from-evo-edu-materials"
+      "derived-from-source-materials"
     ]
   }
 }

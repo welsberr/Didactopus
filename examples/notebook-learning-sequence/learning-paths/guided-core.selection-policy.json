@@ -1,0 +1,31 @@
+{
+  "schema": "didactopus.notebook_scaffold_selection_policy.v1",
+  "concept_type_preferences": {
+    "didactopus.examples.observation": [
+      "observation-check",
+      "definition-check"
+    ],
+    "didactopus.examples.alternative-explanations": [
+      "alternative-check",
+      "evidence-check"
+    ],
+    "didactopus.examples.qualified-conclusion": [
+      "calibration-check",
+      "revision"
+    ]
+  },
+  "trigger_type_preferences": [
+    {
+      "trigger_terms": ["observe", "observation", "measurement", "uncertainty"],
+      "preferred_types": ["observation-check", "definition-check"]
+    },
+    {
+      "trigger_terms": ["alternative", "explanation", "rival", "evidence"],
+      "preferred_types": ["alternative-check", "evidence-check"]
+    },
+    {
+      "trigger_terms": ["conclusion", "supported", "limitations", "uncertain"],
+      "preferred_types": ["calibration-check", "revision"]
+    }
+  ]
+}
