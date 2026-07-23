@@ -20,6 +20,10 @@ credentials, website build, and publication process. GroundRecall, CiteGeist,
 doclift, GenieHive, and course or website repositories are integrations. None
 is an implicit filesystem dependency of the base test or demo path.
 
+Epistemap is a core Python library dependency rather than an implicit sibling
+checkout. Until it has a package-index release, `pyproject.toml` resolves it
+from an immutable commit in its public GitHub repository.
+
 ## Install and verify
 
 Use Python 3.10 or newer:
