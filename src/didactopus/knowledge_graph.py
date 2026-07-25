@@ -3,9 +3,16 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from epistemap import Edge, GraphBundle, Node, node_id, typed_id
+from epistemap import AssessmentMethodRef, ConfidenceAssessment, Edge, GraphBundle, Node, confidence_band, node_id, typed_id
 
 from .course_schema import ConceptCandidate, NormalizedCourse
+
+
+_GRAPH_METHOD = AssessmentMethodRef(
+    name="didactopus_knowledge_graph_builder",
+    version="1.0",
+    policy_id="didactopus_graph_extraction_v1",
+)
 
 
 def _slugify(text: str) -> str:
@@ -44,8 +51,40 @@ def _add_node(nodes: dict[str, Node], node_id: str, node_type: str, **attrs) -> 
                 node.metadata[key] = value
 
 
-def _add_edge(edges: list[Edge], source: str, target: str, edge_type: str, justification: str, provenance: list[str] | None = None, confidence: float = 1.0) -> None:
-    edges.append(Edge(source=source, target=target, type=edge_type, justification=justification, confidence=confidence, metadata={"provenance": list(provenance or [])}))
+def _add_edge(
+    edges: list[Edge],
+    source: str,
+    target: str,
+    edge_type: str,
+    justification: str,
+    provenance: list[str] | None = None,
+    confidence: float = 1.0,
+) -> None:
+    subject_id = f"{source}--{edge_type}--{target}"
+    assessments = [
+        ConfidenceAssessment(
+            assessment_id=f"{subject_id}::extraction_fidelity::{len(edges) + 1}",
+            subject_id=subject_id,
+            dimension="extraction_fidelity",
+            value=confidence,
+            band=confidence_band(confidence),
+            method=_GRAPH_METHOD,
+            basis_record_ids=list(provenance or []),
+            rationale="Didactopus course graph extraction score; not learner mastery or claim truth.",
+            recorded_at="2026-07-25T00:00:00+00:00",
+        )
+    ]
+    edges.append(
+        Edge(
+            source=source,
+            target=target,
+            type=edge_type,
+            justification=justification,
+            confidence=confidence,
+            assessments=assessments,
+            metadata={"provenance": list(provenance or [])},
+        )
+    )
 
 
 def build_epistemap_graph(course: NormalizedCourse, concepts: list[ConceptCandidate]) -> GraphBundle:
@@ -203,6 +242,7 @@ def build_epistemap_graph(course: NormalizedCourse, concepts: list[ConceptCandid
             "source": "didactopus",
             "course_title": course.title,
             "rights_note": course.rights_note,
+            "legacy_confidence_mapping_policy": "didactopus_graph_extraction_v1",
             "summary": {
                 "concept_count": len(concepts),
                 "source_count": len(course.source_records),
@@ -218,6 +258,7 @@ def build_knowledge_graph(course: NormalizedCourse, concepts: list[ConceptCandid
         {
             "course_title": course.title,
             "rights_note": course.rights_note,
+            "legacy_confidence_mapping_policy": bundle.metadata.get("legacy_confidence_mapping_policy", ""),
             "summary": {
                 "node_count": len(bundle.nodes),
                 "edge_count": len(bundle.edges),

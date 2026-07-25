@@ -29,11 +29,19 @@ class ConceptEvidenceSummary:
     mean_score: float = 0.0
     weighted_mean_score: float = 0.0
     total_weight: float = 0.0
-    confidence: float = 0.0
+    evidence_coverage: float = 0.0
     dimension_means: dict[str, float] = field(default_factory=dict)
     aggregated: dict[str, float] = field(default_factory=dict)
     weak_dimensions: list[str] = field(default_factory=list)
     mastered: bool = False
+
+    @property
+    def confidence(self) -> float:
+        return self.evidence_coverage
+
+    @confidence.setter
+    def confidence(self, value: float) -> None:
+        self.evidence_coverage = value
 
 
 @dataclass
@@ -54,10 +62,14 @@ def evidence_weight(
     return weight
 
 
-def confidence_from_weight(total_weight: float) -> float:
+def evidence_coverage_from_weight(total_weight: float) -> float:
     if total_weight <= 0:
         return 0.0
     return total_weight / (total_weight + 1.0)
+
+
+def confidence_from_weight(total_weight: float) -> float:
+    return evidence_coverage_from_weight(total_weight)
 
 
 def add_evidence_item(state: EvidenceState, item: EvidenceItem) -> None:
@@ -88,7 +100,7 @@ def ingest_evidence_bundle(
         weighted_score = sum(item.score * evidence_weight(item, type_weights, recent_multiplier) for item in concept_items)
         summary.total_weight = total_weight
         summary.weighted_mean_score = weighted_score / total_weight if total_weight else 0.0
-        summary.confidence = confidence_from_weight(total_weight)
+        summary.evidence_coverage = evidence_coverage_from_weight(total_weight)
 
         dimension_values: dict[str, list[float]] = {}
         for item in concept_items:
@@ -108,7 +120,7 @@ def ingest_evidence_bundle(
         summary.weak_dimensions = weak_dimensions
         summary.mastered = (
             summary.weighted_mean_score >= mastery_threshold
-            and summary.confidence >= confidence_threshold
+            and summary.evidence_coverage >= confidence_threshold
             and not weak_dimensions
         )
 

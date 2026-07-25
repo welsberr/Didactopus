@@ -1,0 +1,112 @@
+{
+  "inventory_version": "1.0",
+  "reviewed_at": "2026-07-25",
+  "status": "partial",
+  "policy": "didactopus_confidence_inventory_v1",
+  "known_gaps": [
+    "ORM fields and duplicate API models still default missing values to 0.0.",
+    "GroundRecall compatibility models and promotion helpers still collapse missing confidence to 0.0.",
+    "Knowledge-candidate and citation-extraction hints do not yet carry typed assessment method provenance.",
+    "Threshold and report aliases have not completed a compatibility release."
+  ],
+  "fields": [
+    {
+      "field": "evidence_engine.ConceptEvidenceSummary.evidence_coverage",
+      "legacy_aliases": ["confidence"],
+      "category": "evidence_coverage",
+      "bounded": true,
+      "notes": "Saturating evidence-mass summary; not probability of mastery."
+    },
+    {
+      "field": "learner_state.MasteryRecord.confidence",
+      "category": "learner_mastery_confidence",
+      "bounded": true,
+      "notes": "Learner-state confidence used by readiness and stop policies; distinct from graph support."
+    },
+    {
+      "field": "learner_state.EvidenceEvent.confidence_hint",
+      "category": "learner_evidence_weight",
+      "bounded": true,
+      "notes": "Input weighting hint for a learner evidence event."
+    },
+    {
+      "field": "ai_learner_benchmark.answer.confidence",
+      "category": "response_correctness_probability",
+      "bounded": true,
+      "notes": "Probability that the selected true/false/unknown response is correct."
+    },
+    {
+      "field": "knowledge_graph.Edge.confidence",
+      "category": "graph_extraction_legacy_alias",
+      "bounded": true,
+      "notes": "Compatibility alias only; typed Epistemap assessments carry extraction_fidelity or grounding_strength."
+    },
+    {
+      "field": "models.KnowledgeCandidateCreate.confidence_hint",
+      "category": "knowledge_candidate_extraction_assessment",
+      "bounded": false,
+      "notes": "Legacy ambiguous scalar pending an optional bounded field and typed producer method."
+    },
+    {
+      "field": "models.MasteryRecord.confidence",
+      "category": "learner_mastery_confidence",
+      "bounded": false,
+      "notes": "Duplicate API model pending alignment with learner_state.MasteryRecord."
+    },
+    {
+      "field": "orm.MasteryState.confidence",
+      "category": "learner_mastery_confidence",
+      "bounded": false,
+      "notes": "Non-null legacy database field; requires an additive ORM migration and ambiguity report."
+    },
+    {
+      "field": "orm.EvidenceEvent.confidence_hint",
+      "category": "learner_evidence_weight",
+      "bounded": false,
+      "notes": "Non-null legacy database field; requires an additive ORM migration and ambiguity report."
+    },
+    {
+      "field": "groundrecall_models.ObservationRecord.confidence_hint",
+      "category": "knowledge_candidate_extraction_assessment",
+      "bounded": false,
+      "notes": "Vendored compatibility model still defaults absence to zero."
+    },
+    {
+      "field": "groundrecall_models.ClaimRecord.confidence_hint",
+      "category": "knowledge_candidate_extraction_assessment",
+      "bounded": false,
+      "notes": "Vendored compatibility model still defaults absence to zero."
+    },
+    {
+      "field": "groundrecall_models.ClaimRecord.review_confidence",
+      "category": "legacy_ambiguous",
+      "bounded": false,
+      "notes": "Vendored compatibility model lacks identified reviewer-assessment provenance."
+    },
+    {
+      "field": "citation_extract.*.confidence_hint",
+      "category": "knowledge_candidate_extraction_assessment",
+      "bounded": true,
+      "notes": "Rule score pending stable method IDs, basis hashes, and typed assessment output."
+    },
+    {
+      "field": "groundrecall_source_adapters.*.confidence_hint",
+      "category": "knowledge_candidate_extraction_assessment",
+      "bounded": true,
+      "notes": "Hardcoded adapter score pending stable method IDs, basis hashes, and typed assessment output."
+    },
+    {
+      "field": "progression_engine.MasteryRecord.confidence",
+      "category": "learner_mastery_confidence",
+      "bounded": true,
+      "notes": "Heuristic mastery stability state; age decay applies to current readiness, not historical evidence."
+    }
+  ],
+  "non_confidence_scores": [
+    {
+      "field": "api.synthetic_task.score_total",
+      "category": "task_generation_rank",
+      "notes": "Ranking score, not confidence."
+    }
+  ]
+}

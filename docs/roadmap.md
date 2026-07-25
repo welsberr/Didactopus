@@ -1,5 +1,22 @@
 # Roadmap
 
+Confidence schema and integration changes are coordinated by Epistemap's
+`docs/confidence-overhaul-roadmap.md`. Didactopus must keep graph evidential
+support, learner response probability, mastery score, and evidence coverage as
+separate measures during that migration.
+
+The audited cross-repository status is maintained in Epistemap at
+`docs/confidence-overhaul-implementation-status.md`. Didactopus phases D1-D4
+remain partial until the full production-code inventory, ORM/API migrations,
+typed candidate migration, calibration integration, installed-package matrix,
+and compatibility release are complete.
+
+CiteGeist bibliography graph integration is coordinated by CiteGeist's
+`docs/epistemap-knowledge-graph-roadmap.md`. Didactopus consumes reviewed
+source trails and bibliographic observations; it must not convert citations,
+graph centrality, match scores, or unreviewed candidate-support edges into
+source truth or learner mastery.
+
 This document summarizes the current prioritized improvement roadmap for Didactopus as a learner-facing system.
 
 The ordering is intentional. The project should first strengthen the graph-grounded mentor loop that defines the real learner task, then use that stable backbone for local-model evaluation, accessibility work, and broader UX improvements.

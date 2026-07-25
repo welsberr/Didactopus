@@ -7,7 +7,7 @@ name = "didactopus"
 version = "0.1.0"
 requires-python = ">=3.10"
 dependencies = [
-  "epistemap @ git+https://github.com/welsberr/Epistemap.git@f452d4fa2f7b49b2ffcbc5d39d8700b84e65f717",
+  "epistemap @ git+https://github.com/welsberr/Epistemap.git@0b0a5794388339ecf14bdbf33b30125e643e0a07",
   "networkx>=3",
   "pydantic>=2.7",
   "PyYAML>=6",
