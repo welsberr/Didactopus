@@ -105,6 +105,20 @@ Each sequence step may provide either:
 Resolved scaffold paths are constrained to the configured root. Use an empty
 `--selection-policy` value when no ranking policy is available.
 
+Run consecutive mentorship steps by repeating `--step-submission`:
+
+```bash
+python -m didactopus.learner_session_demo \
+  --sequence examples/notebook-learning-sequence/learning-paths/guided-core.didactopus.json \
+  --step-submission "I can state the observation without assuming a cause." \
+  --step-submission "I can compare alternatives using discriminating evidence."
+```
+
+The resulting JSON keeps each completed session, a compact progress ledger,
+the next resumable step index, and a flattened accessible conversation. Supply
+`--notebook-root` and `--selection-policy` when consuming artifacts from an
+external producer.
+
 ## Review workbench
 
 The frontend is independently buildable from this checkout:

@@ -190,6 +190,13 @@ These artifacts let Didactopus improve mentoring while keeping review,
 provenance, accessibility, and local-model benchmarking attached to the same
 operational backbone.
 
+For a reviewed Notebook sequence, the standard backend can also emit a
+multi-step run. It preserves the full artifact payload for each completed
+session, a compact per-concept progress ledger, and `next_step_index` so a
+caller can resume without reconstructing state from chat history. A run is
+`complete` only after every sequence step has a learner submission and
+evaluation.
+
 ## AI Learner Benchmarks
 
 Local LLMs can act as learner stand-ins for practice and research. The process

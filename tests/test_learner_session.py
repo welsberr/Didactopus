@@ -4,6 +4,7 @@ from didactopus.config import load_config
 from didactopus.learner_session import (
     _scaffold_instruction_block,
     build_graph_grounded_session,
+    build_notebook_sequence_grounded_run,
     build_notebook_sequence_grounded_session,
 )
 from didactopus.learner_session_demo import run_learner_session_demo
@@ -85,6 +86,74 @@ def test_run_learner_session_demo_supports_notebook_sequence(tmp_path: Path) -> 
     assert payload["primary_concept"]["title"] == "Alternative Explanations"
     assert payload["secondary_concept"]["title"] == "Qualified Conclusion"
     assert payload["provider_diagnostics"]["provider"] == "stub"
+
+
+def test_build_notebook_sequence_grounded_run_records_resumable_progress() -> None:
+    root = Path(__file__).resolve().parents[1]
+    provider = ModelProvider(load_config(root / "configs" / "config.example.yaml").model_provider)
+    session_plan = build_notebook_sequence_session_plan(DEFAULT_SEQUENCE_PATH)
+
+    payload = build_notebook_sequence_grounded_run(
+        session_plan=session_plan,
+        provider=provider,
+        learner_submissions=[
+            "The observation is the measured change itself, while a cause is an inference that needs separate evidence and uncertainty.",
+            "Two explanations can fit one observation, so I would compare a prediction that differs between them before choosing.",
+        ],
+    )
+
+    assert payload["run_kind"] == "notebook_sequence"
+    assert payload["status"] == "in_progress"
+    assert payload["completed_session_count"] == 2
+    assert payload["total_session_count"] == 3
+    assert payload["next_step_index"] == 2
+    assert [item["title"] for item in payload["progress"]] == [
+        "Observation",
+        "Alternative Explanations",
+    ]
+    assert len(payload["sessions"]) == 2
+    assert len(payload["turns"]) == 12
+    assert {turn["step_index"] for turn in payload["turns"]} == {0, 1}
+
+
+def test_build_notebook_sequence_grounded_run_rejects_excess_submissions() -> None:
+    root = Path(__file__).resolve().parents[1]
+    provider = ModelProvider(load_config(root / "configs" / "config.example.yaml").model_provider)
+    session_plan = build_notebook_sequence_session_plan(DEFAULT_SEQUENCE_PATH)
+
+    try:
+        build_notebook_sequence_grounded_run(
+            session_plan=session_plan,
+            provider=provider,
+            start_step_index=2,
+            learner_submissions=["one", "two"],
+        )
+    except ValueError as exc:
+        assert "2 submissions for 1 available steps" in str(exc)
+    else:
+        raise AssertionError("Expected excess sequence submissions to be rejected")
+
+
+def test_run_learner_session_demo_writes_multi_step_sequence_run(tmp_path: Path) -> None:
+    root = Path(__file__).resolve().parents[1]
+    payload = run_learner_session_demo(
+        root / "configs" / "config.example.yaml",
+        root / "skills" / "ocw-information-entropy-agent",
+        tmp_path / "sequence-run.json",
+        sequence_path=DEFAULT_SEQUENCE_PATH,
+        learner_submissions=[
+            "I would describe the observation, measurement, and uncertainty before I propose a causal explanation.",
+            "I would compare rival explanations using evidence that produces different predictions under each alternative.",
+            "The supported conclusion should state its limitations and what evidence would make me revise it.",
+        ],
+    )
+
+    assert payload["status"] == "complete"
+    assert payload["next_step_index"] is None
+    assert payload["completed_session_count"] == 3
+    assert (tmp_path / "sequence-run.json").exists()
+    assert (tmp_path / "sequence-run.html").exists()
+    assert (tmp_path / "sequence-run.txt").exists()
 
 
 def test_scaffold_instruction_block_uses_verification_seed_and_guard() -> None:

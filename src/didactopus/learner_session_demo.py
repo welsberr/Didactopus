@@ -7,10 +7,15 @@ from .config import load_config
 from .learner_accessibility import render_accessible_session_outputs
 from .learner_session import (
     build_graph_grounded_session,
+    build_notebook_sequence_grounded_run,
     build_notebook_sequence_grounded_session,
 )
 from .model_provider import ModelProvider
-from .notebook_learning_sequence import build_notebook_sequence_session_plan
+from .notebook_learning_sequence import (
+    DEFAULT_NOTEBOOK_ROOT,
+    DEFAULT_SELECTION_POLICY_PATH,
+    build_notebook_sequence_session_plan,
+)
 from .ocw_skill_agent_demo import load_ocw_skill_context
 from .provider_policy import effective_provider_for_kind, provider_diagnostics_for_kind
 
@@ -27,22 +32,44 @@ def run_learner_session_demo(
     step_index: int = 0,
     learner_goal: str | None = None,
     learner_submission: str | None = None,
+    learner_submissions: list[str] | None = None,
+    notebook_root: str | Path = DEFAULT_NOTEBOOK_ROOT,
+    selection_policy_path: str | Path | None = DEFAULT_SELECTION_POLICY_PATH,
 ) -> dict:
     config = load_config(config_path)
     base_provider = ModelProvider(config.model_provider)
     provider = effective_provider_for_kind(base_provider, kind="chat")
     if sequence_path is not None:
-        session_plan = build_notebook_sequence_session_plan(sequence_path, learner_goal=learner_goal)
-        payload = build_notebook_sequence_grounded_session(
-            session_plan=session_plan,
-            provider=provider,
-            step_index=step_index,
-            learner_submission=learner_submission
-            or "Allele frequencies changed across generations, and I would compare whether the shift reflects chance sampling or another mechanism before naming a cause.",
+        session_plan = build_notebook_sequence_session_plan(
+            sequence_path,
             learner_goal=learner_goal,
-            language=language,
-            source_language="en",
+            notebook_root=notebook_root,
+            selection_policy_path=selection_policy_path,
         )
+        if learner_submissions:
+            payload = build_notebook_sequence_grounded_run(
+                session_plan=session_plan,
+                provider=provider,
+                learner_submissions=learner_submissions,
+                start_step_index=step_index,
+                learner_goal=learner_goal,
+                language=language,
+                source_language="en",
+            )
+        else:
+            payload = build_notebook_sequence_grounded_session(
+                session_plan=session_plan,
+                provider=provider,
+                step_index=step_index,
+                learner_submission=learner_submission
+                or (
+                    "I would first state the observation without naming a cause, "
+                    "then compare alternative explanations and the evidence that distinguishes them."
+                ),
+                learner_goal=learner_goal,
+                language=language,
+                source_language="en",
+            )
     else:
         context = load_ocw_skill_context(skill_dir)
         payload = build_graph_grounded_session(
@@ -72,19 +99,38 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run a graph-grounded learner session demo for Didactopus.")
     parser.add_argument("--config", default=str(root / "configs" / "config.example.yaml"))
     parser.add_argument("--skill-dir", default=str(root / "skills" / "ocw-information-entropy-agent"))
-    parser.add_argument("--out", default=str(root / "examples" / "ocw-information-entropy-session.json"))
+    parser.add_argument("--out")
     parser.add_argument("--sequence")
+    parser.add_argument("--notebook-root", default=str(DEFAULT_NOTEBOOK_ROOT))
+    parser.add_argument("--selection-policy", default=str(DEFAULT_SELECTION_POLICY_PATH))
     parser.add_argument("--step-index", type=int, default=0)
     parser.add_argument("--learner-goal")
     parser.add_argument("--learner-submission")
+    parser.add_argument(
+        "--step-submission",
+        action="append",
+        dest="learner_submissions",
+        help="Learner submission for one sequence step; repeat to run consecutive steps.",
+    )
     parser.add_argument("--accessible-html", default=None)
     parser.add_argument("--accessible-text", default=None)
     parser.add_argument("--language", default="en")
     args = parser.parse_args()
+    if args.learner_submission and args.learner_submissions:
+        parser.error("Use either --learner-submission or repeated --step-submission, not both.")
+    out_path = args.out or str(
+        root
+        / "examples"
+        / (
+            "notebook-sequence-session.json"
+            if args.sequence
+            else "ocw-information-entropy-session.json"
+        )
+    )
     payload = run_learner_session_demo(
         args.config,
         args.skill_dir,
-        args.out,
+        out_path,
         args.accessible_html,
         args.accessible_text,
         args.language,
@@ -92,6 +138,9 @@ def main() -> None:
         step_index=args.step_index,
         learner_goal=args.learner_goal,
         learner_submission=args.learner_submission,
+        learner_submissions=args.learner_submissions,
+        notebook_root=args.notebook_root,
+        selection_policy_path=args.selection_policy or None,
     )
     print(json.dumps(payload, indent=2))
 

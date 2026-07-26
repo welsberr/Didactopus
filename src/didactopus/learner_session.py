@@ -329,3 +329,95 @@ def build_notebook_sequence_grounded_session(
         "evaluation": evaluation,
         "turns": [turn.__dict__ for turn in turns],
     }
+
+
+def build_notebook_sequence_grounded_run(
+    session_plan: dict,
+    provider: ModelProvider,
+    *,
+    learner_submissions: list[str],
+    start_step_index: int = 0,
+    learner_goal: str | None = None,
+    language: str = "en",
+    source_language: str = "en",
+) -> dict:
+    sessions = session_plan.get("sessions", [])
+    if not sessions:
+        raise ValueError("No notebook sequence sessions available for learner run.")
+    if not learner_submissions:
+        raise ValueError("A multi-step learner run requires at least one submission.")
+    if start_step_index < 0 or start_step_index >= len(sessions):
+        raise IndexError(
+            f"Start step index {start_step_index} out of range for {len(sessions)} sessions."
+        )
+    end_step_index = start_step_index + len(learner_submissions)
+    if end_step_index > len(sessions):
+        available = len(sessions) - start_step_index
+        raise ValueError(
+            f"Received {len(learner_submissions)} submissions for {available} available steps."
+        )
+
+    completed_sessions: list[dict] = []
+    progress: list[dict] = []
+    turns: list[dict] = []
+    for offset, submission in enumerate(learner_submissions):
+        step_index = start_step_index + offset
+        session = build_notebook_sequence_grounded_session(
+            session_plan=session_plan,
+            provider=provider,
+            step_index=step_index,
+            learner_submission=submission,
+            learner_goal=learner_goal,
+            language=language,
+            source_language=source_language,
+        )
+        completed_sessions.append(session)
+        primary = session["primary_concept"]
+        evaluation = session["evaluation"]
+        progress.append(
+            {
+                "step_index": step_index,
+                "position": primary.get("position"),
+                "concept_id": primary.get("concept_id"),
+                "title": primary.get("title"),
+                "verdict": evaluation.get("verdict"),
+                "matched_evidence_terms": evaluation.get("aggregated", {}).get(
+                    "matched_evidence_terms",
+                    [],
+                ),
+            }
+        )
+        for turn in session["turns"]:
+            turns.append(
+                {
+                    **turn,
+                    "step_index": step_index,
+                    "step_position": primary.get("position"),
+                    "concept_id": primary.get("concept_id"),
+                    "concept_title": primary.get("title"),
+                    "label": f"{primary.get('title', 'Sequence step')} — {turn['label']}",
+                }
+            )
+
+    next_step_index = end_step_index if end_step_index < len(sessions) else None
+    final_session = completed_sessions[-1]
+    return {
+        "goal": final_session["goal"],
+        "output_language": language,
+        "source_language": source_language,
+        "run_kind": "notebook_sequence",
+        "status": "complete" if next_step_index is None else "in_progress",
+        "study_plan": {
+            "sequence_id": session_plan.get("sequence_id"),
+            "sequence_title": session_plan.get("sequence_title"),
+            "steps": sessions,
+        },
+        "start_step_index": start_step_index,
+        "next_step_index": next_step_index,
+        "completed_session_count": len(completed_sessions),
+        "total_session_count": len(sessions),
+        "progress": progress,
+        "sessions": completed_sessions,
+        "evaluation": final_session["evaluation"],
+        "turns": turns,
+    }

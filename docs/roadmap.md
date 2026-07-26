@@ -56,7 +56,14 @@ Near-term scope:
 - pass concept-level Epistemap Bayesian reliability summaries into mentor and
   evaluator context when available, without presenting them as final truth
   labels
-- extend the session flow beyond one short interaction
+- keep multi-step sequence runs resumable and extend them with persisted
+  learner evidence
+
+Current progress:
+
+- Notebook-backed mentorship can run consecutive reviewed sequence steps,
+  preserve each completed session, emit a compact progress ledger, and expose
+  the next resumable step index.
 
 Current code anchors:
 
