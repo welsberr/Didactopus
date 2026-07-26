@@ -22,7 +22,7 @@ is an implicit filesystem dependency of the base test or demo path.
 
 Epistemap is a core Python library dependency rather than an implicit sibling
 checkout. Until it has a package-index release, `pyproject.toml` resolves it
-from an immutable commit in its public GitHub repository.
+from an immutable release tag in its public GitHub repository.
 
 ## Install and verify
 
