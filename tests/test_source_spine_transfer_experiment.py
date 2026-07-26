@@ -82,6 +82,7 @@ def test_run_condition_scores_expected_rows_with_fake_client() -> None:
     assert result["metrics"]["pre"]["unknown_rate"] == 1.0
     assert result["metrics"]["post"]["accuracy"] == 1.0
     assert result["metrics"]["retention"]["accuracy"] == 1.0
+    assert {row["phase"]: row["evidence_coverage"] for row in result["rows"]} == {"pre": 0.0, "post": 0.75, "retention": 0.5}
     assert result["skill_score"]["score"] > 0.7
 
 

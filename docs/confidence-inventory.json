@@ -1,175 +1,182 @@
 {
   "inventory_kind": "didactopus_confidence_inventory",
   "schema_version": "1.0",
-  "entry_count": 130,
+  "entry_count": 136,
   "entries": [
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 254,
+      "line": 256,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "\"Classify the claim. Return a single JSON object with keys answer, confidence, justification.\\n\""
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 255,
+      "line": 257,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "\"answer must be exactly true, false, or unknown. confidence is your probability that your answer is correct; use 0.5 for unknown.\\n\""
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 266,
+      "line": 268,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "confidence = _coerce_confidence(payload.get(\"confidence\", 0.5))"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 266,
+      "line": 268,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "confidence = _coerce_confidence(payload.get(\"confidence\", 0.5))"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 270,
+      "line": 272,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "confidence = _fallback_confidence(text, answer)"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 273,
+      "line": 275,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "confidence = 0.5"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 274,
+      "line": 276,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "return {\"answer\": answer, \"confidence\": confidence, \"justification\": justification}"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 274,
+      "line": 276,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "return {\"answer\": answer, \"confidence\": confidence, \"justification\": justification}"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 306,
+      "line": 308,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "confidence = float(value)"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 309,
+      "line": 311,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "if confidence > 1.0 and confidence <= 100.0:"
-    },
-    {
-      "path": "didactopus/ai_learner_benchmark.py",
-      "line": 309,
-      "field": "confidence",
-      "category": "benchmark_response_probability",
-      "line_text": "if confidence > 1.0 and confidence <= 100.0:"
-    },
-    {
-      "path": "didactopus/ai_learner_benchmark.py",
-      "line": 310,
-      "field": "confidence",
-      "category": "benchmark_response_probability",
-      "line_text": "confidence /= 100.0"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
       "line": 311,
       "field": "confidence",
       "category": "benchmark_response_probability",
+      "line_text": "if confidence > 1.0 and confidence <= 100.0:"
+    },
+    {
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 312,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "confidence /= 100.0"
+    },
+    {
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 313,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
       "line_text": "return min(max(confidence, 0.0), 1.0)"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 318,
+      "line": 320,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "match = re.search(r\"\\b(?:confidence|probability)\\D+(\\d+(?:\\.\\d+)?)\", text.lower())"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 324,
+      "line": 326,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "def probability_true(answer: str, confidence: float) -> float:"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 326,
+      "line": 328,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "return confidence"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 328,
+      "line": 330,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "return 1.0 - confidence"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 334,
+      "line": 336,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "confidence = parsed[\"confidence\"]"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 334,
+      "line": 336,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "confidence = parsed[\"confidence\"]"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 335,
+      "line": 337,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "p_true = probability_true(answer, confidence)"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 349,
+      "line": 351,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "\"confidence\": round(confidence, 6),"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 349,
+      "line": 351,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "\"confidence\": round(confidence, 6),"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 352,
+      "line": 355,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "\"overconfident_wrong\": int((not correct) and (not unknown) and confidence >= 0.7),"
     },
     {
       "path": "didactopus/ai_learner_benchmark.py",
-      "line": 576,
+      "line": 579,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "\"confidence\","
+    },
+    {
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 653,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "lines.append(\"- Calibration reports use Epistemap: `confidence` calibrates selected-answer correctness; `p` calibrates claim truth after the true/false/unknown transform.\")"
     },
     {
       "path": "didactopus/api.py",
@@ -830,43 +837,64 @@
       "line_text": "\"confidence_hint\": r.confidence_hint,"
     },
     {
+      "path": "didactopus/response_calibration.py",
+      "line": 12,
+      "field": "confidence",
+      "category": "response_calibration_contract",
+      "line_text": "\"confidence_interpretation\": \"confidence is the predicted probability that the selected answer is correct\","
+    },
+    {
+      "path": "didactopus/response_calibration.py",
+      "line": 14,
+      "field": "confidence",
+      "category": "response_calibration_contract",
+      "line_text": "\"unknown_policy\": \"answer=unknown is an abstention; its response confidence is coerced to 0.5\","
+    },
+    {
+      "path": "didactopus/response_calibration.py",
+      "line": 24,
+      "field": "confidence",
+      "category": "response_calibration_contract",
+      "line_text": "predicted = float(row[\"confidence\"])"
+    },
+    {
+      "path": "didactopus/response_calibration.py",
+      "line": 76,
+      "field": "confidence",
+      "category": "response_calibration_contract",
+      "line_text": "sample_selection_policy=\"all Didactopus scored response rows with parsed confidence\","
+    },
+    {
       "path": "didactopus/source_spine_transfer_experiment.py",
-      "line": 101,
+      "line": 102,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "- Give high confidence only when a source anchor decides the claim. Use low confidence or unknown when the notes do not decide it."
     },
     {
       "path": "didactopus/source_spine_transfer_experiment.py",
-      "line": 101,
+      "line": 102,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "- Give high confidence only when a source anchor decides the claim. Use low confidence or unknown when the notes do not decide it."
-    },
-    {
-      "path": "didactopus/source_spine_transfer_experiment.py",
-      "line": 259,
-      "field": "confidence",
-      "category": "benchmark_response_probability",
-      "line_text": "\"Classify the claim. Return one JSON object with keys answer, confidence, justification. \""
     },
     {
       "path": "didactopus/source_spine_transfer_experiment.py",
       "line": 260,
       "field": "confidence",
       "category": "benchmark_response_probability",
+      "line_text": "\"Classify the claim. Return one JSON object with keys answer, confidence, justification. \""
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 261,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
       "line_text": "\"answer must be exactly true, false, or unknown. confidence is your probability that your answer is correct; use 0.5 for unknown.\\n\""
     },
     {
       "path": "didactopus/source_spine_transfer_experiment.py",
-      "line": 276,
-      "field": "confidence",
-      "category": "benchmark_response_probability",
-      "line_text": "confidence = parsed[\"confidence\"]"
-    },
-    {
-      "path": "didactopus/source_spine_transfer_experiment.py",
-      "line": 276,
+      "line": 277,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "confidence = parsed[\"confidence\"]"
@@ -876,42 +904,56 @@
       "line": 277,
       "field": "confidence",
       "category": "benchmark_response_probability",
+      "line_text": "confidence = parsed[\"confidence\"]"
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 278,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
       "line_text": "p_true = probability_true(answer, confidence)"
     },
     {
       "path": "didactopus/source_spine_transfer_experiment.py",
-      "line": 293,
+      "line": 294,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "\"confidence\": round(confidence, 6),"
     },
     {
       "path": "didactopus/source_spine_transfer_experiment.py",
-      "line": 293,
+      "line": 294,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "\"confidence\": round(confidence, 6),"
     },
     {
       "path": "didactopus/source_spine_transfer_experiment.py",
-      "line": 296,
+      "line": 298,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "\"overconfident_wrong\": int((not correct) and (not unknown) and confidence >= 0.7),"
     },
     {
       "path": "didactopus/source_spine_transfer_experiment.py",
-      "line": 569,
+      "line": 581,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "\"- Give confidence from 0.0 to 1.0. Use 0.5 for unknown.\","
     },
     {
       "path": "didactopus/source_spine_transfer_experiment.py",
-      "line": 635,
+      "line": 647,
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "\"confidence\","
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 744,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"- Calibration reports use Epistemap: response confidence calibrates selected-answer correctness separately from `p`, the transformed probability the claim is true.\","
     }
   ]
 }

@@ -12,6 +12,8 @@ import time
 from typing import Any
 from urllib import request
 
+from .response_calibration import RESPONSE_CALIBRATION_POLICY, summarize_calibration_reports, write_response_calibration_reports
+
 
 SOURCE_ID = "glass-orchard-v1"
 SOURCE_TITLE = "The Glass Orchard"
@@ -347,6 +349,7 @@ def score_row(model: str, phase: str, item: ClaimItem, parsed: dict[str, Any], r
         "p": round(p_true, 6),
         "answer": answer,
         "confidence": round(confidence, 6),
+        "evidence_coverage": 1.0 if phase == "post" else 0.0,
         "correct": int(correct),
         "unknown": int(unknown),
         "overconfident_wrong": int((not correct) and (not unknown) and confidence >= 0.7),
@@ -574,6 +577,7 @@ def write_outputs(payload: dict[str, Any], out_dir: Path) -> dict[str, str]:
         "p",
         "answer",
         "confidence",
+        "evidence_coverage",
         "correct",
         "unknown",
         "overconfident_wrong",
@@ -591,8 +595,9 @@ def write_outputs(payload: dict[str, Any], out_dir: Path) -> dict[str, str]:
         for row in all_rows:
             writer.writerow({field: row.get(field, "") for field in row_fields})
 
-    manifest_path = out_dir / "ai_learner_bench_run.json"
-    manifest_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    calibration_paths = write_response_calibration_reports(all_rows, out_dir)
+    payload["calibration"] = summarize_calibration_reports(all_rows)
+    payload["calibration_policy"] = dict(RESPONSE_CALIBRATION_POLICY)
 
     for model in payload["models"]:
         safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", model["model_id"])
@@ -604,10 +609,16 @@ def write_outputs(payload: dict[str, Any], out_dir: Path) -> dict[str, str]:
 
     report_path = out_dir / "groundedness_report.md"
     report_path.write_text(render_report(payload), encoding="utf-8")
-    return {
+    manifest_path = out_dir / "ai_learner_bench_run.json"
+    payload["artifacts"] = {
         "manifest": str(manifest_path),
         "scored_claims": str(scored_path),
         "report": str(report_path),
+        **calibration_paths,
+    }
+    manifest_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    return {
+        **payload["artifacts"],
     }
 
 
@@ -639,6 +650,7 @@ def render_report(payload: dict[str, Any]) -> str:
     lines.append("- Pretest is source-blind; abstention is expected and unsupported confident answers are counted separately.")
     lines.append("- Posttest is source-visible and follows a source-grounded mentorship turn.")
     lines.append("- `G` is a point estimate using target-transfer rows as `K` and direct/source-near rows as `C`; this first run has no bootstrap CI.")
+    lines.append("- Calibration reports use Epistemap: `confidence` calibrates selected-answer correctness; `p` calibrates claim truth after the true/false/unknown transform.")
     lines.append("- Skill score is a deterministic first-pass rubric over required source facts, study-aid structure, and obvious hallucination terms.")
     return "\n".join(lines) + "\n"
 
@@ -663,6 +675,7 @@ def run_benchmark(
             "mentorship_brief": MENTORSHIP_BRIEF,
         },
         "ollama_base_url": ollama_base_url,
+        "calibration_policy": dict(RESPONSE_CALIBRATION_POLICY),
         "models": [],
     }
     for model in models:

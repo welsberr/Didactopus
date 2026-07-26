@@ -22,6 +22,7 @@ from .ai_learner_benchmark import (
     strip_model_reasoning,
     summarize_rows,
 )
+from .response_calibration import RESPONSE_CALIBRATION_POLICY, summarize_calibration_reports, write_response_calibration_reports
 
 
 EXPERIMENT_ID = "source-spine-transfer-v1"
@@ -291,6 +292,7 @@ def score_row(
         "p": round(p_true, 6),
         "answer": answer,
         "confidence": round(confidence, 6),
+        "evidence_coverage": _row_evidence_coverage(item.phase),
         "correct": int(correct),
         "unknown": int(unknown),
         "overconfident_wrong": int((not correct) and (not unknown) and confidence >= 0.7),
@@ -327,6 +329,16 @@ def score_study_artifact(text: str) -> dict[str, Any]:
         "structure_hits": structure_hits,
         "hallucinations": hallucinations,
     }
+
+
+def _row_evidence_coverage(phase: str) -> float:
+    if phase == "pre":
+        return 0.0
+    if phase == "post":
+        return 0.75
+    if phase == "retention":
+        return 0.5
+    return 0.0
 
 
 def _condition_phase_rows(rows: list[dict[str, Any]], phase: str) -> list[dict[str, Any]]:
@@ -633,6 +645,7 @@ def write_outputs(payload: dict[str, Any], out_dir: Path) -> dict[str, str]:
         "p",
         "answer",
         "confidence",
+        "evidence_coverage",
         "correct",
         "unknown",
         "overconfident_wrong",
@@ -660,6 +673,9 @@ def write_outputs(payload: dict[str, Any], out_dir: Path) -> dict[str, str]:
                 for interaction in condition["interactions"]:
                     handle.write(json.dumps(interaction) + "\n")
 
+    calibration_paths = write_response_calibration_reports(all_rows, out_dir)
+    payload["calibration"] = summarize_calibration_reports(all_rows)
+    payload["calibration_policy"] = dict(RESPONSE_CALIBRATION_POLICY)
     human_paths = write_human_packets(out_dir, payload["run_id"])
     report_path = out_dir / "groundedness_report.md"
     report_path.write_text(render_report(payload), encoding="utf-8")
@@ -668,6 +684,7 @@ def write_outputs(payload: dict[str, Any], out_dir: Path) -> dict[str, str]:
         "manifest": str(manifest_path),
         "scored_claims": str(scored_path),
         "report": str(report_path),
+        **calibration_paths,
         **human_paths,
     }
     manifest_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
@@ -724,6 +741,7 @@ def render_report(payload: dict[str, Any]) -> str:
             "- Source-blind pretest abstention is expected; unsupported confident pretest answers are counted separately.",
             "- Posttest and retention are notes-only for the AI learners. This tests whether each condition produces usable study notes, not whether the model can reread the source.",
             "- `G` is a point estimate over direct/source-near `C` rows and shifted/transfer `K` rows.",
+            "- Calibration reports use Epistemap: response confidence calibrates selected-answer correctness separately from `p`, the transformed probability the claim is true.",
             "- The human packet should be treated as a pilot instrument; human results need consent, anonymization, and separate analysis.",
         ]
     )
@@ -760,6 +778,7 @@ def run_experiment(
         },
         "conditions_requested": conditions,
         "ollama_base_url": ollama_base_url,
+        "calibration_policy": dict(RESPONSE_CALIBRATION_POLICY),
         "models": [],
     }
     for model in models:
