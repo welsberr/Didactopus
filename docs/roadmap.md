@@ -11,6 +11,11 @@ remain partial until the full production-code inventory, ORM/API migrations,
 typed candidate migration, calibration integration, installed-package matrix,
 and compatibility release are complete.
 
+Didactopus consumes the portable confidence contract from Epistemap
+`v0.1.0a1`. This immutable Git-tag dependency replaces the implementation SHA;
+Didactopus's own compatibility release and remaining D1-D4 work are still
+pending.
+
 CiteGeist bibliography graph integration is coordinated by CiteGeist's
 `docs/epistemap-knowledge-graph-roadmap.md`. Didactopus consumes reviewed
 source trails and bibliographic observations; it must not convert citations,
