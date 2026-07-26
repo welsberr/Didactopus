@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import os
+import warnings
 from pathlib import Path
 from typing import Any
 
 import yaml
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 from .roles import default_role_to_model
 
 
@@ -39,7 +40,38 @@ class PlatformConfig(BaseModel):
             "critique": 0.7,
         }
     )
-    confidence_threshold: float = 0.8
+    evidence_coverage_threshold: float = 0.8
+
+    @model_validator(mode="before")
+    @classmethod
+    def _migrate_legacy_confidence_threshold(cls, data):
+        if isinstance(data, dict) and "confidence_threshold" in data and "evidence_coverage_threshold" not in data:
+            warnings.warn(
+                "PlatformConfig.confidence_threshold is deprecated; use evidence_coverage_threshold.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            data = dict(data)
+            data["evidence_coverage_threshold"] = data.pop("confidence_threshold")
+        return data
+
+    @property
+    def confidence_threshold(self) -> float:
+        warnings.warn(
+            "PlatformConfig.confidence_threshold is deprecated; use evidence_coverage_threshold.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.evidence_coverage_threshold
+
+    @confidence_threshold.setter
+    def confidence_threshold(self, value: float) -> None:
+        warnings.warn(
+            "PlatformConfig.confidence_threshold is deprecated; use evidence_coverage_threshold.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.evidence_coverage_threshold = value
 
     @property
     def default_dimension_thresholds(self) -> dict[str, float]:

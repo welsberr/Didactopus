@@ -11,6 +11,6 @@ def test_learning_cycle_returns_recommendations():
     learner = LearnerState(learner_id="u1")
     apply_evidence(learner, EvidenceEvent(concept_id="a", dimension="mastery", score=0.9, confidence_hint=0.9, timestamp="2026-03-13T12:00:00+00:00"))
     run = RunState(profile=LearnerProfile(learner_id="u1"))
-    crit = StopCriteria(min_mastered_concepts=10, min_average_score=0.8, min_average_confidence=0.7)
+    crit = StopCriteria(min_mastered_concepts=10, min_average_score=0.8, min_average_evidence_coverage=0.7)
     result = run_learning_cycle(learner, run, concepts, crit)
     assert "recommendation_cards" in result

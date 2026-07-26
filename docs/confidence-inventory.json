@@ -1,7 +1,7 @@
 {
   "inventory_kind": "didactopus_confidence_inventory",
   "schema_version": "1.0",
-  "entry_count": 134,
+  "entry_count": 130,
   "entries": [
     {
       "path": "didactopus/ai_learner_benchmark.py",
@@ -376,7 +376,7 @@
     },
     {
       "path": "didactopus/evidence_engine.py",
-      "line": 39,
+      "line": 40,
       "field": "confidence",
       "category": "evidence_coverage_alias",
       "line_text": "def confidence(self) -> float:"
@@ -386,14 +386,28 @@
       "line": 42,
       "field": "confidence",
       "category": "evidence_coverage_alias",
+      "line_text": "\"ConceptEvidenceSummary.confidence is deprecated; use evidence_coverage.\","
+    },
+    {
+      "path": "didactopus/evidence_engine.py",
+      "line": 48,
+      "field": "confidence",
+      "category": "evidence_coverage_alias",
       "line_text": "@confidence.setter"
     },
     {
       "path": "didactopus/evidence_engine.py",
-      "line": 43,
+      "line": 49,
       "field": "confidence",
       "category": "evidence_coverage_alias",
       "line_text": "def confidence(self, value: float) -> None:"
+    },
+    {
+      "path": "didactopus/evidence_engine.py",
+      "line": 51,
+      "field": "confidence",
+      "category": "evidence_coverage_alias",
+      "line_text": "\"ConceptEvidenceSummary.confidence is deprecated; use evidence_coverage.\","
     },
     {
       "path": "didactopus/evidence_flow_ledger_qa.py",
@@ -572,31 +586,10 @@
     },
     {
       "path": "didactopus/knowledge_export.py",
-      "line": 17,
+      "line": 18,
       "field": "confidence",
       "category": "knowledge_export_legacy",
-      "line_text": "\"confidence\": rec.confidence,"
-    },
-    {
-      "path": "didactopus/knowledge_export.py",
-      "line": 17,
-      "field": "confidence",
-      "category": "knowledge_export_legacy",
-      "line_text": "\"confidence\": rec.confidence,"
-    },
-    {
-      "path": "didactopus/knowledge_export.py",
-      "line": 21,
-      "field": "confidence",
-      "category": "knowledge_export_legacy",
-      "line_text": "if rec.score >= 0.65 and rec.confidence >= 0.5"
-    },
-    {
-      "path": "didactopus/knowledge_export.py",
-      "line": 32,
-      "field": "confidence",
-      "category": "knowledge_export_legacy",
-      "line_text": "\"Look for concepts with repeated low-confidence evidence.\","
+      "line_text": "\"confidence\": rec.evidence_coverage,"
     },
     {
       "path": "didactopus/knowledge_graph.py",
@@ -656,14 +649,63 @@
     },
     {
       "path": "didactopus/learner_state.py",
-      "line": 11,
+      "line": 20,
       "field": "confidence",
       "category": "learner_state_mastery",
-      "line_text": "confidence: float = Field(default=0.0, ge=0.0, le=1.0)"
+      "line_text": "if isinstance(data, dict) and \"confidence\" in data and \"evidence_coverage\" not in data:"
     },
     {
       "path": "didactopus/learner_state.py",
-      "line": 19,
+      "line": 22,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "\"MasteryRecord.confidence is deprecated; use evidence_coverage.\","
+    },
+    {
+      "path": "didactopus/learner_state.py",
+      "line": 27,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "data[\"evidence_coverage\"] = data.pop(\"confidence\")"
+    },
+    {
+      "path": "didactopus/learner_state.py",
+      "line": 31,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "def confidence(self) -> float:"
+    },
+    {
+      "path": "didactopus/learner_state.py",
+      "line": 33,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "\"MasteryRecord.confidence is deprecated; use evidence_coverage.\","
+    },
+    {
+      "path": "didactopus/learner_state.py",
+      "line": 39,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "@confidence.setter"
+    },
+    {
+      "path": "didactopus/learner_state.py",
+      "line": 40,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "def confidence(self, value: float) -> None:"
+    },
+    {
+      "path": "didactopus/learner_state.py",
+      "line": 42,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "\"MasteryRecord.confidence is deprecated; use evidence_coverage.\","
+    },
+    {
+      "path": "didactopus/learner_state.py",
+      "line": 53,
       "field": "confidence_hint",
       "category": "learner_state_mastery",
       "line_text": "confidence_hint: float = Field(default=0.5, ge=0.0, le=1.0)"
@@ -712,73 +754,10 @@
     },
     {
       "path": "didactopus/progression_engine.py",
-      "line": 18,
-      "field": "confidence",
-      "category": "learner_state_mastery",
-      "line_text": "confidence=0.0,"
-    },
-    {
-      "path": "didactopus/progression_engine.py",
-      "line": 24,
+      "line": 25,
       "field": "confidence_hint",
       "category": "learner_state_mastery",
       "line_text": "weight = max(0.05, min(1.0, event.confidence_hint))"
-    },
-    {
-      "path": "didactopus/progression_engine.py",
-      "line": 26,
-      "field": "confidence",
-      "category": "learner_state_mastery",
-      "line_text": "rec.confidence = min("
-    },
-    {
-      "path": "didactopus/progression_engine.py",
-      "line": 28,
-      "field": "confidence",
-      "category": "learner_state_mastery",
-      "line_text": "max(0.0, rec.confidence * (1.0 - decay) + reinforcement * weight + 0.10 * max(0.0, min(1.0, event.score))),"
-    },
-    {
-      "path": "didactopus/progression_engine.py",
-      "line": 43,
-      "field": "confidence",
-      "category": "learner_state_mastery",
-      "line_text": "record.confidence = max(0.0, record.confidence * ((1.0 - daily_decay) ** elapsed_days))"
-    },
-    {
-      "path": "didactopus/progression_engine.py",
-      "line": 43,
-      "field": "confidence",
-      "category": "learner_state_mastery",
-      "line_text": "record.confidence = max(0.0, record.confidence * ((1.0 - daily_decay) ** elapsed_days))"
-    },
-    {
-      "path": "didactopus/readiness.py",
-      "line": 8,
-      "field": "confidence",
-      "category": "learner_state_mastery",
-      "line_text": "return rec.score, rec.confidence"
-    },
-    {
-      "path": "didactopus/recommendations.py",
-      "line": 19,
-      "field": "confidence",
-      "category": "learner_state_mastery",
-      "line_text": "if existing is None or existing.score < min_score or existing.confidence < min_confidence:"
-    },
-    {
-      "path": "didactopus/recommendations.py",
-      "line": 34,
-      "field": "confidence",
-      "category": "learner_state_mastery",
-      "line_text": "if rec.dimension == dimension and rec.confidence < low_confidence_threshold:"
-    },
-    {
-      "path": "didactopus/recommendations.py",
-      "line": 38,
-      "field": "confidence",
-      "category": "learner_state_mastery",
-      "line_text": "\"reason\": \"confidence low; reinforce with fresh evidence\","
     },
     {
       "path": "didactopus/repository.py",
@@ -792,53 +771,60 @@
       "line": 56,
       "field": "confidence",
       "category": "api_or_orm_boundary",
-      "line_text": "\"confidence\": r.confidence,"
+      "line_text": "\"evidence_coverage\": r.confidence,"
     },
     {
       "path": "didactopus/repository.py",
-      "line": 56,
+      "line": 57,
       "field": "confidence",
       "category": "api_or_orm_boundary",
       "line_text": "\"confidence\": r.confidence,"
     },
     {
       "path": "didactopus/repository.py",
-      "line": 73,
+      "line": 57,
+      "field": "confidence",
+      "category": "api_or_orm_boundary",
+      "line_text": "\"confidence\": r.confidence,"
+    },
+    {
+      "path": "didactopus/repository.py",
+      "line": 74,
       "field": "confidence_hint",
       "category": "api_or_orm_boundary",
       "line_text": "confidence_hint=payload.confidence_hint,"
     },
     {
       "path": "didactopus/repository.py",
-      "line": 73,
+      "line": 74,
       "field": "confidence_hint",
       "category": "api_or_orm_boundary",
       "line_text": "confidence_hint=payload.confidence_hint,"
     },
     {
       "path": "didactopus/repository.py",
-      "line": 100,
+      "line": 101,
       "field": "confidence_hint",
       "category": "api_or_orm_boundary",
       "line_text": "\"confidence_hint\": r.confidence_hint,"
     },
     {
       "path": "didactopus/repository.py",
-      "line": 100,
+      "line": 101,
       "field": "confidence_hint",
       "category": "api_or_orm_boundary",
       "line_text": "\"confidence_hint\": r.confidence_hint,"
     },
     {
       "path": "didactopus/repository.py",
-      "line": 125,
+      "line": 126,
       "field": "confidence_hint",
       "category": "api_or_orm_boundary",
       "line_text": "\"confidence_hint\": r.confidence_hint,"
     },
     {
       "path": "didactopus/repository.py",
-      "line": 125,
+      "line": 126,
       "field": "confidence_hint",
       "category": "api_or_orm_boundary",
       "line_text": "\"confidence_hint\": r.confidence_hint,"
@@ -926,20 +912,6 @@
       "field": "confidence",
       "category": "benchmark_response_probability",
       "line_text": "\"confidence\","
-    },
-    {
-      "path": "didactopus/stop_criteria.py",
-      "line": 12,
-      "field": "confidence",
-      "category": "learner_state_mastery",
-      "line_text": "mastered = [r for r in relevant if r.score >= criteria.min_average_score and r.confidence >= criteria.min_average_confidence]"
-    },
-    {
-      "path": "didactopus/stop_criteria.py",
-      "line": 14,
-      "field": "confidence",
-      "category": "learner_state_mastery",
-      "line_text": "avg_conf = sum(r.confidence for r in relevant) / len(relevant) if relevant else 0.0"
     }
   ]
 }

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import warnings
 
 from .adaptive_engine import LearnerProfile
 
@@ -37,10 +38,20 @@ class ConceptEvidenceSummary:
 
     @property
     def confidence(self) -> float:
+        warnings.warn(
+            "ConceptEvidenceSummary.confidence is deprecated; use evidence_coverage.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.evidence_coverage
 
     @confidence.setter
     def confidence(self, value: float) -> None:
+        warnings.warn(
+            "ConceptEvidenceSummary.confidence is deprecated; use evidence_coverage.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.evidence_coverage = value
 
 
@@ -69,6 +80,11 @@ def evidence_coverage_from_weight(total_weight: float) -> float:
 
 
 def confidence_from_weight(total_weight: float) -> float:
+    warnings.warn(
+        "confidence_from_weight() is deprecated; use evidence_coverage_from_weight().",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return evidence_coverage_from_weight(total_weight)
 
 
@@ -83,11 +99,19 @@ def ingest_evidence_bundle(
     items: list[EvidenceItem],
     mastery_threshold: float = 0.8,
     resurfacing_threshold: float = 0.55,
-    confidence_threshold: float = 0.0,
+    evidence_coverage_threshold: float = 0.0,
     type_weights: dict[str, float] | None = None,
     recent_multiplier: float = 1.0,
     dimension_thresholds: dict[str, float] | None = None,
+    confidence_threshold: float | None = None,
 ) -> EvidenceState:
+    if confidence_threshold is not None:
+        warnings.warn(
+            "ingest_evidence_bundle(confidence_threshold=...) is deprecated; use evidence_coverage_threshold.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        evidence_coverage_threshold = confidence_threshold
     state = EvidenceState()
     grouped: dict[str, list[EvidenceItem]] = {}
     for item in items:
@@ -120,7 +144,7 @@ def ingest_evidence_bundle(
         summary.weak_dimensions = weak_dimensions
         summary.mastered = (
             summary.weighted_mean_score >= mastery_threshold
-            and summary.evidence_coverage >= confidence_threshold
+            and summary.evidence_coverage >= evidence_coverage_threshold
             and not weak_dimensions
         )
 

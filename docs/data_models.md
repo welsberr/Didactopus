@@ -14,7 +14,7 @@
   "title": "Variance may be an unstated prerequisite for standard deviation",
   "summary": "Learner evidence suggests an implicit conceptual dependency.",
   "structured_payload": {},
-  "evidence_summary": "Repeated low-confidence performance.",
+  "evidence_summary": "Repeated low-evidence-coverage performance.",
   "confidence_hint": 0.72,
   "novelty_score": 0.61,
   "synthesis_score": 0.58,

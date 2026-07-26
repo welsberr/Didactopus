@@ -53,6 +53,7 @@ def list_mastery_records(learner_id: str):
             "concept_id": r.concept_id,
             "dimension": r.dimension,
             "score": r.score,
+            "evidence_coverage": r.confidence,
             "confidence": r.confidence,
             "evidence_count": r.evidence_count,
             "last_updated": r.last_updated,

@@ -32,7 +32,7 @@ def test_full_multidim_mastery() -> None:
             )
         ],
         resurfacing_threshold=0.55,
-        confidence_threshold=0.75,
+        evidence_coverage_threshold=0.75,
         type_weights=DEFAULT_WEIGHTS,
         recent_multiplier=1.35,
         dimension_thresholds=DEFAULT_THRESHOLDS,
@@ -62,7 +62,7 @@ def test_partial_weakness_blocks_mastery() -> None:
             )
         ],
         resurfacing_threshold=0.55,
-        confidence_threshold=0.75,
+        evidence_coverage_threshold=0.75,
         type_weights=DEFAULT_WEIGHTS,
         recent_multiplier=1.35,
         dimension_thresholds=DEFAULT_THRESHOLDS,
@@ -91,7 +91,7 @@ def test_resurfacing_from_multidim_weakness() -> None:
             )
         ],
         resurfacing_threshold=0.55,
-        confidence_threshold=0.75,
+        evidence_coverage_threshold=0.75,
         type_weights=DEFAULT_WEIGHTS,
         recent_multiplier=1.35,
         dimension_thresholds=DEFAULT_THRESHOLDS,
