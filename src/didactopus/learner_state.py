@@ -1,5 +1,7 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field
+import warnings
+
+from pydantic import BaseModel, Field, model_validator
 from typing import Literal
 
 EvidenceKind = Literal["checkpoint", "project", "exercise", "review"]
@@ -8,9 +10,41 @@ class MasteryRecord(BaseModel):
     concept_id: str
     dimension: str
     score: float = Field(default=0.0, ge=0.0, le=1.0)
-    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    evidence_coverage: float = Field(default=0.0, ge=0.0, le=1.0)
     evidence_count: int = 0
     last_updated: str = ""
+
+    @model_validator(mode="before")
+    @classmethod
+    def _migrate_legacy_confidence(cls, data):
+        if isinstance(data, dict) and "confidence" in data and "evidence_coverage" not in data:
+            warnings.warn(
+                "MasteryRecord.confidence is deprecated; use evidence_coverage.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            data = dict(data)
+            data["evidence_coverage"] = data.pop("confidence")
+        return data
+
+    @property
+    def confidence(self) -> float:
+        warnings.warn(
+            "MasteryRecord.confidence is deprecated; use evidence_coverage.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.evidence_coverage
+
+    @confidence.setter
+    def confidence(self, value: float) -> None:
+        warnings.warn(
+            "MasteryRecord.confidence is deprecated; use evidence_coverage.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.evidence_coverage = value
+
 
 class EvidenceEvent(BaseModel):
     concept_id: str

@@ -1,3 +1,5 @@
+import pytest
+
 from didactopus.adaptive_engine import LearnerProfile
 from didactopus.evidence_engine import (
     EvidenceItem,
@@ -20,10 +22,27 @@ def test_evidence_weighting_by_type_and_recency() -> None:
     assert abs(w - 3.375) < 1e-9
 
 
-def test_confidence_increases_with_weight() -> None:
-    assert confidence_from_weight(0.0) == 0.0
-    assert confidence_from_weight(1.0) < confidence_from_weight(3.0)
-    assert confidence_from_weight(3.0) == evidence_coverage_from_weight(3.0)
+def test_evidence_coverage_increases_with_weight() -> None:
+    assert evidence_coverage_from_weight(0.0) == 0.0
+    assert evidence_coverage_from_weight(1.0) < evidence_coverage_from_weight(3.0)
+
+
+def test_legacy_confidence_from_weight_warns_and_matches_coverage() -> None:
+    with pytest.warns(DeprecationWarning, match="evidence_coverage_from_weight"):
+        assert confidence_from_weight(3.0) == evidence_coverage_from_weight(3.0)
+
+
+def test_legacy_ingest_confidence_threshold_warns_and_matches_coverage_threshold() -> None:
+    profile = LearnerProfile(learner_id="u1")
+    with pytest.warns(DeprecationWarning, match="evidence_coverage_threshold"):
+        state = ingest_evidence_bundle(
+            profile,
+            [EvidenceItem("c1", "project", 0.9)],
+            mastery_threshold=0.8,
+            confidence_threshold=0.75,
+        )
+
+    assert state.summary_by_concept["c1"].mastered is False
 
 
 def test_weighted_summary_promotes_mastery() -> None:
@@ -36,14 +55,13 @@ def test_weighted_summary_promotes_mastery() -> None:
         ],
         mastery_threshold=0.8,
         resurfacing_threshold=0.55,
-        confidence_threshold=0.75,
+        evidence_coverage_threshold=0.75,
         type_weights={"explanation": 1.0, "problem": 1.5, "project": 2.5, "transfer": 2.0},
         recent_multiplier=1.35,
     )
     assert "c1" in profile.mastered_concepts
     assert state.summary_by_concept["c1"].weighted_mean_score >= 0.8
     assert state.summary_by_concept["c1"].evidence_coverage >= 0.75
-    assert state.summary_by_concept["c1"].confidence == state.summary_by_concept["c1"].evidence_coverage
 
 
 def test_recent_weak_evidence_can_resurface() -> None:
@@ -56,7 +74,7 @@ def test_recent_weak_evidence_can_resurface() -> None:
         ],
         mastery_threshold=0.8,
         resurfacing_threshold=0.55,
-        confidence_threshold=0.75,
+        evidence_coverage_threshold=0.75,
         type_weights={"explanation": 1.0, "problem": 1.5, "project": 2.5, "transfer": 2.0},
         recent_multiplier=1.35,
     )
@@ -78,10 +96,33 @@ def test_dimension_means_present() -> None:
         ],
         mastery_threshold=0.8,
         resurfacing_threshold=0.55,
-        confidence_threshold=0.1,
+        evidence_coverage_threshold=0.1,
         type_weights={"explanation": 1.0, "problem": 1.5, "project": 2.5, "transfer": 2.0},
         recent_multiplier=1.35,
     )
     summary = state.summary_by_concept["c1"]
     assert abs(summary.dimension_means["correctness"] - 0.9) < 1e-9
     assert abs(summary.dimension_means["clarity"] - 0.7) < 1e-9
+
+
+def test_duplicate_evidence_increases_coverage_not_correctness_probability() -> None:
+    profile_single = LearnerProfile(learner_id="single")
+    single = ingest_evidence_bundle(
+        profile_single,
+        [EvidenceItem("c1", "problem", 0.7)],
+        mastery_threshold=0.8,
+        evidence_coverage_threshold=0.0,
+    ).summary_by_concept["c1"]
+
+    profile_duplicate = LearnerProfile(learner_id="duplicate")
+    duplicate = ingest_evidence_bundle(
+        profile_duplicate,
+        [EvidenceItem("c1", "problem", 0.7), EvidenceItem("c1", "problem", 0.7)],
+        mastery_threshold=0.8,
+        evidence_coverage_threshold=0.0,
+    ).summary_by_concept["c1"]
+
+    assert duplicate.total_weight > single.total_weight
+    assert duplicate.evidence_coverage > single.evidence_coverage
+    assert duplicate.weighted_mean_score == single.weighted_mean_score
+    assert not hasattr(duplicate, "correctness_probability")

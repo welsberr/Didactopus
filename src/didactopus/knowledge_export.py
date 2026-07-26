@@ -14,11 +14,12 @@ def build_knowledge_snapshot(learner_id: str, pack_id: str) -> dict:
             "concept_id": rec.concept_id,
             "title": concept.title if concept else rec.concept_id,
             "score": rec.score,
-            "confidence": rec.confidence,
+            "evidence_coverage": rec.evidence_coverage,
+            "confidence": rec.evidence_coverage,
             "evidence_count": rec.evidence_count,
             "interpretation": (
                 "candidate mastery"
-                if rec.score >= 0.65 and rec.confidence >= 0.5
+                if rec.score >= 0.65 and rec.evidence_coverage >= 0.5
                 else "still developing"
             ),
         })
@@ -29,7 +30,7 @@ def build_knowledge_snapshot(learner_id: str, pack_id: str) -> dict:
         "pack_title": pack.title if pack else "",
         "observations": observations,
         "pack_improvement_candidates": [
-            "Look for concepts with repeated low-confidence evidence.",
+            "Look for concepts with repeated low-coverage evidence.",
             "Check whether hidden prerequisites are missing.",
             "Inspect surprising learner success for better examples or shortcuts."
         ],

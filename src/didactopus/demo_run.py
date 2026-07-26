@@ -31,7 +31,7 @@ def main():
     stop = StopCriteria(
         min_mastered_concepts=1,
         min_average_score=0.70,
-        min_average_confidence=0.20,
+        min_average_evidence_coverage=0.20,
         required_capstones=[],
     )
     result = run_learning_cycle(learner_state, run_state, concepts, stop)
