@@ -10,7 +10,7 @@ from .notebook_learning_sequence import build_notebook_sequence_session_plan
 from .pack_validator import validate_pack_directory
 
 
-SERVER_INFO = {"name": "didactopus-mcp", "version": "0.1.0"}
+SERVER_INFO = {"name": "didactopus-mcp", "version": "0.1.1"}
 
 
 def _json_text(payload: Any) -> dict[str, Any]:

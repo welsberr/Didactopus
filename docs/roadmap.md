@@ -12,7 +12,7 @@ typed candidate migration, calibration integration, installed-package matrix,
 and compatibility release are complete.
 
 Didactopus consumes the portable confidence contract from Epistemap
-`v0.1.0a1`. This immutable Git-tag dependency replaces the implementation SHA;
+`v0.1.0a2`. This immutable Git-tag dependency replaces the implementation SHA;
 Didactopus's own compatibility release and remaining D1-D4 work are still
 pending.
 
