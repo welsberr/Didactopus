@@ -112,14 +112,21 @@ summary, worked examples, retrieval practice, or the full mentoring loop.
 The practical `G` estimator in the learning-laws project expects rows with:
 
 - `y`: ground-truth correctness label in `{0,1}`;
-- `p`: predicted probability or calibrated confidence for `y=1`;
+- `p`: transformed probability that the evaluated claim is true;
 - `env`: environment or slice label.
 
 Didactopus should export claim-level assessment rows:
 
 ```csv
-run_id,model_id,phase,item_id,claim_id,env,y,p,response_span,source_anchor
+run_id,model_id,phase,item_id,claim_id,env,y,p,answer,confidence,evidence_coverage,correct,response_span,source_anchor
 ```
+
+`confidence` is separately interpreted as the model's predicted probability
+that its selected answer is correct. `answer=unknown` is an abstention and is
+coerced to `confidence=0.5`. Benchmark outputs write Epistemap calibration
+reports for both `selected_answer_correct` (`confidence` vs `correct`) and
+`claim_is_true` (`p` vs `y`), plus small-sample warnings that prevent changing
+mentoring or stop-policy thresholds from one underpowered run.
 
 Recommended environment labels:
 

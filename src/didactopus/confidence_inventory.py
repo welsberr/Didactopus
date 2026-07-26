@@ -40,6 +40,8 @@ def classify_confidence_occurrence(path: str, line: str) -> str:
         return "confidence_contract_tooling"
     if "ai_learner_benchmark" in path or "source_spine_transfer_experiment" in path:
         return "benchmark_response_probability"
+    if "response_calibration" in path:
+        return "response_calibration_contract"
     if "learner_state" in path or "progression_engine" in path or "stop_criteria" in path or "readiness" in path or "recommendations" in path:
         return "learner_state_mastery"
     if "evidence_flow_ledger_qa" in path:

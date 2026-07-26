@@ -50,6 +50,7 @@ def test_g_estimate_uses_clean_and_target_rows() -> None:
 
     assert estimate["G"] > 0.7
     assert estimate["n"] == {"clean": 2, "target": 2}
+    assert all(row["evidence_coverage"] == 1.0 for row in rows)
 
 
 def test_skill_artifact_scoring_rewards_structure_and_penalizes_hallucination() -> None:
