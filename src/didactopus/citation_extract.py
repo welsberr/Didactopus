@@ -12,6 +12,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from .confidence import with_citation_assessment
+
 
 YEAR_RE = r"(?:1[6-9]\d{2}|20\d{2}|21\d{2})[a-z]?"
 DOI_PATTERN = re.compile(r"\b10\.\d{4,9}/[-._;()/:A-Z0-9]+\b", re.IGNORECASE)
@@ -184,7 +186,7 @@ def _extract_reference_candidates(fragment: dict[str, Any], context: dict[str, s
     links = []
     for index, block in enumerate(blocks, start=1):
         reference_key = _stable_key("reference", block)
-        row = {
+        row = with_citation_assessment({
             "reference_candidate_id": f"refcand_{reference_key[:16]}",
             "reference_key": reference_key,
             "text": block,
@@ -197,9 +199,9 @@ def _extract_reference_candidates(fragment: dict[str, Any], context: dict[str, s
             "confidence_hint": 0.82 if explicit else 0.68,
             "finding_codes": ["reference_section_candidate"] if explicit else ["reference_line_candidate"],
             "current_status": "draft",
-        }
+        })
         occurrence_key = _stable_key("reference-occurrence", context["fragment_id"], str(index), block)
-        link = {
+        link = with_citation_assessment({
             "citation_occurrence_id": f"citeocc_{occurrence_key[:16]}",
             "occurrence_key": occurrence_key,
             "candidate_type": "reference_entry",
@@ -212,7 +214,7 @@ def _extract_reference_candidates(fragment: dict[str, Any], context: dict[str, s
             "ingest_id": context["ingest_id"],
             "confidence_hint": row["confidence_hint"],
             "current_status": "draft",
-        }
+        })
         rows.append(row)
         links.append(link)
     return rows, links
@@ -249,7 +251,7 @@ def _citation_candidate_row(
     confidence: float = 0.64,
 ) -> dict[str, Any]:
     citation_key = _stable_key(citation_kind, _normalize_candidate_text(citation_text))
-    return {
+    return with_citation_assessment({
         "citation_candidate_id": f"citecand_{citation_key[:16]}",
         "citation_key": citation_key,
         "citation_kind": citation_kind,
@@ -264,7 +266,7 @@ def _citation_candidate_row(
         "char_end": end,
         "confidence_hint": confidence,
         "current_status": "draft",
-    }
+    })
 
 
 def _citation_occurrence_row(
@@ -277,7 +279,7 @@ def _citation_occurrence_row(
 ) -> dict[str, Any]:
     occurrence_key = _stable_key(candidate_type, context["fragment_id"], str(start), str(end), citation_text)
     candidate_key = _stable_key("doi" if candidate_type == "doi" else "author_year_parenthetical", _normalize_candidate_text(citation_text))
-    return {
+    return with_citation_assessment({
         "citation_occurrence_id": f"citeocc_{occurrence_key[:16]}",
         "occurrence_key": occurrence_key,
         "candidate_type": candidate_type,
@@ -292,7 +294,7 @@ def _citation_occurrence_row(
         "char_end": end,
         "confidence_hint": confidence,
         "current_status": "draft",
-    }
+    })
 
 
 def _reference_blocks(text: str, *, explicit: bool) -> list[str]:

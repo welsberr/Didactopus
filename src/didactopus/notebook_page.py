@@ -237,6 +237,7 @@ def build_notebook_page_from_groundrecall_bundle(bundle: dict[str, Any]) -> dict
         "distinctions": (bundle.get("key_distinctions", []) or [])[:6],
         "supporting_sources": _supporting_sources(bundle),
         "supporting_excerpts": supporting_excerpts,
+        "confidence_profile": bundle.get("confidence_profile", {}) or {},
         "review_context": _review_context(bundle),
         "illustration_opportunities": _illustration_opportunities(bundle, navigation),
         "suggested_next_actions": bundle.get("suggested_next_actions", []) or [],
