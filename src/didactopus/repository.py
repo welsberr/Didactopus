@@ -8,6 +8,7 @@ from .orm import (
     KnowledgeCandidateORM, ReviewRecordORM, PromotionRecordORM, SynthesisCandidateORM
 )
 from .auth import verify_password
+from .confidence import with_candidate_assessment
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -70,6 +71,7 @@ def create_candidate(payload):
             structured_payload_json=json.dumps(payload.structured_payload),
             evidence_summary=payload.evidence_summary,
             confidence_hint=payload.confidence_hint,
+            confidence_assessments_json=json.dumps(payload.confidence_assessments or []),
             novelty_score=payload.novelty_score,
             synthesis_score=payload.synthesis_score,
             triage_lane=payload.triage_lane,
@@ -84,7 +86,7 @@ def create_candidate(payload):
 def list_candidates():
     with SessionLocal() as db:
         rows = db.execute(select(KnowledgeCandidateORM).order_by(KnowledgeCandidateORM.id.desc())).scalars().all()
-        return [{
+        return [with_candidate_assessment({
             "candidate_id": r.id,
             "source_type": r.source_type,
             "source_artifact_id": r.source_artifact_id,
@@ -96,19 +98,20 @@ def list_candidates():
             "structured_payload": json.loads(r.structured_payload_json or "{}"),
             "evidence_summary": r.evidence_summary,
             "confidence_hint": r.confidence_hint,
+            "confidence_assessments": json.loads(r.confidence_assessments_json or "[]"),
             "novelty_score": r.novelty_score,
             "synthesis_score": r.synthesis_score,
             "triage_lane": r.triage_lane,
             "current_status": r.current_status,
             "created_at": r.created_at,
-        } for r in rows]
+        }) for r in rows]
 
 def get_candidate(candidate_id: int):
     with SessionLocal() as db:
         r = db.get(KnowledgeCandidateORM, candidate_id)
         if r is None:
             return None
-        return {
+        return with_candidate_assessment({
             "candidate_id": r.id,
             "source_type": r.source_type,
             "source_artifact_id": r.source_artifact_id,
@@ -120,12 +123,13 @@ def get_candidate(candidate_id: int):
             "structured_payload": json.loads(r.structured_payload_json or "{}"),
             "evidence_summary": r.evidence_summary,
             "confidence_hint": r.confidence_hint,
+            "confidence_assessments": json.loads(r.confidence_assessments_json or "[]"),
             "novelty_score": r.novelty_score,
             "synthesis_score": r.synthesis_score,
             "triage_lane": r.triage_lane,
             "current_status": r.current_status,
             "created_at": r.created_at,
-        }
+        })
 
 def update_candidate(candidate_id: int, triage_lane=None, current_status=None):
     with SessionLocal() as db:

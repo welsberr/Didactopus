@@ -22,7 +22,8 @@ class KnowledgeCandidateCreate(BaseModel):
     summary: str = ""
     structured_payload: dict = Field(default_factory=dict)
     evidence_summary: str = ""
-    confidence_hint: float = 0.0
+    confidence_hint: float | None = Field(default=None, ge=0.0, le=1.0)
+    confidence_assessments: list[dict] = Field(default_factory=list)
     novelty_score: float = 0.0
     synthesis_score: float = 0.0
     triage_lane: str = "archive"
@@ -58,7 +59,7 @@ class MasteryRecord(BaseModel):
     concept_id: str
     dimension: str
     score: float = 0.0
-    confidence: float = 0.0
+    confidence: float | None = Field(default=None, ge=0.0, le=1.0)
     evidence_count: int = 0
     last_updated: str = ""
 

@@ -34,7 +34,7 @@ class MasteryRecordORM(Base):
     concept_id: Mapped[str] = mapped_column(String(100), index=True)
     dimension: Mapped[str] = mapped_column(String(100), default="mastery")
     score: Mapped[float] = mapped_column(Float, default=0.0)
-    confidence: Mapped[float] = mapped_column(Float, default=0.0)
+    confidence: Mapped[float | None] = mapped_column(Float, nullable=True, default=None)
     evidence_count: Mapped[int] = mapped_column(Integer, default=0)
     last_updated: Mapped[str] = mapped_column(String(100), default="")
 
@@ -50,7 +50,8 @@ class KnowledgeCandidateORM(Base):
     summary: Mapped[str] = mapped_column(Text, default="")
     structured_payload_json: Mapped[str] = mapped_column(Text, default="{}")
     evidence_summary: Mapped[str] = mapped_column(Text, default="")
-    confidence_hint: Mapped[float] = mapped_column(Float, default=0.0)
+    confidence_hint: Mapped[float | None] = mapped_column(Float, nullable=True, default=None)
+    confidence_assessments_json: Mapped[str] = mapped_column(Text, default="[]")
     novelty_score: Mapped[float] = mapped_column(Float, default=0.0)
     synthesis_score: Mapped[float] = mapped_column(Float, default=0.0)
     triage_lane: Mapped[str] = mapped_column(String(50), default="archive")

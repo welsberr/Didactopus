@@ -1,112 +1,945 @@
 {
-  "inventory_version": "1.0",
-  "reviewed_at": "2026-07-25",
-  "status": "partial",
-  "policy": "didactopus_confidence_inventory_v1",
-  "known_gaps": [
-    "ORM fields and duplicate API models still default missing values to 0.0.",
-    "GroundRecall compatibility models and promotion helpers still collapse missing confidence to 0.0.",
-    "Knowledge-candidate and citation-extraction hints do not yet carry typed assessment method provenance.",
-    "Threshold and report aliases have not completed a compatibility release."
-  ],
-  "fields": [
+  "inventory_kind": "didactopus_confidence_inventory",
+  "schema_version": "1.0",
+  "entry_count": 134,
+  "entries": [
     {
-      "field": "evidence_engine.ConceptEvidenceSummary.evidence_coverage",
-      "legacy_aliases": ["confidence"],
-      "category": "evidence_coverage",
-      "bounded": true,
-      "notes": "Saturating evidence-mass summary; not probability of mastery."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 254,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"Classify the claim. Return a single JSON object with keys answer, confidence, justification.\\n\""
     },
     {
-      "field": "learner_state.MasteryRecord.confidence",
-      "category": "learner_mastery_confidence",
-      "bounded": true,
-      "notes": "Learner-state confidence used by readiness and stop policies; distinct from graph support."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 255,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"answer must be exactly true, false, or unknown. confidence is your probability that your answer is correct; use 0.5 for unknown.\\n\""
     },
     {
-      "field": "learner_state.EvidenceEvent.confidence_hint",
-      "category": "learner_evidence_weight",
-      "bounded": true,
-      "notes": "Input weighting hint for a learner evidence event."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 266,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "confidence = _coerce_confidence(payload.get(\"confidence\", 0.5))"
     },
     {
-      "field": "ai_learner_benchmark.answer.confidence",
-      "category": "response_correctness_probability",
-      "bounded": true,
-      "notes": "Probability that the selected true/false/unknown response is correct."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 266,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "confidence = _coerce_confidence(payload.get(\"confidence\", 0.5))"
     },
     {
-      "field": "knowledge_graph.Edge.confidence",
-      "category": "graph_extraction_legacy_alias",
-      "bounded": true,
-      "notes": "Compatibility alias only; typed Epistemap assessments carry extraction_fidelity or grounding_strength."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 270,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "confidence = _fallback_confidence(text, answer)"
     },
     {
-      "field": "models.KnowledgeCandidateCreate.confidence_hint",
-      "category": "knowledge_candidate_extraction_assessment",
-      "bounded": false,
-      "notes": "Legacy ambiguous scalar pending an optional bounded field and typed producer method."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 273,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "confidence = 0.5"
     },
     {
-      "field": "models.MasteryRecord.confidence",
-      "category": "learner_mastery_confidence",
-      "bounded": false,
-      "notes": "Duplicate API model pending alignment with learner_state.MasteryRecord."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 274,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "return {\"answer\": answer, \"confidence\": confidence, \"justification\": justification}"
     },
     {
-      "field": "orm.MasteryState.confidence",
-      "category": "learner_mastery_confidence",
-      "bounded": false,
-      "notes": "Non-null legacy database field; requires an additive ORM migration and ambiguity report."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 274,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "return {\"answer\": answer, \"confidence\": confidence, \"justification\": justification}"
     },
     {
-      "field": "orm.EvidenceEvent.confidence_hint",
-      "category": "learner_evidence_weight",
-      "bounded": false,
-      "notes": "Non-null legacy database field; requires an additive ORM migration and ambiguity report."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 306,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "confidence = float(value)"
     },
     {
-      "field": "groundrecall_models.ObservationRecord.confidence_hint",
-      "category": "knowledge_candidate_extraction_assessment",
-      "bounded": false,
-      "notes": "Vendored compatibility model still defaults absence to zero."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 309,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "if confidence > 1.0 and confidence <= 100.0:"
     },
     {
-      "field": "groundrecall_models.ClaimRecord.confidence_hint",
-      "category": "knowledge_candidate_extraction_assessment",
-      "bounded": false,
-      "notes": "Vendored compatibility model still defaults absence to zero."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 309,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "if confidence > 1.0 and confidence <= 100.0:"
     },
     {
-      "field": "groundrecall_models.ClaimRecord.review_confidence",
-      "category": "legacy_ambiguous",
-      "bounded": false,
-      "notes": "Vendored compatibility model lacks identified reviewer-assessment provenance."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 310,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "confidence /= 100.0"
     },
     {
-      "field": "citation_extract.*.confidence_hint",
-      "category": "knowledge_candidate_extraction_assessment",
-      "bounded": true,
-      "notes": "Rule score pending stable method IDs, basis hashes, and typed assessment output."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 311,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "return min(max(confidence, 0.0), 1.0)"
     },
     {
-      "field": "groundrecall_source_adapters.*.confidence_hint",
-      "category": "knowledge_candidate_extraction_assessment",
-      "bounded": true,
-      "notes": "Hardcoded adapter score pending stable method IDs, basis hashes, and typed assessment output."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 318,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "match = re.search(r\"\\b(?:confidence|probability)\\D+(\\d+(?:\\.\\d+)?)\", text.lower())"
     },
     {
-      "field": "progression_engine.MasteryRecord.confidence",
-      "category": "learner_mastery_confidence",
-      "bounded": true,
-      "notes": "Heuristic mastery stability state; age decay applies to current readiness, not historical evidence."
-    }
-  ],
-  "non_confidence_scores": [
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 324,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "def probability_true(answer: str, confidence: float) -> float:"
+    },
     {
-      "field": "api.synthetic_task.score_total",
-      "category": "task_generation_rank",
-      "notes": "Ranking score, not confidence."
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 326,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "return confidence"
+    },
+    {
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 328,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "return 1.0 - confidence"
+    },
+    {
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 334,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "confidence = parsed[\"confidence\"]"
+    },
+    {
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 334,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "confidence = parsed[\"confidence\"]"
+    },
+    {
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 335,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "p_true = probability_true(answer, confidence)"
+    },
+    {
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 349,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"confidence\": round(confidence, 6),"
+    },
+    {
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 349,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"confidence\": round(confidence, 6),"
+    },
+    {
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 352,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"overconfident_wrong\": int((not correct) and (not unknown) and confidence >= 0.7),"
+    },
+    {
+      "path": "didactopus/ai_learner_benchmark.py",
+      "line": 576,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"confidence\","
+    },
+    {
+      "path": "didactopus/api.py",
+      "line": 157,
+      "field": "confidence_hint",
+      "category": "api_or_orm_boundary",
+      "line_text": "confidence_hint=syn[\"score_total\"],"
+    },
+    {
+      "path": "didactopus/citation_extract.py",
+      "line": 15,
+      "field": "confidence",
+      "category": "citation_extraction_hint",
+      "line_text": "from .confidence import with_citation_assessment"
+    },
+    {
+      "path": "didactopus/citation_extract.py",
+      "line": 199,
+      "field": "confidence_hint",
+      "category": "citation_extraction_hint",
+      "line_text": "\"confidence_hint\": 0.82 if explicit else 0.68,"
+    },
+    {
+      "path": "didactopus/citation_extract.py",
+      "line": 215,
+      "field": "confidence_hint",
+      "category": "citation_extraction_hint",
+      "line_text": "\"confidence_hint\": row[\"confidence_hint\"],"
+    },
+    {
+      "path": "didactopus/citation_extract.py",
+      "line": 215,
+      "field": "confidence_hint",
+      "category": "citation_extraction_hint",
+      "line_text": "\"confidence_hint\": row[\"confidence_hint\"],"
+    },
+    {
+      "path": "didactopus/citation_extract.py",
+      "line": 239,
+      "field": "confidence",
+      "category": "citation_extraction_hint",
+      "line_text": "rows.append(_citation_candidate_row(doi_text, \"doi\", context, match.start(), match.end(), confidence=0.86))"
+    },
+    {
+      "path": "didactopus/citation_extract.py",
+      "line": 251,
+      "field": "confidence",
+      "category": "citation_extraction_hint",
+      "line_text": "confidence: float = 0.64,"
+    },
+    {
+      "path": "didactopus/citation_extract.py",
+      "line": 267,
+      "field": "confidence_hint",
+      "category": "citation_extraction_hint",
+      "line_text": "\"confidence_hint\": confidence,"
+    },
+    {
+      "path": "didactopus/citation_extract.py",
+      "line": 267,
+      "field": "confidence",
+      "category": "citation_extraction_hint",
+      "line_text": "\"confidence_hint\": confidence,"
+    },
+    {
+      "path": "didactopus/citation_extract.py",
+      "line": 278,
+      "field": "confidence",
+      "category": "citation_extraction_hint",
+      "line_text": "confidence: float,"
+    },
+    {
+      "path": "didactopus/citation_extract.py",
+      "line": 295,
+      "field": "confidence_hint",
+      "category": "citation_extraction_hint",
+      "line_text": "\"confidence_hint\": confidence,"
+    },
+    {
+      "path": "didactopus/citation_extract.py",
+      "line": 295,
+      "field": "confidence",
+      "category": "citation_extraction_hint",
+      "line_text": "\"confidence_hint\": confidence,"
+    },
+    {
+      "path": "didactopus/confidence.py",
+      "line": 22,
+      "field": "confidence",
+      "category": "confidence_contract_tooling",
+      "line_text": "raise ValueError(f\"confidence value must be between 0 and 1: {numeric}\")"
+    },
+    {
+      "path": "didactopus/confidence.py",
+      "line": 38,
+      "field": "confidence_hint",
+      "category": "confidence_contract_tooling",
+      "line_text": "extracted_field: str = \"confidence_hint\","
+    },
+    {
+      "path": "didactopus/confidence.py",
+      "line": 73,
+      "field": "confidence_hint",
+      "category": "confidence_contract_tooling",
+      "line_text": "value=candidate.get(\"confidence_hint\"),"
+    },
+    {
+      "path": "didactopus/confidence.py",
+      "line": 76,
+      "field": "confidence_hint",
+      "category": "confidence_contract_tooling",
+      "line_text": "method_name=\"didactopus.knowledge_candidate.confidence_hint\","
+    },
+    {
+      "path": "didactopus/confidence.py",
+      "line": 77,
+      "field": "confidence_hint",
+      "category": "confidence_contract_tooling",
+      "line_text": "rationale=\"Legacy Didactopus knowledge-candidate confidence_hint migrated as extraction fidelity.\","
+    },
+    {
+      "path": "didactopus/confidence.py",
+      "line": 92,
+      "field": "confidence_hint",
+      "category": "confidence_contract_tooling",
+      "line_text": "value=candidate.get(\"confidence_hint\"),"
+    },
+    {
+      "path": "didactopus/confidence.py",
+      "line": 99,
+      "field": "confidence_hint",
+      "category": "confidence_contract_tooling",
+      "line_text": "method_name=\"didactopus.citation_candidate.confidence_hint\","
+    },
+    {
+      "path": "didactopus/confidence.py",
+      "line": 100,
+      "field": "confidence_hint",
+      "category": "confidence_contract_tooling",
+      "line_text": "rationale=\"Legacy Didactopus citation confidence_hint migrated as extraction fidelity.\","
+    },
+    {
+      "path": "didactopus/confidence.py",
+      "line": 136,
+      "field": "confidence_hint",
+      "category": "confidence_contract_tooling",
+      "line_text": "if \"confidence_hint\" in columns:"
+    },
+    {
+      "path": "didactopus/confidence.py",
+      "line": 138,
+      "field": "confidence_hint",
+      "category": "confidence_contract_tooling",
+      "line_text": "value = _bounded(row[\"confidence_hint\"])"
+    },
+    {
+      "path": "didactopus/confidence.py",
+      "line": 193,
+      "field": "confidence",
+      "category": "confidence_contract_tooling",
+      "line_text": "parser = argparse.ArgumentParser(description=\"Migrate Didactopus confidence hints into typed assessment JSON.\")"
+    },
+    {
+      "path": "didactopus/confidence_inventory.py",
+      "line": 39,
+      "field": "confidence",
+      "category": "confidence_contract_tooling",
+      "line_text": "if \"confidence.py\" in path or \"confidence_inventory.py\" in path:"
+    },
+    {
+      "path": "didactopus/ensemble_ingest.py",
+      "line": 249,
+      "field": "confidence",
+      "category": "candidate_extraction_hint",
+      "line_text": "role, confidence, finding_codes = _observation_role(unit)"
+    },
+    {
+      "path": "didactopus/ensemble_ingest.py",
+      "line": 259,
+      "field": "confidence_hint",
+      "category": "candidate_extraction_hint",
+      "line_text": "\"confidence_hint\": confidence,"
+    },
+    {
+      "path": "didactopus/ensemble_ingest.py",
+      "line": 259,
+      "field": "confidence",
+      "category": "candidate_extraction_hint",
+      "line_text": "\"confidence_hint\": confidence,"
+    },
+    {
+      "path": "didactopus/ensemble_ingest.py",
+      "line": 286,
+      "field": "confidence_hint",
+      "category": "candidate_extraction_hint",
+      "line_text": "\"confidence_hint\": confidence,"
+    },
+    {
+      "path": "didactopus/ensemble_ingest.py",
+      "line": 286,
+      "field": "confidence",
+      "category": "candidate_extraction_hint",
+      "line_text": "\"confidence_hint\": confidence,"
+    },
+    {
+      "path": "didactopus/evidence_engine.py",
+      "line": 39,
+      "field": "confidence",
+      "category": "evidence_coverage_alias",
+      "line_text": "def confidence(self) -> float:"
+    },
+    {
+      "path": "didactopus/evidence_engine.py",
+      "line": 42,
+      "field": "confidence",
+      "category": "evidence_coverage_alias",
+      "line_text": "@confidence.setter"
+    },
+    {
+      "path": "didactopus/evidence_engine.py",
+      "line": 43,
+      "field": "confidence",
+      "category": "evidence_coverage_alias",
+      "line_text": "def confidence(self, value: float) -> None:"
+    },
+    {
+      "path": "didactopus/evidence_flow_ledger_qa.py",
+      "line": 59,
+      "field": "confidence",
+      "category": "learner_state_confidence_qa",
+      "line_text": "required = {\"concept_id\", \"dimension\", \"score\", \"confidence\", \"last_updated\"}"
+    },
+    {
+      "path": "didactopus/evidence_flow_ledger_qa.py",
+      "line": 63,
+      "field": "confidence",
+      "category": "learner_state_confidence_qa",
+      "line_text": "if \"confidence\" not in entry_schema or not confidence_update:"
+    },
+    {
+      "path": "didactopus/evidence_flow_ledger_qa.py",
+      "line": 64,
+      "field": "confidence",
+      "category": "learner_state_confidence_qa",
+      "line_text": "warnings.append(\"Repeated assessment support for confidence updates appears to be missing.\")"
+    },
+    {
+      "path": "didactopus/graph_retrieval.py",
+      "line": 66,
+      "field": "confidence",
+      "category": "graph_extraction_assessment",
+      "line_text": "confidence=edge.get(\"confidence\"),"
+    },
+    {
+      "path": "didactopus/graph_retrieval.py",
+      "line": 66,
+      "field": "confidence",
+      "category": "graph_extraction_assessment",
+      "line_text": "confidence=edge.get(\"confidence\"),"
+    },
+    {
+      "path": "didactopus/graph_retrieval.py",
+      "line": 77,
+      "field": "confidence",
+      "category": "graph_extraction_assessment",
+      "line_text": "\"confidence\","
+    },
+    {
+      "path": "didactopus/groundrecall/query.py",
+      "line": 162,
+      "field": "confidence",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "\"Review promoted claims with low review confidence.\","
+    },
+    {
+      "path": "didactopus/groundrecall_models.py",
+      "line": 69,
+      "field": "confidence_hint",
+      "category": "api_or_orm_boundary",
+      "line_text": "confidence_hint: float = 0.0"
+    },
+    {
+      "path": "didactopus/groundrecall_models.py",
+      "line": 82,
+      "field": "confidence_hint",
+      "category": "api_or_orm_boundary",
+      "line_text": "confidence_hint: float = 0.0"
+    },
+    {
+      "path": "didactopus/groundrecall_normalizer.py",
+      "line": 69,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "\"confidence_hint\": observation.confidence_hint,"
+    },
+    {
+      "path": "didactopus/groundrecall_normalizer.py",
+      "line": 69,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "\"confidence_hint\": observation.confidence_hint,"
+    },
+    {
+      "path": "didactopus/groundrecall_normalizer.py",
+      "line": 91,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "\"confidence_hint\": observation_record[\"confidence_hint\"],"
+    },
+    {
+      "path": "didactopus/groundrecall_normalizer.py",
+      "line": 91,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "\"confidence_hint\": observation_record[\"confidence_hint\"],"
+    },
+    {
+      "path": "didactopus/groundrecall_promotion.py",
+      "line": 114,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "confidence_hint=float(observation.get(\"confidence_hint\", 0.0)),"
+    },
+    {
+      "path": "didactopus/groundrecall_promotion.py",
+      "line": 114,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "confidence_hint=float(observation.get(\"confidence_hint\", 0.0)),"
+    },
+    {
+      "path": "didactopus/groundrecall_promotion.py",
+      "line": 162,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "confidence_hint=float(claim.get(\"confidence_hint\", 0.0)),"
+    },
+    {
+      "path": "didactopus/groundrecall_promotion.py",
+      "line": 162,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "confidence_hint=float(claim.get(\"confidence_hint\", 0.0)),"
+    },
+    {
+      "path": "didactopus/groundrecall_segmenter.py",
+      "line": 25,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "confidence_hint: float"
+    },
+    {
+      "path": "didactopus/groundrecall_segmenter.py",
+      "line": 136,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "confidence_hint=0.55 if role == \"speculation\" else 0.7 if role == \"claim\" else 0.6,"
+    },
+    {
+      "path": "didactopus/groundrecall_source_adapters/didactopus_pack.py",
+      "line": 115,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "\"confidence_hint\": 0.85,"
+    },
+    {
+      "path": "didactopus/groundrecall_source_adapters/didactopus_pack.py",
+      "line": 130,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "\"confidence_hint\": 0.85,"
+    },
+    {
+      "path": "didactopus/groundrecall_source_adapters/didactopus_pack.py",
+      "line": 162,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "\"confidence_hint\": 0.8,"
+    },
+    {
+      "path": "didactopus/groundrecall_source_adapters/didactopus_pack.py",
+      "line": 177,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "\"confidence_hint\": 0.8,"
+    },
+    {
+      "path": "didactopus/groundrecall_source_adapters/didactopus_pack.py",
+      "line": 204,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "\"confidence_hint\": 0.75,"
+    },
+    {
+      "path": "didactopus/groundrecall_source_adapters/didactopus_pack.py",
+      "line": 219,
+      "field": "confidence_hint",
+      "category": "groundrecall_bridge_legacy",
+      "line_text": "\"confidence_hint\": 0.75,"
+    },
+    {
+      "path": "didactopus/knowledge_export.py",
+      "line": 17,
+      "field": "confidence",
+      "category": "knowledge_export_legacy",
+      "line_text": "\"confidence\": rec.confidence,"
+    },
+    {
+      "path": "didactopus/knowledge_export.py",
+      "line": 17,
+      "field": "confidence",
+      "category": "knowledge_export_legacy",
+      "line_text": "\"confidence\": rec.confidence,"
+    },
+    {
+      "path": "didactopus/knowledge_export.py",
+      "line": 21,
+      "field": "confidence",
+      "category": "knowledge_export_legacy",
+      "line_text": "if rec.score >= 0.65 and rec.confidence >= 0.5"
+    },
+    {
+      "path": "didactopus/knowledge_export.py",
+      "line": 32,
+      "field": "confidence",
+      "category": "knowledge_export_legacy",
+      "line_text": "\"Look for concepts with repeated low-confidence evidence.\","
+    },
+    {
+      "path": "didactopus/knowledge_graph.py",
+      "line": 61,
+      "field": "confidence",
+      "category": "graph_extraction_assessment",
+      "line_text": "confidence: float = 1.0,"
+    },
+    {
+      "path": "didactopus/knowledge_graph.py",
+      "line": 69,
+      "field": "confidence",
+      "category": "graph_extraction_assessment",
+      "line_text": "value=confidence,"
+    },
+    {
+      "path": "didactopus/knowledge_graph.py",
+      "line": 70,
+      "field": "confidence",
+      "category": "graph_extraction_assessment",
+      "line_text": "band=confidence_band(confidence),"
+    },
+    {
+      "path": "didactopus/knowledge_graph.py",
+      "line": 83,
+      "field": "confidence",
+      "category": "graph_extraction_assessment",
+      "line_text": "confidence=confidence,"
+    },
+    {
+      "path": "didactopus/knowledge_graph.py",
+      "line": 83,
+      "field": "confidence",
+      "category": "graph_extraction_assessment",
+      "line_text": "confidence=confidence,"
+    },
+    {
+      "path": "didactopus/knowledge_graph.py",
+      "line": 200,
+      "field": "confidence",
+      "category": "graph_extraction_assessment",
+      "line_text": "confidence=0.7,"
+    },
+    {
+      "path": "didactopus/knowledge_graph.py",
+      "line": 215,
+      "field": "confidence",
+      "category": "graph_extraction_assessment",
+      "line_text": "confidence=0.85,"
+    },
+    {
+      "path": "didactopus/knowledge_graph.py",
+      "line": 232,
+      "field": "confidence",
+      "category": "graph_extraction_assessment",
+      "line_text": "confidence=0.9 if concept.id == _slugify(lesson.title) else 0.7,"
+    },
+    {
+      "path": "didactopus/learner_state.py",
+      "line": 11,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "confidence: float = Field(default=0.0, ge=0.0, le=1.0)"
+    },
+    {
+      "path": "didactopus/learner_state.py",
+      "line": 19,
+      "field": "confidence_hint",
+      "category": "learner_state_mastery",
+      "line_text": "confidence_hint: float = Field(default=0.5, ge=0.0, le=1.0)"
+    },
+    {
+      "path": "didactopus/learner_workbench.py",
+      "line": 102,
+      "field": "confidence",
+      "category": "learner_workbench_guidance",
+      "line_text": "\"- Prefer source-grounded comparison over unsupported confidence.\""
+    },
+    {
+      "path": "didactopus/models.py",
+      "line": 25,
+      "field": "confidence_hint",
+      "category": "api_or_orm_boundary",
+      "line_text": "confidence_hint: float | None = Field(default=None, ge=0.0, le=1.0)"
+    },
+    {
+      "path": "didactopus/models.py",
+      "line": 62,
+      "field": "confidence",
+      "category": "api_or_orm_boundary",
+      "line_text": "confidence: float | None = Field(default=None, ge=0.0, le=1.0)"
+    },
+    {
+      "path": "didactopus/orchestrator.py",
+      "line": 42,
+      "field": "confidence_hint",
+      "category": "candidate_extraction_hint",
+      "line_text": "confidence_hint=0.75,"
+    },
+    {
+      "path": "didactopus/orm.py",
+      "line": 37,
+      "field": "confidence",
+      "category": "api_or_orm_boundary",
+      "line_text": "confidence: Mapped[float | None] = mapped_column(Float, nullable=True, default=None)"
+    },
+    {
+      "path": "didactopus/orm.py",
+      "line": 53,
+      "field": "confidence_hint",
+      "category": "api_or_orm_boundary",
+      "line_text": "confidence_hint: Mapped[float | None] = mapped_column(Float, nullable=True, default=None)"
+    },
+    {
+      "path": "didactopus/progression_engine.py",
+      "line": 18,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "confidence=0.0,"
+    },
+    {
+      "path": "didactopus/progression_engine.py",
+      "line": 24,
+      "field": "confidence_hint",
+      "category": "learner_state_mastery",
+      "line_text": "weight = max(0.05, min(1.0, event.confidence_hint))"
+    },
+    {
+      "path": "didactopus/progression_engine.py",
+      "line": 26,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "rec.confidence = min("
+    },
+    {
+      "path": "didactopus/progression_engine.py",
+      "line": 28,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "max(0.0, rec.confidence * (1.0 - decay) + reinforcement * weight + 0.10 * max(0.0, min(1.0, event.score))),"
+    },
+    {
+      "path": "didactopus/progression_engine.py",
+      "line": 43,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "record.confidence = max(0.0, record.confidence * ((1.0 - daily_decay) ** elapsed_days))"
+    },
+    {
+      "path": "didactopus/progression_engine.py",
+      "line": 43,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "record.confidence = max(0.0, record.confidence * ((1.0 - daily_decay) ** elapsed_days))"
+    },
+    {
+      "path": "didactopus/readiness.py",
+      "line": 8,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "return rec.score, rec.confidence"
+    },
+    {
+      "path": "didactopus/recommendations.py",
+      "line": 19,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "if existing is None or existing.score < min_score or existing.confidence < min_confidence:"
+    },
+    {
+      "path": "didactopus/recommendations.py",
+      "line": 34,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "if rec.dimension == dimension and rec.confidence < low_confidence_threshold:"
+    },
+    {
+      "path": "didactopus/recommendations.py",
+      "line": 38,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "\"reason\": \"confidence low; reinforce with fresh evidence\","
+    },
+    {
+      "path": "didactopus/repository.py",
+      "line": 11,
+      "field": "confidence",
+      "category": "api_or_orm_boundary",
+      "line_text": "from .confidence import with_candidate_assessment"
+    },
+    {
+      "path": "didactopus/repository.py",
+      "line": 56,
+      "field": "confidence",
+      "category": "api_or_orm_boundary",
+      "line_text": "\"confidence\": r.confidence,"
+    },
+    {
+      "path": "didactopus/repository.py",
+      "line": 56,
+      "field": "confidence",
+      "category": "api_or_orm_boundary",
+      "line_text": "\"confidence\": r.confidence,"
+    },
+    {
+      "path": "didactopus/repository.py",
+      "line": 73,
+      "field": "confidence_hint",
+      "category": "api_or_orm_boundary",
+      "line_text": "confidence_hint=payload.confidence_hint,"
+    },
+    {
+      "path": "didactopus/repository.py",
+      "line": 73,
+      "field": "confidence_hint",
+      "category": "api_or_orm_boundary",
+      "line_text": "confidence_hint=payload.confidence_hint,"
+    },
+    {
+      "path": "didactopus/repository.py",
+      "line": 100,
+      "field": "confidence_hint",
+      "category": "api_or_orm_boundary",
+      "line_text": "\"confidence_hint\": r.confidence_hint,"
+    },
+    {
+      "path": "didactopus/repository.py",
+      "line": 100,
+      "field": "confidence_hint",
+      "category": "api_or_orm_boundary",
+      "line_text": "\"confidence_hint\": r.confidence_hint,"
+    },
+    {
+      "path": "didactopus/repository.py",
+      "line": 125,
+      "field": "confidence_hint",
+      "category": "api_or_orm_boundary",
+      "line_text": "\"confidence_hint\": r.confidence_hint,"
+    },
+    {
+      "path": "didactopus/repository.py",
+      "line": 125,
+      "field": "confidence_hint",
+      "category": "api_or_orm_boundary",
+      "line_text": "\"confidence_hint\": r.confidence_hint,"
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 101,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "- Give high confidence only when a source anchor decides the claim. Use low confidence or unknown when the notes do not decide it."
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 101,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "- Give high confidence only when a source anchor decides the claim. Use low confidence or unknown when the notes do not decide it."
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 259,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"Classify the claim. Return one JSON object with keys answer, confidence, justification. \""
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 260,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"answer must be exactly true, false, or unknown. confidence is your probability that your answer is correct; use 0.5 for unknown.\\n\""
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 276,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "confidence = parsed[\"confidence\"]"
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 276,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "confidence = parsed[\"confidence\"]"
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 277,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "p_true = probability_true(answer, confidence)"
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 293,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"confidence\": round(confidence, 6),"
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 293,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"confidence\": round(confidence, 6),"
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 296,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"overconfident_wrong\": int((not correct) and (not unknown) and confidence >= 0.7),"
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 569,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"- Give confidence from 0.0 to 1.0. Use 0.5 for unknown.\","
+    },
+    {
+      "path": "didactopus/source_spine_transfer_experiment.py",
+      "line": 635,
+      "field": "confidence",
+      "category": "benchmark_response_probability",
+      "line_text": "\"confidence\","
+    },
+    {
+      "path": "didactopus/stop_criteria.py",
+      "line": 12,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "mastered = [r for r in relevant if r.score >= criteria.min_average_score and r.confidence >= criteria.min_average_confidence]"
+    },
+    {
+      "path": "didactopus/stop_criteria.py",
+      "line": 14,
+      "field": "confidence",
+      "category": "learner_state_mastery",
+      "line_text": "avg_conf = sum(r.confidence for r in relevant) / len(relevant) if relevant else 0.0"
     }
   ]
 }

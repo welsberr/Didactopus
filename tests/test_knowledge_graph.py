@@ -40,6 +40,7 @@ def test_build_knowledge_graph_contains_typed_nodes_and_edges(tmp_path: Path) ->
     assert "contains_lesson" in edge_types
     assert "teaches_concept" in edge_types or "supports_concept" in edge_types
     assert all(edge["assessments"][0]["dimension"] == "extraction_fidelity" for edge in payload["edges"])
+    assert all("not learner mastery or claim truth" in edge["assessments"][0]["rationale"] for edge in payload["edges"])
 
     write_knowledge_graph(course, ctx.concepts, tmp_path)
     written = json.loads((tmp_path / "knowledge_graph.json").read_text(encoding="utf-8"))
