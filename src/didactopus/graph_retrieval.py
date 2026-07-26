@@ -47,7 +47,12 @@ def _epistemap_bundle(bundle: GraphBundle) -> EpistemapBundle:
                 type=str(node.get("type", "")),
                 title=str(node.get("title", "")),
                 description=str(node.get("description", "")),
-                metadata={key: value for key, value in node.items() if key not in {"id", "type", "title", "description"}},
+                assessments=list(node.get("assessments", []) or []),
+                metadata={
+                    key: value
+                    for key, value in node.items()
+                    if key not in {"id", "type", "title", "description", "assessments"}
+                },
             )
             for node in bundle.knowledge_graph.get("nodes", [])
             if "id" in node
@@ -59,7 +64,20 @@ def _epistemap_bundle(bundle: GraphBundle) -> EpistemapBundle:
                 type=str(edge.get("type", "")),
                 justification=str(edge.get("justification", "")),
                 confidence=edge.get("confidence"),
-                metadata={key: value for key, value in edge.items() if key not in {"source", "target", "type", "justification", "confidence"}},
+                assessments=list(edge.get("assessments", []) or []),
+                metadata={
+                    key: value
+                    for key, value in edge.items()
+                    if key
+                    not in {
+                        "source",
+                        "target",
+                        "type",
+                        "justification",
+                        "confidence",
+                        "assessments",
+                    }
+                },
             )
             for edge in bundle.knowledge_graph.get("edges", [])
             if "source" in edge and "target" in edge

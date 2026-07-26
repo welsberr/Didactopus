@@ -7,7 +7,7 @@ The earlier evidence engine treated all evidence items equally. This revision ad
 - evidence-type weights
 - recency weighting
 - dimension-level rubric storage
-- confidence estimates based on weighted support
+- evidence-coverage estimates based on weighted support
 
 ## Evidence weighting
 
@@ -21,19 +21,23 @@ Default weights:
 
 Each evidence item can be marked `is_recent`. Recent items receive a multiplier. This allows weak recent performance to matter more than stale success, which is useful for resurfacing fragile concepts.
 
-## Confidence
+## Evidence coverage
 
-Confidence is currently derived from total weighted evidence mass using a saturating function:
+Evidence coverage is currently derived from total weighted evidence mass using
+a saturating function:
 
-`confidence = total_weight / (total_weight + 1.0)`
+`evidence_coverage = total_weight / (total_weight + 1.0)`
 
-This is simple, monotonic, and interpretable.
+This is a measure of accumulated evidence mass, not a probability that the
+learner has mastered the concept. The legacy `confidence` property and
+`confidence_from_weight()` function remain compatibility aliases during the
+migration window.
 
 ## Current mastery rule
 
 A concept is mastered if:
 - weighted mean score >= mastery threshold
-- confidence >= confidence threshold
+- evidence coverage >= evidence-coverage threshold
 
 A previously mastered concept resurfaces if:
 - weighted mean score < resurfacing threshold

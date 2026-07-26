@@ -32,12 +32,14 @@ def test_build_knowledge_graph_contains_typed_nodes_and_edges(tmp_path: Path) ->
     edge_types = {edge["type"] for edge in payload["edges"]}
 
     assert payload["summary"]["concept_count"] >= 2
+    assert payload["legacy_confidence_mapping_policy"] == "didactopus_graph_extraction_v1"
     assert "source" in node_types
     assert "lesson" in node_types
     assert "concept" in node_types
     assert "assessment_signal" in node_types
     assert "contains_lesson" in edge_types
     assert "teaches_concept" in edge_types or "supports_concept" in edge_types
+    assert all(edge["assessments"][0]["dimension"] == "extraction_fidelity" for edge in payload["edges"])
 
     write_knowledge_graph(course, ctx.concepts, tmp_path)
     written = json.loads((tmp_path / "knowledge_graph.json").read_text(encoding="utf-8"))

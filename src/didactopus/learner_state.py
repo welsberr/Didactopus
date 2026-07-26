@@ -7,16 +7,16 @@ EvidenceKind = Literal["checkpoint", "project", "exercise", "review"]
 class MasteryRecord(BaseModel):
     concept_id: str
     dimension: str
-    score: float = 0.0
-    confidence: float = 0.0
+    score: float = Field(default=0.0, ge=0.0, le=1.0)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     evidence_count: int = 0
     last_updated: str = ""
 
 class EvidenceEvent(BaseModel):
     concept_id: str
     dimension: str
-    score: float
-    confidence_hint: float = 0.5
+    score: float = Field(ge=0.0, le=1.0)
+    confidence_hint: float = Field(default=0.5, ge=0.0, le=1.0)
     timestamp: str
     kind: EvidenceKind = "exercise"
     source_id: str = ""

@@ -188,7 +188,8 @@ The evidence engine supports:
 - evidence items grouped by concept
 - per-type weighting
 - optional recency weighting
-- confidence derived from accumulated evidence mass
+- evidence coverage derived from accumulated evidence mass (the legacy
+  `confidence` name remains a compatibility alias)
 - dimension-level summaries
 - resurfacing when recent weak evidence drags mastery below threshold
 

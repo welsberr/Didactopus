@@ -4,6 +4,7 @@ from didactopus.evidence_engine import (
     EvidenceState,
     add_evidence_item,
     confidence_from_weight,
+    evidence_coverage_from_weight,
     evidence_weight,
     ingest_evidence_bundle,
 )
@@ -22,6 +23,7 @@ def test_evidence_weighting_by_type_and_recency() -> None:
 def test_confidence_increases_with_weight() -> None:
     assert confidence_from_weight(0.0) == 0.0
     assert confidence_from_weight(1.0) < confidence_from_weight(3.0)
+    assert confidence_from_weight(3.0) == evidence_coverage_from_weight(3.0)
 
 
 def test_weighted_summary_promotes_mastery() -> None:
@@ -40,7 +42,8 @@ def test_weighted_summary_promotes_mastery() -> None:
     )
     assert "c1" in profile.mastered_concepts
     assert state.summary_by_concept["c1"].weighted_mean_score >= 0.8
-    assert state.summary_by_concept["c1"].confidence >= 0.75
+    assert state.summary_by_concept["c1"].evidence_coverage >= 0.75
+    assert state.summary_by_concept["c1"].confidence == state.summary_by_concept["c1"].evidence_coverage
 
 
 def test_recent_weak_evidence_can_resurface() -> None:
