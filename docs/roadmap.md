@@ -150,6 +150,22 @@ Current anchors:
 - `docs/deployment-modes.md`
 - `docs/interoperability-and-feature-adoption.md`
 
+MCP adapter work:
+
+- Add an optional Model Context Protocol (MCP) client/server boundary for local
+  learner appliances that can call GroundRecall, CiteGeist, Epistemap, and
+  ClaimWright tools while preserving Didactopus learner-facing authority.
+- Expose Didactopus tools for pack inspection, learner-session setup,
+  notebook-page generation, benchmark-run setup, and progress-ledger export.
+- Keep learner records local-only by default; MCP tools must not expose learner
+  responses, progress ledgers, or private notes to external services unless the
+  steward explicitly enables that route.
+- Treat GroundRecall context, CiteGeist source trails, Epistemap reliability
+  reports, and ClaimWright findings as imported review/context artifacts, not
+  learner mastery scores or automatic instructional decisions.
+- Add smoke tests showing that MCP-mediated local operation works without
+  network access and that remote/model routes are labeled when enabled.
+
 ### 4. Pack capsules and low-bandwidth distribution
 
 Status: planned
