@@ -12,7 +12,7 @@ production-code inventory, ORM/API migrations, typed candidate migration,
 calibration integration, installed-package matrix, and compatibility release.
 
 Didactopus consumes the portable confidence contract from Epistemap
-`v0.1.0a3`. This immutable Git-tag dependency replaces the implementation SHA.
+`v0.1.0a4`. This immutable Git-tag dependency replaces the implementation SHA.
 The Epistemap release adds indexed graph operations and the read-only MCP
 transport while preserving the confidence contract.
 
