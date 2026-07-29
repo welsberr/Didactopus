@@ -7,14 +7,14 @@ separate measures during that migration.
 
 The audited cross-repository status is maintained in Epistemap at
 `docs/confidence-overhaul-implementation-status.md`. Didactopus phases D1-D4
-remain partial until the full production-code inventory, ORM/API migrations,
-typed candidate migration, calibration integration, installed-package matrix,
-and compatibility release are complete.
+are complete for the current confidence-overhaul scope, including the
+production-code inventory, ORM/API migrations, typed candidate migration,
+calibration integration, installed-package matrix, and compatibility release.
 
 Didactopus consumes the portable confidence contract from Epistemap
-`v0.1.0a2`. This immutable Git-tag dependency replaces the implementation SHA;
-Didactopus's own compatibility release and remaining D1-D4 work are still
-pending.
+`v0.1.0a3`. This immutable Git-tag dependency replaces the implementation SHA.
+The Epistemap release adds indexed graph operations and the read-only MCP
+transport while preserving the confidence contract.
 
 CiteGeist bibliography graph integration is coordinated by CiteGeist's
 `docs/epistemap-knowledge-graph-roadmap.md`. Didactopus consumes reviewed
