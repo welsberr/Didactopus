@@ -197,6 +197,26 @@ caller can resume without reconstructing state from chat history. A run is
 `complete` only after every sequence step has a learner submission and
 evaluation.
 
+Durable run state is an explicit local operation. When a caller supplies a run
+state path, Didactopus stores a versioned run identifier, learner pseudonym,
+sequence provenance, full completed sessions, compact progress, and one
+learner-attempt record per completed step. A resume must load that file,
+validate the same sequence identifier, and append from `next_step_index`;
+ordinary writes refuse to replace an existing run.
+
+Learner-attempt records have a mechanical review boundary:
+
+- human attempts use `record_scope=human_learner` and `review_state=draft`;
+- AI learner attempts use `record_scope=benchmark` and
+  `review_state=benchmark_only`;
+- both record `mastery_effect=none_until_review`;
+- deterministic assessments and evaluator prose remain attached evidence, not
+  mastery scores.
+
+The local `.didactopus/` directory is ignored by Git. Operators should keep
+run files there or in another private data directory, and should use an
+explicit export/redaction step before sharing any learner record.
+
 ## AI Learner Benchmarks
 
 Local LLMs can act as learner stand-ins for practice and research. The process

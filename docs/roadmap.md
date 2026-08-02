@@ -64,6 +64,10 @@ Current progress:
 - Notebook-backed mentorship can run consecutive reviewed sequence steps,
   preserve each completed session, emit a compact progress ledger, and expose
   the next resumable step index.
+- Multi-step runs can persist atomically to an explicit local path, validate
+  sequence identity on resume, and append provenance-bearing learner attempts.
+  Human attempts remain draft evidence and AI-learner attempts remain
+  benchmark-only; neither silently changes mastery.
 
 Current code anchors:
 

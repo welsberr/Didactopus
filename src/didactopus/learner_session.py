@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 import re
+from typing import Literal
+from uuid import uuid4
 
 from .model_provider import ModelProvider
 from .ocw_skill_agent_demo import (
@@ -340,12 +343,18 @@ def build_notebook_sequence_grounded_run(
     learner_goal: str | None = None,
     language: str = "en",
     source_language: str = "en",
+    learner_id: str = "local-learner",
+    learner_kind: Literal["human", "ai_benchmark"] = "human",
+    run_id: str | None = None,
+    captured_at: str | None = None,
 ) -> dict:
     sessions = session_plan.get("sessions", [])
     if not sessions:
         raise ValueError("No notebook sequence sessions available for learner run.")
     if not learner_submissions:
         raise ValueError("A multi-step learner run requires at least one submission.")
+    if learner_kind not in {"human", "ai_benchmark"}:
+        raise ValueError("learner_kind must be 'human' or 'ai_benchmark'.")
     if start_step_index < 0 or start_step_index >= len(sessions):
         raise IndexError(
             f"Start step index {start_step_index} out of range for {len(sessions)} sessions."
@@ -357,8 +366,11 @@ def build_notebook_sequence_grounded_run(
             f"Received {len(learner_submissions)} submissions for {available} available steps."
         )
 
+    resolved_run_id = run_id or str(uuid4())
+    resolved_captured_at = captured_at or datetime.now(timezone.utc).isoformat()
     completed_sessions: list[dict] = []
     progress: list[dict] = []
+    learner_evidence: list[dict] = []
     turns: list[dict] = []
     for offset, submission in enumerate(learner_submissions):
         step_index = start_step_index + offset
@@ -387,6 +399,29 @@ def build_notebook_sequence_grounded_run(
                 ),
             }
         )
+        learner_evidence.append(
+            {
+                "evidence_id": f"{resolved_run_id}:step:{step_index}",
+                "artifact_type": "learner_attempt",
+                "learner_id": learner_id,
+                "learner_kind": learner_kind,
+                "record_scope": "human_learner" if learner_kind == "human" else "benchmark",
+                "review_state": "draft" if learner_kind == "human" else "benchmark_only",
+                "captured_at": resolved_captured_at,
+                "concept_id": primary.get("concept_id"),
+                "concept_title": primary.get("title"),
+                "dimension": "reasoning",
+                "evidence_kind": "exercise",
+                "source": {
+                    "sequence_id": session_plan.get("sequence_id"),
+                    "step_index": step_index,
+                    "step_position": primary.get("position"),
+                },
+                "learner_submission": submission,
+                "evaluator_assessment": evaluation,
+                "mastery_effect": "none_until_review",
+            }
+        )
         for turn in session["turns"]:
             turns.append(
                 {
@@ -402,6 +437,12 @@ def build_notebook_sequence_grounded_run(
     next_step_index = end_step_index if end_step_index < len(sessions) else None
     final_session = completed_sessions[-1]
     return {
+        "schema_version": 1,
+        "run_id": resolved_run_id,
+        "learner_id": learner_id,
+        "learner_kind": learner_kind,
+        "created_at": resolved_captured_at,
+        "updated_at": resolved_captured_at,
         "goal": final_session["goal"],
         "output_language": language,
         "source_language": source_language,
@@ -417,7 +458,64 @@ def build_notebook_sequence_grounded_run(
         "completed_session_count": len(completed_sessions),
         "total_session_count": len(sessions),
         "progress": progress,
+        "learner_evidence": learner_evidence,
         "sessions": completed_sessions,
         "evaluation": final_session["evaluation"],
         "turns": turns,
     }
+
+
+def resume_notebook_sequence_grounded_run(
+    session_plan: dict,
+    provider: ModelProvider,
+    *,
+    previous_run: dict,
+    learner_submissions: list[str],
+    language: str | None = None,
+    source_language: str | None = None,
+    captured_at: str | None = None,
+) -> dict:
+    if previous_run.get("schema_version") != 1:
+        raise ValueError("Unsupported learner run schema version.")
+    if previous_run.get("run_kind") != "notebook_sequence":
+        raise ValueError("Only notebook sequence runs can be resumed here.")
+    sequence_id = session_plan.get("sequence_id")
+    previous_sequence_id = previous_run.get("study_plan", {}).get("sequence_id")
+    if sequence_id != previous_sequence_id:
+        raise ValueError(
+            f"Sequence mismatch: persisted run uses {previous_sequence_id!r}, not {sequence_id!r}."
+        )
+    next_step_index = previous_run.get("next_step_index")
+    if next_step_index is None:
+        raise ValueError("The persisted learner run is already complete.")
+    if not learner_submissions:
+        raise ValueError("Resuming a learner run requires at least one submission.")
+
+    continuation = build_notebook_sequence_grounded_run(
+        session_plan=session_plan,
+        provider=provider,
+        learner_submissions=learner_submissions,
+        start_step_index=next_step_index,
+        learner_goal=previous_run.get("goal"),
+        language=language or previous_run.get("output_language", "en"),
+        source_language=source_language or previous_run.get("source_language", "en"),
+        learner_id=previous_run.get("learner_id", "local-learner"),
+        learner_kind=previous_run.get("learner_kind", "human"),
+        run_id=previous_run.get("run_id"),
+        captured_at=captured_at,
+    )
+    combined = {
+        **previous_run,
+        **continuation,
+        "created_at": previous_run.get("created_at", continuation["created_at"]),
+        "start_step_index": previous_run.get("start_step_index", 0),
+        "progress": [*previous_run.get("progress", []), *continuation["progress"]],
+        "learner_evidence": [
+            *previous_run.get("learner_evidence", []),
+            *continuation["learner_evidence"],
+        ],
+        "sessions": [*previous_run.get("sessions", []), *continuation["sessions"]],
+        "turns": [*previous_run.get("turns", []), *continuation["turns"]],
+    }
+    combined["completed_session_count"] = len(combined["sessions"])
+    return combined

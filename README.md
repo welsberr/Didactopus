@@ -237,6 +237,35 @@ PYTHONPATH=src python3 -m didactopus.learner_session_demo \
 That keeps the same session payload shape while grounding the mentor/practice/
 evaluation flow in one step of the Notebook-backed concept sequence.
 
+A reviewed sequence can also run across several steps and persist its private
+local state explicitly:
+
+```bash
+PYTHONPATH=src python3 -m didactopus.learner_session_demo \
+  --sequence examples/notebook-learning-sequence/learning-paths/guided-core.didactopus.json \
+  --learner-id local-learner \
+  --run-state .didactopus/learner-runs/guided-core.json \
+  --step-submission "I state the observation before inferring a cause."
+```
+
+Append the next attempt without reconstructing the earlier chat history:
+
+```bash
+PYTHONPATH=src python3 -m didactopus.learner_session_demo \
+  --sequence examples/notebook-learning-sequence/learning-paths/guided-core.didactopus.json \
+  --run-state .didactopus/learner-runs/guided-core.json \
+  --resume \
+  --step-submission "I compare alternatives using a prediction that differs between them."
+```
+
+Run-state writes are opt-in, local, atomic, and protected from accidental
+overwrite unless `--resume` is supplied. The repository ignores `.didactopus/`
+because these files contain learner submissions. Each attempt is recorded as
+draft evidence with provenance; deterministic or model evaluator output does
+not update mastery until a separate review/promotion workflow does so. Use
+`--learner-kind ai_benchmark` for model stand-ins so their records remain
+mechanically separate from human learner evidence.
+
 To generate a deterministic session plan from the repository-owned example,
 use:
 
