@@ -3,6 +3,7 @@ from __future__ import annotations
 from didactopus.graph_retrieval import (
     GraphBundle,
     concept_epistemic_summary,
+    concept_reliability_context,
     temporal_claim_context,
     temporal_graph_slice,
     temporal_summary,
@@ -101,6 +102,18 @@ def test_concept_epistemic_summary_includes_bayesian_reliability() -> None:
         "stable_support",
         "thin_evidence",
     }
+
+
+def test_concept_reliability_context_is_compact_and_non_authoritative() -> None:
+    payload = concept_reliability_context(_concept_bundle(), "entropy")
+
+    assert payload["schema_version"] == "didactopus.concept_reliability_context.v1"
+    assert payload["concept_id"] == "concept::entropy"
+    assert payload["bayesian"]["posterior_mean"] > 0.5
+    assert payload["bayesian"]["credible_interval_width"] > 0
+    assert payload["bayesian"]["effective_sample_size"] > 0
+    assert "not a truth label" in payload["authority"]
+    assert "evidence" not in payload["bayesian"]
 
 
 def test_temporal_graph_slice_filters_future_evidence() -> None:

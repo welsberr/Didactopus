@@ -185,6 +185,8 @@ def build_notebook_sequence_session_plan(
                 "mentor_opening": step["mentor_opening"],
                 "evidence_focus": step["evidence_focus"],
                 "next_transition": step["next_transition"],
+                "reliability_context": dict(step.get("reliability_context", {}) or {}),
+                "source_fragments": list(step.get("source_fragments", []) or []),
                 "scaffold_path": str(scaffold_path) if scaffold_path else None,
                 "scaffold_record_count": len((scaffold or {}).get("records", []) or []),
                 "scaffold_pending_source_slots": len(

@@ -4,7 +4,9 @@ import pytest
 
 from didactopus.config import load_config
 from didactopus.learner_session import (
+    _grounding_block,
     _scaffold_instruction_block,
+    build_citation_support_practice,
     build_graph_grounded_session,
     build_notebook_sequence_grounded_run,
     build_notebook_sequence_grounded_session,
@@ -38,6 +40,10 @@ def test_build_graph_grounded_session_uses_grounded_steps() -> None:
     assert payload["study_plan"]["steps"]
     assert payload["primary_concept"]["supporting_lessons"]
     assert payload["evaluation"]["verdict"] in {"acceptable", "needs_revision"}
+    assert payload["reliability_context"]["bayesian"]["classification"]
+    assert payload["citation_support_practice"]["available_anchors"]
+    assert payload["citation_support_practice"]["review_state"] == "draft"
+    assert payload["citation_support_practice"]["mastery_effect"] == "none_until_review"
     assert len(payload["turns"]) == 6
     assert any("Grounding fragments" in turn["content"] or "Concept:" in turn["content"] for turn in payload["turns"])
 
@@ -273,3 +279,53 @@ def test_scaffold_instruction_block_uses_verification_seed_and_guard() -> None:
     assert "Use this verification prompt directly" in block
     assert "Use this prompt-seed move directly" in block
     assert "Guard against this misconception explicitly" in block
+
+
+def test_grounding_block_exposes_reliability_without_truth_label() -> None:
+    step = {
+        "title": "Claim review",
+        "reliability_context": {
+            "heuristic": {"band": "weak", "score": 0.41},
+            "bayesian": {
+                "classification": "thin_evidence",
+                "posterior_mean": 0.67,
+                "credible_interval": {"lower": 0.21, "upper": 1.0},
+                "credible_interval_width": 0.79,
+                "effective_sample_size": 1.05,
+                "prior_sensitivity_range": 0.41,
+            },
+            "authority": "Review context only; not a truth label or mastery score.",
+        },
+    }
+
+    block = _grounding_block(step)
+
+    assert "Graph reliability review context (not a truth label)" in block
+    assert "Bayesian classification=thin_evidence" in block
+    assert "width=0.790" in block
+    assert "prior-sensitivity range=0.410" in block
+    assert "not a truth label or mastery score" in block
+
+
+def test_citation_support_practice_matches_anchor_without_promoting_support() -> None:
+    step = {
+        "source_fragments": [
+            {
+                "fragment_id": "fragment::entropy-definition",
+                "lesson_title": "Shannon Entropy",
+                "source_refs": ["course/shannon-entropy.md"],
+                "text": "Entropy summarizes expected information.",
+            }
+        ]
+    }
+
+    payload = build_citation_support_practice(
+        step,
+        "The definition appears at fragment::entropy-definition, while my analogy is an inference.",
+    )
+
+    assert payload["status"] == "anchor_identified"
+    assert payload["matched_anchor_ids"] == ["fragment::entropy-definition"]
+    assert payload["review_state"] == "draft"
+    assert payload["mastery_effect"] == "none_until_review"
+    assert "reviewer must assess" in payload["authority"]

@@ -108,6 +108,41 @@ def concept_epistemic_summary(bundle: GraphBundle, concept_id: str) -> dict:
     return epistemic_summary(_epistemap_bundle(bundle), concept_node_id(concept_id))
 
 
+def concept_reliability_context(bundle: GraphBundle, concept_id: str) -> dict:
+    """Return compact review context suitable for mentor and evaluator prompts."""
+
+    payload = concept_epistemic_summary(bundle, concept_id)
+    heuristic = payload.get("reliability", {}) or {}
+    bayesian = payload.get("bayesian_reliability", {}) or {}
+    classification = bayesian.get("classification", {}) or {}
+    metrics = classification.get("metrics", {}) or {}
+    posterior = bayesian.get("posterior", {}) or {}
+    return {
+        "schema_version": "didactopus.concept_reliability_context.v1",
+        "concept_id": payload.get("node_id", concept_node_id(concept_id)),
+        "heuristic": {
+            "band": heuristic.get("band", ""),
+            "score": heuristic.get("score"),
+            "rationale": list(heuristic.get("rationale", []) or []),
+        },
+        "bayesian": {
+            "classification": classification.get("label", ""),
+            "flags": list(classification.get("flags", []) or []),
+            "posterior_mean": posterior.get("mean"),
+            "credible_interval": dict(posterior.get("credible_interval", {}) or {}),
+            "credible_interval_width": metrics.get("credible_interval_width"),
+            "effective_sample_size": metrics.get("effective_sample_size"),
+            "prior_sensitivity_range": metrics.get("prior_sensitivity_range"),
+            "support_edge_count": metrics.get("support_edge_count"),
+            "challenge_edge_count": metrics.get("challenge_edge_count"),
+        },
+        "authority": (
+            "Review context only: this summarizes extracted graph evidence and prior sensitivity; "
+            "it is not a truth label, learner mastery score, or automatic instructional decision."
+        ),
+    }
+
+
 def temporal_graph_slice(bundle: GraphBundle, when) -> dict:
     """Return a Didactopus-friendly knowledge graph slice available by `when`."""
 

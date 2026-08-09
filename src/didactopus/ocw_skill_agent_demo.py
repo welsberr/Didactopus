@@ -7,7 +7,13 @@ from pathlib import Path
 import yaml
 
 from .evaluator_pipeline import CritiqueEvaluator, LearnerAttempt, RubricEvaluator, SymbolicRuleEvaluator, aggregate, run_pipeline
-from .graph_retrieval import GraphBundle, lesson_titles_for_concept, prerequisite_titles, source_fragments_for_concept
+from .graph_retrieval import (
+    GraphBundle,
+    concept_reliability_context,
+    lesson_titles_for_concept,
+    prerequisite_titles,
+    source_fragments_for_concept,
+)
 from .multilingual_qa import load_multilingual_qa_spec
 
 
@@ -100,11 +106,17 @@ def build_skill_grounded_study_plan(context: SkillContext, target_task: str) -> 
                 "prerequisites": [_concept_key(pack_name, prereq) for prereq in concept.get("prerequisites", [])],
                 "prerequisite_titles": prerequisite_titles(context.graph_bundle, concept_id),
                 "supporting_lessons": lesson_titles_for_concept(context.graph_bundle, concept_id),
+                "reliability_context": concept_reliability_context(
+                    context.graph_bundle,
+                    concept_id,
+                ),
                 "source_fragments": [
                     {
+                        "fragment_id": fragment.get("fragment_id", ""),
                         "lesson_title": fragment.get("lesson_title", ""),
                         "kind": fragment.get("kind", ""),
                         "text": fragment.get("text", ""),
+                        "source_refs": list(fragment.get("source_refs", []) or []),
                     }
                     for fragment in source_fragments_for_concept(context.graph_bundle, concept_id, limit=2)
                 ],

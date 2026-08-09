@@ -44,7 +44,115 @@ def _grounding_block(step: dict) -> str:
     if fragment_lines:
         lines.append("Grounding fragments:")
         lines.extend(f"- {line}" for line in fragment_lines)
+    reliability_block = _reliability_context_block(step)
+    if reliability_block:
+        lines.append(reliability_block)
+    citation_block = _citation_instruction_block(step)
+    if citation_block:
+        lines.append(citation_block)
     return "\n".join(lines)
+
+
+def _format_metric(value: object) -> str:
+    if isinstance(value, float):
+        return f"{value:.3f}"
+    return "missing" if value is None or value == "" else str(value)
+
+
+def _reliability_context_block(step: dict) -> str:
+    context = step.get("reliability_context") or {}
+    if not context:
+        return ""
+    heuristic = context.get("heuristic", {}) or {}
+    bayesian = context.get("bayesian", {}) or {}
+    interval = bayesian.get("credible_interval", {}) or {}
+    lines = [
+        "Graph reliability review context (not a truth label):",
+        (
+            f"- Heuristic band={_format_metric(heuristic.get('band'))}, "
+            f"score={_format_metric(heuristic.get('score'))}"
+        ),
+        (
+            f"- Bayesian classification={_format_metric(bayesian.get('classification'))}, "
+            f"posterior mean={_format_metric(bayesian.get('posterior_mean'))}, "
+            f"credible interval={_format_metric(interval.get('lower'))}..{_format_metric(interval.get('upper'))}, "
+            f"width={_format_metric(bayesian.get('credible_interval_width'))}"
+        ),
+        (
+            f"- Effective sample size={_format_metric(bayesian.get('effective_sample_size'))}, "
+            f"prior-sensitivity range={_format_metric(bayesian.get('prior_sensitivity_range'))}"
+        ),
+        f"- Authority boundary: {context.get('authority', 'Review context only; not promotion authority.')}",
+    ]
+    return "\n".join(lines)
+
+
+def _citation_anchors(step: dict) -> list[dict]:
+    anchors: list[dict] = []
+    seen: set[str] = set()
+    for fragment in step.get("source_fragments", []) or []:
+        fragment_id = str(fragment.get("fragment_id", "")).strip()
+        source_refs = [str(item) for item in fragment.get("source_refs", []) or [] if str(item)]
+        anchor_id = fragment_id or (source_refs[0] if source_refs else "")
+        if not anchor_id or anchor_id in seen:
+            continue
+        seen.add(anchor_id)
+        anchors.append(
+            {
+                "anchor_id": anchor_id,
+                "fragment_id": fragment_id,
+                "lesson_title": fragment.get("lesson_title", ""),
+                "source_refs": source_refs,
+            }
+        )
+    return anchors
+
+
+def _citation_instruction_block(step: dict) -> str:
+    anchors = _citation_anchors(step)
+    if not anchors:
+        return ""
+    lines = [
+        "Available source anchors (identification does not by itself establish claim support):"
+    ]
+    for anchor in anchors:
+        refs = ", ".join(anchor["source_refs"]) or "no source reference supplied"
+        lines.append(
+            f"- {anchor['anchor_id']} | lesson={anchor['lesson_title']} | source={refs}"
+        )
+    return "\n".join(lines)
+
+
+def build_citation_support_practice(step: dict, learner_submission: str) -> dict:
+    anchors = _citation_anchors(step)
+    submission_lower = learner_submission.lower()
+    matched_anchor_ids: list[str] = []
+    for anchor in anchors:
+        candidates = [anchor["anchor_id"], anchor["fragment_id"], *anchor["source_refs"]]
+        if any(candidate and candidate.lower() in submission_lower for candidate in candidates):
+            matched_anchor_ids.append(anchor["anchor_id"])
+    if not anchors:
+        status = "not_available"
+    elif matched_anchor_ids:
+        status = "anchor_identified"
+    else:
+        status = "needs_source_anchor"
+    return {
+        "artifact_type": "citation_support_practice",
+        "review_state": "draft",
+        "status": status,
+        "instruction": (
+            "Identify the source anchor for one material claim, state what that source directly supports, "
+            "and separate any additional inference."
+        ),
+        "available_anchors": anchors,
+        "matched_anchor_ids": matched_anchor_ids,
+        "mastery_effect": "none_until_review",
+        "authority": (
+            "Anchor matching confirms identification only; a reviewer must assess source identity, "
+            "relevance, and whether the cited material supports the claim."
+        ),
+    }
 
 
 def _scaffold_instruction_block(step: dict) -> str:
@@ -129,12 +237,14 @@ def build_graph_grounded_session(
 
     primary = steps[0]
     secondary = steps[1] if len(steps) > 1 else primary
+    citation_support_practice = build_citation_support_practice(primary, learner_submission)
     mentor_prompt = (
         f"{_grounding_block(primary)}\n\n"
         f"{_grounding_block(secondary)}\n\n"
         f"Learner goal: {learner_goal}\n"
         "Respond as Didactopus mentor. Give a short grounded orientation, explain why these concepts come first, "
-        "and ask one focused question that keeps the learner doing the reasoning."
+        "and ask one focused question that keeps the learner doing the reasoning. Use reliability context to "
+        "calibrate certainty, but never present it as a final truth label or learner mastery score."
     )
     mentor_text = _generate_role_text(
         provider,
@@ -149,7 +259,9 @@ def build_graph_grounded_session(
     practice_prompt = (
         f"{_grounding_block(primary)}\n\n"
         f"Learner goal: {learner_goal}\n"
-        "Create one reasoning-heavy practice task for the learner. Keep it grounded in the supporting lessons and do not provide the full solution."
+        f"Citation-support instruction: {citation_support_practice['instruction']}\n"
+        "Create one reasoning-heavy practice task for the learner. Keep it grounded in the supporting lessons, "
+        "include the citation-support instruction when anchors are available, and do not provide the full solution."
     )
     practice_text = _generate_role_text(
         provider,
@@ -167,7 +279,11 @@ def build_graph_grounded_session(
         f"Practice task: {practice_text}\n"
         f"Learner submission: {learner_submission}\n"
         f"Deterministic evaluator result: verdict={evaluation['verdict']}, aggregated={evaluation['aggregated']}\n"
-        "Respond as Didactopus evaluator. Summarize strengths, real gaps, and one next revision target without pretending supported caveats are missing."
+        f"Citation-support check: status={citation_support_practice['status']}, "
+        f"matched_anchor_ids={citation_support_practice['matched_anchor_ids']}\n"
+        "Respond as Didactopus evaluator. Summarize strengths, real gaps, and one next revision target without pretending supported caveats are missing. "
+        "Treat anchor matching as draft identification evidence, not proof that a source supports the claim. "
+        "Use graph reliability only to calibrate feedback, never as a correctness verdict."
     )
     evaluator_text = _generate_role_text(
         provider,
@@ -212,6 +328,8 @@ def build_graph_grounded_session(
         "primary_concept": primary,
         "secondary_concept": secondary,
         "practice_task": practice_text,
+        "reliability_context": primary.get("reliability_context", {}),
+        "citation_support_practice": citation_support_practice,
         "evaluation": evaluation,
         "turns": [turn.__dict__ for turn in turns],
     }
@@ -237,13 +355,15 @@ def build_notebook_sequence_grounded_session(
     primary = sessions[step_index]
     secondary = sessions[step_index + 1] if step_index + 1 < len(sessions) else primary
     resolved_goal = learner_goal or session_plan.get("learner_goal") or primary.get("session_goal", "")
+    citation_support_practice = build_citation_support_practice(primary, learner_submission)
 
     mentor_prompt = (
         f"{_grounding_block(primary)}\n\n"
         f"{_grounding_block(secondary)}\n\n"
         f"Learner goal: {resolved_goal}\n"
         "Respond as Didactopus mentor. Give a short grounded orientation for this step, explain why it belongs here in the sequence, "
-        "and ask one focused question that makes the learner produce a public reasoning move."
+        "and ask one focused question that makes the learner produce a public reasoning move. Use reliability context to "
+        "calibrate certainty, but never present it as a final truth label or learner mastery score."
     )
     mentor_text = _generate_role_text(
         provider,
@@ -259,7 +379,9 @@ def build_notebook_sequence_grounded_session(
         f"{_grounding_block(primary)}\n\n"
         f"{_scaffold_instruction_block(primary)}\n\n"
         f"Learner goal: {resolved_goal}\n"
+        f"Citation-support instruction: {citation_support_practice['instruction']}\n"
         "Create one reasoning-heavy practice task for the learner. Use the verification prompt and prompt seed if provided. "
+        "When source anchors are available, require the learner to distinguish direct support from inference. "
         "Keep it grounded in this concept step and do not provide the full solution."
     )
     practice_text = _generate_role_text(
@@ -279,8 +401,12 @@ def build_notebook_sequence_grounded_session(
         f"Practice task: {practice_text}\n"
         f"Learner submission: {learner_submission}\n"
         f"Deterministic evaluator result: verdict={evaluation['verdict']}, aggregated={evaluation['aggregated']}\n"
+        f"Citation-support check: status={citation_support_practice['status']}, "
+        f"matched_anchor_ids={citation_support_practice['matched_anchor_ids']}\n"
         "Respond as Didactopus evaluator. Use the verification prompt and misconception guard if provided. "
-        "Summarize strengths, real gaps, and one next revision target without pretending supported caveats are missing."
+        "Summarize strengths, real gaps, and one next revision target without pretending supported caveats are missing. "
+        "Treat anchor matching as draft identification evidence, not proof that a source supports the claim. "
+        "Use graph reliability only to calibrate feedback, never as a correctness verdict."
     )
     evaluator_text = _generate_role_text(
         provider,
@@ -329,6 +455,8 @@ def build_notebook_sequence_grounded_session(
         "primary_concept": primary,
         "secondary_concept": secondary,
         "practice_task": practice_text,
+        "reliability_context": primary.get("reliability_context", {}),
+        "citation_support_practice": citation_support_practice,
         "evaluation": evaluation,
         "turns": [turn.__dict__ for turn in turns],
     }
@@ -419,6 +547,7 @@ def build_notebook_sequence_grounded_run(
                 },
                 "learner_submission": submission,
                 "evaluator_assessment": evaluation,
+                "citation_support_practice": session.get("citation_support_practice", {}),
                 "mastery_effect": "none_until_review",
             }
         )

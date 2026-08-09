@@ -139,6 +139,34 @@ independent recurrence, and later reuse.
 - promotes or rejects draft study-aid records, argument records, source-support
   claims, and claim alignments.
 
+### Reliability context
+
+When an Epistemap concept summary is available, the session backend passes a
+compact review context to mentor and evaluator roles. It includes the heuristic
+band, Bayesian classification, posterior mean and interval, effective sample
+size, and prior-sensitivity range. These values guide language calibration:
+thin evidence, wide intervals, or prior sensitivity should produce more
+qualified feedback and stronger requests for discriminating evidence.
+
+Reliability context is not a source-truth label, correctness verdict, learner
+mastery score, or automatic next-step authority. The full evidence ledger stays
+outside the learner-session payload; the session receives only the bounded
+summary needed for the current concept.
+
+### Citation-support practice
+
+Grounded source fragments preserve their stable fragment IDs and source
+references. When anchors are available, practice may ask the learner to:
+
+1. identify the anchor for one material claim;
+2. state what the anchored material directly supports;
+3. separate any additional inference or synthesis.
+
+The deterministic check records only whether an available anchor was
+identified. Its artifact remains `draft`, declares
+`mastery_effect=none_until_review`, and cannot establish source identity,
+relevance, or claim support without review.
+
 ## Guardrails
 
 Mentoring flows must:
@@ -184,7 +212,9 @@ Each session should be able to emit:
 - `source_support_gap`;
 - `claim_alignment_task`;
 - `coverage_gap`;
-- `next_step`.
+- `next_step`;
+- `concept_reliability_context`;
+- `citation_support_practice`.
 
 These artifacts let Didactopus improve mentoring while keeping review,
 provenance, accessibility, and local-model benchmarking attached to the same

@@ -266,6 +266,14 @@ not update mastery until a separate review/promotion workflow does so. Use
 `--learner-kind ai_benchmark` for model stand-ins so their records remain
 mechanically separate from human learner evidence.
 
+Graph-backed sessions also carry compact concept reliability context from
+Epistemap when available. Mentor and evaluator prompts use posterior interval,
+effective-sample-size, and prior-sensitivity signals to calibrate their
+language, never as truth or mastery labels. Source fragments retain stable IDs
+and source references so a session can emit draft citation-support practice:
+finding an anchor is recorded separately from deciding whether that source
+actually supports the learner's claim.
+
 To generate a deterministic session plan from the repository-owned example,
 use:
 

@@ -18,6 +18,9 @@ def test_run_ocw_skill_agent_demo(tmp_path: Path) -> None:
     assert (tmp_path / "skill_demo.md").exists()
     assert payload["study_plan"]["steps"]
     assert payload["study_plan"]["steps"][0]["supporting_lessons"]
+    assert payload["study_plan"]["steps"][0]["reliability_context"]["bayesian"]
+    assert payload["study_plan"]["steps"][0]["source_fragments"][0]["fragment_id"]
+    assert payload["study_plan"]["steps"][0]["source_fragments"][0]["source_refs"]
     assert "grounding" in payload["explanation"]
     assert payload["explanation"]["grounding"]["supporting_lessons"]
     assert payload["evaluation"]["verdict"] in {"acceptable", "needs_revision"}

@@ -1,5 +1,16 @@
 # Roadmap
 
+Last audited against repository implementation: 2026-08-09.
+
+Status labels distinguish code presence from operational readiness:
+
+- `foundation implemented`: reusable code and tests exist, but the capability is
+  not yet a complete learner or steward workflow;
+- `prototype implemented`: an end-to-end bounded workflow exists, but broader
+  validation or product integration remains;
+- `in progress`: this remains an active delivery priority;
+- `planned`: no adequate end-to-end implementation exists yet.
+
 Confidence schema and integration changes are coordinated by Epistemap's
 `docs/confidence-overhaul-roadmap.md`. Didactopus must keep graph evidential
 support, learner response probability, mastery score, and evidence coverage as
@@ -68,6 +79,13 @@ Current progress:
   sequence identity on resume, and append provenance-bearing learner attempts.
   Human attempts remain draft evidence and AI-learner attempts remain
   benchmark-only; neither silently changes mastery.
+- Graph-grounded sessions now receive compact Epistemap heuristic and Bayesian
+  reliability context, including interval width, effective sample size, and
+  prior sensitivity. Mentor and evaluator prompts treat it as calibration
+  context rather than a truth or mastery label.
+- Source fragments preserve stable fragment IDs and source references. Sessions
+  emit draft citation-support practice that distinguishes finding an anchor
+  from reviewing whether the source actually supports a claim.
 
 Current code anchors:
 
@@ -78,7 +96,7 @@ Current code anchors:
 
 ### 2. Local-model adequacy benchmark for constrained hardware
 
-Status: planned
+Status: prototype implemented; constrained-hardware validation planned
 
 Why next:
 
@@ -126,7 +144,7 @@ Assessment experiments:
 
 ### 3. Access-constrained offline learner appliance
 
-Status: planned
+Status: foundation implemented; appliance packaging planned
 
 Why high priority:
 
@@ -172,7 +190,7 @@ MCP adapter work:
 
 ### 4. Pack capsules and low-bandwidth distribution
 
-Status: planned
+Status: manifest and validator implemented; distribution workflow planned
 
 Why this follows the appliance:
 
@@ -214,7 +232,7 @@ Target features:
 
 ### 6. Accessibility-first learner interaction
 
-Status: planned
+Status: text and HTML baseline implemented; learner validation planned
 
 Why high priority:
 
@@ -247,7 +265,7 @@ Target features:
 
 ### 8. Learner workbench UI
 
-Status: planned
+Status: prototype implemented; product integration planned
 
 Why important:
 
@@ -267,7 +285,7 @@ Target features:
 
 ### 9. Adaptive diagnostics and practice refinement
 
-Status: planned
+Status: foundation implemented; learner integration planned
 
 Why this matters:
 
@@ -295,7 +313,7 @@ Assessment experiments:
 
 ### 10. Source-grounded citation transparency
 
-Status: planned
+Status: foundation implemented; learner transparency planned
 
 Why it matters:
 
@@ -312,7 +330,7 @@ Target features:
 
 ### 11. Pack quality, review, and concept-graph curation improvements
 
-Status: planned
+Status: foundation implemented; curation improvements planned
 
 Why later:
 
@@ -345,7 +363,7 @@ Target features:
 
 ### 13. Human pilot and field-readiness evaluation
 
-Status: planned
+Status: experimental harness implemented; field validation planned
 
 Why later:
 
