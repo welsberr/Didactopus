@@ -8,6 +8,7 @@ from .citegeist_okf import write_citegeist_okf_source_bundle
 from .interoperability import registry_payload, validate_pack_capsule
 from .notebook_learning_sequence import build_notebook_sequence_session_plan
 from .pack_validator import validate_pack_directory
+from .decision_challenge import classify_decision_challenge
 
 
 SERVER_INFO = {"name": "didactopus-mcp", "version": "0.1.1"}
@@ -42,7 +43,34 @@ def _validate_pack_capsule(arguments: dict[str, Any]) -> dict[str, Any]:
     return _json_text(validate_pack_capsule(arguments["manifest"]))
 
 
+def _classify_decision_challenge(arguments: dict[str, Any]) -> dict[str, Any]:
+    return _json_text(
+        classify_decision_challenge(
+            str(arguments.get("action", "")),
+            public_facing=bool(arguments.get("public_facing", False)),
+            durable_memory_change=bool(arguments.get("durable_memory_change", False)),
+            destructive=bool(arguments.get("destructive", False)),
+            novel_path=bool(arguments.get("novel_path", False)),
+        )
+    )
+
+
 TOOLS: dict[str, dict[str, Any]] = {
+    "classify_decision_challenge": {
+        "description": "Classify whether a Didactopus action needs bounded review; does not decide mastery or publication.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "action": {"type": "string", "minLength": 1},
+                "public_facing": {"type": "boolean"},
+                "durable_memory_change": {"type": "boolean"},
+                "destructive": {"type": "boolean"},
+                "novel_path": {"type": "boolean"},
+            },
+            "required": ["action"],
+        },
+        "handler": _classify_decision_challenge,
+    },
     "validate_pack": {
         "description": "Validate a Didactopus pack directory.",
         "inputSchema": {
