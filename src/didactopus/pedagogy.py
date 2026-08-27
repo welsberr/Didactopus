@@ -298,3 +298,19 @@ def review_learning_path(package: dict[str, Any]) -> dict[str, Any]:
     return {"review_version": "1.0", "status": "ready" if not findings else "needs-review",
             "findings": findings, "learner_labels": [], "engagement_metrics": [],
             "checked": ["promise", "outcomes", "activities", "evidence", "accessibility", "workload"]}
+
+
+def audit_optional_ai(*, allowed_capabilities: list[str] | None = None,
+                      requested_routes: list[str] | None = None,
+                      network_enabled: bool = False) -> dict[str, Any]:
+    """Audit optional routes; this function never invokes a provider or network."""
+    allowed = set(allowed_capabilities or [])
+    routes = list(requested_routes or [])
+    prohibited = sorted(set(routes) - allowed)
+    if not network_enabled and "external-network" in routes:
+        prohibited.append("external-network")
+    return {"audit_version": "1.0", "provider_invoked": False,
+            "network_enabled": network_enabled, "routes": routes,
+            "prohibited_routes": sorted(set(prohibited)),
+            "fallback": "deterministic-only", "source_grounding_required": True,
+            "uncertainty_required": True, "privacy": "local-only-by-default"}
