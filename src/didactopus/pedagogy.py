@@ -278,3 +278,23 @@ def communication_boundaries(*, participation: str = "Choose a written or spoken
     if any(not isinstance(value, str) or not value.strip() for value in values.values()):
         raise PedagogyContractError("communication boundaries must be non-empty text")
     return "\n".join(f"{key}: {value}" for key, value in values.items()) + "\n"
+
+
+def review_learning_path(package: dict[str, Any]) -> dict[str, Any]:
+    """Produce author-facing alignment findings, never a learner score."""
+    normalized = validate_learning_contract(package)
+    outcome_ids = {item["id"] for item in normalized["outcomes"]}
+    linked = {oid for item in normalized["activities"] for oid in item["outcome_ids"]}
+    findings = []
+    if not normalized["promise"].strip():
+        findings.append({"severity": "review", "code": "missing-promise"})
+    for oid in sorted(outcome_ids - linked):
+        findings.append({"severity": "review", "code": "unlinked-outcome", "id": oid})
+    for activity in normalized["activities"]:
+        if not activity["evidence"]:
+            findings.append({"severity": "review", "code": "missing-evidence", "id": activity["id"]})
+        if not activity["accessibility_options"]:
+            findings.append({"severity": "review", "code": "missing-accessibility", "id": activity["id"]})
+    return {"review_version": "1.0", "status": "ready" if not findings else "needs-review",
+            "findings": findings, "learner_labels": [], "engagement_metrics": [],
+            "checked": ["promise", "outcomes", "activities", "evidence", "accessibility", "workload"]}
