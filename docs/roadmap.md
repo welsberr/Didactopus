@@ -1,6 +1,6 @@
 # Roadmap
 
-Last audited against repository implementation: 2026-08-09.
+Last audited against repository implementation: 2026-08-27.
 
 Status labels distinguish code presence from operational readiness:
 
@@ -96,7 +96,7 @@ Current code anchors:
 
 ### 1a. Pedagogical learning-path contract and student communication
 
-Status: foundation present; structured pedagogy contract planned
+Status: implemented foundation; learner-pilot validation remains planned
 
 Why this belongs beside the mentor loop:
 
@@ -131,9 +131,25 @@ Target contract fields and behaviors:
 - `feedback_mode`, time estimate, accessibility options, and policy scopes;
 - explicit participation, privacy, escalation, and communication expectations.
 
-Planned work:
+Implemented in `didactopus.pedagogy`:
 
-1. Define a backward-compatible, versioned learning-promise and activity
+1. Versioned backward-compatible contract validation with deterministic stable
+   IDs, readable activity rendering, and old-package omission defaults.
+2. Deterministic path mapping with provenance, prerequisite/workload review
+   prompts, and private ungraded diagnostic/reflection records with redacted
+   exports.
+3. Offline activity templates with simulation debrief, consent, privacy,
+   accessibility, participation, and public-release metadata.
+4. Bounded attributable formative feedback, humane communication boundaries,
+   author alignment review, and an optional-AI audit with deterministic fallback.
+
+Remaining planned validation:
+
+1. Validate the contract with learner pilots using pre/post understanding,
+   transfer, calibration, accessibility, workload, and communication measures.
+2. Integrate the contract into the full learner-session UI and pack distribution
+   workflows.
+3. Define a backward-compatible, versioned learning-promise and activity
    contract, with fixtures for packages that omit the new fields.
 2. Add private, ungraded entry diagnostics and exit reflections for prior
    knowledge, expectations, confidence, misconceptions, and remaining
@@ -164,6 +180,12 @@ Interoperability boundary:
 - Didactopus may consume explicit progress or evidence references, but it must
   not infer mastery from unreviewed AI output, graph centrality, or detector
   scores.
+
+Stage 9 release evidence: the complete local suite passes (308 tests), Python
+sources compile, and an offline wheel builds with `pip wheel --no-deps
+--no-build-isolation`. The pedagogy APIs do not invoke providers or network
+routes. Learner-pilot validation, full learner-session UI integration, live
+API/webhook routes, and institutional-policy retrieval remain deferred.
 
 ### 2. Local-model adequacy benchmark for constrained hardware
 
