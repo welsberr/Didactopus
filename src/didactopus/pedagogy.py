@@ -247,3 +247,22 @@ def activity_template(activity_type: str, *, title: str, outcome_ids: list[str] 
             "public_release": bool(metadata.pop("public_release", False))}
     item.update(metadata)
     return validate_learning_contract({"activities": [item]})["activities"][0]
+
+
+def formative_feedback(*, strengths: list[str], problems: list[dict[str, str]], next_step: str,
+                       source: str = "deterministic", artifact_id: str = "", activity_id: str = "") -> dict[str, Any]:
+    """Return reviewable feedback without editing or rewriting a learner artifact."""
+    if source not in {"instructor", "deterministic", "ai"}:
+        raise PedagogyContractError("feedback source must be attributable")
+    if not isinstance(next_step, str) or not next_step.strip():
+        raise PedagogyContractError("feedback requires a concrete next step")
+    selected = []
+    for problem in problems[:2]:
+        if not isinstance(problem, dict) or not problem.get("problem") or not problem.get("why"):
+            raise PedagogyContractError("each feedback problem needs problem and why")
+        selected.append({"problem": str(problem["problem"]), "why": str(problem["why"]),
+                         "prompt": str(problem.get("prompt", "How could you revise this?"))})
+    return {"feedback_version": "1.0", "source": source, "artifact_id": artifact_id,
+            "activity_id": activity_id, "strengths": [str(item) for item in strengths],
+            "problems": selected, "next_step": next_step, "rewrote_artifact": False,
+            "review_state": "draft"}
