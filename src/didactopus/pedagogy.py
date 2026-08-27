@@ -1,0 +1,167 @@
+"""Versioned, deterministic learning-path pedagogy contracts.
+
+The contract contains provider-authored instructional intent only. Learner
+responses and private work belong to the consuming local workspace.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+import hashlib
+import json
+from typing import Any
+
+CONTRACT_VERSION = "1.0"
+COGNITIVE_LEVELS = ("knowing", "understanding", "application", "analysis", "independent-production")
+ACTIVITY_TYPES = (
+    "recitation", "conversation", "seminar", "case", "project", "reflection",
+    "guided-observation", "retrieval-practice", "compare-and-contrast", "debate",
+    "role-play", "interview", "public-artifact",
+)
+
+
+class PedagogyContractError(ValueError):
+    """Raised when provider-authored learning structure is unsafe or malformed."""
+
+
+def stable_id(kind: str, item: dict[str, Any], index: int = 0) -> str:
+    explicit = item.get("id") or item.get(f"{kind}_id")
+    if explicit is not None and str(explicit).strip():
+        return str(explicit).strip()
+    canonical = json.dumps(item, sort_keys=True, separators=(",", ":"))
+    return f"dp:{kind}:{hashlib.sha256(canonical.encode()).hexdigest()[:20]}:{index}"
+
+
+def _strings(value: Any, field_name: str) -> list[str]:
+    if value is None:
+        return []
+    if not isinstance(value, list) or any(not isinstance(item, str) or not item.strip() for item in value):
+        raise PedagogyContractError(f"{field_name} must be a list of non-empty strings")
+    return [item.strip() for item in value]
+
+
+@dataclass(frozen=True)
+class LearningPromise:
+    promise: str = ""
+    why_it_matters: str = ""
+    outcomes: tuple[dict[str, Any], ...] = ()
+    means: tuple[str, ...] = ()
+    evidence: tuple[str, ...] = ()
+    contract_version: str = CONTRACT_VERSION
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "contract_version": self.contract_version,
+            "promise": self.promise,
+            "why_it_matters": self.why_it_matters,
+            "outcomes": [dict(item) for item in self.outcomes],
+            "means": list(self.means),
+            "evidence": list(self.evidence),
+        }
+
+
+@dataclass(frozen=True)
+class LearningActivity:
+    id: str
+    title: str
+    activity_type: str = "reflection"
+    outcome_ids: tuple[str, ...] = ()
+    evidence: tuple[str, ...] = ()
+    invitation: str = ""
+    reading_questions: tuple[str, ...] = ()
+    discussion_questions: tuple[str, ...] = ()
+    cognitive_level: str = "understanding"
+    prerequisites: tuple[str, ...] = ()
+    time_minutes: int | None = None
+    accessibility_options: tuple[str, ...] = ()
+    feedback_mode: str = "formative"
+    policy_scopes: tuple[str, ...] = ()
+    extra: dict[str, Any] = field(default_factory=dict)
+
+    def as_dict(self) -> dict[str, Any]:
+        result = {"id": self.id, "title": self.title, "activity_type": self.activity_type,
+                  "outcome_ids": list(self.outcome_ids), "evidence": list(self.evidence),
+                  "invitation": self.invitation, "reading_questions": list(self.reading_questions),
+                  "discussion_questions": list(self.discussion_questions),
+                  "cognitive_level": self.cognitive_level, "prerequisites": list(self.prerequisites),
+                  "time_minutes": self.time_minutes, "accessibility_options": list(self.accessibility_options),
+                  "feedback_mode": self.feedback_mode, "policy_scopes": list(self.policy_scopes)}
+        result.update(self.extra)
+        return result
+
+
+def validate_learning_contract(package: dict[str, Any]) -> dict[str, Any]:
+    """Validate and normalize optional pedagogy fields without requiring them."""
+    if not isinstance(package, dict):
+        raise PedagogyContractError("learning package must be an object")
+    version = package.get("contract_version", CONTRACT_VERSION)
+    if not isinstance(version, str) or not version.startswith("1."):
+        raise PedagogyContractError("unsupported pedagogy contract version")
+    promise = package.get("promise", {}) or {}
+    if isinstance(promise, str):
+        promise = {"promise": promise}
+    if not isinstance(promise, dict):
+        raise PedagogyContractError("promise must be an object or string")
+    normalized = dict(package)
+    normalized["contract_version"] = version
+    for name in ("promise", "why_it_matters"):
+        value = promise.get(name, package.get(name, ""))
+        if not isinstance(value, str):
+            raise PedagogyContractError(f"{name} must be a string")
+        normalized[name] = value
+    normalized["means"] = _strings(promise.get("means", package.get("means")), "means")
+    normalized["evidence"] = _strings(promise.get("evidence", package.get("evidence")), "evidence")
+    outcomes = promise.get("outcomes", package.get("outcomes", [])) or []
+    if not isinstance(outcomes, list) or any(not isinstance(item, dict) for item in outcomes):
+        raise PedagogyContractError("outcomes must be a list of objects")
+    seen: set[str] = set()
+    normalized["outcomes"] = []
+    for index, item in enumerate(outcomes):
+        item = dict(item)
+        item["id"] = stable_id("outcome", item, index)
+        if item["id"] in seen:
+            raise PedagogyContractError(f"duplicate outcome identifier: {item['id']}")
+        seen.add(item["id"])
+        if not isinstance(item.get("title", item.get("description", "")), str):
+            raise PedagogyContractError("outcome title must be a string")
+        normalized["outcomes"].append(item)
+    activities = package.get("activities", []) or []
+    if not isinstance(activities, list) or any(not isinstance(item, dict) for item in activities):
+        raise PedagogyContractError("activities must be a list of objects")
+    normalized["activities"] = []
+    for index, raw in enumerate(activities):
+        item = dict(raw)
+        item["id"] = stable_id("activity", item, index)
+        item.setdefault("title", item["id"])
+        activity_type = item.get("activity_type", "reflection")
+        if activity_type not in ACTIVITY_TYPES:
+            raise PedagogyContractError(f"unsupported activity_type: {activity_type}")
+        level = item.get("cognitive_level", "understanding")
+        if level not in COGNITIVE_LEVELS:
+            raise PedagogyContractError(f"unsupported cognitive_level: {level}")
+        if "time_minutes" in item and (not isinstance(item["time_minutes"], int) or item["time_minutes"] < 0):
+            raise PedagogyContractError("time_minutes must be a non-negative integer")
+        for field_name in ("outcome_ids", "prerequisites", "reading_questions", "discussion_questions",
+                           "accessibility_options", "policy_scopes", "evidence"):
+            item[field_name] = _strings(item.get(field_name), field_name)
+        item.setdefault("invitation", "")
+        item.setdefault("cognitive_level", "understanding")
+        normalized["activities"].append(item)
+    return normalized
+
+
+def render_activity(activity: dict[str, Any]) -> str:
+    """Render an inspectable, provider-authored activity for text-first clients."""
+    activity = validate_learning_contract({"activities": [activity]})["activities"][0]
+    lines = [f"{activity.get('title', activity['id'])} ({activity['activity_type']})"]
+    if activity.get("invitation"):
+        lines.append(f"Why this matters / invitation: {activity['invitation']}")
+    lines.append(f"Cognitive level: {activity['cognitive_level']}")
+    lines.append(f"Prerequisites: {', '.join(activity['prerequisites']) or 'none explicit'}")
+    if activity.get("time_minutes") is not None:
+        lines.append(f"Estimated time: {activity['time_minutes']} minutes")
+    if activity.get("reading_questions"):
+        lines.append("What to notice: " + " | ".join(activity["reading_questions"]))
+    if activity.get("discussion_questions"):
+        lines.append("What to discuss: " + " | ".join(activity["discussion_questions"]))
+    lines.append("What to do next: produce " + ", ".join(activity["evidence"]) if activity.get("evidence") else "What to do next: complete the activity and record evidence.")
+    return "\n".join(lines)
