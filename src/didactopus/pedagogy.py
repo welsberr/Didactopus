@@ -228,3 +228,22 @@ def export_diagnostics(records: list[dict[str, Any]], *, include_private: bool =
         exported.append(item)
     return {"schema_version": "1.0", "records": exported,
             "redacted_fields": redacted, "private_content_included": include_private}
+
+
+def activity_template(activity_type: str, *, title: str, outcome_ids: list[str] | None = None,
+                      evidence: list[str] | None = None, debrief: str = "", **metadata: Any) -> dict[str, Any]:
+    """Build an inspectable offline activity template with safety metadata."""
+    if activity_type not in ACTIVITY_TYPES:
+        raise PedagogyContractError(f"unsupported activity_type: {activity_type}")
+    if activity_type == "role-play" and not debrief.strip():
+        raise PedagogyContractError("role-play activities require a debrief")
+    item = {"id": stable_id("activity", {"title": title, "activity_type": activity_type}),
+            "title": title, "activity_type": activity_type,
+            "outcome_ids": outcome_ids or [], "evidence": evidence or [], "debrief": debrief,
+            "participation_modes": metadata.pop("participation_modes", ["written", "spoken"]),
+            "consent_required": bool(metadata.pop("consent_required", False)),
+            "privacy": metadata.pop("privacy", "local-only"),
+            "accessibility_options": metadata.pop("accessibility_options", ["text-only"]),
+            "public_release": bool(metadata.pop("public_release", False))}
+    item.update(metadata)
+    return validate_learning_contract({"activities": [item]})["activities"][0]
