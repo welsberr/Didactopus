@@ -165,3 +165,36 @@ def render_activity(activity: dict[str, Any]) -> str:
         lines.append("What to discuss: " + " | ".join(activity["discussion_questions"]))
     lines.append("What to do next: produce " + ", ".join(activity["evidence"]) if activity.get("evidence") else "What to do next: complete the activity and record evidence.")
     return "\n".join(lines)
+
+
+def map_learning_path(package: dict[str, Any]) -> dict[str, Any]:
+    """Create a stable, explainable sequence without learner ranking."""
+    normalized = validate_learning_contract(package)
+    outcomes = {item["id"]: item for item in normalized["outcomes"]}
+    steps = []
+    for index, activity in enumerate(normalized["activities"]):
+        missing = [item for item in activity["prerequisites"]
+                   if item not in outcomes and item not in {a["id"] for a in normalized["activities"]}]
+        steps.append({"index": index, "activity_id": activity["id"],
+                      "outcome_ids": list(activity["outcome_ids"]),
+                      "prerequisites": list(activity["prerequisites"]),
+                      "missing_prerequisites": missing,
+                      "provenance": {"provider": normalized.get("producer", ""), "activity_id": activity["id"]}})
+    total = sum(item.get("time_minutes", 0) or 0 for item in normalized["activities"])
+    warnings = []
+    if total > 600:
+        warnings.append({"kind": "workload", "minutes": total, "message": "Review the declared workload."})
+    for step in steps:
+        if step["missing_prerequisites"]:
+            warnings.append({"kind": "missing-prerequisite", "activity_id": step["activity_id"],
+                             "items": step["missing_prerequisites"]})
+    return {"contract_version": normalized["contract_version"], "steps": steps,
+            "workload_minutes": total, "review_prompts": warnings}
+
+
+def explain_step(package: dict[str, Any], activity_id: str) -> str:
+    normalized = validate_learning_contract(package)
+    activity = next((item for item in normalized["activities"] if item["id"] == activity_id), None)
+    if activity is None:
+        raise PedagogyContractError(f"unknown activity: {activity_id}")
+    return render_activity(activity)
