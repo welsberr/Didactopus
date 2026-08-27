@@ -266,3 +266,15 @@ def formative_feedback(*, strengths: list[str], problems: list[dict[str, str]], 
             "activity_id": activity_id, "strengths": [str(item) for item in strengths],
             "problems": selected, "next_step": next_step, "rewrote_artifact": False,
             "review_state": "draft"}
+
+
+def communication_boundaries(*, participation: str = "Choose a written or spoken response.",
+                             privacy: str = "Learner responses stay local unless explicitly exported.",
+                             response_limits: str = "This tool provides academic coaching, not counseling.",
+                             escalation: str = "Ask the instructor about course requirements; contact local support for personal concerns.") -> str:
+    """Render a plain-language boundary notice for accessible learner clients."""
+    values = {"Participation": participation, "Privacy": privacy,
+              "Response limits": response_limits, "Escalation": escalation}
+    if any(not isinstance(value, str) or not value.strip() for value in values.values()):
+        raise PedagogyContractError("communication boundaries must be non-empty text")
+    return "\n".join(f"{key}: {value}" for key, value in values.items()) + "\n"
