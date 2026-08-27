@@ -94,6 +94,77 @@ Current code anchors:
 - `didactopus.graph_retrieval`
 - `didactopus.ocw_rolemesh_transcript_demo`
 
+### 1a. Pedagogical learning-path contract and student communication
+
+Status: foundation present; structured pedagogy contract planned
+
+Why this belongs beside the mentor loop:
+
+- A graph-grounded answer is not yet a learning experience. Students need to
+  know why an activity matters, what to notice, what to do, and how progress
+  will be recognized.
+- Didactopus should describe the instructional promise and learning activity;
+  CourseKestrel should remain responsible for the student's private workspace,
+  local policy decisions, provenance, and integrity review.
+- The package should support adaptation from learner feedback without turning
+  learner responses into permanent ability, personality, demographic, or
+  learning-style labels.
+
+This track is informed by Peter Filene's *The Joy of Teaching* and by the
+existing pedagogical research notes in `docs/pedagogical-research-alignment.md`.
+Filene's technology examples are historical; the relevant design principles
+are dialogue, explicit outcomes, diagnostic listening, active practice,
+formative feedback, and sustainable teacher-student boundaries.
+
+Target contract fields and behaviors:
+
+- `promise`: why the path matters and what the learner should be able to do;
+- `outcomes`: observable learner actions with stable IDs;
+- `means`: readings, explanations, practice, discussion, and transfer tasks;
+- `evidence`: artifacts or responses that can demonstrate progress;
+- `invitation`: plain-language context for each reading or activity;
+- `reading_questions` and `discussion_questions`;
+- `activity_type`: recitation, conversation, seminar, case, project, reflection,
+  or another declared form;
+- `cognitive_level` and prerequisites, using a modest knowing → understanding →
+  application/analysis → independent production progression;
+- `feedback_mode`, time estimate, accessibility options, and policy scopes;
+- explicit participation, privacy, escalation, and communication expectations.
+
+Planned work:
+
+1. Define a backward-compatible, versioned learning-promise and activity
+   contract, with fixtures for packages that omit the new fields.
+2. Add private, ungraded entry diagnostics and exit reflections for prior
+   knowledge, expectations, confidence, misconceptions, and remaining
+   questions.
+3. Add structured activity templates for guided observation, retrieval practice,
+   compare-and-contrast, cases, debates, role-play, interviews, projects, and
+   public-facing artifacts where privacy and consent allow them.
+4. Make the mentor loop render “why this matters / what to notice / what to do
+   next” and distinguish recitation, conversation, and seminar behavior.
+5. Add bounded feedback protocols that identify strengths, one or two important
+   problems, why they matter, and a next step without rewriting learner work.
+6. Preserve learner agency through choice within bounded alternatives and avoid
+   engagement-maximizing pressure, simulated friendship, or emotional diagnosis.
+7. Add path-author review for alignment among promise, outcomes, activities,
+   evidence, workload, accessibility, and policy.
+8. Validate the contract with learner pilots using pre/post understanding,
+   transfer, calibration, accessibility, workload, and communication measures.
+
+Interoperability boundary:
+
+- Didactopus publishes provider-authored learning structure, activity intent,
+  source references, and declared capability constraints.
+- CourseKestrel imports that structure into study tasks and policy scopes,
+  retaining private diagnostics, notes, drafts, transcripts, and review history
+  locally.
+- Evidence exchange returns stable IDs, status, provenance references, and
+  review metadata by default, not private learner text.
+- Didactopus may consume explicit progress or evidence references, but it must
+  not infer mastery from unreviewed AI output, graph centrality, or detector
+  scores.
+
 ### 2. Local-model adequacy benchmark for constrained hardware
 
 Status: prototype implemented; constrained-hardware validation planned
@@ -411,13 +482,16 @@ Examples:
 ## Suggested Implementation Sequence
 
 1. Strengthen `didactopus.learner_session` into the standard session backend.
-2. Build a small model-benchmark harness around that backend.
-3. Prototype the offline learner appliance profile with local-only defaults.
-4. Define pack capsules and low-bandwidth import/export workflows.
-5. Add steward health checks and maintenance commands.
-6. Build the standards registry and first Common Cartridge/QTI/xAPI mapping
+2. Define the pedagogical learning-path and activity contract.
+3. Add private diagnostics, student-facing invitations, and bounded formative
+   feedback to the standard session backend.
+4. Build a small model-benchmark harness around that backend.
+5. Prototype the offline learner appliance profile with local-only defaults.
+6. Define pack capsules and low-bandwidth import/export workflows.
+7. Add steward health checks and maintenance commands.
+8. Build the standards registry and first Common Cartridge/QTI/xAPI mapping
    crosswalks.
-7. Add accessible learner HTML and text-first outputs.
-8. Add local TTS and STT support to the same session flow.
-9. Expand adaptive practice and diagnostics.
-10. Improve review, impact analysis, and incremental update support.
+9. Add accessible learner HTML and text-first outputs.
+10. Add local TTS and STT support to the same session flow.
+11. Expand adaptive practice and diagnostics.
+12. Improve review, impact analysis, and incremental update support.
