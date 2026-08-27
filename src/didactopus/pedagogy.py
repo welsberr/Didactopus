@@ -198,3 +198,33 @@ def explain_step(package: dict[str, Any], activity_id: str) -> str:
     if activity is None:
         raise PedagogyContractError(f"unknown activity: {activity_id}")
     return render_activity(activity)
+
+
+def record_diagnostic(path_id: str, kind: str, response: str, *, activity_id: str = "",
+                     evidence_id: str = "", reviewed: bool = False) -> dict[str, Any]:
+    """Create a private learner record; it never changes mastery or policy."""
+    if kind not in {"entry", "one-minute", "exit", "reflection"}:
+        raise PedagogyContractError("unsupported diagnostic kind")
+    if not isinstance(response, str):
+        raise PedagogyContractError("diagnostic response must be text")
+    record_id = evidence_id or stable_id("evidence", {"path_id": path_id, "kind": kind,
+                                                        "activity_id": activity_id, "response": response})
+    return {"evidence_id": record_id, "path_id": path_id, "activity_id": activity_id,
+            "kind": kind, "status": "reviewed" if reviewed else "draft",
+            "private": True, "graded": False, "response": response,
+            "provenance": {"source": "learner", "operation": "diagnostic"}}
+
+
+def export_diagnostics(records: list[dict[str, Any]], *, include_private: bool = False) -> dict[str, Any]:
+    """Return an export-safe envelope; response text is excluded by default."""
+    exported = []
+    redacted = []
+    for record in records:
+        item = {key: value for key, value in record.items() if key != "response"}
+        if include_private:
+            item["response"] = record.get("response", "")
+        else:
+            redacted.append(f"{record.get('evidence_id', 'unknown')}.response")
+        exported.append(item)
+    return {"schema_version": "1.0", "records": exported,
+            "redacted_fields": redacted, "private_content_included": include_private}
