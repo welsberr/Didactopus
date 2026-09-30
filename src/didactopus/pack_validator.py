@@ -10,7 +10,13 @@ OPTIONAL_FILES = {
 
 def _safe_load_yaml(path: Path, errors: list[str], label: str):
     try:
-        return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+        if payload is None:
+            return {}
+        if not isinstance(payload, dict):
+            errors.append(f"{label} root must be a mapping.")
+            return {}
+        return payload
     except Exception as exc:
         errors.append(f"Could not parse {label}: {exc}")
         return {}
@@ -88,11 +94,26 @@ def validate_pack_directory(source_dir: str | Path) -> dict:
         errors.append("rubrics.yaml top-level 'rubrics' is not a list.")
         rubrics = []
 
+    def mapping_entries(items, label):
+        valid = []
+        for idx, item in enumerate(items):
+            if not isinstance(item, dict):
+                errors.append(f"{label} entry at index {idx} is not a mapping.")
+            else:
+                valid.append((idx, item))
+        return valid
+
+    concepts_with_indices = mapping_entries(concepts, "concepts")
+    stages_with_indices = mapping_entries(roadmap_stages, "roadmap stages")
+    projects_with_indices = mapping_entries(projects, "projects")
+    rubrics_with_indices = mapping_entries(rubrics, "rubrics")
+
     concept_ids = []
-    for idx, concept in enumerate(concepts):
+    for idx, concept in concepts_with_indices:
         cid = concept.get("id", "")
-        if not cid:
-            errors.append(f"Concept at index {idx} has no id.")
+        if not isinstance(cid, str) or not cid.strip():
+            errors.append(f"Concept at index {idx} has no valid string id.")
+            cid = ""
         else:
             concept_ids.append(cid)
         if not concept.get("title"):
@@ -100,6 +121,9 @@ def validate_pack_directory(source_dir: str | Path) -> dict:
         desc = str(concept.get("description", "") or "")
         if len(desc.strip()) < 12:
             warnings.append(f"Concept '{cid or idx}' has a very thin description.")
+        prerequisites = concept.get("prerequisites", [])
+        if not isinstance(prerequisites, list) or any(not isinstance(value, str) for value in prerequisites):
+            errors.append(f"Concept '{cid or idx}' prerequisites must be a list of concept ids.")
 
     seen = set()
     dups = set()
@@ -112,20 +136,28 @@ def validate_pack_directory(source_dir: str | Path) -> dict:
 
     concept_id_set = set(concept_ids)
 
-    for stage in roadmap_stages:
-        for cid in stage.get("concepts", []) or []:
+    for idx, stage in stages_with_indices:
+        stage_concepts = stage.get("concepts", []) or []
+        if not isinstance(stage_concepts, list) or any(not isinstance(value, str) for value in stage_concepts):
+            errors.append(f"Roadmap stage at index {idx} concepts must be a list of concept ids.")
+            continue
+        for cid in stage_concepts:
             if cid not in concept_id_set:
                 errors.append(f"roadmap.yaml references missing concept id: {cid}")
 
-    for project in projects:
-        if not project.get("id"):
-            warnings.append("A project entry has no id.")
-        for cid in project.get("prerequisites", []) or []:
+    for idx, project in projects_with_indices:
+        if not isinstance(project.get("id"), str) or not project.get("id", "").strip():
+            warnings.append(f"Project entry at index {idx} has no id.")
+        prerequisites = project.get("prerequisites", []) or []
+        if not isinstance(prerequisites, list) or any(not isinstance(value, str) for value in prerequisites):
+            errors.append(f"Project entry at index {idx} prerequisites must be a list of concept ids.")
+            continue
+        for cid in prerequisites:
             if cid not in concept_id_set:
                 errors.append(f"projects.yaml references missing prerequisite concept id: {cid}")
 
-    for idx, rubric in enumerate(rubrics):
-        if not rubric.get("id"):
+    for idx, rubric in rubrics_with_indices:
+        if not isinstance(rubric.get("id"), str) or not rubric.get("id", "").strip():
             warnings.append(f"Rubric at index {idx} has no id.")
         criteria = rubric.get("criteria", [])
         if criteria is None:

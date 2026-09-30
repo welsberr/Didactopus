@@ -1,5 +1,9 @@
 # Didactopus
 
+The [educational graph correction roadmap](docs/educational-graph-correction-roadmap.md)
+coordinates graph diagnostic fixes, learning-task alignment, and the October 23
+Avida-ED demonstration with the companion repository.
+
 ![Didactopus mascot](artwork/didactopus-mascot.png)
 
 Didactopus is a local-first Python codebase for turning educational source material into structured learning domains, evaluating learner progress against those domains, and exporting review, mastery, and skill artifacts.
