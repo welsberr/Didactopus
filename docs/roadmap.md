@@ -1,5 +1,15 @@
 # Roadmap
 
+The proposed [lede-brief educational integration](lede-brief-integration-roadmap.md)
+adds a consumer profile for the shared transformation library while retaining
+Didactopus authority over pedagogy, learner evidence and mastery.
+
+The [process review and improvement roadmap](process-improvement-roadmap.md)
+records the 3 October 2026 code review and offline probes. Its immediate work is
+explicit provider dispatch, validated benchmark results, and independently
+reviewed role evaluation. It complements the mentor-loop and educational-graph
+tracks below; implementation is proposed.
+
 The bounded companion plan for GroundRecall's unified prior-work retrieval pilot
 is [`groundrecall-unified-retrieval-integration-plan.md`](groundrecall-unified-retrieval-integration-plan.md).
 It is blocked on GroundRecall's store-reconciliation gate and does not treat
@@ -28,9 +38,8 @@ production-code inventory, ORM/API migrations, typed candidate migration,
 calibration integration, installed-package matrix, and compatibility release.
 
 Didactopus consumes the portable confidence contract from Epistemap
-`v0.1.0a5`. This immutable Git-tag dependency replaces the implementation SHA.
-The release also corrects exact cycle membership and adds relation-aware graph
-validation while preserving the confidence contract.
+`v0.1.0a5`. The release also corrects exact cycle membership and adds
+relation-aware graph validation while preserving the confidence contract.
 
 CiteGeist bibliography graph integration is coordinated by CiteGeist's
 `docs/epistemap-knowledge-graph-roadmap.md`. Didactopus consumes reviewed
